@@ -15,7 +15,7 @@ The pre-requisites of using the software are:
 The installation instruction are as follow:
 
 1. Clone the repository in your web server directory with the command:
-`git clone https://github.com/gne-ldh/sudo-su.git`
+`git clone --recurse-submodules https://github.com/gne-ldh/sudo-su.git`
 
 1. Give read-write permission of the files to the web server user (e.g. www-data) using chown (on linux) using command:
 `sudo chown -R www-data:www-data sudo-su`
