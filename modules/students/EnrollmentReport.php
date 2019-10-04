@@ -73,7 +73,7 @@ if($_REQUEST['modfunc']=='save')
 				echo '<table border=0>';
 				echo '<tr><td>Student Name :</td>';
 				echo '<td>'.$enrollment['FULL_NAME'].'</td></tr>';
-				echo '<tr><td>Student ID :</td>';
+				echo '<tr><td>College Roll No :</td>';
 				echo '<td>'.$student_id.'</td></tr>';
                                 echo '<tr><td>Alternate ID :</td>';
 				echo '<td>'.$enrollment['ALT_ID'].'</td></tr>';

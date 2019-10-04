@@ -1268,7 +1268,7 @@ else {
     DrawHeader(GetMP(UserMP()));
 }
 
-$columns = array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'Student ID');
+$columns = array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'College Roll No');
 if ($_REQUEST['include_inactive'] == 'Y')
     $columns += array('ACTIVE' => 'College Status', 'ACTIVE_SCHEDULE' => 'Course Status');
 if ($_REQUEST['use_percents'] != 'true')

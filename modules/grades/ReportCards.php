@@ -301,7 +301,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                             }
                             echo '<tr><td><strong>Student Name :</strong></td>';
                             echo '<td>' . $mps[key($mps)][1]['FULL_NAME'] . '</td></tr>';
-                            echo '<tr><td><strong>Student ID :</strong></td>';
+                            echo '<tr><td><strong>College Roll No :</strong></td>';
                             echo '<td>' . $mps[key($mps)][1]['STUDENT_ID'] . '</td></tr>';
                             echo '<tr><td><strong>Alternate ID :</strong></td>';
                             echo '<td>' . $mps[key($mps)][1]['ALT_ID'] . '</td></tr>';

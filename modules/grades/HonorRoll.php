@@ -134,7 +134,7 @@ if ($_REQUEST['modfunc'] == 'save' && $_REQUEST['honor_roll']) {
             echo '<TABLE width=80%>';
             echo '<TR align=center><TD colspan=6><B>' . sprintf(('%s Honor Roll'), $college_info_RET[1]['TITLE']) . ' </B></TD></TR>';
             echo '<TR align=center><TD colspan=6>&nbsp;</TD></TR>';
-            $columns = array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'Student ID', 'ALT_ID' => 'Alternate ID', 'GRADE_ID' => 'Grade', 'PHONE' => 'Phone', 'HONOR_ROLL' => 'Honor Roll');
+            $columns = array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'College Roll No', 'ALT_ID' => 'Alternate ID', 'GRADE_ID' => 'Grade', 'PHONE' => 'Phone', 'HONOR_ROLL' => 'Honor Roll');
             ListOutputPrint_Report($RET, $columns);
         } else {
 

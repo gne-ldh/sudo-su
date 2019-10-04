@@ -200,7 +200,7 @@ else {
         echo '<hr class="m-t-15 m-b-0" />';
     }
 
-    $LO_columns = array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'Student ID', 'GRADE_ID' => 'Grade') + $columns;
+    $LO_columns = array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'College Roll No', 'GRADE_ID' => 'Grade') + $columns;
     ListOutput($stu_RET, $LO_columns, 'Student', 'Students');
     if (count($stu_RET) != 0)
         echo '<br><CENTER><INPUT type=submit class="btn btn-primary" value=Save></CENTER>';

@@ -404,7 +404,7 @@ if ($_SESSION['err_msg'] != '')
                                         </div>
 
                                         <div class="form-group" id="pass_stu_id">
-                                            <input type="text" name="password_stn_id" id="password_stn_id" placeholder="Student ID" class="form-control" onkeydown="return numberOnly(event);" onblur="return check_input_val(this.value, 'password_stn_id');"/>
+                                            <input type="text" name="password_stn_id" id="password_stn_id" placeholder="College Roll No" class="form-control" onkeydown="return numberOnly(event);" onblur="return check_input_val(this.value, 'password_stn_id');"/>
                                         </div>
                                         <div class="form-group">
                                             <input type="text" name="uname" id="uname" placeholder="Username" class="form-control" onkeydown=" return withoutspace_forgotpass(event);" onblur="return withoutspace_forgotpass(event);"/>
@@ -448,7 +448,7 @@ if ($_SESSION['err_msg'] != '')
 
                                         </div>
                                         <div class="form-group" id="uname_stu_id">
-                                            <input type="text" name="username_stn_id" id="username_stn_id" class="form-control" placeholder="Student ID" onblur="return check_input_val(this.value, 'username_stn_id');" onkeydown="return numberOnly(event);"/>
+                                            <input type="text" name="username_stn_id" id="username_stn_id" class="form-control" placeholder="College Roll No" onblur="return check_input_val(this.value, 'username_stn_id');" onkeydown="return numberOnly(event);"/>
                                         </div>
                                         <div class="form-group">
                                             <input type="password" name="pass" id="pass" class="form-control" placeholder="Password" />
