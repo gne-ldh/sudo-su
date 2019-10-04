@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -185,7 +185,7 @@ echo '<div class="modal-body">';
 echo '<div id="conf_div" class="text-center"></div>';
 echo '<div class="row" id="resp_table">';
 echo '<div class="col-md-4">';
-$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
@@ -222,7 +222,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAEXT) == 'choose_course') {
         $course_title = $course_title[1]['TITLE'];
 
 
-        $cp_RET = DBGet(DBQuery('SELECT cp.TITLE,(SELECT TITLE FROM school_periods sp WHERE sp.PERIOD_ID=cpv.PERIOD_ID) AS PERIOD_TITLE,cp.MARKING_PERIOD_ID,(SELECT CONCAT(FIRST_NAME,\'' . ' ' . '\',LAST_NAME) FROM staff st WHERE st.STAFF_ID=cp.TEACHER_ID) AS TEACHER,r.TITLE AS ROOM,cp.TOTAL_SEATS-cp.FILLED_SEATS AS AVAILABLE_SEATS FROM course_periods cp,course_period_var cpv,rooms r WHERE cp.COURSE_PERIOD_ID=\'' . $_SESSION['MassDrops.php']['course_period_id'] . '\' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.ROOM_ID=r.ROOM_ID'));
+        $cp_RET = DBGet(DBQuery('SELECT cp.TITLE,(SELECT TITLE FROM college_periods sp WHERE sp.PERIOD_ID=cpv.PERIOD_ID) AS PERIOD_TITLE,cp.MARKING_PERIOD_ID,(SELECT CONCAT(FIRST_NAME,\'' . ' ' . '\',LAST_NAME) FROM staff st WHERE st.STAFF_ID=cp.TEACHER_ID) AS TEACHER,r.TITLE AS ROOM,cp.TOTAL_SEATS-cp.FILLED_SEATS AS AVAILABLE_SEATS FROM course_periods cp,course_period_var cpv,rooms r WHERE cp.COURSE_PERIOD_ID=\'' . $_SESSION['MassDrops.php']['course_period_id'] . '\' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.ROOM_ID=r.ROOM_ID'));
 
         $get_type = DBGEt(DBQuery('SELECT * FROM course_periods WHERE course_period_id=' . $_SESSION['MassDrops.php']['course_period_id']));
         if ($get_type[1]['SCHEDULE_TYPE'] == 'BLOCKED') {

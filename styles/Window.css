@@ -13,7 +13,7 @@ a.l2_links:hover { color:#fff}
 .content_top { background-image:url(../images/content_top.png); background-repeat:no-repeat; width:inherit; min-height:321px; _height:321px;}
 .footer { background-image:url(../images/footer.png); background-repeat:no-repeat; width:inherit; height:58px;}
 .user_info { font-weight:bold; padding:17px 0px 0px 0px; height:63px; color:#fff; width:877px;}
-.sel_school { width:230px; }
+.sel_college { width:230px; }
 select { border:1px solid #1b7ea0; }
 .selects {padding:0px 22px 0px 0px;}
 .sel_year { width:73px;}

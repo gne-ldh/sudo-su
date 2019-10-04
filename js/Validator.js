@@ -241,8 +241,8 @@ function V2validateData(strValidateStr, objValue, strError)
             }
             break;
         }
-        case "req_copy_school":
-        case "required_copy_school":
+        case "req_copy_college":
+        case "required_copy_college":
         {
             objValue.value = objValue.value.trim();
             if (eval(objValue.value.length) == 0)
@@ -754,7 +754,7 @@ function CheckTime(fd, fh, fm, fp, td, th, tm, tp)
 }
 /* **************************************************** Check Time End ****************************************************** */
 
-/******************************************  For SchoolSetup Marking Periods Start  ********************************************/
+/******************************************  For CollegeSetup Marking Periods Start  ********************************************/
 
 function doDateCheckMar(from, to) {
 

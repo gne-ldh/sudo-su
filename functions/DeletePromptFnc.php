@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -91,7 +91,7 @@ function DeletePrompt_activity($title, $action = 'delete', $close = 'n') {
         echo '<BR>';
         PopTable('header', 'Confirm' . (strpos($action, ' ') === false ? ' ' . ucwords($action) : ''));
         if ($close == 'n')
-            echo "<CENTER><h4>Are you sure you want to $action that $title?</h4><br><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST><INPUT type=submit class=\"btn btn-danger\" value=OK>&nbsp;<INPUT type=button class=\"btn btn-primary\" name=delete_cancel value=Cancel onclick='window.location=\"Modules.php?modname=schoolsetup/Periods.php\"'></FORM></CENTER>";
+            echo "<CENTER><h4>Are you sure you want to $action that $title?</h4><br><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST><INPUT type=submit class=\"btn btn-danger\" value=OK>&nbsp;<INPUT type=button class=\"btn btn-primary\" name=delete_cancel value=Cancel onclick='window.location=\"Modules.php?modname=collegesetup/Periods.php\"'></FORM></CENTER>";
         if ($close == 'y')
             echo "<CENTER><h4>Are you sure you want to $action that $title?</h4><br><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST><INPUT type=submit class=\"btn btn-danger\" value=OK>&nbsp;<INPUT type=button class=\"btn btn-primary\" name=delete_cancel value=Cancel onclick='window.close();'></FORM></CENTER>";
         PopTable('footer');
@@ -110,7 +110,7 @@ function DeletePrompt_sys_maintain($title, $action = 'delete') {
         echo '<BR>';
         PopTable('header', 'Confirm' . (strpos($action, ' ') === false ? ' ' . ucwords($action) : ''));
 
-        echo "<CENTER><h4>Are you sure you want to $action that $title?</h4><br><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST><INPUT type=submit class=\"btn btn-danger\" value=OK>&nbsp;<INPUT type=button class=\"btn btn-primary\" name=delete_cancel value=Cancel onclick='window.location=\"Modules.php?modname=schoolsetup/SystemPreference.php&page_display=MAINTENANCE\"'></FORM></CENTER>";
+        echo "<CENTER><h4>Are you sure you want to $action that $title?</h4><br><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST><INPUT type=submit class=\"btn btn-danger\" value=OK>&nbsp;<INPUT type=button class=\"btn btn-primary\" name=delete_cancel value=Cancel onclick='window.location=\"Modules.php?modname=collegesetup/SystemPreference.php&page_display=MAINTENANCE\"'></FORM></CENTER>";
         PopTable('footer');
         return false;
     } else
@@ -351,7 +351,7 @@ function DeletePrompt_Portal($title, $action = 'delete') {
     if (!$_REQUEST['delete_ok'] && !$_REQUEST['delete_cancel']) {
         echo '<BR>';
         PopTable('header', 'Confirm' . (strpos($action, ' ') === false ? ' ' . ucwords($action) : ''));
-        echo "<CENTER><h4>Are you sure you want to $action that $title?</h4><br><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST><INPUT type=submit class=\"btn btn-danger\" value=OK>&nbsp;<INPUT type=button class=\"btn btn-primary\" name=delete_cancel value=Cancel onclick='window.location=\"Modules.php?modname=schoolsetup/PortalNotes.php\"'></FORM></CENTER>";
+        echo "<CENTER><h4>Are you sure you want to $action that $title?</h4><br><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST><INPUT type=submit class=\"btn btn-danger\" value=OK>&nbsp;<INPUT type=button class=\"btn btn-primary\" name=delete_cancel value=Cancel onclick='window.location=\"Modules.php?modname=collegesetup/PortalNotes.php\"'></FORM></CENTER>";
         PopTable('footer');
         return false;
     } else
@@ -367,7 +367,7 @@ function DeletePrompt_Period($title, $action = 'delete') {
     if (!$_REQUEST['delete_ok'] && !$_REQUEST['delete_cancel']) {
         echo '<BR>';
         PopTable('header', 'Confirm' . (strpos($action, ' ') === false ? ' ' . ucwords($action) : ''));
-        echo "<CENTER><h4>Are you sure you want to $action that $title?</h4><br><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST><INPUT type=submit class=\"btn btn-danger\" value=OK>&nbsp;<INPUT type=button class=\"btn btn-primary\" name=delete_cancel value=Cancel onclick='window.location=\"Modules.php?modname=schoolsetup/Periods.php\"'></FORM></CENTER>";
+        echo "<CENTER><h4>Are you sure you want to $action that $title?</h4><br><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST><INPUT type=submit class=\"btn btn-danger\" value=OK>&nbsp;<INPUT type=button class=\"btn btn-primary\" name=delete_cancel value=Cancel onclick='window.location=\"Modules.php?modname=collegesetup/Periods.php\"'></FORM></CENTER>";
         PopTable('footer');
         return false;
     } else
@@ -383,7 +383,7 @@ function DeletePrompt_GradeLevel($title, $action = 'delete') {
     if (!$_REQUEST['delete_ok'] && !$_REQUEST['delete_cancel']) {
         echo '<BR>';
         PopTable('header', 'Confirm' . (strpos($action, ' ') === false ? ' ' . ucwords($action) : ''));
-        echo "<CENTER><h4>Are you sure you want to $action that $title?</h4><br><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST><INPUT type=submit class=\"btn btn-danger\" value=OK>&nbsp;<INPUT type=button class=\"btn btn-primary\" name=delete_cancel value=Cancel onclick='window.location=\"Modules.php?modname=schoolsetup/GradeLevels.php\"'></FORM></CENTER>";
+        echo "<CENTER><h4>Are you sure you want to $action that $title?</h4><br><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST><INPUT type=submit class=\"btn btn-danger\" value=OK>&nbsp;<INPUT type=button class=\"btn btn-primary\" name=delete_cancel value=Cancel onclick='window.location=\"Modules.php?modname=collegesetup/GradeLevels.php\"'></FORM></CENTER>";
         PopTable('footer');
         return false;
     } else
@@ -399,7 +399,7 @@ function DeletePrompt_Sections($title, $action = 'delete') {
     if (!$_REQUEST['delete_ok'] && !$_REQUEST['delete_cancel']) {
         echo '<BR>';
         PopTable('header', 'Confirm' . (strpos($action, ' ') === false ? ' ' . ucwords($action) : ''));
-        echo "<CENTER><h4>Are you sure you want to $action that $title?</h4><br><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST><INPUT type=submit class=\"btn btn-danger\" value=OK>&nbsp;<INPUT type=button class=\"btn btn-primary\" name=delete_cancel value=Cancel onclick='window.location=\"Modules.php?modname=schoolsetup/Sections.php\"'></FORM></CENTER>";
+        echo "<CENTER><h4>Are you sure you want to $action that $title?</h4><br><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST><INPUT type=submit class=\"btn btn-danger\" value=OK>&nbsp;<INPUT type=button class=\"btn btn-primary\" name=delete_cancel value=Cancel onclick='window.location=\"Modules.php?modname=collegesetup/Sections.php\"'></FORM></CENTER>";
         PopTable('footer');
         return false;
     } else

@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -29,10 +29,10 @@
 include('../../RedirectModulesInc.php');
 echo '<div id="calculating" style="display: none; padding-top:20px; padding-bottom:15px;"><img src="assets/missing_attn_loader.gif" /><br/><br/><br/><span style="color:#c90000;"><span style=" font-size:15px; font-weight:bold;">Please wait.</span><br /><span style=" font-size:12px;">Calculating GPA . Do not click anywhere.</span></span></div>
 <div id="resp" style="font-size:14px"></div>';
-$QI = DBQuery("SELECT PERIOD_ID,TITLE FROM school_periods WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER ");
+$QI = DBQuery("SELECT PERIOD_ID,TITLE FROM college_periods WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER ");
 $RET = DBGet($QI);
 
-$SCALE_RET = DBGet(DBQuery('SELECT * from schools where ID = \'' . UserSchool() . '\''));
+$SCALE_RET = DBGet(DBQuery('SELECT * from colleges where ID = \'' . UserCollege() . '\''));
 
 DrawBC("Gradebook > " . ProgramTitle());
 $mps = GetAllMP(GetMPTable(GetMP(UserMP(), 'TABLE')), UserMP());
@@ -50,7 +50,7 @@ $table .= '</TD>
 	<TR>
 		<TD colspan = 2 align=center><font color=gray>GPA based on a scale of ' . $SCALE_RET[1]['REPORTING_GP_SCALE'] . '</TD>
 	</TR>' .
-        '</TABLE></TD><TD width=350><small>GPA calculation modifies existing records.<BR><BR>Weighted and unweighted GPA is calculated by dividing the weighted and unweighted grade points configured for each letter grade (assigned in the Report Card Codes setup program) by the base grading scale specified in the school setup.  </small></TD></TR></TABLE>';
+        '</TABLE></TD><TD width=350><small>GPA calculation modifies existing records.<BR><BR>Weighted and unweighted GPA is calculated by dividing the weighted and unweighted grade points configured for each letter grade (assigned in the Report Card Codes setup program) by the base grading scale specified in the college setup.  </small></TD></TR></TABLE>';
 
 if (!$_REQUEST['modfunc']) {
     echo "<FORM name=sav id=sav action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=save method=POST>";

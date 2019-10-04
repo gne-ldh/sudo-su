@@ -316,11 +316,11 @@ td{ font-size:13px; color:#000;}
     font-size: 20px;
     margin: 10px 0;
 }
-.print-wrapper .school-details {
+.print-wrapper .college-details {
     float: left;
 }
-.print-wrapper .school-details h2 { margin: 0;}
-.print-wrapper .school-details p { margin: 0; font-size: 14px; }
+.print-wrapper .college-details h2 { margin: 0;}
+.print-wrapper .college-details p { margin: 0; font-size: 14px; }
 
 /* Transcript */
 .transcript-header .transcript-student-info {
@@ -372,11 +372,11 @@ td{ font-size:13px; color:#000;}
     font-size: 20px;
     margin: 10px 0;
 }
-.print-invoice .school-details {
+.print-invoice .college-details {
     float: left;
 }
-.print-invoice .school-details h2 { margin: 0;}
-.print-invoice .school-details p { margin: 0; font-size: 14px; }
+.print-invoice .college-details h2 { margin: 0;}
+.print-invoice .college-details p { margin: 0; font-size: 14px; }
 .print-invoice .invoice-student-info { margin-top: 30px; display: grid; grid-template-columns: 50% 50%;align-items: end; width: 100%; }
 .print-invoice .invoice-student-info .student-info {  }
 .print-invoice .invoice-student-info .invoice-info { text-align: right; }

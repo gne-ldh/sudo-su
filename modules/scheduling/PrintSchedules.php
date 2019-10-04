@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -31,9 +31,9 @@ include('../../RedirectModulesInc.php');
 if ($_REQUEST['modfunc'] == 'save') {
     if (count($_REQUEST['st_arr'])) {
 
-        if ($_REQUEST['_search_all_schools'] == 'Y') {
+        if ($_REQUEST['_search_all_colleges'] == 'Y') {
 
-            $_REQUEST['_search_all_schools'] = 'Y';
+            $_REQUEST['_search_all_colleges'] = 'Y';
         }
         $st_list = '\'' . implode('\',\'', $_REQUEST['st_arr']) . '\'';
         $extra['WHERE'] = " AND s.STUDENT_ID IN ($st_list)";
@@ -55,7 +55,7 @@ if ($_REQUEST['modfunc'] == 'save') {
         $columns = array('COURSE' => 'Course', 'MARKING_PERIOD_ID' => 'Term', 'DAYS' => 'Days', 'PERIOD_TITLE' => 'Period - Teacher', 'DURATION' => 'Time', 'ROOM' => 'Room');
 
         $extra['SELECT'] .= ',p_cp.COURSE_PERIOD_ID,r.TITLE as ROOM,CONCAT(sp.START_TIME,\'' . ' to ' . '\', sp.END_TIME) AS DURATION,sp.TITLE AS PERIOD,cpv.DAYS,p_cp.SCHEDULE_TYPE,c.TITLE AS COURSE,p_cp.TITLE AS PERIOD_TITLE,sr.MARKING_PERIOD_ID';
-        $extra['FROM'] .= ' LEFT OUTER JOIN schedule sr ON (sr.STUDENT_ID=ssm.STUDENT_ID),courses c,course_periods p_cp,course_period_var cpv,school_periods sp,rooms r ';
+        $extra['FROM'] .= ' LEFT OUTER JOIN schedule sr ON (sr.STUDENT_ID=ssm.STUDENT_ID),courses c,course_periods p_cp,course_period_var cpv,college_periods sp,rooms r ';
 
 //        if($_REQUEST['include_inactive']!='Y')
 //        {
@@ -90,13 +90,13 @@ if ($_REQUEST['modfunc'] == 'save') {
 //                          }
 //                  else
 //                  {
-        if ($_REQUEST['_search_all_schools'] == 'Y') {
+        if ($_REQUEST['_search_all_colleges'] == 'Y') {
             $extra['WHERE'] .= ' AND (sr.MARKING_PERIOD_ID IN (SELECT MARKING_PERIOD_ID FROM marking_periods WHERE SYEAR='. UserSyear().') or sr.MARKING_PERIOD_ID is NULL)';
         }
         else
         $extra['WHERE'] .= ' AND (sr.MARKING_PERIOD_ID IN (' . GetAllMP_mod(GetMPTable(GetMP(UserMP(), 'TABLE')), UserMP()) . ') or sr.MARKING_PERIOD_ID is NULL)';
-       if ($_REQUEST['_search_all_schools'] == 'Y')
-        $extra['functions'] = array('MARKING_PERIOD_ID' => 'GetMPAllSchool');
+       if ($_REQUEST['_search_all_colleges'] == 'Y')
+        $extra['functions'] = array('MARKING_PERIOD_ID' => 'GetMPAllCollege');
         else
             $extra['functions'] = array('MARKING_PERIOD_ID' => 'GetMP');
         $extra['group'] = array('STUDENT_ID');
@@ -107,7 +107,7 @@ if ($_REQUEST['modfunc'] == 'save') {
         foreach ($RET as $ri => $rd) {
             foreach ($rd as $rdi => $rdd) {
 
-                $get_det = DBGet(DBQuery('SELECT cpv.DAYS,cpv.COURSE_PERIOD_DATE,CONCAT(sp.START_TIME,\'' . ' to ' . '\', sp.END_TIME) AS DURATION,r.TITLE as ROOM FROM course_period_var cpv,school_periods sp,rooms r WHERE sp.PERIOD_ID=cpv.PERIOD_ID AND cpv.ROOM_ID=r.ROOM_ID AND cpv.COURSE_PERIOD_ID=' . $rdd['COURSE_PERIOD_ID']));
+                $get_det = DBGet(DBQuery('SELECT cpv.DAYS,cpv.COURSE_PERIOD_DATE,CONCAT(sp.START_TIME,\'' . ' to ' . '\', sp.END_TIME) AS DURATION,r.TITLE as ROOM FROM course_period_var cpv,college_periods sp,rooms r WHERE sp.PERIOD_ID=cpv.PERIOD_ID AND cpv.ROOM_ID=r.ROOM_ID AND cpv.COURSE_PERIOD_ID=' . $rdd['COURSE_PERIOD_ID']));
 
                 if ($rdd['SCHEDULE_TYPE'] == 'FIXED') {
                     $RET[$ri][$rdi]['DAYS'] = _makeDays($get_det[1]['DAYS']);
@@ -178,7 +178,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
             foreach ($RET as $student_id => $courses) {
                 echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-                echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">Student Schedules Report</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetCollege(UserCollege()) . "<div style=\"font-size:12px;\">Student Schedules Report</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
 
                 unset($_openSIS['DrawHeader']);
                 echo '<br>';
@@ -212,7 +212,7 @@ if (!$_REQUEST['modfunc']) {
     DrawBC("Scheduling > " . ProgramTitle());
 
     if ($_REQUEST['search_modfunc'] == 'list') {
-        $mp_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,SORT_ORDER,1 AS TBL FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' UNION SELECT MARKING_PERIOD_ID,TITLE,SORT_ORDER,2 AS TBL FROM school_semesters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' UNION SELECT MARKING_PERIOD_ID,TITLE,SORT_ORDER,3 AS TBL FROM school_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY TBL,SORT_ORDER'));
+        $mp_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,SORT_ORDER,1 AS TBL FROM college_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' UNION SELECT MARKING_PERIOD_ID,TITLE,SORT_ORDER,2 AS TBL FROM college_semesters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' UNION SELECT MARKING_PERIOD_ID,TITLE,SORT_ORDER,3 AS TBL FROM college_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY TBL,SORT_ORDER'));
         $mp_select = '<SELECT class="form-control" name=mp_id><OPTION value="">N/A';
         foreach ($mp_RET as $mp)
             $mp_select .= '<OPTION value=' . $mp['MARKING_PERIOD_ID'] . '>' . $mp['TITLE'];

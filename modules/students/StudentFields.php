@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -544,7 +544,7 @@ if (!$_REQUEST['modfunc']) {
 
                 break;
             case 3:
-                $arr = array('Address Line 1', 'Address Line 2', 'City', 'State', 'Zip/Postal Code', 'School Bus Pick-up', 'School Bus Drop-off', 'Bus No', 'Relationship to Student'
+                $arr = array('Address Line 1', 'Address Line 2', 'City', 'State', 'Zip/Postal Code', 'College Bus Pick-up', 'College Bus Drop-off', 'Bus No', 'Relationship to Student'
                     , 'First Name', 'Last Name', 'Home Phone', 'Work Phone', 'Cell/Mobile Phone', 'Email', 'Custody of Student');
 
                 break;
@@ -557,7 +557,7 @@ if (!$_REQUEST['modfunc']) {
                 break;
             case 6:
                 $arr = array('Student ID', 'Alternate ID', 'Grade', 'Calendar', 'Rolling/Retention Options', 'Username', 'Password', 'Last Login', 'Disable Student'
-                    , 'Start Date', 'Enrollment Code', 'Drop Date', 'Drop Code', 'School');
+                    , 'Start Date', 'Enrollment Code', 'Drop Date', 'Drop Code', 'College');
 
                 break;
             case 7:

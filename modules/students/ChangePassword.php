@@ -1,7 +1,7 @@
 <?php
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -26,7 +26,7 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-DrawBC("School Setup > " . ProgramTitle());
+DrawBC("College Setup > " . ProgramTitle());
 if ((clean_param($_REQUEST['action'], PARAM_ALPHAMOD) == 'update') && (clean_param($_REQUEST['button'], PARAM_ALPHAMOD) == 'Save') && (User('PROFILE') == 'parent' || User('PROFILE') == 'student')) {
     $stu_PASS = DBGet(DBQuery('SELECT la.PASSWORD FROM login_authentication la, students s WHERE s.STUDENT_ID=\'' . UserStudentId() . '\' AND la.USER_ID=s.STUDENT_ID AND la.PROFILE_ID=3'));
     $pass_old = $_REQUEST['old'];

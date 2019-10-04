@@ -1,7 +1,7 @@
 <?php
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -54,8 +54,8 @@ echo '</div>';
 echo '</FORM>';
 
 $enrollment_RET = DBGet(DBQuery('SELECT se.START_DATE,se.END_DATE,se.START_DATE AS DATE,se.SCHOOL_ID,se.STUDENT_ID,CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME) AS FULL_NAME,(SELECT TITLE FROM student_enrollment_codes seci WHERE se.enrollment_code=seci.id AND se.START_DATE>=\''.$start_date.'\') AS ENROLLMENT_CODE,(SELECT TITLE FROM student_enrollment_codes seci WHERE se.drop_code=seci.id) AS DROP_CODE FROM student_enrollment se, students s WHERE s.STUDENT_ID=se.STUDENT_ID AND ((se.START_DATE>=\''.$start_date.'\' AND se.END_DATE<=\''.$end_date.'\') OR (se.START_DATE BETWEEN \''.$start_date.'\' AND \''.$end_date.'\') OR (se.END_DATE BETWEEN \''.$start_date.'\' AND \''.$end_date.'\'))
-								ORDER BY DATE DESC'),array('START_DATE'=>'ProperDate','END_DATE'=>'ProperDate','SCHOOL_ID'=>'GetSchool'));
-$columns = array('FULL_NAME'=>'Student','STUDENT_ID'=>'Student ID','SCHOOL_ID'=>'School','START_DATE'=>'Enrolled','ENROLLMENT_CODE'=>'Enrollment Code','END_DATE'=>'Dropped','DROP_CODE'=>'Drop Code');
+								ORDER BY DATE DESC'),array('START_DATE'=>'ProperDate','END_DATE'=>'ProperDate','SCHOOL_ID'=>'GetCollege'));
+$columns = array('FULL_NAME'=>'Student','STUDENT_ID'=>'Student ID','SCHOOL_ID'=>'College','START_DATE'=>'Enrolled','ENROLLMENT_CODE'=>'Enrollment Code','END_DATE'=>'Dropped','DROP_CODE'=>'Drop Code');
 
 echo '<div class="panel panel-default">';
 ListOutput($enrollment_RET,$columns,'Enrollment Record','Enrollment Records');

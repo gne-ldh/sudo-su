@@ -26,25 +26,25 @@ DELIMITER ;
 
 DROP TRIGGER IF EXISTS tu_periods;
 CREATE TRIGGER tu_periods
-    AFTER UPDATE ON school_periods
+    AFTER UPDATE ON college_periods
     FOR EACH ROW
         UPDATE course_period_var SET start_time=NEW.start_time,end_time=NEW.end_time WHERE period_id=NEW.period_id;
 
-DROP TRIGGER IF EXISTS tu_school_years;
-CREATE TRIGGER tu_school_years
-    AFTER UPDATE ON school_years
+DROP TRIGGER IF EXISTS tu_college_years;
+CREATE TRIGGER tu_college_years
+    AFTER UPDATE ON college_years
     FOR EACH ROW
         UPDATE course_periods SET begin_date=NEW.start_date,end_date=NEW.end_date WHERE marking_period_id=NEW.marking_period_id;
 
-DROP TRIGGER IF EXISTS tu_school_semesters;
-CREATE TRIGGER tu_school_semesters
-    AFTER UPDATE ON school_semesters
+DROP TRIGGER IF EXISTS tu_college_semesters;
+CREATE TRIGGER tu_college_semesters
+    AFTER UPDATE ON college_semesters
     FOR EACH ROW
         UPDATE course_periods SET begin_date=NEW.start_date,end_date=NEW.end_date WHERE marking_period_id=NEW.marking_period_id;
 
-DROP TRIGGER IF EXISTS tu_school_quarters;
-CREATE TRIGGER tu_school_quarters
-    AFTER UPDATE ON school_quarters
+DROP TRIGGER IF EXISTS tu_college_quarters;
+CREATE TRIGGER tu_college_quarters
+    AFTER UPDATE ON college_quarters
     FOR EACH ROW
         UPDATE course_periods SET begin_date=NEW.start_date,end_date=NEW.end_date WHERE marking_period_id=NEW.marking_period_id;
 
@@ -123,7 +123,7 @@ CREATE TRIGGER `ti_cal_missing_attendance`
     DECLARE associations INT;
     SET associations = (SELECT COUNT(course_period_id) FROM `course_periods` WHERE calendar_id=NEW.calendar_id);
     IF associations>0 THEN
-	CALL ATTENDANCE_CALC_BY_DATE(NEW.school_date, NEW.syear,NEW.school_id);
+	CALL ATTENDANCE_CALC_BY_DATE(NEW.college_date, NEW.syear,NEW.college_id);
     END IF;
     END$$
 DELIMITER ;
@@ -132,5 +132,5 @@ DROP TRIGGER IF EXISTS `td_cal_missing_attendance`;
 CREATE TRIGGER `td_cal_missing_attendance`
     AFTER DELETE ON attendance_calendar
     FOR EACH ROW
-	DELETE mi.* FROM missing_attendance mi,course_periods cp WHERE mi.course_period_id=cp.course_period_id and cp.calendar_id=OLD.calendar_id AND mi.SCHOOL_DATE=OLD.school_date;
+	DELETE mi.* FROM missing_attendance mi,course_periods cp WHERE mi.course_period_id=cp.course_period_id and cp.calendar_id=OLD.calendar_id AND mi.SCHOOL_DATE=OLD.college_date;
 

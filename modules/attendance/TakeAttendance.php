@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -113,16 +113,16 @@ if ($_REQUEST['table'] == '0') {
 
 
 $date = date('Y-m-d', strtotime($final_date));
-$sc_years_sql = 'SELECT MARKING_PERIOD_ID FROM school_years WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND \'' . date('Y-m-d', strtotime($date)) . '\' BETWEEN START_DATE AND END_DATE';
+$sc_years_sql = 'SELECT MARKING_PERIOD_ID FROM college_years WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND \'' . date('Y-m-d', strtotime($date)) . '\' BETWEEN START_DATE AND END_DATE';
 $sc_years_data = DBGet(DBQuery($sc_years_sql));
 $sc_years_data = $sc_years_data[1]['MARKING_PERIOD_ID'];
 
-$sc_sem_sql = 'SELECT MARKING_PERIOD_ID FROM school_semesters WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND \'' . date('Y-m-d', strtotime($date)) . '\' BETWEEN START_DATE AND 
+$sc_sem_sql = 'SELECT MARKING_PERIOD_ID FROM college_semesters WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND \'' . date('Y-m-d', strtotime($date)) . '\' BETWEEN START_DATE AND 
 END_DATE';
 $sc_sem_data = DBGet(DBQuery($sc_sem_sql));
 $sc_sem_data = $sc_sem_data[1]['MARKING_PERIOD_ID'];
 
-$sc_qtr_sql = 'SELECT MARKING_PERIOD_ID FROM school_quarters WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND \'' . date('Y-m-d', strtotime($date)) . '\' BETWEEN START_DATE AND 
+$sc_qtr_sql = 'SELECT MARKING_PERIOD_ID FROM college_quarters WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND \'' . date('Y-m-d', strtotime($date)) . '\' BETWEEN START_DATE AND 
 END_DATE';
 $sc_qtr_data = DBGet(DBQuery($sc_qtr_sql));
 $sc_qtr_data = $sc_qtr_data[1]['MARKING_PERIOD_ID'];
@@ -142,7 +142,7 @@ if ($sc_qtr_data != '') {
 $mps = substr($mps, 0, -1);
 
 $sql = 'SELECT cp.HALF_DAY 
-FROM attendance_calendar acc,course_periods cp,course_period_var cpv,school_periods sp 
+FROM attendance_calendar acc,course_periods cp,course_period_var cpv,college_periods sp 
 WHERE acc.SYEAR=\'' . UserSyear() . '\' 
 AND cp.SCHOOL_ID=acc.SCHOOL_ID 
 AND cp.SYEAR=acc.SYEAR 
@@ -155,7 +155,7 @@ AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID
 AND ((sp.BLOCK IS NULL AND position(substring(\'UMTWHFS\' FROM DAYOFWEEK(acc.SCHOOL_DATE) FOR 1) IN cpv.DAYS)>0
 OR sp.BLOCK IS NOT NULL 
 AND acc.BLOCK IS NOT NULL 
-AND sp.BLOCK=acc.BLOCK) or cpv.course_period_date=acc.school_date)
+AND sp.BLOCK=acc.BLOCK) or cpv.course_period_date=acc.college_date)
 ' . ($_REQUEST['table'] != '' ? 'AND cpv.DOES_ATTENDANCE=\'Y\'' : '');
 if ($mps != '') {
     $course_RET = DBGET(DBQuery($sql));
@@ -250,9 +250,9 @@ if ($_REQUEST['attendance'] && ($_POST['attendance'] || $_REQUEST['ajax'])) {
 
 
 if ($_SESSION['PROFILE'] == 'teacher')
-    $codes_RET_count = DBGet(DBQuery('SELECT COUNT(*) AS CODES FROM attendance_codes WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\'  AND TYPE=\'teacher\' AND TABLE_NAME=\'' . $_REQUEST['table'] . '\'' . ($course_RET[1]['HALF_DAY'] ? ' AND STATE_CODE!=\'H\'' : '') . ' ORDER BY SORT_ORDER'));
+    $codes_RET_count = DBGet(DBQuery('SELECT COUNT(*) AS CODES FROM attendance_codes WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\'  AND TYPE=\'teacher\' AND TABLE_NAME=\'' . $_REQUEST['table'] . '\'' . ($course_RET[1]['HALF_DAY'] ? ' AND STATE_CODE!=\'H\'' : '') . ' ORDER BY SORT_ORDER'));
 
-$codes_RET = DBGet(DBQuery('SELECT ID,TITLE,DEFAULT_CODE,STATE_CODE FROM attendance_codes WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\'  AND TABLE_NAME=\'' . $_REQUEST['table'] . '\'' . ($course_RET[1]['HALF_DAY'] ? ' AND STATE_CODE!=\'H\'' : '') . ' ORDER BY SORT_ORDER'));
+$codes_RET = DBGet(DBQuery('SELECT ID,TITLE,DEFAULT_CODE,STATE_CODE FROM attendance_codes WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\'  AND TABLE_NAME=\'' . $_REQUEST['table'] . '\'' . ($course_RET[1]['HALF_DAY'] ? ' AND STATE_CODE!=\'H\'' : '') . ' ORDER BY SORT_ORDER'));
 if (count($codes_RET)) {
     foreach ($codes_RET as $code) {
         $extra['SELECT'] .= ",'$code[STATE_CODE]' AS CODE_" . $code['ID'];
@@ -356,7 +356,7 @@ echo '<div class="panel panel-default">';
 $profile = DBGet(DBQuery('SELECT PROFILE FROM staff WHERE STAFF_ID=' . UserID()));
 if ($profile[1]['PROFILE'] != "admin" && UserCoursePeriod() != '') {
     if (isset($_REQUEST['cp_id_miss_attn'])) {
-        $QI = DBQuery('SELECT DISTINCT cpv.ID,cpv.PERIOD_ID,cp.COURSE_PERIOD_ID,sp.TITLE,sp.SHORT_NAME,cp.MARKING_PERIOD_ID,cpv.DAYS,sp.SORT_ORDER,c.TITLE AS COURSE_TITLE FROM course_periods cp,course_period_var cpv, school_periods sp,courses c WHERE c.COURSE_ID=cp.COURSE_ID AND cpv.PERIOD_ID=sp.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.COURSE_PERIOD_ID=' . $_REQUEST['cp_id_miss_attn'] . ' AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.SCHOOL_ID=\'' . UserSchool() . '\' AND (cp.TEACHER_ID=\'' . User('STAFF_ID') . '\' OR cp.SECONDARY_TEACHER_ID=\'' . User('STAFF_ID') . '\') ORDER BY sp.SORT_ORDER ');
+        $QI = DBQuery('SELECT DISTINCT cpv.ID,cpv.PERIOD_ID,cp.COURSE_PERIOD_ID,sp.TITLE,sp.SHORT_NAME,cp.MARKING_PERIOD_ID,cpv.DAYS,sp.SORT_ORDER,c.TITLE AS COURSE_TITLE FROM course_periods cp,course_period_var cpv, college_periods sp,courses c WHERE c.COURSE_ID=cp.COURSE_ID AND cpv.PERIOD_ID=sp.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.COURSE_PERIOD_ID=' . $_REQUEST['cp_id_miss_attn'] . ' AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.SCHOOL_ID=\'' . UserCollege() . '\' AND (cp.TEACHER_ID=\'' . User('STAFF_ID') . '\' OR cp.SECONDARY_TEACHER_ID=\'' . User('STAFF_ID') . '\') ORDER BY sp.SORT_ORDER ');
         $RET = DBGet($QI);
         $period_select = '<label class="control-label">Choose Period:</label>
         <SELECT class="form-control" name=period onchange="document.location.href=\'Modules.php?modname=' . $_REQUEST['modname'] . '&period=\'+this.options[selectedIndex].value">';
@@ -375,7 +375,7 @@ if ($profile[1]['PROFILE'] != "admin" && UserCoursePeriod() != '') {
         $period_select .= "</SELECT>";
     } else {
 
-        $QI = DBQuery('SELECT DISTINCT cpv.ID,cpv.PERIOD_ID,cp.COURSE_PERIOD_ID,sp.TITLE,sp.SHORT_NAME,cp.MARKING_PERIOD_ID,cpv.DAYS,sp.SORT_ORDER,c.TITLE AS COURSE_TITLE FROM course_periods cp,course_period_var cpv, school_periods sp,courses c WHERE c.COURSE_ID=cp.COURSE_ID AND cpv.PERIOD_ID=sp.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.COURSE_PERIOD_ID=' . UserCoursePeriod() . ' AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.SCHOOL_ID=\'' . UserSchool() . '\' AND (cp.TEACHER_ID=\'' . User('STAFF_ID') . '\' OR cp.SECONDARY_TEACHER_ID=\'' . User('STAFF_ID') . '\') ORDER BY sp.SORT_ORDER ');
+        $QI = DBQuery('SELECT DISTINCT cpv.ID,cpv.PERIOD_ID,cp.COURSE_PERIOD_ID,sp.TITLE,sp.SHORT_NAME,cp.MARKING_PERIOD_ID,cpv.DAYS,sp.SORT_ORDER,c.TITLE AS COURSE_TITLE FROM course_periods cp,course_period_var cpv, college_periods sp,courses c WHERE c.COURSE_ID=cp.COURSE_ID AND cpv.PERIOD_ID=sp.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.COURSE_PERIOD_ID=' . UserCoursePeriod() . ' AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.SCHOOL_ID=\'' . UserCollege() . '\' AND (cp.TEACHER_ID=\'' . User('STAFF_ID') . '\' OR cp.SECONDARY_TEACHER_ID=\'' . User('STAFF_ID') . '\') ORDER BY sp.SORT_ORDER ');
         $RET = DBGet($QI);
 
         $period_select = '<label class="control-label">Choose Period:</label> 
@@ -448,7 +448,7 @@ DrawHeader($note1);
 $LO_columns = array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'Student ID', 'GRADE_ID' => 'Grade') + $columns;
 
 $tabs[] = array('title' => 'Attendance', 'link' => "Modules.php?modname=$_REQUEST[modname]&table=0&month_date=$_REQUEST[month_date]&day_date=$_REQUEST[day_date]&year_date=$_REQUEST[year_date]");
-$categories_RET = DBGet(DBQuery('SELECT ID,TITLE FROM attendance_code_categories WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
+$categories_RET = DBGet(DBQuery('SELECT ID,TITLE FROM attendance_code_categories WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
 foreach ($categories_RET as $category)
     $tabs[] = array('title' => $category['TITLE'], 'link' => "Modules.php?modname=$_REQUEST[modname]&table=$category[ID]&month_date=$_REQUEST[month_date]&day_date=$_REQUEST[day_date]&year_date=$_REQUEST[year_date]");
 
@@ -466,7 +466,7 @@ else {
     $plural = 'Students';
 }
 if (!$mp_id) {
-    echo '<div class="panel-body p-t-0 p-b-0"><div class="alert alert-danger alert-bordered">The selected date is not in a school quarter.</div></div>';
+    echo '<div class="panel-body p-t-0 p-b-0"><div class="alert alert-danger alert-bordered">The selected date is not in a college quarter.</div></div>';
 } else {
     if (count($course_RET) != 0) {
         $posted_date2 = ucfirst(strtolower($_REQUEST['month_date'])) . '-' . $_REQUEST['day_date'] . '-' . $_REQUEST['year_date'];
@@ -487,10 +487,10 @@ if (!$mp_id) {
         echo '</div>'; //.panel-footer
     } else {
         if ($_REQUEST['period']) {
-            $extra_sql = 'SELECT COUNT(*) AS day_exist FROM attendance_calendar WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_DATE=\'' . date('Y-m-d', strtotime($date)) . '\'';
+            $extra_sql = 'SELECT COUNT(*) AS day_exist FROM attendance_calendar WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_DATE=\'' . date('Y-m-d', strtotime($date)) . '\'';
             $extra_ret = DBGET(DBQuery($extra_sql));
             if (isset($extra_ret[1]['DAY_EXIST']) && $extra_ret[1]['DAY_EXIST'] == 0)
-                echo '<div class="panel-body p-t-0 p-b-0"><div class="alert alert-danger alert-bordered">You cannot take attendance on this day, it is a school holiday</div>';
+                echo '<div class="panel-body p-t-0 p-b-0"><div class="alert alert-danger alert-bordered">You cannot take attendance on this day, it is a college holiday</div>';
             else
                 echo '<div class="panel-body p-t-0 p-b-0"><div class="alert alert-danger alert-bordered">You cannot take attendance for this period on this day</div>';
         }

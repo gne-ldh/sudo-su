@@ -1,7 +1,7 @@
 <?php
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -69,7 +69,7 @@ function AllowEdit($modname=false)
                 {
                    if($modname=='attendance/StudentSummary.php')
                         return true;
-                    elseif($modname=='schoolsetup/Calendar.php')
+                    elseif($modname=='collegesetup/Calendar.php')
                         return true;        
                     elseif($modname=='attendance/DailySummary.php')
                         return true;
@@ -92,7 +92,7 @@ function AllowEdit($modname=false)
                       return true;
                     elseif($modname=='attendance/DailySummary.php')
                         return true;
-                    elseif($modname=='schoolsetup/Calendar.php')
+                    elseif($modname=='collegesetup/Calendar.php')
                         return true;
                     elseif($modname=='scheduling/PrintSchedules.php')
                         return true; 
@@ -104,7 +104,7 @@ function AllowEdit($modname=false)
                         return true;
                     elseif($modname=='grades/InputFinalGrades.php')
                     {
-                        $grade_post_date= DBGet(DBQuery('SELECT POST_START_DATE, POST_END_DATE FROM marking_periods WHERE SCHOOL_ID='. UserSchool().' AND SYEAR='. UserSyear().' AND MARKING_PERIOD_ID='. UserMP()));
+                        $grade_post_date= DBGet(DBQuery('SELECT POST_START_DATE, POST_END_DATE FROM marking_periods WHERE SCHOOL_ID='. UserCollege().' AND SYEAR='. UserSyear().' AND MARKING_PERIOD_ID='. UserMP()));
                         if($grade_post_date[1]['POST_START_DATE']!='' && $grade_post_date[1]['POST_END_DATE']!='')
                         {
                             if(date('Y-m-d') >= $grade_post_date[1]['POST_START_DATE'] && date('Y-m-d') <= $grade_post_date[1]['POST_END_DATE'])

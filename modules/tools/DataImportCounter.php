@@ -197,8 +197,8 @@ if ($category == 'student') {
                     ///////////////////////////For Student Enrollment////////////////////////////////////////////////////////////
                     $enrollment_code = DBGet(DBQuery('SELECT ID FROM  student_enrollment_codes WHERE SYEAR=' . UserSyear() . '  AND TITLE=\'New\''));
                     $enrollment_columns = array('SYEAR', 'SCHOOL_ID', 'STUDENT_ID', 'ENROLLMENT_CODE');
-                    $enrollment_values = array(UserSyear(), UserSchool(), $student_id, $enrollment_code[1]['ID']);
-                    $calendar_id = DBGet(DBQuery('SELECT CALENDAR_ID FROM school_calendars  WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ' AND DEFAULT_CALENDAR=\'Y\' '));
+                    $enrollment_values = array(UserSyear(), UserCollege(), $student_id, $enrollment_code[1]['ID']);
+                    $calendar_id = DBGet(DBQuery('SELECT CALENDAR_ID FROM college_calendars  WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserCollege() . ' AND DEFAULT_CALENDAR=\'Y\' '));
                     if ($calendar_id[1]['CALENDAR_ID'] != '') {
                         $enrollment_columns+=array('CALENDAR_ID');
                         $enrollment_values+=array($calendar_id[1]['CALENDAR_ID']);
@@ -208,11 +208,11 @@ if ($category == 'student') {
                         if ($arr_v[$array_index[$student_enrollments_v]] != '') {
                             $enrollment_columns[] = $student_enrollments_v;
                             if ($student_enrollments_v == 'GRADE_ID') {
-                                $enr_value = DBGet(DBQuery('SELECT ID FROM school_gradelevels WHERE SHORT_NAME=\'' . singleQuoteReplace("", "", trim($arr_v[$array_index[$student_enrollments_v]])) . '\' and school_id=\'' . UserSchool() . '\''));
+                                $enr_value = DBGet(DBQuery('SELECT ID FROM college_gradelevels WHERE SHORT_NAME=\'' . singleQuoteReplace("", "", trim($arr_v[$array_index[$student_enrollments_v]])) . '\' and college_id=\'' . UserCollege() . '\''));
                                 $enr_value = $enr_value[1]['ID'];
                             } elseif ($student_enrollments_v == 'SECTION_ID') {
-//                        echo 'SELECT ID FROM school_gradelevel_sections WHERE NAME=\''.singleQuoteReplace("","",$arr_v[$array_index[strtolower($student_enrollments_v)]]).'\' ';
-                                $enr_value = DBGet(DBQuery('SELECT ID FROM school_gradelevel_sections WHERE NAME=\'' . singleQuoteReplace("", "", $arr_v[$array_index[$student_enrollments_v]]) . '\' and school_id=\'' . UserSchool() . '\''));
+//                        echo 'SELECT ID FROM college_gradelevel_sections WHERE NAME=\''.singleQuoteReplace("","",$arr_v[$array_index[strtolower($student_enrollments_v)]]).'\' ';
+                                $enr_value = DBGet(DBQuery('SELECT ID FROM college_gradelevel_sections WHERE NAME=\'' . singleQuoteReplace("", "", $arr_v[$array_index[$student_enrollments_v]]) . '\' and college_id=\'' . UserCollege() . '\''));
                                 $enr_value = $enr_value[1]['ID'];
                             } elseif ($student_enrollments_v == 'START_DATE') {
                                 $enr_value = fromExcelToLinux(singleQuoteReplace("", "", $arr_v[$array_index[$student_enrollments_v]]));
@@ -253,7 +253,7 @@ if ($category == 'student') {
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     /////////////////////////For Student Address////////////////////////////////////////////////////////////
                     $sa_columns = array('STUDENT_ID', 'SYEAR', 'SCHOOL_ID');
-                    $sa_values = array($student_id, UserSyear(), UserSchool());
+                    $sa_values = array($student_id, UserSyear(), UserCollege());
 
                     foreach ($student_address as $student_address_v) {
 
@@ -271,7 +271,7 @@ if ($category == 'student') {
                     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     /////////////////////////For Primary////////////////////////////////////////////////////////////
                     $primary_columns = array('CURRENT_SCHOOL_ID', 'PROFILE', 'PROFILE_ID');
-                    $primary_values = array(UserSchool(), "'parent'", '4');
+                    $primary_values = array(UserCollege(), "'parent'", '4');
                     $relationship = '';
                     foreach ($primary as $primary_v) {
 //                    echo $primary_v.'---'.$arr_v[$array_index[strtolower($primary_v)]].'<br><br>';
@@ -296,7 +296,7 @@ if ($category == 'student') {
                     //////////////////////////////////////////////////////////////////////////////////////////////
                     /////////////////////////For Secondary////////////////////////////////////////////////////////////
                     $secondary_columns = array('CURRENT_SCHOOL_ID', 'PROFILE', 'PROFILE_ID');
-                    $secondary_values = array(UserSchool(), "'parent'", '4');
+                    $secondary_values = array(UserCollege(), "'parent'", '4');
                     $relationship = '';
                     foreach ($secondary as $secondary_v) {
 //                    echo $students_v.'---'.$arr_v[$array_index[strtolower($students_v)]].'<br><br>';
@@ -448,8 +448,8 @@ if ($category == 'staff') {
 //        exit;
         $staff = array('TITLE', 'FIRST_NAME', 'LAST_NAME', 'MIDDLE_NAME', 'EMAIL', 'PHONE', 'PROFILE', 'HOMEROOM', 'BIRTHDATE', 'ETHNICITY_ID', 'ALTERNATE_ID', 'PRIMARY_LANGUAGE_ID', 'GENDER', 'SECOND_LANGUAGE_ID', 'THIRD_LANGUAGE_ID', 'IS_DISABLE');
         $login_authentication = array('USERNAME', 'PASSWORD');
-        $staff_school_relationship = array('START_DATE', 'END_DATE');
-        $staff_school_info = array('CATEGORY', 'JOB_TITLE', 'JOINING_DATE');
+        $staff_college_relationship = array('START_DATE', 'END_DATE');
+        $staff_college_info = array('CATEGORY', 'JOB_TITLE', 'JOINING_DATE');
         $custom = DBGet(DBQuery('SELECT * FROM staff_fields'));
         foreach ($custom as $c) {
             $staff[] = 'CUSTOM_' . $c['ID'];
@@ -471,7 +471,7 @@ if ($category == 'staff') {
 
 
                 $staff_columns = array('STAFF_ID', 'CURRENT_SCHOOL_ID');
-                $staff_values = array($staff_id, UserSchool());
+                $staff_values = array($staff_id, UserCollege());
                 $check_query = array();
                 $check_query_alt_id = array();
                 $check_query_username = array();
@@ -606,16 +606,16 @@ if ($category == 'staff') {
                     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     ///////////////////////////For Staff Enrollment////////////////////////////////////////////////////////////
                     $ssr_columns = array('STAFF_ID', 'SYEAR', 'SCHOOL_ID');
-                    $ssr_values = array($staff_id, UserSyear(), UserSchool());
+                    $ssr_values = array($staff_id, UserSyear(), UserCollege());
                     $start_date_i = 0;
-                    foreach ($staff_school_relationship as $ssr_v) {
+                    foreach ($staff_college_relationship as $ssr_v) {
 //                    echo $students_v.'---'.$arr_v[$array_index[strtolower($students_v)]].'<br><br>';
                         if ($arr_v[$array_index[$ssr_v]] != '') {
                             $ssr_columns[] = $ssr_v;
                             if ($ssr_v == 'START_DATE') {
                                 $start_date_i = 1;
                                 if ($arr_v[$array_index[$ssr_v]] == '') {
-                                    $start_date = DBGet(DBQuery('SELECT START_DATE FROM school_years WHERE SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear()));
+                                    $start_date = DBGet(DBQuery('SELECT START_DATE FROM college_years WHERE SCHOOL_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear()));
 
                                     $ssr_values[] = "'" . $start_date[1]['START_DATE'] . "'";
                                 } else
@@ -627,12 +627,12 @@ if ($category == 'staff') {
                         }
                     }
                     if ($start_date_i == 0) {
-                        $start_date = DBGet(DBQuery('SELECT START_DATE FROM school_years WHERE SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear()));
+                        $start_date = DBGet(DBQuery('SELECT START_DATE FROM college_years WHERE SCHOOL_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear()));
                         $ssr_columns[] = 'START_DATE';
                         $ssr_values[] = "'" . $start_date[1]['START_DATE'] . "'";
                     }
 
-                    DBQuery('INSERT INTO staff_school_relationship (' . implode(',', $ssr_columns) . ') VALUES (' . implode(',', $ssr_values) . ')');
+                    DBQuery('INSERT INTO staff_college_relationship (' . implode(',', $ssr_columns) . ') VALUES (' . implode(',', $ssr_values) . ')');
                     unset($ssr_columns);
                     unset($ssr_values);
                     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -658,9 +658,9 @@ if ($category == 'staff') {
                     unset($la_columns);
                     unset($la_values);
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    ///////////////////////////For Staff School Info////////////////////////////////////////////////////////////
+                    ///////////////////////////For Staff College Info////////////////////////////////////////////////////////////
                     $ssi_columns = array('STAFF_ID', 'HOME_SCHOOL', 'OPENSIS_ACCESS', 'OPENSIS_PROFILE', 'SCHOOL_ACCESS');
-                    $ssi_values = array($staff_id, UserSchool(), '"Y"', $profile_id, '",' . UserSchool() . ',"');
+                    $ssi_values = array($staff_id, UserCollege(), '"Y"', $profile_id, '",' . UserCollege() . ',"');
                     if ($arr_v[$array_index['CATEGORY']] != '') {
                         $ssi_columns[] = 'CATEGORY';
                         $ssi_values[] = "'" . str_replace("'", "", $arr_v[$array_index['CATEGORY']]) . "'";
@@ -682,7 +682,7 @@ if ($category == 'staff') {
                         $ssi_values[] = "'" . fromExcelToLinux(singleQuoteReplace("", "", $arr_v[$array_index['JOINING_DATE']])) . "'";
                     }
 
-                    DBQuery('INSERT INTO staff_school_info (' . implode(',', $ssi_columns) . ') VALUES (' . implode(',', $ssi_values) . ')');
+                    DBQuery('INSERT INTO staff_college_info (' . implode(',', $ssi_columns) . ') VALUES (' . implode(',', $ssi_values) . ')');
                     unset($ssi_columns);
                     unset($ssi_values);
                     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

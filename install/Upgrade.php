@@ -25,7 +25,7 @@
                                 <?php
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -80,40 +80,40 @@
                                     $opensis_tab = array('address', 'address_fields', 'address_field_categories', 'app', 'attendance_calendar', 'attendance_calendars', 'attendance_codes', 'attendance_code_categories', 'attendance_completed', 'attendance_day', 'attendance_period',
                                         'calendar_events', 'calendar_events_visibility', 'config', 'courses', 'course_periods', 'course_subjects', 'custom_fields', 'eligibility', 'eligibility_activities', 'eligibility_completed', 'goal', 'gradebook_assignments', 'gradebook_assignment_types', 'gradebook_grades', 'grades_completed', 'hacking_log', 'history_marking_periods', 'honor_roll', 'login_message', 'login_records', 'log_maintain',
                                         'lunch_period', 'marking_period_id_generator', 'missing_attendance', 'old_course_weights', 'people', 'people_fields', 'people_field_categories', 'people_join_contacts', 'portal_notes', 'profile_exceptions',
-                                        'program_config', 'program_user_config', 'progress', 'report_card_comments', 'report_card_grades', 'report_card_grade_scales', 'schedule', 'schedule_requests', 'schools', 'school_gradelevels', 'school_periods',
-                                        'school_progress_periods', 'school_quarters', 'school_semesters', 'school_years', 'staff', 'staff_exceptions', 'staff_fields', 'staff_field_categories', 'staff_school_relationship', 'students', 'students_join_address',
+                                        'program_config', 'program_user_config', 'progress', 'report_card_comments', 'report_card_grades', 'report_card_grade_scales', 'schedule', 'schedule_requests', 'colleges', 'college_gradelevels', 'college_periods',
+                                        'college_progress_periods', 'college_quarters', 'college_semesters', 'college_years', 'staff', 'staff_exceptions', 'staff_fields', 'staff_field_categories', 'staff_college_relationship', 'students', 'students_join_address',
                                         'students_join_people', 'students_join_users', 'student_contacts', 'student_eligibility_activities', 'student_enrollment', 'student_enrollment_codes', 'student_field_categories', 'student_gpa_calculated', 'student_gpa_running', 'student_medical', 'student_medical_alerts',
                                         'student_medical_notes', 'student_medical_visits', 'student_mp_comments', 'student_mp_stats', 'student_report_card_comments', 'student_report_card_grades', 'system_preference', 'system_preference_misc', 'teacher_reassignment', 'user_profiles');
                                 } else if ($v == '5.1') {
                                     $opensis_tab = array('address', 'address_fields', 'address_field_categories', 'app', 'attendance_calendar', 'attendance_calendars', 'attendance_codes', 'attendance_code_categories', 'attendance_completed', 'attendance_day', 'attendance_period',
                                         'calendar_events', 'calendar_events_visibility', 'config', 'courses', 'course_periods', 'course_subjects', 'custom_fields', 'eligibility', 'eligibility_activities', 'eligibility_completed', 'goal', 'gradebook_assignments', 'gradebook_assignment_types', 'gradebook_grades', 'grades_completed', 'hacking_log', 'history_marking_periods', 'honor_roll', 'login_message', 'login_records', 'log_maintain',
                                         'lunch_period', 'marking_period_id_generator', 'missing_attendance', 'old_course_weights', 'people', 'people_fields', 'people_field_categories', 'people_join_contacts', 'portal_notes', 'profile_exceptions',
-                                        'program_config', 'program_user_config', 'progress', 'report_card_comments', 'report_card_grades', 'report_card_grade_scales', 'schedule', 'schedule_requests', 'schools', 'school_gradelevels', 'school_periods',
-                                        'school_progress_periods', 'school_quarters', 'school_semesters', 'school_years', 'staff', 'staff_exceptions', 'staff_fields', 'staff_field_categories', 'staff_school_relationship', 'students', 'students_join_address',
+                                        'program_config', 'program_user_config', 'progress', 'report_card_comments', 'report_card_grades', 'report_card_grade_scales', 'schedule', 'schedule_requests', 'colleges', 'college_gradelevels', 'college_periods',
+                                        'college_progress_periods', 'college_quarters', 'college_semesters', 'college_years', 'staff', 'staff_exceptions', 'staff_fields', 'staff_field_categories', 'staff_college_relationship', 'students', 'students_join_address',
                                         'students_join_people', 'students_join_users', 'student_contacts', 'student_eligibility_activities', 'student_enrollment', 'student_enrollment_codes', 'student_field_categories', 'student_gpa_calculated', 'student_gpa_running', 'student_medical', 'student_medical_alerts',
                                         'student_medical_notes', 'student_medical_visits', 'student_mp_comments', 'student_mp_stats', 'student_report_card_comments', 'student_report_card_grades', 'system_preference', 'system_preference_misc', 'teacher_reassignment', 'user_profiles');
                                 } else if ($v == '5.2') {
                                     $opensis_tab = array('address', 'address_fields', 'address_field_categories', 'app', 'attendance_calendar', 'attendance_calendars', 'attendance_codes', 'attendance_code_categories', 'attendance_completed', 'attendance_day', 'attendance_period',
-                                        'calendar_events', 'calendar_events_visibility', 'config', 'courses', 'course_periods', 'course_subjects', 'custom_fields', 'eligibility', 'eligibility_activities', 'eligibility_completed', 'goal', 'gradebook_assignments', 'gradebook_assignment_types', 'gradebook_grades', 'grades_completed', 'hacking_log', 'history_marking_periods', 'history_school', 'honor_roll', 'login_message', 'login_records', 'log_maintain',
+                                        'calendar_events', 'calendar_events_visibility', 'config', 'courses', 'course_periods', 'course_subjects', 'custom_fields', 'eligibility', 'eligibility_activities', 'eligibility_completed', 'goal', 'gradebook_assignments', 'gradebook_assignment_types', 'gradebook_grades', 'grades_completed', 'hacking_log', 'history_marking_periods', 'history_college', 'honor_roll', 'login_message', 'login_records', 'log_maintain',
                                         'lunch_period', 'marking_period_id_generator', 'missing_attendance', 'old_course_weights', 'people', 'people_fields', 'people_field_categories', 'people_join_contacts', 'portal_notes', 'profile_exceptions',
-                                        'program_config', 'program_user_config', 'progress', 'report_card_comments', 'report_card_grades', 'report_card_grade_scales', 'schedule', 'schedule_requests', 'schools', 'school_gradelevels', 'school_periods',
-                                        'school_progress_periods', 'school_quarters', 'school_semesters', 'school_years', 'staff', 'staff_exceptions', 'staff_fields', 'staff_field_categories', 'staff_school_relationship', 'students', 'students_join_address',
+                                        'program_config', 'program_user_config', 'progress', 'report_card_comments', 'report_card_grades', 'report_card_grade_scales', 'schedule', 'schedule_requests', 'colleges', 'college_gradelevels', 'college_periods',
+                                        'college_progress_periods', 'college_quarters', 'college_semesters', 'college_years', 'staff', 'staff_exceptions', 'staff_fields', 'staff_field_categories', 'staff_college_relationship', 'students', 'students_join_address',
                                         'students_join_people', 'students_join_users', 'student_contacts', 'student_eligibility_activities', 'student_enrollment', 'student_enrollment_codes', 'student_field_categories', 'student_gpa_calculated', 'student_gpa_running', 'student_medical', 'student_medical_alerts',
                                         'student_medical_notes', 'student_medical_visits', 'student_mp_comments', 'student_mp_stats', 'student_report_card_comments', 'student_report_card_grades', 'system_preference', 'system_preference_misc', 'teacher_reassignment', 'user_profiles');
                                 } else if ($v == '5.3') {
                                     $opensis_tab = array('address', 'address_fields', 'address_field_categories', 'app', 'attendance_calendar', 'attendance_calendars', 'attendance_codes', 'attendance_code_categories', 'attendance_completed', 'attendance_day', 'attendance_period',
-                                        'calendar_events', 'calendar_events_visibility', 'config', 'courses', 'course_periods', 'course_subjects', 'custom_fields', 'eligibility', 'eligibility_activities', 'eligibility_completed', 'goal', 'gradebook_assignments', 'gradebook_assignment_types', 'gradebook_grades', 'grades_completed', 'hacking_log', 'history_marking_periods', 'history_school', 'honor_roll', 'login_message', 'login_records', 'log_maintain',
+                                        'calendar_events', 'calendar_events_visibility', 'config', 'courses', 'course_periods', 'course_subjects', 'custom_fields', 'eligibility', 'eligibility_activities', 'eligibility_completed', 'goal', 'gradebook_assignments', 'gradebook_assignment_types', 'gradebook_grades', 'grades_completed', 'hacking_log', 'history_marking_periods', 'history_college', 'honor_roll', 'login_message', 'login_records', 'log_maintain',
                                         'lunch_period', 'marking_period_id_generator', 'missing_attendance', 'old_course_weights', 'people', 'people_fields', 'people_field_categories', 'people_join_contacts', 'portal_notes', 'profile_exceptions',
-                                        'program_config', 'program_user_config', 'progress', 'report_card_comments', 'report_card_grades', 'report_card_grade_scales', 'schedule', 'schedule_requests', 'schools', 'school_gradelevels', 'school_periods',
-                                        'school_progress_periods', 'school_quarters', 'school_semesters', 'school_years', 'staff', 'staff_exceptions', 'staff_fields', 'staff_field_categories', 'staff_school_relationship', 'students', 'students_join_address',
+                                        'program_config', 'program_user_config', 'progress', 'report_card_comments', 'report_card_grades', 'report_card_grade_scales', 'schedule', 'schedule_requests', 'colleges', 'college_gradelevels', 'college_periods',
+                                        'college_progress_periods', 'college_quarters', 'college_semesters', 'college_years', 'staff', 'staff_exceptions', 'staff_fields', 'staff_field_categories', 'staff_college_relationship', 'students', 'students_join_address',
                                         'students_join_people', 'students_join_users', 'student_contacts', 'student_eligibility_activities', 'student_enrollment', 'student_enrollment_codes', 'student_field_categories', 'student_gpa_calculated', 'student_gpa_running', 'student_medical', 'student_medical_alerts',
                                         'student_medical_notes', 'student_medical_visits', 'student_mp_comments', 'student_mp_stats', 'student_report_card_comments', 'student_report_card_grades', 'system_preference', 'system_preference_misc', 'teacher_reassignment', 'user_profiles');
                                 } else if ($v == '5.4') {
                                     $opensis_tab = array('address', 'address_fields', 'address_field_categories', 'app', 'attendance_calendar', 'attendance_calendars', 'attendance_codes', 'attendance_code_categories', 'attendance_completed', 'attendance_day', 'attendance_period',
-                                        'calendar_events', 'calendar_events_visibility', 'config', 'courses', 'course_periods', 'course_subjects', 'custom_fields', 'eligibility', 'eligibility_activities', 'eligibility_completed', 'goal', 'gradebook_assignments', 'gradebook_assignment_types', 'gradebook_grades', 'grades_completed', 'hacking_log', 'history_marking_periods', 'history_school', 'honor_roll', 'login_message', 'login_records', 'log_maintain',
+                                        'calendar_events', 'calendar_events_visibility', 'config', 'courses', 'course_periods', 'course_subjects', 'custom_fields', 'eligibility', 'eligibility_activities', 'eligibility_completed', 'goal', 'gradebook_assignments', 'gradebook_assignment_types', 'gradebook_grades', 'grades_completed', 'hacking_log', 'history_marking_periods', 'history_college', 'honor_roll', 'login_message', 'login_records', 'log_maintain',
                                         'lunch_period', 'marking_period_id_generator', 'missing_attendance', 'old_course_weights', 'people', 'people_fields', 'people_field_categories', 'people_join_contacts', 'portal_notes', 'profile_exceptions',
-                                        'program_config', 'program_user_config', 'progress', 'report_card_comments', 'report_card_grades', 'report_card_grade_scales', 'schedule', 'schedule_requests', 'schools', 'school_gradelevels', 'school_periods',
-                                        'school_progress_periods', 'school_quarters', 'school_semesters', 'school_years', 'staff', 'staff_exceptions', 'staff_fields', 'staff_field_categories', 'staff_school_relationship', 'students', 'students_join_address',
+                                        'program_config', 'program_user_config', 'progress', 'report_card_comments', 'report_card_grades', 'report_card_grade_scales', 'schedule', 'schedule_requests', 'colleges', 'college_gradelevels', 'college_periods',
+                                        'college_progress_periods', 'college_quarters', 'college_semesters', 'college_years', 'staff', 'staff_exceptions', 'staff_fields', 'staff_field_categories', 'staff_college_relationship', 'students', 'students_join_address',
                                         'students_join_people', 'students_join_users', 'student_contacts', 'student_eligibility_activities', 'student_enrollment', 'student_enrollment_codes', 'student_field_categories', 'student_gpa_calculated', 'student_gpa_running', 'student_medical', 'student_medical_alerts',
                                         'student_medical_notes', 'student_medical_visits', 'student_mp_comments', 'student_mp_stats', 'student_report_card_comments', 'student_report_card_grades', 'system_preference', 'system_preference_misc', 'teacher_reassignment', 'user_profiles');
                                 } else if ($v == '6.0') {
@@ -127,14 +127,14 @@
                     ('last_updated', 'July 26, 2017');";
                                     $dbconn->query($app_insert) or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error . 'error at 96</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
 
-                                    $get_schools = $dbconn->query('SELECT DISTINCT id FROM schools');
-                                    while ($get_schools_a = $get_schools->fetch_assoc()) {
-                                        $get_sy = $dbconn->query('SELECT MAX(syear) as syear FROM school_years WHERE SCHOOL_ID=' . $get_schools_a['id']);
+                                    $get_colleges = $dbconn->query('SELECT DISTINCT id FROM colleges');
+                                    while ($get_colleges_a = $get_colleges->fetch_assoc()) {
+                                        $get_sy = $dbconn->query('SELECT MAX(syear) as syear FROM college_years WHERE SCHOOL_ID=' . $get_colleges_a['id']);
                                         $get_sy_a = $get_sy->fetch_assoc();
                                         $get_sy_a = $get_sy_a['syear'];
-                                        $get_schools_a = $get_schools_a['id'];
-                                        $dbconn->query('INSERT INTO program_config (SYEAR,SCHOOL_ID,PROGRAM,TITLE,VALUE) VALUES(\'' . $get_sy_a . '\',\'' . $get_schools_a . '\',\'UPDATENOTIFY\',\'display\',\'Y\')') or die($dbconn->error);
-                                        $dbconn->query('INSERT INTO program_config (SYEAR,SCHOOL_ID,PROGRAM,TITLE,VALUE) VALUES(\'' . $get_sy_a . '\',\'' . $get_schools_a . '\',\'UPDATENOTIFY\',\'display_school\',\'Y\')') or die($dbconn->error);
+                                        $get_colleges_a = $get_colleges_a['id'];
+                                        $dbconn->query('INSERT INTO program_config (SYEAR,SCHOOL_ID,PROGRAM,TITLE,VALUE) VALUES(\'' . $get_sy_a . '\',\'' . $get_colleges_a . '\',\'UPDATENOTIFY\',\'display\',\'Y\')') or die($dbconn->error);
+                                        $dbconn->query('INSERT INTO program_config (SYEAR,SCHOOL_ID,PROGRAM,TITLE,VALUE) VALUES(\'' . $get_sy_a . '\',\'' . $get_colleges_a . '\',\'UPDATENOTIFY\',\'display_college\',\'Y\')') or die($dbconn->error);
                                     }
 
                                     $get_pf = $dbconn->query('SELECT COUNT(*) as rec_ex FROM profile_exceptions WHERE modname=\'students/Student.php&category_id=4\' AND can_edit=\'Y\' ');
@@ -212,7 +212,7 @@
    `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `user_id` int(11) NOT NULL,
   `profile_id` int(11) NOT NULL,
-  `school_id` int(11) NOT NULL,
+  `college_id` int(11) NOT NULL,
   `syear` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   `size` int(11) NOT NULL,
@@ -237,7 +237,7 @@
  $dbconn->query('CREATE TABLE IF NOT EXISTS `filters` (
   `filter_id` int(11) NOT NULL,
   `filter_name` varchar(255) DEFAULT NULL,
-  `school_id` int(11) DEFAULT \'0\',
+  `college_id` int(11) DEFAULT \'0\',
   `show_to` int(11) NOT NULL DEFAULT \'0\'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1');
                                     $dbconn->query('CREATE TABLE IF NOT EXISTS `filter_fields` (
@@ -438,16 +438,16 @@ WHERE value='4.6' OR value='4.7' OR value LIKE '4.8%' OR value='4.9' OR value='5
                                     if ($version != '5.2' && $version != '5.3') {
                                         $dbconn->query('Create table staff_new as SELECT * FROM ' . table_to_upper('staff', $version) . '') or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error . ' at line 243</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
                                         $dbconn->query('TRUNCATE TABLE staff_new') or die($dbconn->error . ' at line 244');
-                                        $dbconn->query('ALTER TABLE `staff_new` DROP `syear`, DROP `schools`, DROP `rollover_id`') or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error . ' at line 245</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
+                                        $dbconn->query('ALTER TABLE `staff_new` DROP `syear`, DROP `colleges`, DROP `rollover_id`') or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error . ' at line 245</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
 
-                                        $dbconn->query('DROP TABLE ' . table_to_upper('staff_school_relationship', $version) . '') or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error . ' at line 247</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
-                                        $dbconn->query('CREATE TABLE ' . table_to_upper('staff_school_relationship', $version) . ' (
+                                        $dbconn->query('DROP TABLE ' . table_to_upper('staff_college_relationship', $version) . '') or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error . ' at line 247</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
+                                        $dbconn->query('CREATE TABLE ' . table_to_upper('staff_college_relationship', $version) . ' (
  `staff_id` int(11) NOT NULL,
- `school_id` int(11) NOT NULL,
+ `college_id` int(11) NOT NULL,
  `syear` int(4) NOT NULL,
  `start_date` date NOT NULL,
  `end_date` date NOT NULL,
- PRIMARY KEY (`staff_id`,`school_id`,`syear`)
+ PRIMARY KEY (`staff_id`,`college_id`,`syear`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8') or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error . ' at line 255</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
 
                                         $sql = $dbconn->query('SELECT * FROM ' . table_to_upper('staff', $version) . ' order by staff_id asc') or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error . ' at line 257</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
@@ -458,21 +458,21 @@ WHERE value='4.6' OR value='4.7' OR value LIKE '4.8%' OR value='4.9' OR value='5
                                                 $staff_sql = $dbconn->query("SELECT staff_id FROM staff_new WHERE first_name='" . $row['first_name'] . "' AND last_name='" . $row['last_name'] . "' AND profile='" . $row['profile'] . "'") or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error . ' at line 262</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
                                             if ($staff_sql->num_rows == 0) {
                                                 $staff_id = $row['staff_id'];
-                                                $dbconn->query("insert into staff_new (staff_id,current_school_id,title,first_name,last_name,middle_name,username,password,phone,email,profile,homeroom,last_login,failed_login,profile_id,is_disable) values('" . $row['staff_id'] . "','" . $row['current_school_id'] . "'
+                                                $dbconn->query("insert into staff_new (staff_id,current_college_id,title,first_name,last_name,middle_name,username,password,phone,email,profile,homeroom,last_login,failed_login,profile_id,is_disable) values('" . $row['staff_id'] . "','" . $row['current_college_id'] . "'
             ,'" . $row['title'] . "','" . $row['first_name'] . "','" . $row['last_name'] . "','" . $row['middle_name'] . "','" . $row['username'] . "','" . $row['password'] . "'
                 ,'" . $row['phone'] . "','" . $row['email'] . "','" . $row['profile'] . "','" . $row['homeroom'] . "','" . $row['last_login'] . "','" . $row['failed_login'] . "','" . $row['profile_id'] . "','" . $row['is_disable'] . "')") or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error . ' at line 267</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
                                                 if ($row['username'] != '')
-                                                    $st_info_sql = $dbconn->query("SELECT syear,staff_id,schools FROM " . table_to_upper('staff', $version) . " WHERE username='" . $row['username'] . "' AND username IS NOT NULL") or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error . ' at line 269</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
+                                                    $st_info_sql = $dbconn->query("SELECT syear,staff_id,colleges FROM " . table_to_upper('staff', $version) . " WHERE username='" . $row['username'] . "' AND username IS NOT NULL") or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error . ' at line 269</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
                                                 else
-                                                    $st_info_sql = $dbconn->query("SELECT syear,staff_id,schools FROM " . table_to_upper('staff', $version) . " WHERE first_name='" . $row['first_name'] . "' AND last_name='" . $row['last_name'] . "' AND profile='" . $row['profile'] . "' AND username IS NULL") or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error . ' at line 271</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
+                                                    $st_info_sql = $dbconn->query("SELECT syear,staff_id,colleges FROM " . table_to_upper('staff', $version) . " WHERE first_name='" . $row['first_name'] . "' AND last_name='" . $row['last_name'] . "' AND profile='" . $row['profile'] . "' AND username IS NULL") or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error . ' at line 271</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
 
                                                 while ($row1 = $st_info_sql->fetch_assoc()) {
 
-                                                    $school = substr(substr($row1['schools'], 0, -1), 1);
-                                                    $all_school = explode(',', $school);
-                                                    foreach ($all_school as $key => $value) {
+                                                    $college = substr(substr($row1['colleges'], 0, -1), 1);
+                                                    $all_college = explode(',', $college);
+                                                    foreach ($all_college as $key => $value) {
 
-                                                        $dbconn->query('insert into ' . table_to_upper('staff_school_relationship', $version) . ' values(\'' . $staff_id . '\',\'' . $value . '\',\'' . $row1['syear'] . '\',\'0000-00-00\',\'0000-00-00\')') or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error . ' at line 279</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
+                                                        $dbconn->query('insert into ' . table_to_upper('staff_college_relationship', $version) . ' values(\'' . $staff_id . '\',\'' . $value . '\',\'' . $row1['syear'] . '\',\'0000-00-00\',\'0000-00-00\')') or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error . ' at line 279</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
                                                     }
 
 
@@ -625,7 +625,7 @@ WHERE value='4.6' OR value='4.7' OR value LIKE '4.8%' OR value='4.9' OR value='5
                                             $dbconn->query($login_msg) or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error . ' at line 425</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
                                         }
 
-                                        $syearqr = $dbconn->query("select MAX(syear) as year, MIN(start_date) as start from school_years") or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error . ' at line 428</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
+                                        $syearqr = $dbconn->query("select MAX(syear) as year, MIN(start_date) as start from college_years") or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error . ' at line 428</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
                                         $syear = $syearqr->fetch_assoc();
                                         $_SESSION['syear'] = $syear['year'];
                                         $max_syear = $syear['year'];
@@ -642,7 +642,7 @@ WHERE value='4.6' OR value='4.7' OR value LIKE '4.8%' OR value='4.9' OR value='5
             (3, 'scheduling/PrintSchedules.php','Y',NULL),
             (1, 'scheduling/ViewSchedule.php', 'Y', NULL),
             (2, 'scheduling/ViewSchedule.php', 'Y', NULL),
-            (1, 'schoolsetup/UploadLogo.php', 'Y', 'Y'); ";
+            (1, 'collegesetup/UploadLogo.php', 'Y', 'Y'); ";
                                             $dbconn->query($up_sql) or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.show_error1() . ' Show Error 4</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
 
                                             $up_sql = "INSERT INTO program_config (program, title, value) VALUES

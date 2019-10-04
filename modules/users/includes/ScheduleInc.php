@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -28,7 +28,7 @@
 #***************************************************************************************
 include('../../../RedirectIncludes.php');
 if (GetTeacher(UserStaffID(), '', 'PROFILE', false) == 'teacher') {
-    $mp_select_RET = DBGet(DBQuery('SELECT DISTINCT cp.MARKING_PERIOD_ID, (SELECT TITLE FROM marking_periods WHERE MARKING_PERIOD_ID=cp.MARKING_PERIOD_ID) AS TITLE FROM course_periods cp,courses c, school_periods sp,course_period_var cpv WHERE cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.COURSE_ID=c.COURSE_ID AND (cp.TEACHER_ID=\'' . UserStaffID() . '\' OR cp.SECONDARY_TEACHER_ID=\'' . UserStaffID() . '\') AND cpv.PERIOD_ID=sp.PERIOD_ID AND cp.MARKING_PERIOD_ID IS NOT NULL AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.SCHOOL_ID=\'' . UserSchool() . '\''));
+    $mp_select_RET = DBGet(DBQuery('SELECT DISTINCT cp.MARKING_PERIOD_ID, (SELECT TITLE FROM marking_periods WHERE MARKING_PERIOD_ID=cp.MARKING_PERIOD_ID) AS TITLE FROM course_periods cp,courses c, college_periods sp,course_period_var cpv WHERE cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.COURSE_ID=c.COURSE_ID AND (cp.TEACHER_ID=\'' . UserStaffID() . '\' OR cp.SECONDARY_TEACHER_ID=\'' . UserStaffID() . '\') AND cpv.PERIOD_ID=sp.PERIOD_ID AND cp.MARKING_PERIOD_ID IS NOT NULL AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.SCHOOL_ID=\'' . UserCollege() . '\''));
     $print_mp = CreateSelect($mp_select_RET, 'marking_period_id', 'Show All', 'Modules.php?modname=' . $_REQUEST['modname'] . '&include=' . $_REQUEST['include'] . '&category_id=' . $_REQUEST['category_id'] . '&marking_period_id=');
 
 
@@ -36,17 +36,17 @@ if (GetTeacher(UserStaffID(), '', 'PROFILE', false) == 'teacher') {
     echo '<div class="form-group"><label class="control-label col-md-2">Marking Periods :</label><div class="col-md-3">' . $print_mp . '</div></div>';
     if (!$_REQUEST['marking_period_id']) {
         $schedule_RET = DBGet(DBQuery('SELECT cp.SCHEDULE_TYPE,cp.course_period_id,c.TITLE AS COURSE,cpv.DAYS,cpv.COURSE_PERIOD_DATE,CONCAT(sp.START_TIME,\'' . ' to ' . '\', sp.END_TIME) AS DURATION,r.TITLE as ROOM,sp.TITLE AS PERIOD,cp.COURSE_WEIGHT,IF(cp.MARKING_PERIOD_ID IS NULL ,\'Custom\',cp.MARKING_PERIOD_ID) AS MARKING_PERIOD_ID from
-course_periods cp , courses c,course_period_var cpv,school_periods sp,rooms r  WHERE cp.course_id=c.COURSE_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID  AND sp.PERIOD_ID=cpv.PERIOD_ID AND cpv.ROOM_ID=r.ROOM_ID AND (cp.TEACHER_ID=\'' . UserStaffID() . '\' OR cp.SECONDARY_TEACHER_ID=\'' . UserStaffID() . '\')  AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.SCHOOL_ID=' . UserSchool()), array('PERIOD_ID' => 'GetPeriod', 'MARKING_PERIOD_ID' => 'GetMP_teacherschedule'));
+course_periods cp , courses c,course_period_var cpv,college_periods sp,rooms r  WHERE cp.course_id=c.COURSE_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID  AND sp.PERIOD_ID=cpv.PERIOD_ID AND cpv.ROOM_ID=r.ROOM_ID AND (cp.TEACHER_ID=\'' . UserStaffID() . '\' OR cp.SECONDARY_TEACHER_ID=\'' . UserStaffID() . '\')  AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.SCHOOL_ID=' . UserCollege()), array('PERIOD_ID' => 'GetPeriod', 'MARKING_PERIOD_ID' => 'GetMP_teacherschedule'));
     } else if ($_REQUEST['marking_period_id']) {
         $sel_mp_info = DBGet(DBQuery('SELECT * FROM marking_periods WHERE MARKING_PERIOD_ID=' . $_REQUEST['marking_period_id']));
         $sel_mp_info = $sel_mp_info[1];
         
         $schedule_RET = DBGet(DBQuery('SELECT cp.SCHEDULE_TYPE,cp.course_period_id,cpv.DAYS,cpv.COURSE_PERIOD_DATE,CONCAT(sp.START_TIME,\'' . ' to ' . '\', sp.END_TIME) AS DURATION,r.TITLE as ROOM,sp.TITLE AS PERIOD,c.TITLE AS COURSE,cp.COURSE_WEIGHT,IF(cp.MARKING_PERIOD_ID IS NULL ,\'Custom\',cp.MARKING_PERIOD_ID) AS MARKING_PERIOD_ID from
-course_periods cp , courses c,course_period_var cpv,school_periods sp,rooms r WHERE cp.course_id=c.COURSE_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID  AND sp.PERIOD_ID=cpv.PERIOD_ID AND cpv.ROOM_ID=r.ROOM_ID AND (cp.MARKING_PERIOD_ID IN (' . GetMPChildren($sel_mp_info['MP_TYPE'],$_REQUEST['marking_period_id']) . ') OR (cp.MARKING_PERIOD_ID IS NULL AND (cp.BEGIN_DATE BETWEEN \'' . $sel_mp_info['START_DATE'] . '\' AND \'' . $sel_mp_info['END_DATE'] . '\'))) AND (cp.TEACHER_ID=\'' . UserStaffID() . '\' OR cp.SECONDARY_TEACHER_ID=\'' . UserStaffID() . '\') AND cp.SCHOOL_ID=\'' . UserSchool() . '\' AND cp.SYEAR=' . UserSyear()), array('PERIOD_ID' => 'GetPeriod', 'MARKING_PERIOD_ID' => 'GetMP_teacherschedule'));
+course_periods cp , courses c,course_period_var cpv,college_periods sp,rooms r WHERE cp.course_id=c.COURSE_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID  AND sp.PERIOD_ID=cpv.PERIOD_ID AND cpv.ROOM_ID=r.ROOM_ID AND (cp.MARKING_PERIOD_ID IN (' . GetMPChildren($sel_mp_info['MP_TYPE'],$_REQUEST['marking_period_id']) . ') OR (cp.MARKING_PERIOD_ID IS NULL AND (cp.BEGIN_DATE BETWEEN \'' . $sel_mp_info['START_DATE'] . '\' AND \'' . $sel_mp_info['END_DATE'] . '\'))) AND (cp.TEACHER_ID=\'' . UserStaffID() . '\' OR cp.SECONDARY_TEACHER_ID=\'' . UserStaffID() . '\') AND cp.SCHOOL_ID=\'' . UserCollege() . '\' AND cp.SYEAR=' . UserSyear()), array('PERIOD_ID' => 'GetPeriod', 'MARKING_PERIOD_ID' => 'GetMP_teacherschedule'));
     }
 
     foreach ($schedule_RET as $rdi => $rdd) {
-        $get_det = DBGet(DBQuery('SELECT cpv.DAYS,cpv.COURSE_PERIOD_DATE,sp.START_TIME as START_TIME,sp.END_TIME as END_TIME,CONCAT(sp.START_TIME,\'' . ' to ' . '\', sp.END_TIME) AS DURATION,r.TITLE as ROOM,sp.TITLE AS PERIOD FROM course_period_var cpv,school_periods sp,rooms r WHERE sp.PERIOD_ID=cpv.PERIOD_ID AND cpv.ROOM_ID=r.ROOM_ID AND cpv.COURSE_PERIOD_ID=' . $rdd['COURSE_PERIOD_ID']));
+        $get_det = DBGet(DBQuery('SELECT cpv.DAYS,cpv.COURSE_PERIOD_DATE,sp.START_TIME as START_TIME,sp.END_TIME as END_TIME,CONCAT(sp.START_TIME,\'' . ' to ' . '\', sp.END_TIME) AS DURATION,r.TITLE as ROOM,sp.TITLE AS PERIOD FROM course_period_var cpv,college_periods sp,rooms r WHERE sp.PERIOD_ID=cpv.PERIOD_ID AND cpv.ROOM_ID=r.ROOM_ID AND cpv.COURSE_PERIOD_ID=' . $rdd['COURSE_PERIOD_ID']));
         $cp_info = DBGet(DBQuery('SELECT * FROM course_periods WHERE COURSE_PERIOD_ID=' . $rdd['COURSE_PERIOD_ID']));
         if ($rdd['SCHEDULE_TYPE'] == 'FIXED') {
             $schedule_RET[$rdi]['DAYS'] = _makeDays($get_det[1]['DAYS']);

@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that
 #  include student demographic info, scheduling, grade book, attendance,
@@ -58,7 +58,7 @@ foreach ($stu_missing_atten as $k => $f) {
 }
 
 if ($From && $to) {
-    $RET = DBGET(DBQuery('SELECT DISTINCT s.TITLE AS SCHOOL,cpv.ID AS CPV_ID,mi.SCHOOL_DATE,cp.TITLE, mi.COURSE_PERIOD_ID FROM missing_attendance mi,course_periods cp,schools s,course_period_var cpv WHERE mi.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.PERIOD_ID=mi.PERIOD_ID AND s.ID=mi.SCHOOL_ID AND mi.SCHOOL_ID=\'' . UserSchool() . '\' AND mi.SYEAR=\'' . UserSyear() . '\' AND (mi.TEACHER_ID=\'' . User('STAFF_ID') . '\' OR mi.SECONDARY_TEACHER_ID=\'' . User('STAFF_ID') . '\') AND mi.SCHOOL_DATE>=\'' . $From . '\' AND mi.SCHOOL_DATE<\'' . $to . '\' AND (mi.SCHOOL_DATE=cpv.COURSE_PERIOD_DATE OR POSITION(IF(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\') LIKE \'Thu\',\'H\',(IF(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\') LIKE \'Sun\',\'U\',SUBSTR(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\'),1,1)))) IN cpv.DAYS)>0) ORDER BY cp.TITLE,mi.SCHOOL_DATE'), array('SCHOOL_DATE' => 'ProperDate'));
+    $RET = DBGET(DBQuery('SELECT DISTINCT s.TITLE AS SCHOOL,cpv.ID AS CPV_ID,mi.SCHOOL_DATE,cp.TITLE, mi.COURSE_PERIOD_ID FROM missing_attendance mi,course_periods cp,colleges s,course_period_var cpv WHERE mi.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.PERIOD_ID=mi.PERIOD_ID AND s.ID=mi.SCHOOL_ID AND mi.SCHOOL_ID=\'' . UserCollege() . '\' AND mi.SYEAR=\'' . UserSyear() . '\' AND (mi.TEACHER_ID=\'' . User('STAFF_ID') . '\' OR mi.SECONDARY_TEACHER_ID=\'' . User('STAFF_ID') . '\') AND mi.SCHOOL_DATE>=\'' . $From . '\' AND mi.SCHOOL_DATE<\'' . $to . '\' AND (mi.SCHOOL_DATE=cpv.COURSE_PERIOD_DATE OR POSITION(IF(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\') LIKE \'Thu\',\'H\',(IF(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\') LIKE \'Sun\',\'U\',SUBSTR(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\'),1,1)))) IN cpv.DAYS)>0) ORDER BY cp.TITLE,mi.SCHOOL_DATE'), array('SCHOOL_DATE' => 'ProperDate'));
 } else {
     unset($RET);
 }
@@ -76,7 +76,7 @@ if (count($RET)) {
     $link['remove']['variables'] = array('date' => 'SCHOOL_DATE', 'cp_id' => 'COURSE_PERIOD_ID', 'cpv_id' => 'CPV_ID');
     $_SESSION['miss_attn'] = 1;
     echo '<div class="panel-body">';
-    ListOutput_missing_attn($RET, array('SCHOOL_DATE' => 'Date', 'TITLE' => 'Period -Teacher', 'SCHOOL' => 'School'), 'Period', 'Periods', $link, array(), array('save' => false, 'search' => false));
+    ListOutput_missing_attn($RET, array('SCHOOL_DATE' => 'Date', 'TITLE' => 'Period -Teacher', 'SCHOOL' => 'College'), 'Period', 'Periods', $link, array(), array('save' => false, 'search' => false));
     echo '</div>'; //.panel-body
 } else {
     echo '<div class="panel-body">';

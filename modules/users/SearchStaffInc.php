@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that
 #  include student demographic info, scheduling, grade book, attendance,
@@ -101,7 +101,7 @@ if (User('PROFILE') == 'admin') {
         echo '<div class="row">';
         echo '<div class="col-md-6">';
         if (User('PROFILE') == 'admin')
-            echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=_search_all_schools value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '> Search All Schools</label>';
+            echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=_search_all_colleges value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '> Search All Colleges</label>';
         echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=_dis_user value=Y>Include Disabled Staff</label>';
         echo '</div>'; //.col-md-12
         echo '</div>'; //.row
@@ -128,13 +128,13 @@ if (User('PROFILE') == 'admin') {
 
         if (!isset($_openSIS['DrawHeader']))
             DrawHeader('Please select a Staff');
-        if ($_REQUEST['_search_all_schools'] == 'Y')
+        if ($_REQUEST['_search_all_colleges'] == 'Y')
             $extra['GROUP'] = ' s.STAFF_ID ';
         
-        if($_REQUEST['_search_all_schools']=='Y')
+        if($_REQUEST['_search_all_colleges']=='Y')
         {
         $extra['SELECT'].=',s.STAFF_ID as STF_ID';    
-        $extra['functions']=array('STF_ID'=>makeStaffAllSchool);    
+        $extra['functions']=array('STF_ID'=>makeStaffAllCollege);    
         }
 //        else
 //        {
@@ -145,7 +145,7 @@ if (User('PROFILE') == 'admin') {
       if($_REQUEST['_dis_user']=='Y')        
       {
         $last_log_sql='SELECT DISTINCT CONCAT(s.LAST_NAME,  \' \' ,s.FIRST_NAME) AS FULL_NAME,
-					s.PROFILE,s.PROFILE_ID,ssr.END_DATE,s.STAFF_ID,\' \' as LAST_LOGIN FROM staff s INNER JOIN staff_school_relationship ssr USING(staff_id) WHERE
+					s.PROFILE,s.PROFILE_ID,ssr.END_DATE,s.STAFF_ID,\' \' as LAST_LOGIN FROM staff s INNER JOIN staff_college_relationship ssr USING(staff_id) WHERE
 					((s.PROFILE_ID!=4 AND s.PROFILE_ID!=3) OR s.PROFILE_ID IS NULL) AND '.($_REQUEST['first']?' UPPER(s.FIRST_NAME) LIKE \''.singleQuoteReplace("'","\'",strtoupper($_REQUEST['first'])).'%\' AND ':'').($_REQUEST['last']?' UPPER(s.LAST_NAME) LIKE \''.singleQuoteReplace("'","\'",strtoupper($_REQUEST['last'])).'%\' AND ':'').' ssr.SYEAR=\''.UserSyear().'\'  AND s.STAFF_ID NOT IN (SELECT USER_ID FROM login_authentication WHERE PROFILE_ID NOT IN (3,4)) '.($_REQUEST['username']?' AND s.STAFF_ID IN (SELECT USER_ID FROM login_authentication WHERE UPPER(USERNAME) LIKE \''.singleQuoteReplace("'","\'",strtoupper($_REQUEST['username'])).'%\' AND PROFILE_ID NOT IN (3,4)) ':'');
                 $last_log=DBGet(DBQuery($last_log_sql));
                 
@@ -180,9 +180,9 @@ if (User('PROFILE') == 'admin') {
                 $columns = array('FULL_NAME' => 'Name',  'CATEGORY' => 'Category','PROFILE' => 'Profile', 'STAFF_ID' => 'Staff ID');
 //                $columns = array('FULL_NAME' => 'Staff Member',  'CATEGORY' => 'Category','PROFILE' => 'Profile', 'STAFF_ID' => 'Staff ID');
         
-            if($_REQUEST['_search_all_schools']=='Y')
+            if($_REQUEST['_search_all_colleges']=='Y')
             {
-            $columns+= array('STF_ID' => 'School Name');  
+            $columns+= array('STF_ID' => 'College Name');  
             }    
         }
         if (is_array($extra['columns_before']))
@@ -220,13 +220,13 @@ if (User('PROFILE') == 'admin') {
 function makeLogin($value) {
     return ProperDate(substr($value, 0, 10)) . substr($value, 10);
 }
-function makeStaffAllSchool($value)
+function makeStaffAllCollege($value)
 {
-    $schools=DBGet(DBQuery('SELECT * FROM staff_school_relationship WHERE (END_DATE=\'0000-00-00\' OR END_DATE IS NULL OR END_DATE>=\''.date('y-m-d').'\') AND SYEAR='.UserSyear().' AND STAFF_ID='.$value));
+    $colleges=DBGet(DBQuery('SELECT * FROM staff_college_relationship WHERE (END_DATE=\'0000-00-00\' OR END_DATE IS NULL OR END_DATE>=\''.date('y-m-d').'\') AND SYEAR='.UserSyear().' AND STAFF_ID='.$value));
     $return_name=array();
-    foreach($schools as $s)
+    foreach($colleges as $s)
     {
-        $name=DBGet(DBQuery('SELECT TITLE FROM schools WHERE ID='.$s['SCHOOL_ID']));
+        $name=DBGet(DBQuery('SELECT TITLE FROM colleges WHERE ID='.$s['SCHOOL_ID']));
         $return_name[]=$name[1]['TITLE'];
         
     }

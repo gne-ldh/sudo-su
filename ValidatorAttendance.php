@@ -1,7 +1,7 @@
 <?php
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that
 #  include student demographic info, scheduling, grade book, attendance,
@@ -40,7 +40,7 @@
     }
    if($period_id!='')
         {
-    $chk_attendance = DBGet(DBQuery("SELECT ATTENDANCE FROM school_periods WHERE PERIOD_ID='". $period_id."'"));
+    $chk_attendance = DBGet(DBQuery("SELECT ATTENDANCE FROM college_periods WHERE PERIOD_ID='". $period_id."'"));
     $chk_atten_cp=DBGet(DBQuery("SELECT DOES_ATTENDANCE FROM course_period_var WHERE COURSE_PERIOD_ID='". $cp_id."'"));
 
     $attendance = $chk_attendance[1]['ATTENDANCE'];

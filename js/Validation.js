@@ -1,9 +1,9 @@
 
 
-function formcheck_school_setup_school()
+function formcheck_college_setup_college()
 {
 
-    var frmvalidator = new Validator("school");
+    var frmvalidator = new Validator("college");
     frmvalidator.addValidation("values[TITLE]", "req", "Please enter the title");
     frmvalidator.addValidation("values[TITLE]", "maxlen=50", "Max length for title is 50 characters");
 //	
@@ -31,9 +31,9 @@ function formcheck_school_setup_school()
 
     //frmvalidator.addValidation("values[E_MAIL]", "email", "Please enter email in proper format");
 
-    var school_id = document.getElementById("h1").value;
+    var college_id = document.getElementById("h1").value;
 
-    if (school_id != '')
+    if (college_id != '')
     {
         frmvalidator.addValidation("inputvalues[TITLE]", "req", "Please enter the title");
         frmvalidator.addValidation("inputvalues[TITLE]", "maxlen=50", "Max length for title is 50 characters");
@@ -115,7 +115,7 @@ function formcheck_history_mp()
 
 
 }
-function formcheck_school_setup_portalnotes()
+function formcheck_college_setup_portalnotes()
 {
 
 
@@ -284,7 +284,7 @@ function ValidateDate_Portal_Notes()
 
 
 
-function formcheck_school_setup_marking() {
+function formcheck_college_setup_marking() {
 
     var frmvalidator = new Validator("marking_period");
     frmvalidator.addValidation("tables[new][TITLE]", "req", "Please enter the title");
@@ -524,14 +524,14 @@ function ValidateDate_Marking_Periods()
 
 
 
-function formcheck_school_setup_copyschool()
+function formcheck_college_setup_copycollege()
 {
     var frmvalidator = new Validator("prompt_form");
-    frmvalidator.addValidation("title", "req_copy_school", "Please enter the new school's title");
+    frmvalidator.addValidation("title", "req_copy_college", "Please enter the new college's title");
     frmvalidator.addValidation("title", "maxlen=100", "Max length for title is 100 characters");
 }
 
-function formcheck_school_specific_standards()
+function formcheck_college_specific_standards()
 {
     var frmvalidator = new Validator("sss");
     var count = document.getElementById("count_standard").value.trim();
@@ -558,16 +558,16 @@ function formcheck_school_specific_standards()
     }
 }
 
-function formcheck_school_setup_calender()
+function formcheck_college_setup_calender()
 {
     var frmvalidator = new Validator("prompt_form");
     frmvalidator.addValidation("title", "req", "Please enter the title");
     frmvalidator.addValidation("title", "maxlen=100", "Max length for title is 100");
-    frmvalidator.setAddnlValidationFunction("ValidateDate_SchoolSetup_calender");
+    frmvalidator.setAddnlValidationFunction("ValidateDate_CollegeSetup_calender");
 }
 
 
-function ValidateDate_SchoolSetup_calender()
+function ValidateDate_CollegeSetup_calender()
 {
 
     var frm = document.forms["prompt_form"];
@@ -799,7 +799,7 @@ function validatedate(inputText)
 }
 
 
-function formcheck_staff_staff(staff_school_chkbox_id)
+function formcheck_staff_staff(staff_college_chkbox_id)
 {
     var frmvalidator = new Validator("staff");
     frmvalidator.addValidation("staff[TITLE]", "req", "Please enter the Salutation");
@@ -833,12 +833,12 @@ function formcheck_staff_staff(staff_school_chkbox_id)
     frmvalidator.addValidation("year_values[JOINING_DATE]", "req", "Please select Joining Date");
 
 
-    return school_check(staff_school_chkbox_id);
+    return college_check(staff_college_chkbox_id);
 
 
 }
 
-function formcheck_school_setup_periods()
+function formcheck_college_setup_periods()
 {
 
     var frmvalidator = new Validator("F1");
@@ -908,7 +908,7 @@ function formcheck_school_setup_periods()
 }
 
 
-function formcheck_school_setup_grade_levels()
+function formcheck_college_setup_grade_levels()
 {
     var frmvalidator = new Validator("F1");
 
@@ -994,7 +994,7 @@ function formcheck_student_student()
     //frmvalidator.addValidation("values[people][OTHER][EMAIL]", "req", "Please enter a additional emergency email");
 //    frmvalidator.addValidation("values[people][OTHER][EMAIL]", "email", "Please enter a valid additional emergency email");
     frmvalidator.addValidation("students[FIRST_NAME]", "req", "Please enter the first name");
-    frmvalidator.addValidation("students[FIRST_NAME]", "maxlen=100", "Max length for school name is 100 characters");
+    frmvalidator.addValidation("students[FIRST_NAME]", "maxlen=100", "Max length for college name is 100 characters");
 
     frmvalidator.addValidation("students[LAST_NAME]", "req", "Please enter the last name");
     frmvalidator.addValidation("students[LAST_NAME]", "maxlen=100", "Max length for address is 100 characters");
@@ -1412,7 +1412,7 @@ function formcheck_student_addressField_F2()
 {
     var frmvalidator = new Validator("F2");
     frmvalidator.addValidation("tables[new][TITLE]", "req", "Please enter the title");
-    frmvalidator.addValidation("values[TITLE]", "maxlen=100", "Max length for school name is 100 characters");
+    frmvalidator.addValidation("values[TITLE]", "maxlen=100", "Max length for college name is 100 characters");
 
     frmvalidator.addValidation("tables[new][SORT_ORDER]", "num", "sort order code allows only numeric value");
 }
@@ -1445,7 +1445,7 @@ function formcheck_student_contactField_F2()
 {
     var frmvalidator = new Validator("F2");
     frmvalidator.addValidation("tables[new][TITLE]", "req", "Please enter the title");
-    frmvalidator.addValidation("values[TITLE]", "maxlen=100", "Max length for school name is 100 characters");
+    frmvalidator.addValidation("values[TITLE]", "maxlen=100", "Max length for college name is 100 characters");
 
     frmvalidator.addValidation("tables[new][SORT_ORDER]", "num", "sort order code allows only numeric value");
 }
@@ -1468,7 +1468,7 @@ function formcheck_student_contactField_F1()
 
 
 
-function formcheck_user_user(staff_school_chkbox_id) {
+function formcheck_user_user(staff_college_chkbox_id) {
 
 
     var frmvalidator = new Validator("staff");
@@ -1486,13 +1486,13 @@ function formcheck_user_user(staff_school_chkbox_id) {
 //    frmvalidator.addValidation("people[EMAIL]", "email", "Please enter a valid email");
 
 }
-function school_check(staff_school_chkbox_id)
+function college_check(staff_college_chkbox_id)
 {
     var chk = 'n';
     var err = 'T';
-    if (staff_school_chkbox_id)
+    if (staff_college_chkbox_id)
     {
-        for (i = 1; i <= staff_school_chkbox_id; i++)
+        for (i = 1; i <= staff_college_chkbox_id; i++)
         {
 
             if (document.getElementById('staff_SCHOOLS' + i).checked == true)
@@ -1524,7 +1524,7 @@ function school_check(staff_school_chkbox_id)
     if (chk != 'y')
     {
         var d = $('divErr');
-        err = "Please assign at least one school to this staff.";
+        err = "Please assign at least one college to this staff.";
         d.innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i>' + err + '</div>';
         return false;
     } else if (chk == 'y')
@@ -1587,7 +1587,7 @@ function formcheck_user_userfields_F1()
 
 }
 
-function formcheck_schoolfields()
+function formcheck_collegefields()
 {
     var frmvalidator1 = new Validator("SF1");
 
@@ -2744,7 +2744,7 @@ function sel_staff_val()
         return true;
     }
 }
-function formcheck_add_staff(staff_school_chkbox_id)
+function formcheck_add_staff(staff_college_chkbox_id)
 {
 
     var frmvalidator = new Validator("staff");
@@ -2762,7 +2762,7 @@ function formcheck_add_staff(staff_school_chkbox_id)
     frmvalidator.addValidation("day_values[JOINING_DATE]", "req", "Please select the joining date's date");
     frmvalidator.addValidation("year_values[JOINING_DATE]", "req", "Please select the joining date's year");
 
-    var end_date = document.getElementById('end_date_school').value;
+    var end_date = document.getElementById('end_date_college').value;
     end_date = end_date.split('-');
     var end = new Date(end_date[0], end_date[1], end_date[2]);
 
@@ -2772,7 +2772,7 @@ function formcheck_add_staff(staff_school_chkbox_id)
 
     if (current >= end)
     {
-        document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Joining date can not be after school\'s end date</div>';
+        document.getElementById('divErr').innerHTML = '<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> Joining date can not be after college\'s end date</div>';
         return false;
     }
 
@@ -2829,8 +2829,8 @@ function formcheck_add_staff(staff_school_chkbox_id)
         if (error_handler == 0)
             frmvalidator.clearAllValidations();
     }
-    if (staff_school_chkbox_id != 0 && staff_school_chkbox_id != '')
-        return school_check(staff_school_chkbox_id);
+    if (staff_college_chkbox_id != 0 && staff_college_chkbox_id != '')
+        return college_check(staff_college_chkbox_id);
 }
 function formcheck_user_user_mod()
 {
@@ -3331,7 +3331,7 @@ function toggle_attendance_code()
     }
     document.getElementById('p_c').value = parseInt(p_c) + 1;
 }
-function formcheck_school_grad_config()
+function formcheck_college_grad_config()
 {
     var frmvalidator = new Validator("grad_config");
     var mp_per = document.getElementsByClassName("mp_per");
@@ -3365,7 +3365,7 @@ function setFilterValues()
      }
      
      
-     var ids1 = ["address_group","_search_all_schools","include_inactive"];
+     var ids1 = ["address_group","_search_all_colleges","include_inactive"];
     
     
      for (var j = 0; j < ids1.length; j++) {

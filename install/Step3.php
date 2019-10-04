@@ -1,7 +1,7 @@
 <?php
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -69,7 +69,7 @@ session_start();
                         <div class="logo">
                             <img src="assets/images/opensis_logo.png" alt="openSIS">
                         </div>
-                        <h3>openSIS Installation - School Information</h3>
+                        <h3>openSIS Installation - College Information</h3>
                     </div>
                     <div class="panel-body">
                         <div class="installation-steps-wrapper">
@@ -79,24 +79,24 @@ session_start();
                                     <li>System Requirements</li>
                                     <li>Database Connection</li>
                                     <li>Database Creation</li>
-                                    <li class="active">School Information</li>
+                                    <li class="active">College Information</li>
                                     <li>Site Admin Account Setup</li>
                                     <li>Ready to Go!</li>
                                 </ul>
                                 <!--<h4 class="no-margin">Installation Instructions</h4>
                                 <p>Installer has successfully created the database for openSIS application.</p>
-                                <p>Once you enter the school name, begin and end dates, it will create a default school in the system.</p>
-                                <p>If you install it with sample data, then a sample school will be installed with data. You can learn from the setup and operation of the sample school to configure your own school.</p>-->
+                                <p>Once you enter the college name, begin and end dates, it will create a default college in the system.</p>
+                                <p>If you install it with sample data, then a sample college will be installed with data. You can learn from the setup and operation of the sample college to configure your own college.</p>-->
                             </div>
                             <div class="installation-steps">
                                 <div id="calculating" class="loading clearfix"><div><i class="fa fa-cog fa-spin fa-lg fa-fw"></i> Configuring database. Please wait...</div></div>
                                 <div id="step_container">
-                                    <h4 class="m-t-0 m-b-5">Enter your School Name, Beginning and Ending Dates of the school year</h4>
+                                    <h4 class="m-t-0 m-b-5">Enter your College Name, Beginning and Ending Dates of the college year</h4>
                                     <form name='step3' id='step3' method="post" action="Ins3.php">
                                         <div id="error" class="text-center">&nbsp;</div>
 
                                         <div class="form-group">
-                                            <label class="control-label">School Name</label>
+                                            <label class="control-label">College Name</label>
                                             <input type="text" name="sname" id="sname" size="30" value="" class="form-control" />
                                         </div>
                                         <div class="row">
@@ -120,7 +120,7 @@ session_start();
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label class="checkbox-inline"><input type="checkbox" name="sample_data" id="sample_data" value="insert" id="sample_data"/> Install with sample school data</label>
+                                            <label class="checkbox-inline"><input type="checkbox" name="sample_data" id="sample_data" value="insert" id="sample_data"/> Install with sample college data</label>
                                         </div>
                                         <hr/>
                                         <div class="text-right"><input type="submit" value="Save & Next" class="btn btn-success" name="btnsyear" onclick="return check();" /></div>
@@ -198,7 +198,7 @@ session_start();
 
                                                     if (sname.value == '')
                                                     {
-                                                        document.getElementById("error").innerHTML = '<font style="color:red"><b>School name cannot be blank.</b></font>';
+                                                        document.getElementById("error").innerHTML = '<font style="color:red"><b>College name cannot be blank.</b></font>';
 
                                                         sname.focus();
                                                         return false;
@@ -207,7 +207,7 @@ session_start();
                                                     {
                                                         if (sname.value.length > 50)
                                                         {
-                                                            document.getElementById("error").innerHTML = '<font style="color:red"><b>Maximum length of School name is 50</b></font>';
+                                                            document.getElementById("error").innerHTML = '<font style="color:red"><b>Maximum length of College name is 50</b></font>';
 
                                                             sname.focus();
                                                             return false;
@@ -259,7 +259,7 @@ session_start();
                                                 }
                                                 if (sample_data.checked == false && sname.value == '')
                                                 {
-                                                    document.getElementById("error").innerHTML = '<font style="color:red"><b>Please Enter School name with Begining and Ending date or check sample data. </b></font>';
+                                                    document.getElementById("error").innerHTML = '<font style="color:red"><b>Please Enter College name with Begining and Ending date or check sample data. </b></font>';
                                                     sname.focus();
                                                     return false;
                                                 }
@@ -270,7 +270,7 @@ session_start();
 
 
                                             function blankValidation() {
-                                                var school_name = $('sname');
+                                                var college_name = $('sname');
                                                 var beg_date = $('beg_date');
                                                 var end_date = $('end_date');
                                                 var sample_data = $('sample_data');
@@ -283,9 +283,9 @@ session_start();
 
 
 
-                                                if ((school_name.value != '' && beg_date.value != '' && end_date.value != '') || sample_data.checked == true) {
-                                                    if (school_name.value != '' || beg_date.value != '' || end_date.value != '') {
-                                                        if (!(school_name.value != '' && beg_date.value != '' && end_date.value != '')) {
+                                                if ((college_name.value != '' && beg_date.value != '' && end_date.value != '') || sample_data.checked == true) {
+                                                    if (college_name.value != '' || beg_date.value != '' || end_date.value != '') {
+                                                        if (!(college_name.value != '' && beg_date.value != '' && end_date.value != '')) {
                                                             document.getElementById("error").innerHTML = '<font style="color:red"><b>Please provide required info.</b></font>';
 
                                                             return false;

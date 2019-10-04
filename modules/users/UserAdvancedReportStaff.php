@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -34,7 +34,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
         $extra['WHERE'] = ' AND s.STAFF_ID IN (' . $st_list . ')';
 
         echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-        echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">User Advanced Report</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+        echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetCollege(UserCollege()) . "<div style=\"font-size:12px;\">User Advanced Report</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
         echo "<table >";
         include('modules/miscellaneous/UserExport.php');
     }
@@ -43,7 +43,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'call') {
     $_SESSION['st_arr'] = $_REQUEST['st_arr'];
 
-    echo "<FORM action=ForExport.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&head_html=Staff+Advanced+Report&modfunc=save&search_modfunc=list&_openSIS_PDF=true&_dis_user=$_REQUEST[_dis_user]&_search_all_schools=$_REQUEST[_search_all_schools] method=POST target=_blank>";
+    echo "<FORM action=ForExport.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&head_html=Staff+Advanced+Report&modfunc=save&search_modfunc=list&_openSIS_PDF=true&_dis_user=$_REQUEST[_dis_user]&_search_all_colleges=$_REQUEST[_search_all_colleges] method=POST target=_blank>";
     echo '<DIV id=fields_div></DIV>';
     echo '<div class="panel panel-default">';
     echo '<div class="panel-body">';
@@ -71,8 +71,8 @@ if (!$_REQUEST['modfunc'] || $_REQUEST['modfunc'] == 'list') {
         
         if ($_REQUEST['_dis_user'])
             echo '<INPUT type=hidden name=_dis_user value=' . strip_tags(trim($_REQUEST['_dis_user'])) . '>';
-        if ($_REQUEST['_search_all_schools'])
-            echo '<INPUT type=hidden name=_search_all_schools value=' . strip_tags(trim($_REQUEST['_search_all_schools'])) . '>';
+        if ($_REQUEST['_search_all_colleges'])
+            echo '<INPUT type=hidden name=_search_all_colleges value=' . strip_tags(trim($_REQUEST['_search_all_colleges'])) . '>';
         
         SearchStaff('staff_id', $extra);
         
