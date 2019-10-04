@@ -26,7 +26,7 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-$menu['attendance']['admin'] = array(
+/*$menu['attendance']['admin'] = array(
 						'attendance/Administration.php'=>'Administration',
 						'attendance/AddAbsences.php'=>'Add Absences',
 						1=>'Reports',
@@ -61,5 +61,5 @@ $menu['users']['admin'] += array(
 
 $exceptions['attendance'] = array(
 						'attendance/AddAbsences.php'=>true
-					);
+					);*/
 ?>
