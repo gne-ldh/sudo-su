@@ -30,7 +30,7 @@ $menu['students']['admin'] = array(
 						'students/Student.php'=>'Student Info',
 						'students/Student.php&include=GeneralInfoInc&student_id=new'=>'Add a Student',
 						'students/AssignOtherInfo.php'=>'Group Assign Student Info',
-						
+						'students/'=>'Admission',
                                                 'students/StudentReenroll.php'=>'Student Re Enroll',
 						1=>'Reports',
 						'students/AdvancedReport.php'=>'Advanced Report',
