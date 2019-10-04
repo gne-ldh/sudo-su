@@ -50,13 +50,13 @@ $_REQUEST['modname'] = 'collegesetup/Courses.php';
 
 switch ($task) {
     case 'md':
-        $room_RET = DBGet(DBQuery("SELECT ROOM_ID,TITLE FROM rooms WHERE SCHOOL_ID='" . UserCollege() . "' ORDER BY SORT_ORDER"));
+        $room_RET = DBGet(DBQuery("SELECT ROOM_ID,TITLE FROM rooms WHERE COLLEGE_ID='" . UserCollege() . "' ORDER BY SORT_ORDER"));
         if (count($room_RET)) {
             foreach ($room_RET as $room)
                 $rooms[$room['ROOM_ID']] = $room['TITLE'];
         }
 
-        $periods_RET = DBGet(DBQuery("SELECT PERIOD_ID,TITLE FROM college_periods WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER"));
+        $periods_RET = DBGet(DBQuery("SELECT PERIOD_ID,TITLE FROM college_periods WHERE COLLEGE_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER"));
         if (count($periods_RET)) {
             foreach ($periods_RET as $period)
                 $periods[$period['PERIOD_ID']] = $period['TITLE'];

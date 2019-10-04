@@ -29,7 +29,7 @@
 include('../../../RedirectIncludes.php');
 include_once('modules/collegesetup/includes/Functions.php');
 
-$fields_RET = DBGet(DBQuery("SELECT ID,TITLE,TYPE,SELECT_OPTIONS,DEFAULT_SELECTION,REQUIRED,HIDE FROM college_custom_fields WHERE SYSTEM_FIELD = 'N' AND (SCHOOL_ID='".UserCollege()."' OR SCHOOL_ID=0) ORDER BY SORT_ORDER,TITLE"));
+$fields_RET = DBGet(DBQuery("SELECT ID,TITLE,TYPE,SELECT_OPTIONS,DEFAULT_SELECTION,REQUIRED,HIDE FROM college_custom_fields WHERE SYSTEM_FIELD = 'N' AND (COLLEGE_ID='".UserCollege()."' OR COLLEGE_ID=0) ORDER BY SORT_ORDER,TITLE"));
 
 if(UserCollege())
 {

@@ -29,7 +29,7 @@ include('../../RedirectModulesInc.php');
 include 'modules/grades/ConfigInc.php';
 if($_REQUEST['modfunc']=='save')
 {
- $cur_session_RET=DBGet(DBQuery('SELECT YEAR(start_date) AS PRE,YEAR(end_date) AS POST FROM college_years WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\''));
+ $cur_session_RET=DBGet(DBQuery('SELECT YEAR(start_date) AS PRE,YEAR(end_date) AS POST FROM college_years WHERE COLLEGE_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\''));
  if($cur_session_RET[1]['PRE']==$cur_session_RET[1]['POST'])
  {
     $cur_session=$cur_session_RET[1]['PRE'];
@@ -41,15 +41,15 @@ if($_REQUEST['modfunc']=='save')
 	if(count($_REQUEST['st_arr']))
 	{	
 	$st_list = '\''.implode('\',\'',$_REQUEST['st_arr']).'\'';
-        $RET=DBGet(DBQuery('SELECT CONCAT(s.LAST_NAME,\''.', ' .'\',coalesce(s.COMMON_NAME,s.FIRST_NAME)) AS FULL_NAME,s.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,s.PHONE,ssm.SCHOOL_ID,s.ALT_ID,ssm.SCHOOL_ID AS LIST_SCHOOL_ID,ssm.GRADE_ID,ssm.START_DATE,ssm.END_DATE,
+        $RET=DBGet(DBQuery('SELECT CONCAT(s.LAST_NAME,\''.', ' .'\',coalesce(s.COMMON_NAME,s.FIRST_NAME)) AS FULL_NAME,s.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,s.PHONE,ssm.COLLEGE_ID,s.ALT_ID,ssm.COLLEGE_ID AS LIST_COLLEGE_ID,ssm.GRADE_ID,ssm.START_DATE,ssm.END_DATE,
                 (SELECT sec.title FROM  student_enrollment_codes sec where ssm.enrollment_code=sec.id)AS ENROLLMENT_CODE,
-                (SELECT sec.title FROM  student_enrollment_codes sec where ssm.drop_code=sec.id) AS DROP_CODE,ssm.SCHOOL_ID 
+                (SELECT sec.title FROM  student_enrollment_codes sec where ssm.drop_code=sec.id) AS DROP_CODE,ssm.COLLEGE_ID 
                 FROM  students s , student_enrollment ssm
                 WHERE ssm.STUDENT_ID=s.STUDENT_ID AND s.STUDENT_ID IN ('.$st_list.')  
-                ORDER BY FULL_NAME ASC,START_DATE DESC'),array('START_DATE'=>'ProperDate','END_DATE'=>'ProperDate','SCHOOL_ID'=>'GetCollege','GRADE_ID'=>'GetGrade'),array('STUDENT_ID'));
+                ORDER BY FULL_NAME ASC,START_DATE DESC'),array('START_DATE'=>'ProperDate','END_DATE'=>'ProperDate','COLLEGE_ID'=>'GetCollege','GRADE_ID'=>'GetGrade'),array('STUDENT_ID'));
         if(count($RET))
 	{
-            $columns = array('START_DATE'=>'Start Date','ENROLLMENT_CODE'=>'Enrollment Code','END_DATE'=>'Drop Date','DROP_CODE'=>'Drop Code','SCHOOL_ID'=>'College Name');
+            $columns = array('START_DATE'=>'Start Date','ENROLLMENT_CODE'=>'Enrollment Code','END_DATE'=>'Drop Date','DROP_CODE'=>'Drop Code','COLLEGE_ID'=>'College Name');
 		$handle = PDFStart();
 		foreach($RET as $student_id=>$value)
 		{
@@ -68,7 +68,7 @@ if($_REQUEST['modfunc']=='save')
                                 $enroll_RET[$i]['ENROLLMENT_CODE'] = ($enrollment['ENROLLMENT_CODE']?$enrollment['ENROLLMENT_CODE']:'--');
                                 $enroll_RET[$i]['END_DATE'] = ($enrollment['END_DATE']?$enrollment['END_DATE']:'--');
                                 $enroll_RET[$i]['DROP_CODE'] = ($enrollment['DROP_CODE']?$enrollment['DROP_CODE']:'--');
-                                $enroll_RET[$i]['SCHOOL_ID'] = ($enrollment['SCHOOL_ID']?$enrollment['SCHOOL_ID']:'--');
+                                $enroll_RET[$i]['COLLEGE_ID'] = ($enrollment['COLLEGE_ID']?$enrollment['COLLEGE_ID']:'--');
                             }
 				echo '<table border=0>';
 				echo '<tr><td>Student Name :</td>';
@@ -78,7 +78,7 @@ if($_REQUEST['modfunc']=='save')
                                 echo '<tr><td>Alternate ID :</td>';
 				echo '<td>'.$enrollment['ALT_ID'].'</td></tr>';
 				echo '<tr><td>Student Grade :</td>';
-                                $grade=DBGet(DBQuery('SELECT GRADE_ID FROM student_enrollment WHERE SYEAR='.UserSyear().' AND SCHOOL_ID='.UserCollege().' AND STUDENT_ID='.$student_id.' AND (END_DATE>=\''.date('Y-m-d').'\' OR END_DATE IS NULL OR END_DATE=\'0000-00-00\')  '),array('GRADE_ID'=>'GetGrade'));
+                                $grade=DBGet(DBQuery('SELECT GRADE_ID FROM student_enrollment WHERE SYEAR='.UserSyear().' AND COLLEGE_ID='.UserCollege().' AND STUDENT_ID='.$student_id.' AND (END_DATE>=\''.date('Y-m-d').'\' OR END_DATE IS NULL OR END_DATE=\'0000-00-00\')  '),array('GRADE_ID'=>'GetGrade'));
 				echo '<td>'.$grade[1]['GRADE_ID'].'</td></tr>';
 				echo '</table>';
                             

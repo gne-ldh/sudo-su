@@ -46,7 +46,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
             }
             else {
                 $sql = 'INSERT INTO honor_roll ';
-                $fields = 'SCHOOL_ID,SYEAR,';
+                $fields = 'COLLEGE_ID,SYEAR,';
                 $values = '\'' . UserCollege() . '\',\'' . UserSyear() . '\',';
 
                 $go = false;
@@ -75,7 +75,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'remove') {
 }
 
 if (!$_REQUEST['modfunc']) {
-    $sql = 'SELECT TITLE,VALUE, id as ID FROM honor_roll WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY VALUE';
+    $sql = 'SELECT TITLE,VALUE, id as ID FROM honor_roll WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY VALUE';
     $functions = array('TITLE' => '_makeTextInput', 'VALUE' => 'makeTextInputt');
     $LO_columns = array('TITLE' => 'Honor Roll',
         'VALUE' => 'Breakoff');

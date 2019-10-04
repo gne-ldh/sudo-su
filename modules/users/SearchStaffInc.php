@@ -101,7 +101,7 @@ if (User('PROFILE') == 'admin') {
         echo '<div class="row">';
         echo '<div class="col-md-6">';
         if (User('PROFILE') == 'admin')
-            echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=_search_all_colleges value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '> Search All Colleges</label>';
+            echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=_search_all_colleges value=Y' . (Preferences('DEFAULT_ALL_COLLEGES') == 'Y' ? ' CHECKED' : '') . '> Search All Colleges</label>';
         echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=_dis_user value=Y>Include Disabled Staff</label>';
         echo '</div>'; //.col-md-12
         echo '</div>'; //.row
@@ -226,7 +226,7 @@ function makeStaffAllCollege($value)
     $return_name=array();
     foreach($colleges as $s)
     {
-        $name=DBGet(DBQuery('SELECT TITLE FROM colleges WHERE ID='.$s['SCHOOL_ID']));
+        $name=DBGet(DBQuery('SELECT TITLE FROM colleges WHERE ID='.$s['COLLEGE_ID']));
         $return_name[]=$name[1]['TITLE'];
         
     }

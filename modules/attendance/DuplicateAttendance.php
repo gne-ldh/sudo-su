@@ -76,9 +76,9 @@ if (optional_param('delete', '', PARAM_ALPHA) == 'true') {
 
                                         $sch_typ = DBGet(DBQuery('SELECT PERIOD_ID FROM course_period_var WHERE COURSE_PERIOD_ID=' . $val3 . ' '));
                                         if ($sch_typ[1]['PERIOD_ID'] != '' && $val2 != '' && $val4 != '' && $val3 != '')
-                                            $count_dup = DBGet(DBQuery('SELECT * FROM attendance_period WHERE STUDENT_ID=\'' . $val2 . '\' AND SCHOOL_DATE=\'' . $val4 . '\' AND COURSE_PERIOD_ID=\'' . $val3 . '\' AND PERIOD_ID=' . $sch_typ[1]['PERIOD_ID'] . ' '));
+                                            $count_dup = DBGet(DBQuery('SELECT * FROM attendance_period WHERE STUDENT_ID=\'' . $val2 . '\' AND COLLEGE_DATE=\'' . $val4 . '\' AND COURSE_PERIOD_ID=\'' . $val3 . '\' AND PERIOD_ID=' . $sch_typ[1]['PERIOD_ID'] . ' '));
                                         if (count($count_dup) > 1)
-                                            DBQuery('DELETE FROM attendance_period WHERE STUDENT_ID=\'' . $val2 . '\' AND SCHOOL_DATE=\'' . $val4 . '\' AND COURSE_PERIOD_ID=\'' . $val3 . '\' LIMIT ' . (count($count_dup) - 1));
+                                            DBQuery('DELETE FROM attendance_period WHERE STUDENT_ID=\'' . $val2 . '\' AND COLLEGE_DATE=\'' . $val4 . '\' AND COURSE_PERIOD_ID=\'' . $val3 . '\' LIMIT ' . (count($count_dup) - 1));
                                     }
                                     $iii++;
                                 }
@@ -125,10 +125,10 @@ if ((!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) && $_REQUEST['
     if (count($RET)) {
 
         unset($extra);
-        $extra['SELECT_ONLY'] .= 'ap.COURSE_PERIOD_ID, s.STUDENT_ID, s.FIRST_NAME, s.LAST_NAME, ap.SCHOOL_DATE, cp.TITLE, ap.PERIOD_ID, sc.START_DATE, sc.END_DATE ';
+        $extra['SELECT_ONLY'] .= 'ap.COURSE_PERIOD_ID, s.STUDENT_ID, s.FIRST_NAME, s.LAST_NAME, ap.COLLEGE_DATE, cp.TITLE, ap.PERIOD_ID, sc.START_DATE, sc.END_DATE ';
         $extra['FROM'] .= ' ,attendance_period ap, course_periods cp, schedule sc ';
         $extra['WHERE'] .= ' AND ap.STUDENT_ID=s.STUDENT_ID AND sc.STUDENT_ID=s.STUDENT_ID AND ap.COURSE_PERIOD_ID = cp.COURSE_PERIOD_ID AND ap.COURSE_PERIOD_ID = sc.COURSE_PERIOD_ID AND (sc.END_DATE > \'' . date('Y-m-d') . ' \' OR sc.END_DATE IS NULL OR sc.END_DATE=\'0000-00-00\' ) ';
-        $extra['ORDER_BY'] = ' STUDENT_ID, COURSE_PERIOD_ID, SCHOOL_DATE';
+        $extra['ORDER_BY'] = ' STUDENT_ID, COURSE_PERIOD_ID, COLLEGE_DATE';
         Widgets('course');
         Widgets('gpa');
         Widgets('class_rank');
@@ -144,7 +144,7 @@ if ((!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) && $_REQUEST['
             $periodidr = $rr['PERIOD_ID'];
             $firstr = $rr['FIRST_NAME'];
             $lastr = $rr['LAST_NAME'];
-            $collegedater = $rr['SCHOOL_DATE'];
+            $collegedater = $rr['COLLEGE_DATE'];
             $titler = $rr['TITLE'];
             $startr = $rr['START_DATE'];
             $endr = $rr['END_DATE'];
@@ -174,10 +174,10 @@ if ((!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) && $_REQUEST['
 
 
         unset($extra);
-        $extra['SELECT_ONLY'] .= 'ap.COURSE_PERIOD_ID, s.STUDENT_ID, s.FIRST_NAME, s.LAST_NAME, ap.SCHOOL_DATE, cp.TITLE, cp.SHORT_NAME, ap.PERIOD_ID, sc.START_DATE, sc.END_DATE ';
+        $extra['SELECT_ONLY'] .= 'ap.COURSE_PERIOD_ID, s.STUDENT_ID, s.FIRST_NAME, s.LAST_NAME, ap.COLLEGE_DATE, cp.TITLE, cp.SHORT_NAME, ap.PERIOD_ID, sc.START_DATE, sc.END_DATE ';
         $extra['FROM'] .= ' ,attendance_period ap, course_periods cp, schedule sc ';
         $extra['WHERE'] .= ' AND ap.STUDENT_ID=s.STUDENT_ID AND sc.STUDENT_ID=s.STUDENT_ID AND ap.COURSE_PERIOD_ID = cp.COURSE_PERIOD_ID AND ap.COURSE_PERIOD_ID = sc.COURSE_PERIOD_ID AND (sc.END_DATE > \'' . date('Y-m-d') . ' \' OR sc.END_DATE IS NULL OR sc.END_DATE=\'0000-00-00\' ) ';
-        $extra['ORDER_BY'] = ' STUDENT_ID, COURSE_PERIOD_ID, SCHOOL_DATE';
+        $extra['ORDER_BY'] = ' STUDENT_ID, COURSE_PERIOD_ID, COLLEGE_DATE';
         Widgets('course');
         Widgets('gpa');
         Widgets('class_rank');
@@ -238,7 +238,7 @@ if ((!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) && $_REQUEST['
             $periodid = $r['PERIOD_ID'];
             $first = $r['FIRST_NAME'];
             $last = $r['LAST_NAME'];
-            $collegedate = $r['SCHOOL_DATE'];
+            $collegedate = $r['COLLEGE_DATE'];
             $title = $r['TITLE'];
             $short_name = $r['SHORT_NAME'];
             $start = $r['START_DATE'];

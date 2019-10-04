@@ -31,7 +31,7 @@ include('../../RedirectModulesInc.php');
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'print_all' && $_REQUEST['report']) {
 
     $sql_subject = 'SELECT SUBJECT_ID,TITLE FROM  course_subjects WHERE
-                                        SCHOOL_ID=' . UserCollege() . ' AND SYEAR= ' . UserSyear();
+                                        COLLEGE_ID=' . UserCollege() . ' AND SYEAR= ' . UserSyear();
     $sql_subject_ret = DBGet(DBQuery($sql_subject));
     if (count($sql_subject_ret)) {
         foreach ($sql_subject_ret as $subject) {
@@ -40,14 +40,14 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'print_all' && $_REQUES
             echo '<table border="0" width="100%" align="center"><tr><td><font face=verdana size=-1><b>' . $subject['TITLE'] . '</b></font></td></tr><tr>';
 
             $sql_course = 'SELECT COURSE_ID,TITLE FROM  courses WHERE
-                                        SCHOOL_ID=' . UserCollege() . ' AND SYEAR= ' . UserSyear() . ' AND SUBJECT_ID=' . $subject['SUBJECT_ID'];
+                                        COLLEGE_ID=' . UserCollege() . ' AND SYEAR= ' . UserSyear() . ' AND SUBJECT_ID=' . $subject['SUBJECT_ID'];
 
             $sql_course_ret = DBGet(DBQuery($sql_course));
             foreach ($sql_course_ret as $course) {
                 echo '<table border="0"><tr><td style=padding-left:40px;><font face=verdana size=-1><b>' . $course['TITLE'] . '</b></font></td></tr></table>';
 
                 $sql_course_period = 'SELECT TITLE FROM  course_periods WHERE
-                                        SCHOOL_ID=' . UserCollege() . ' AND SYEAR= ' . UserSyear() . ' AND COURSE_ID=' . $course['COURSE_ID'];
+                                        COLLEGE_ID=' . UserCollege() . ' AND SYEAR= ' . UserSyear() . ' AND COURSE_ID=' . $course['COURSE_ID'];
 
                 $sql_course_period_ret = DBGet(DBQuery($sql_course_period));
                 foreach ($sql_course_period_ret as $course_period) {

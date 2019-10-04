@@ -258,11 +258,11 @@ echo '</div>'; //.row
 
 
 
-if ($_REQUEST['student_id'] != 'new' && $student['SCHOOL_ID'])
-    $college_id = $student['SCHOOL_ID'];
+if ($_REQUEST['student_id'] != 'new' && $student['COLLEGE_ID'])
+    $college_id = $student['COLLEGE_ID'];
 else
     $college_id = UserCollege();
-$sql = 'SELECT ID,TITLE FROM college_gradelevels WHERE SCHOOL_ID=\'' . $college_id . '\' ORDER BY SORT_ORDER';
+$sql = 'SELECT ID,TITLE FROM college_gradelevels WHERE COLLEGE_ID=\'' . $college_id . '\' ORDER BY SORT_ORDER';
 $QI = DBQuery($sql);
 $grades_RET = DBGet($QI);
 unset($options);
@@ -270,7 +270,7 @@ if (count($grades_RET)) {
     foreach ($grades_RET as $value)
         $options[$value['ID']] = $value['TITLE'];
 }
-if ($_REQUEST['student_id'] != 'new' && $student['SCHOOL_ID'] != UserCollege()) {
+if ($_REQUEST['student_id'] != 'new' && $student['COLLEGE_ID'] != UserCollege()) {
     $allow_edit = $_openSIS['allow_edit'];
     $AllowEdit = $_openSIS['AllowEdit'][$_REQUEST['modname']];
     $_openSIS['AllowEdit'][$_REQUEST['modname']] = $_openSIS['allow_edit'] = false;
@@ -291,11 +291,11 @@ echo SelectInput($student['GRADE_ID'], 'values[student_enrollment][' . $student_
 echo '</div>'; //.col-md-6
 
 
-if ($_REQUEST['student_id'] != 'new' && $student['SCHOOL_ID'])
-    $college_id = $student['SCHOOL_ID'];
+if ($_REQUEST['student_id'] != 'new' && $student['COLLEGE_ID'])
+    $college_id = $student['COLLEGE_ID'];
 else
     $college_id = UserCollege();
-$sql = 'SELECT * FROM college_gradelevel_sections WHERE SCHOOL_ID=\'' . $college_id . '\' ORDER BY SORT_ORDER';
+$sql = 'SELECT * FROM college_gradelevel_sections WHERE COLLEGE_ID=\'' . $college_id . '\' ORDER BY SORT_ORDER';
 $QI = DBQuery($sql);
 $sec_RET = DBGet($QI);
 unset($options);
@@ -303,7 +303,7 @@ if (count($sec_RET)) {
     foreach ($sec_RET as $value)
         $options[$value['ID']] = $value['NAME'];
 }
-if ($_REQUEST['student_id'] != 'new' && $student['SCHOOL_ID'] != UserCollege()) {
+if ($_REQUEST['student_id'] != 'new' && $student['COLLEGE_ID'] != UserCollege()) {
     $allow_edit = $_openSIS['allow_edit'];
     $AllowEdit = $_openSIS['AllowEdit'][$_REQUEST['modname']];
     $_openSIS['AllowEdit'][$_REQUEST['modname']] = $_openSIS['allow_edit'] = false;
@@ -372,7 +372,7 @@ echo '<div class="col-md-2">';
 
 
 if (UserStudentID()) {
-    $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . UserStudentID() . ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
+    $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . UserStudentID() . ' AND PROFILE_ID=3 AND COLLEGE_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
 }
 if ($_REQUEST['student_id'] != 'new' && count($stu_img_info) > 0) {
 

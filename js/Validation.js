@@ -1149,7 +1149,7 @@ function formcheck_student_student()
     }
 
 
-    frmvalidator.addValidation("values[student_enrollment][new][NEXT_SCHOOL]", "req", "Please select rolling / retention options");
+    frmvalidator.addValidation("values[student_enrollment][new][NEXT_COLLEGE]", "req", "Please select rolling / retention options");
     frmvalidator.addValidation("medical_info[PHYSICIAN]", "req", "Please enter the physician name");
     frmvalidator.addValidation("medical_info[PHYSICIAN_PHONE]", "ph", "Phone number can not be alphabetic.");
 
@@ -1495,7 +1495,7 @@ function college_check(staff_college_chkbox_id)
         for (i = 1; i <= staff_college_chkbox_id; i++)
         {
 
-            if (document.getElementById('staff_SCHOOLS' + i).checked == true)
+            if (document.getElementById('staff_COLLEGES' + i).checked == true)
             {
                 chk = 'y';
 
@@ -2757,7 +2757,7 @@ function formcheck_add_staff(staff_college_chkbox_id)
     frmvalidator.addValidation("staff[LAST_NAME]", "maxlen=100", "Max length for Address is 100");
     frmvalidator.addValidation("staff[EMAIL]", "req", "Please select email");
 //    frmvalidator.addValidation("staff[EMAIL]", "email", "Invalid email");
-    frmvalidator.addValidation("values[SCHOOL][CATEGORY]", "req", "Please select the category");
+    frmvalidator.addValidation("values[COLLEGE][CATEGORY]", "req", "Please select the category");
     frmvalidator.addValidation("month_values[JOINING_DATE]", "req", "Please select the joining date's month");
     frmvalidator.addValidation("day_values[JOINING_DATE]", "req", "Please select the joining date's date");
     frmvalidator.addValidation("year_values[JOINING_DATE]", "req", "Please select the joining date's year");

@@ -27,7 +27,7 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-$start_end_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_config WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND PROGRAM=\'eligibility\' AND TITLE IN (\'' . 'START_DAY' . '\',\'' . 'END_DAY' . '\')'));
+$start_end_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_config WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND PROGRAM=\'eligibility\' AND TITLE IN (\'' . 'START_DAY' . '\',\'' . 'END_DAY' . '\')'));
 if (count($start_end_RET)) {
     foreach ($start_end_RET as $value)
         $$value['TITLE'] = $value['VALUE'];
@@ -67,7 +67,7 @@ if (!$_REQUEST['start_date']) {
     $start_date = strtoupper(date('d-M-y', $start_time));
     $end_date = strtoupper(date('d-M-y', $start_time + 60 * 60 * 24 * 7));
 }
-$QI = DBQuery('SELECT PERIOD_ID,TITLE FROM college_periods WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY SORT_ORDER ');
+$QI = DBQuery('SELECT PERIOD_ID,TITLE FROM college_periods WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY SORT_ORDER ');
 $periods_RET = DBGet($QI);
 $period_select = "<SELECT class=\"form-control\" name=period><OPTION value=''>All</OPTION>";
 foreach ($periods_RET as $period)
@@ -78,8 +78,8 @@ DrawBC("Extracurricular > " . ProgramTitle());
 echo '<div class="panel panel-default">';
 echo "<FORM class=\"no-margin-bottom\" name=teach_comp id=teach_comp action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " method=POST>";
 
-$begin_year = DBGet(DBQuery('SELECT min(unix_timestamp(SCHOOL_DATE)) as SCHOOL_DATE FROM attendance_calendar WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\''));
-$begin_year = $begin_year[1]['SCHOOL_DATE'];
+$begin_year = DBGet(DBQuery('SELECT min(unix_timestamp(COLLEGE_DATE)) as COLLEGE_DATE FROM attendance_calendar WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\''));
+$begin_year = $begin_year[1]['COLLEGE_DATE'];
 
 if ($start && $begin_year) {
     $date_select = "<OPTION value=$start>" . date('M d, Y', $start) . ' - ' . date('M d, Y', $end) . '</OPTION>';
@@ -111,9 +111,9 @@ $sql = 'SELECT CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME) AS FULL_NAME,sp.TITLE,cpv
 		WHERE 
 			sp.PERIOD_ID = cpv.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID
 			AND cp.TEACHER_ID=s.STAFF_ID AND cp.MARKING_PERIOD_ID IN (' . $mp . ')
-			AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.SCHOOL_ID=\'' . UserCollege() . '\' AND s.PROFILE=\'teacher\'
+			AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.COLLEGE_ID=\'' . UserCollege() . '\' AND s.PROFILE=\'teacher\'
 			' . ((optional_param('period', '', PARAM_SPCL)) ? ' AND cpv.PERIOD_ID=\'' . optional_param('period', '', PARAM_SPCL) . "'" : '') .
-        'AND NOT EXISTS (SELECT \'\' FROM eligibility_completed ac WHERE ac.STAFF_ID=cp.TEACHER_ID AND ac.PERIOD_ID = sp.PERIOD_ID AND ac.SCHOOL_DATE BETWEEN \'' . date('Y-m-d', $start_time) . '\' AND \'' . date('Y-m-d', $start_time + 60 * 60 * 24 * 7) . '\')';
+        'AND NOT EXISTS (SELECT \'\' FROM eligibility_completed ac WHERE ac.STAFF_ID=cp.TEACHER_ID AND ac.PERIOD_ID = sp.PERIOD_ID AND ac.COLLEGE_DATE BETWEEN \'' . date('Y-m-d', $start_time) . '\' AND \'' . date('Y-m-d', $start_time + 60 * 60 * 24 * 7) . '\')';
 
 $RET = DBGet(DBQuery($sql), array(), array('STAFF_ID', 'PERIOD_ID'));
 

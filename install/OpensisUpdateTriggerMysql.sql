@@ -68,5 +68,5 @@ DROP TRIGGER IF EXISTS `td_cal_missing_attendance`;
 CREATE TRIGGER `td_cal_missing_attendance`
     AFTER DELETE ON attendance_calendar
     FOR EACH ROW
-	DELETE mi.* FROM missing_attendance mi,course_periods cp WHERE mi.course_period_id=cp.course_period_id and cp.calendar_id=OLD.calendar_id AND mi.SCHOOL_DATE=OLD.college_date;
+	DELETE mi.* FROM missing_attendance mi,course_periods cp WHERE mi.course_period_id=cp.course_period_id and cp.calendar_id=OLD.calendar_id AND mi.COLLEGE_DATE=OLD.college_date;
 

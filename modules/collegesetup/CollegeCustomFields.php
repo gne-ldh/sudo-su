@@ -37,9 +37,9 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
 
     // print_r($_REQUEST);
     if($_REQUEST['SYSTEM_WIDE']=='Y')
-        $_REQUEST['tables'][$_REQUEST['custom']]['SCHOOL_ID']=0;
+        $_REQUEST['tables'][$_REQUEST['custom']]['COLLEGE_ID']=0;
     else
-        $_REQUEST['tables'][$_REQUEST['custom']]['SCHOOL_ID']= UserCollege();
+        $_REQUEST['tables'][$_REQUEST['custom']]['COLLEGE_ID']= UserCollege();
     unset($_REQUEST['SYSTEM_WIDE']);
     // echo '<br><br>';
     // print_r($_REQUEST);
@@ -270,7 +270,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'delete') {
 }
 
 if ($_REQUEST['id'] && $_REQUEST['id'] != 'new') {
-    $sql = "SELECT SCHOOL_ID,CATEGORY_ID,TITLE,TYPE,SELECT_OPTIONS,DEFAULT_SELECTION,SORT_ORDER,REQUIRED,REQUIRED,HIDE FROM college_custom_fields WHERE ID='$_REQUEST[id]'";
+    $sql = "SELECT COLLEGE_ID,CATEGORY_ID,TITLE,TYPE,SELECT_OPTIONS,DEFAULT_SELECTION,SORT_ORDER,REQUIRED,REQUIRED,HIDE FROM college_custom_fields WHERE ID='$_REQUEST[id]'";
     $RET = DBGet(DBQuery($sql));
     $RET = $RET[1];
     $title = $RET['TITLE'];
@@ -305,7 +305,7 @@ if ($_REQUEST['id'] && !$_REQUEST['modfunc']) {
     $header .= '</div>';
 
     $header .= '<div class="panel-body">';
-    $header .= '<input type=hidden name=tables[' . $_REQUEST['id'] . '][SCHOOL_ID] value=' . UserCollege() . '>';
+    $header .= '<input type=hidden name=tables[' . $_REQUEST['id'] . '][COLLEGE_ID] value=' . UserCollege() . '>';
     $header .= '<div class="form-group">' . TextInput($RET['TITLE'], 'tables[' . $_REQUEST['id'] . '][TITLE]', 'Field Name') . '</div>';
 
     // You can't change a student field type after it has been created
@@ -342,7 +342,7 @@ if ($_REQUEST['id'] && !$_REQUEST['modfunc']) {
     $new = ($_REQUEST['id'] == 'new');
     $header .= '<div class="form-group"><div class="col-lg-8 col-md-offset-4">' . CheckboxInputSwitch($RET['REQUIRED'], 'tables[' . $_REQUEST['id'] . '][REQUIRED]', 'Required','', false, 'Yes', 'No', '', 'switch-success') . '</div></div>';
     
-    if($RET['SCHOOL_ID']>0)
+    if($RET['COLLEGE_ID']>0)
         $system_wide='N';
     else
          $system_wide='Y';
@@ -368,7 +368,7 @@ if ($_REQUEST['id'] && !$_REQUEST['modfunc']) {
     $columns = array('TITLE' => 'College Fields','SORT_ORDER' => 'Sort Order', 'TYPE' => 'Field Type');
     $link = array();
     $arr = array('College Name', 'Address', 'City', 'State', 'Zip/Postal Code', 'Principal', 'Base Grading Scale', 'E-Mail', 'Website', 'College Logo');
-    $RET = DBGet(DBQuery("SELECT * FROM college_custom_fields WHERE SCHOOL_ID IN (" . UserCollege() .",0) ORDER BY SORT_ORDER"));
+    $RET = DBGet(DBQuery("SELECT * FROM college_custom_fields WHERE COLLEGE_ID IN (" . UserCollege() .",0) ORDER BY SORT_ORDER"));
     foreach ($arr as $key => $value) {
         $fields_RET1[$count] = array('ID' => '', 'TITLE' => $value, 'TYPE' => '<span style="color:#ea8828;">Default</span>');
         $count++;

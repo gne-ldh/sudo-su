@@ -196,9 +196,9 @@ if ($category == 'student') {
                     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     ///////////////////////////For Student Enrollment////////////////////////////////////////////////////////////
                     $enrollment_code = DBGet(DBQuery('SELECT ID FROM  student_enrollment_codes WHERE SYEAR=' . UserSyear() . '  AND TITLE=\'New\''));
-                    $enrollment_columns = array('SYEAR', 'SCHOOL_ID', 'STUDENT_ID', 'ENROLLMENT_CODE');
+                    $enrollment_columns = array('SYEAR', 'COLLEGE_ID', 'STUDENT_ID', 'ENROLLMENT_CODE');
                     $enrollment_values = array(UserSyear(), UserCollege(), $student_id, $enrollment_code[1]['ID']);
-                    $calendar_id = DBGet(DBQuery('SELECT CALENDAR_ID FROM college_calendars  WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserCollege() . ' AND DEFAULT_CALENDAR=\'Y\' '));
+                    $calendar_id = DBGet(DBQuery('SELECT CALENDAR_ID FROM college_calendars  WHERE SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege() . ' AND DEFAULT_CALENDAR=\'Y\' '));
                     if ($calendar_id[1]['CALENDAR_ID'] != '') {
                         $enrollment_columns+=array('CALENDAR_ID');
                         $enrollment_values+=array($calendar_id[1]['CALENDAR_ID']);
@@ -252,7 +252,7 @@ if ($category == 'student') {
                     unset($la_values);
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     /////////////////////////For Student Address////////////////////////////////////////////////////////////
-                    $sa_columns = array('STUDENT_ID', 'SYEAR', 'SCHOOL_ID');
+                    $sa_columns = array('STUDENT_ID', 'SYEAR', 'COLLEGE_ID');
                     $sa_values = array($student_id, UserSyear(), UserCollege());
 
                     foreach ($student_address as $student_address_v) {
@@ -270,7 +270,7 @@ if ($category == 'student') {
                     unset($sa_values);
                     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     /////////////////////////For Primary////////////////////////////////////////////////////////////
-                    $primary_columns = array('CURRENT_SCHOOL_ID', 'PROFILE', 'PROFILE_ID');
+                    $primary_columns = array('CURRENT_COLLEGE_ID', 'PROFILE', 'PROFILE_ID');
                     $primary_values = array(UserCollege(), "'parent'", '4');
                     $relationship = '';
                     foreach ($primary as $primary_v) {
@@ -295,7 +295,7 @@ if ($category == 'student') {
 
                     //////////////////////////////////////////////////////////////////////////////////////////////
                     /////////////////////////For Secondary////////////////////////////////////////////////////////////
-                    $secondary_columns = array('CURRENT_SCHOOL_ID', 'PROFILE', 'PROFILE_ID');
+                    $secondary_columns = array('CURRENT_COLLEGE_ID', 'PROFILE', 'PROFILE_ID');
                     $secondary_values = array(UserCollege(), "'parent'", '4');
                     $relationship = '';
                     foreach ($secondary as $secondary_v) {
@@ -470,7 +470,7 @@ if ($category == 'staff') {
             if ($arr_i > 0) {
 
 
-                $staff_columns = array('STAFF_ID', 'CURRENT_SCHOOL_ID');
+                $staff_columns = array('STAFF_ID', 'CURRENT_COLLEGE_ID');
                 $staff_values = array($staff_id, UserCollege());
                 $check_query = array();
                 $check_query_alt_id = array();
@@ -605,7 +605,7 @@ if ($category == 'staff') {
                     unset($staff_values);
                     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     ///////////////////////////For Staff Enrollment////////////////////////////////////////////////////////////
-                    $ssr_columns = array('STAFF_ID', 'SYEAR', 'SCHOOL_ID');
+                    $ssr_columns = array('STAFF_ID', 'SYEAR', 'COLLEGE_ID');
                     $ssr_values = array($staff_id, UserSyear(), UserCollege());
                     $start_date_i = 0;
                     foreach ($staff_college_relationship as $ssr_v) {
@@ -615,7 +615,7 @@ if ($category == 'staff') {
                             if ($ssr_v == 'START_DATE') {
                                 $start_date_i = 1;
                                 if ($arr_v[$array_index[$ssr_v]] == '') {
-                                    $start_date = DBGet(DBQuery('SELECT START_DATE FROM college_years WHERE SCHOOL_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear()));
+                                    $start_date = DBGet(DBQuery('SELECT START_DATE FROM college_years WHERE COLLEGE_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear()));
 
                                     $ssr_values[] = "'" . $start_date[1]['START_DATE'] . "'";
                                 } else
@@ -627,7 +627,7 @@ if ($category == 'staff') {
                         }
                     }
                     if ($start_date_i == 0) {
-                        $start_date = DBGet(DBQuery('SELECT START_DATE FROM college_years WHERE SCHOOL_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear()));
+                        $start_date = DBGet(DBQuery('SELECT START_DATE FROM college_years WHERE COLLEGE_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear()));
                         $ssr_columns[] = 'START_DATE';
                         $ssr_values[] = "'" . $start_date[1]['START_DATE'] . "'";
                     }
@@ -659,7 +659,7 @@ if ($category == 'staff') {
                     unset($la_values);
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     ///////////////////////////For Staff College Info////////////////////////////////////////////////////////////
-                    $ssi_columns = array('STAFF_ID', 'HOME_SCHOOL', 'OPENSIS_ACCESS', 'OPENSIS_PROFILE', 'SCHOOL_ACCESS');
+                    $ssi_columns = array('STAFF_ID', 'HOME_COLLEGE', 'OPENSIS_ACCESS', 'OPENSIS_PROFILE', 'COLLEGE_ACCESS');
                     $ssi_values = array($staff_id, UserCollege(), '"Y"', $profile_id, '",' . UserCollege() . ',"');
                     if ($arr_v[$array_index['CATEGORY']] != '') {
                         $ssi_columns[] = 'CATEGORY';

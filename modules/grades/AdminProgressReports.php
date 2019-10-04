@@ -83,7 +83,7 @@ if($_REQUEST['modfunc']=='save')
                                 {
                                     $quarter_val=DBGet(DBQuery('SELECT START_DATE, END_DATE FROM college_quarters WHERE MARKING_PERIOD_ID='.UserMP().' '));
                                     $q=$quarter_val[1];
-                                    $quarter=DBGet(DBQuery('SELECT MARKING_PERIOD_ID  FROM college_quarters WHERE ((\''.$q['START_DATE'].'\'Between START_DATE And END_DATE ) OR(\''.$q['END_DATE'].'\'Between START_DATE And END_DATE ))  AND SCHOOL_ID=999'));
+                                    $quarter=DBGet(DBQuery('SELECT MARKING_PERIOD_ID  FROM college_quarters WHERE ((\''.$q['START_DATE'].'\'Between START_DATE And END_DATE ) OR(\''.$q['END_DATE'].'\'Between START_DATE And END_DATE ))  AND COLLEGE_ID=999'));
                                     $EVAL=$quarter[1];
 
                                 }
@@ -92,7 +92,7 @@ if($_REQUEST['modfunc']=='save')
                                     $semester_val=DBGet(DBQuery('SELECT START_DATE, END_DATE FROM college_semesters WHERE MARKING_PERIOD_ID='.UserMP().' '));
                                     $q=$semester_val[1];
                                     
-                                    $semester=DBGet(DBQuery('SELECT MARKING_PERIOD_ID  FROM college_semesters WHERE ((\''.$q['START_DATE'].'\'Between START_DATE And END_DATE ) OR(\''.$q['END_DATE'].'\'Between START_DATE And END_DATE )) AND SCHOOL_ID=999'));
+                                    $semester=DBGet(DBQuery('SELECT MARKING_PERIOD_ID  FROM college_semesters WHERE ((\''.$q['START_DATE'].'\'Between START_DATE And END_DATE ) OR(\''.$q['END_DATE'].'\'Between START_DATE And END_DATE )) AND COLLEGE_ID=999'));
                                     $EVAL=$semester[1];
                                    
                                   
@@ -102,7 +102,7 @@ if($_REQUEST['modfunc']=='save')
                                 {
                                     $year_val=DBGet(DBQuery('SELECT START_DATE, END_DATE FROM college_years WHERE MARKING_PERIOD_ID='.UserMP().' '));
                                     $q=$year_val[1];
-                                    $year=DBGet(DBQuery('SELECT MARKING_PERIOD_ID  FROM college_years WHERE ((\''.$q['START_DATE'].'\'Between START_DATE And END_DATE ) OR(\''.$q['END_DATE'].'\'Between START_DATE And END_DATE )) AND SCHOOL_ID=999 '));
+                                    $year=DBGet(DBQuery('SELECT MARKING_PERIOD_ID  FROM college_years WHERE ((\''.$q['START_DATE'].'\'Between START_DATE And END_DATE ) OR(\''.$q['END_DATE'].'\'Between START_DATE And END_DATE )) AND COLLEGE_ID=999 '));
                                     $EVAL=$year[1];
 
                                 }

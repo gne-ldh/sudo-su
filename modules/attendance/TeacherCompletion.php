@@ -38,7 +38,7 @@ if ($_REQUEST['month_date'] && $_REQUEST['day_date'] && $_REQUEST['year_date']) 
 }
 
 DrawBC("Attendance > " . ProgramTitle());
-$QI = DBQuery('SELECT sp.PERIOD_ID,sp.TITLE FROM college_periods sp WHERE sp.SCHOOL_ID=\'' . UserCollege() . '\' AND sp.SYEAR=\'' . UserSyear() . '\' AND EXISTS (SELECT \'\' FROM course_periods cp,course_period_var cpv WHERE cp.SYEAR=sp.SYEAR AND cpv.PERIOD_ID=sp.PERIOD_ID AND cpv.DOES_ATTENDANCE=\'Y\') ORDER BY sp.SORT_ORDER');
+$QI = DBQuery('SELECT sp.PERIOD_ID,sp.TITLE FROM college_periods sp WHERE sp.COLLEGE_ID=\'' . UserCollege() . '\' AND sp.SYEAR=\'' . UserSyear() . '\' AND EXISTS (SELECT \'\' FROM course_periods cp,course_period_var cpv WHERE cp.SYEAR=sp.SYEAR AND cpv.PERIOD_ID=sp.PERIOD_ID AND cpv.DOES_ATTENDANCE=\'Y\') ORDER BY sp.SORT_ORDER');
 $periods_RET = DBGet($QI, array(), array('PERIOD_ID'));
 $period_select = "<SELECT class=\"form-control\" name=period><OPTION value=''>All</OPTION>";
 foreach ($periods_RET as $id => $period)
@@ -82,11 +82,11 @@ $sql = 'SELECT concat(s.LAST_NAME,\',\',s.FIRST_NAME, \' \') AS FULL_NAME,sp.TIT
         sp.PERIOD_ID = cpv.PERIOD_ID
         AND acc.CALENDAR_id=cp.CALENDAR_ID
         AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID
-        AND acc.SCHOOL_DATE=\'' . date('Y-m-d', strtotime($date)) . '\'
+        AND acc.COLLEGE_DATE=\'' . date('Y-m-d', strtotime($date)) . '\'
         AND cp.TEACHER_ID=s.STAFF_ID AND cp.MARKING_PERIOD_ID IN (' . GetAllMP($MP_TYPE, $current_mp) . ')
-        AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.SCHOOL_ID=\'' . UserCollege() . '\' AND s.PROFILE=\'teacher\'
+        AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.COLLEGE_ID=\'' . UserCollege() . '\' AND s.PROFILE=\'teacher\'
         AND cpv.DOES_ATTENDANCE=\'Y\' AND instr(cpv.DAYS,\'' . $day . '\')>0' . (($p) ? ' AND cpv.PERIOD_ID=\'' . $p . '\'' : '') . '
-        AND NOT EXISTS (SELECT \'\' FROM attendance_completed ac WHERE ac.STAFF_ID=cp.TEACHER_ID AND ac.SCHOOL_DATE=\'' . date('Y-m-d', strtotime($date)) . '\' AND ac.PERIOD_ID=sp.PERIOD_ID)
+        AND NOT EXISTS (SELECT \'\' FROM attendance_completed ac WHERE ac.STAFF_ID=cp.TEACHER_ID AND ac.COLLEGE_DATE=\'' . date('Y-m-d', strtotime($date)) . '\' AND ac.PERIOD_ID=sp.PERIOD_ID)
 		';
 $RET = DBGet(DBQuery($sql), array(), array('STAFF_ID', 'PERIOD_ID'));
 $i = 0;

@@ -33,7 +33,7 @@ Search('student_id');
 echo '<style type="text/css">#div_margin { margin-top:-20px; _margin-top:-1px; }</style>';
 
 if (isset($_REQUEST['student_id'])) {
-    $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,SCHOOL_ID FROM students,student_enrollment WHERE students.STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND student_enrollment.STUDENT_ID = students.STUDENT_ID '));
+    $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,COLLEGE_ID FROM students,student_enrollment WHERE students.STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND student_enrollment.STUDENT_ID = students.STUDENT_ID '));
 
     $count_student_RET = DBGet(DBQuery('SELECT COUNT(*) AS NUM FROM students'));
     if ($count_student_RET[1]['NUM'] > 1) {
@@ -119,7 +119,7 @@ if (UserStudentID()) {
             }
             else {
                 $sql = 'INSERT INTO student_report_card_grades ';
-                $fields = 'SCHOOL_ID, SYEAR, STUDENT_ID, MARKING_PERIOD_ID, ';
+                $fields = 'COLLEGE_ID, SYEAR, STUDENT_ID, MARKING_PERIOD_ID, ';
                 $values = UserCollege() . ", " . UserSyear() . ", $student_id, $mp_id, ";
 
                 $go = false;
@@ -242,7 +242,7 @@ if (UserStudentID()) {
 
         if ($mp_id == "0") {
             $syear = UserSyear();
-            $sql = 'SELECT MARKING_PERIOD_ID, SYEAR, TITLE, POST_END_DATE FROM marking_periods WHERE SCHOOL_ID = \'' . UserCollege() .
+            $sql = 'SELECT MARKING_PERIOD_ID, SYEAR, TITLE, POST_END_DATE FROM marking_periods WHERE COLLEGE_ID = \'' . UserCollege() .
                     '\' ORDER BY POST_END_DATE';
             $MPRET = DBGet(DBQuery($sql));
             if ($MPRET) {

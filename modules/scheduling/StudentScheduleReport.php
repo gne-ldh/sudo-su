@@ -225,7 +225,7 @@ if (!$_REQUEST['modfunc']) {
     echo '<div class="panel">';
     
     # ---------------------------------------- Marking period selection Start ------------------------------------------ #
-    $RET1 = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM marking_periods WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY MARKING_PERIOD_ID"));
+    $RET1 = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM marking_periods WHERE COLLEGE_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY MARKING_PERIOD_ID"));
     $link = 'Modules.php?modname=' . strip_tags(trim($_REQUEST[modname])) . '&sel_mp=';
     
     echo '<div class="panel-heading">';
@@ -251,7 +251,7 @@ if (!$_REQUEST['modfunc']) {
 
     ###################################################################################################################
 
-    $sql = "SELECT CONCAT(s.LAST_NAME,', ',coalesce(s.COMMON_NAME,s.FIRST_NAME)) AS FULL_NAME,s.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,s.ALT_ID,ssm.SCHOOL_ID,ssm.GRADE_ID ,c.TITLE AS COURSE_TITLE,p_cp.TITLE AS PERIOD_TITLE,sr.MARKING_PERIOD_ID,cpv.DAYS, CONCAT(sp.START_TIME, ' to ', sp.END_TIME) AS DURATION,r.TITLE AS ROOM FROM students s,student_enrollment ssm LEFT OUTER JOIN schedule sr ON (sr.STUDENT_ID=ssm.STUDENT_ID),courses c,course_periods p_cp,course_period_var cpv,rooms r,college_periods sp WHERE ssm.STUDENT_ID=s.STUDENT_ID AND p_cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND r.ROOM_ID=cpv.ROOM_ID AND ssm.SYEAR='" . UserSyear() . "' AND ssm.SCHOOL_ID='" . UserCollege() . "' AND ('" . DBDate() . "' BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND '" . DBDate() . "'>ssm.START_DATE)) AND ssm.STUDENT_ID='" . UserStudentID() . "' AND s.STUDENT_ID = '" . UserStudentID() . "' AND cpv.PERIOD_ID=sp.PERIOD_ID AND ssm.SYEAR=sr.SYEAR AND sr.COURSE_ID=c.COURSE_ID AND sr.COURSE_PERIOD_ID=p_cp.COURSE_PERIOD_ID AND cpv.PERIOD_ID=sp.PERIOD_ID AND ('" . DBDate() . "' BETWEEN sr.START_DATE AND sr.END_DATE OR sr.END_DATE IS NULL) ORDER BY FULL_NAME,sp.SORT_ORDER";
+    $sql = "SELECT CONCAT(s.LAST_NAME,', ',coalesce(s.COMMON_NAME,s.FIRST_NAME)) AS FULL_NAME,s.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,s.ALT_ID,ssm.COLLEGE_ID,ssm.GRADE_ID ,c.TITLE AS COURSE_TITLE,p_cp.TITLE AS PERIOD_TITLE,sr.MARKING_PERIOD_ID,cpv.DAYS, CONCAT(sp.START_TIME, ' to ', sp.END_TIME) AS DURATION,r.TITLE AS ROOM FROM students s,student_enrollment ssm LEFT OUTER JOIN schedule sr ON (sr.STUDENT_ID=ssm.STUDENT_ID),courses c,course_periods p_cp,course_period_var cpv,rooms r,college_periods sp WHERE ssm.STUDENT_ID=s.STUDENT_ID AND p_cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND r.ROOM_ID=cpv.ROOM_ID AND ssm.SYEAR='" . UserSyear() . "' AND ssm.COLLEGE_ID='" . UserCollege() . "' AND ('" . DBDate() . "' BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND '" . DBDate() . "'>ssm.START_DATE)) AND ssm.STUDENT_ID='" . UserStudentID() . "' AND s.STUDENT_ID = '" . UserStudentID() . "' AND cpv.PERIOD_ID=sp.PERIOD_ID AND ssm.SYEAR=sr.SYEAR AND sr.COURSE_ID=c.COURSE_ID AND sr.COURSE_PERIOD_ID=p_cp.COURSE_PERIOD_ID AND cpv.PERIOD_ID=sp.PERIOD_ID AND ('" . DBDate() . "' BETWEEN sr.START_DATE AND sr.END_DATE OR sr.END_DATE IS NULL) ORDER BY FULL_NAME,sp.SORT_ORDER";
 
     $stu_id = UserStudentID();
     $RET_show[$stu_id] = DBGet(DBQuery($sql));

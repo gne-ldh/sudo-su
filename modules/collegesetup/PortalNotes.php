@@ -47,7 +47,7 @@ if($_REQUEST['day_values'] && ($_POST['day_values'] || $_REQUEST['ajax']))
 $profiles_RET = DBGet(DBQuery("SELECT ID,TITLE FROM user_profiles ORDER BY ID"));
 if((($_REQUEST['profiles'] && ($_POST['profiles']  || $_REQUEST['ajax'])) || ($_REQUEST['values'] && ($_POST['values'] || $_REQUEST['ajax']))) && AllowEdit())
 {
-	$notes_RET = DBGet(DBQuery('SELECT ID FROM portal_notes WHERE (SCHOOL_ID=\''.UserCollege().'\' OR PUBLISHED_PROFILES LIKE \'%all%\') AND SYEAR=\''.UserSyear().'\''));
+	$notes_RET = DBGet(DBQuery('SELECT ID FROM portal_notes WHERE (COLLEGE_ID=\''.UserCollege().'\' OR PUBLISHED_PROFILES LIKE \'%all%\') AND SYEAR=\''.UserSyear().'\''));
 
 	foreach($notes_RET as $note_id)
 	{
@@ -86,7 +86,7 @@ if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUE
 		{
                                                     $portal_RET=DBGet(DBQuery('SELECT START_DATE,END_DATE FROM portal_notes WHERE ID=\''.$id.'\''));
                                                     $portal_RET=$portal_RET[1];
-                                                    $syear_RET=DBGet(DBQuery('SELECT START_DATE,END_DATE FROm college_years WHERE SCHOOL_ID='.UserCollege().' AND SYEAR='.UserSyear()));
+                                                    $syear_RET=DBGet(DBQuery('SELECT START_DATE,END_DATE FROm college_years WHERE COLLEGE_ID='.UserCollege().' AND SYEAR='.UserSyear()));
                                                     $syear_RET=$syear_RET[1];
 //                                                    if((strtotime($columns['START_DATE'])>strtotime($columns['END_DATE']) && $columns['END_DATE']!='') || (strtotime($columns['START_DATE'])>strtotime($portal_RET['END_DATE']) && $portal_RET['END_DATE']!='') || (strtotime($portal_RET['START_DATE'])>strtotime($columns['END_DATE']) && $columns['END_DATE']!='')|| (isset ($columns['START_DATE']) && $columns['START_DATE']=='' && $columns['END_DATE']!='') || ($columns['START_DATE']!='' && strtotime($columns['START_DATE'])<strtotime($syear_RET['START_DATE'])) || ($columns['END_DATE']!='' && strtotime($columns['END_DATE'])>strtotime($syear_RET['END_DATE'])))
                                                     if((strtotime($columns['START_DATE'])>strtotime($columns['END_DATE']) && $columns['END_DATE']!='') || (strtotime($columns['START_DATE'])>strtotime($portal_RET['END_DATE']) && $portal_RET['END_DATE']!='') || (strtotime($portal_RET['START_DATE'])>strtotime($columns['END_DATE']) && $columns['END_DATE']!='')|| (isset ($columns['START_DATE']) && $columns['START_DATE']=='' && $columns['END_DATE']!='') )
@@ -96,7 +96,7 @@ if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUE
                                                     else
                                                     {
 			$sql = 'UPDATE portal_notes SET ';
-                           $sql.='SCHOOL_ID='.UserCollege().', ';
+                           $sql.='COLLEGE_ID='.UserCollege().', ';
                             
 //                        }
 #################### code differ for windows and Linux machine ########################
@@ -136,7 +136,7 @@ if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUE
 		}
 		else
 		{
-                        $syear_RET=DBGet(DBQuery('SELECT START_DATE,END_DATE FROM college_years WHERE SCHOOL_ID='.UserCollege().' AND SYEAR='.UserSyear()));
+                        $syear_RET=DBGet(DBQuery('SELECT START_DATE,END_DATE FROM college_years WHERE COLLEGE_ID='.UserCollege().' AND SYEAR='.UserSyear()));
                         $syear_RET=$syear_RET[1];
                         if($columns['START_DATE']=='' ||  $columns['END_DATE']=='')
                         {
@@ -180,7 +180,7 @@ if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUE
 
 			
 			
-			$fields = 'SCHOOL_ID,SYEAR,last_updated,PUBLISHED_USER,';
+			$fields = 'COLLEGE_ID,SYEAR,last_updated,PUBLISHED_USER,';
                         if($allcollege=='Y')
                             $values ='NULL,\''.UserSyear().'\',CURRENT_TIMESTAMP,\''.User('STAFF_ID').'\',';
                         else
@@ -235,7 +235,7 @@ if(clean_param($_REQUEST['modfunc'],PARAM_ALPHAMOD)=='remove' && AllowEdit())
 if($_REQUEST['modfunc']!='remove')
 {
 
-      $sql = 'SELECT ID,SORT_ORDER,TITLE,CONTENT,START_DATE,END_DATE,PUBLISHED_PROFILES,CASE WHEN END_DATE IS NOT NULL AND END_DATE < CURRENT_DATE THEN \'Y\' ELSE NULL END AS EXPIRED FROM portal_notes WHERE (SCHOOL_ID=\''.UserCollege().'\' OR PUBLISHED_PROFILES LIKE \'%all%\') AND SYEAR=\''.UserSyear().'\' ORDER BY EXPIRED DESC,SORT_ORDER,last_updated DESC';
+      $sql = 'SELECT ID,SORT_ORDER,TITLE,CONTENT,START_DATE,END_DATE,PUBLISHED_PROFILES,CASE WHEN END_DATE IS NOT NULL AND END_DATE < CURRENT_DATE THEN \'Y\' ELSE NULL END AS EXPIRED FROM portal_notes WHERE (COLLEGE_ID=\''.UserCollege().'\' OR PUBLISHED_PROFILES LIKE \'%all%\') AND SYEAR=\''.UserSyear().'\' ORDER BY EXPIRED DESC,SORT_ORDER,last_updated DESC';
 	$QI = DBQuery($sql);
         $LO = DBGet(DBQuery($sql));
 $portal_id_arr=array();

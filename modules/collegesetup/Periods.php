@@ -71,7 +71,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                 $exist_pr = DBGet(DBQuery('SELECT TITLE,SHORT_NAME,SORT_ORDER,START_TIME,END_TIME FROM  college_periods WHERE period_id=\'' . $id . '\''));
                 if (isset($_REQUEST['values'][$id]['TITLE']) && $_REQUEST['values'][$id]['TITLE'] != '' || isset($_REQUEST['values'][$id]['SHORT_NAME']) && $_REQUEST['values'][$id]['SHORT_NAME'] != '') {
 
-                    $sql = 'SELECT TITLE,SHORT_NAME,SORT_ORDER,START_TIME,END_TIME FROM  college_periods WHERE SYEAR= \'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' and period_id<>\'' . $id . '\'';
+                    $sql = 'SELECT TITLE,SHORT_NAME,SORT_ORDER,START_TIME,END_TIME FROM  college_periods WHERE SYEAR= \'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' and period_id<>\'' . $id . '\'';
                     $periods = DBGET(DBQuery($sql));
 
                     for ($i = 1; $i <= count($periods); $i++) {
@@ -198,7 +198,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
             }
             else {
 
-                $sql = 'SELECT TITLE,SHORT_NAME,SORT_ORDER,START_TIME,END_TIME FROM  college_periods WHERE SYEAR= \'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\'';
+                $sql = 'SELECT TITLE,SHORT_NAME,SORT_ORDER,START_TIME,END_TIME FROM  college_periods WHERE SYEAR= \'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\'';
                 $periods = DBGET(DBQuery($sql));
                 for ($i = 1; $i <= count($periods); $i++) {
                     $shortname[$i] = strtoupper(str_replace(' ', '', $periods[$i]['SHORT_NAME']));
@@ -211,7 +211,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                     $err = " Already a period is created with same title or shortname.";
                     break;
                 } elseif ($columns['START_TIME']) {
-//                    $sql_end_ex = 'SELECT TITLE,SHORT_NAME,SORT_ORDER,START_TIME,END_TIME FROM  college_periods WHERE SYEAR= \'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND END_TIME=\'' . $columns['START_TIME'] . ':00\'';
+//                    $sql_end_ex = 'SELECT TITLE,SHORT_NAME,SORT_ORDER,START_TIME,END_TIME FROM  college_periods WHERE SYEAR= \'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND END_TIME=\'' . $columns['START_TIME'] . ':00\'';
 //                    $sql_end_ex_count = DBGET(DBQuery($sql_end_ex));
 //                    if (count($sql_end_ex_count) > 0) {
 //                        $err = " End time of a period cannot be same with another period start time.";
@@ -219,7 +219,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
 //                    } else {
 
                         $sql = 'INSERT INTO college_periods ';
-                        $fields = 'SCHOOL_ID,SYEAR,';
+                        $fields = 'COLLEGE_ID,SYEAR,';
                         $values = '\'' . UserCollege() . '\',\'' . UserSyear() . '\',';
                         $go = 0;
                         if ($columns['START_TIME'] == $columns['END_TIME']) {
@@ -242,10 +242,10 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
 
                         # ----------------------------- Length Calculate start --------------------- #
 
-                        $p_id = DBGet(DBQuery('SELECT max(PERIOD_ID) AS period_id FROM college_periods WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
+                        $p_id = DBGet(DBQuery('SELECT max(PERIOD_ID) AS period_id FROM college_periods WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
                         $period_id = $p_id[1]['PERIOD_ID'];
 
-                        $time_chk = DBGet(DBQuery('SELECT START_TIME,END_TIME FROM college_periods WHERE PERIOD_ID=\'' . $period_id . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
+                        $time_chk = DBGet(DBQuery('SELECT START_TIME,END_TIME FROM college_periods WHERE PERIOD_ID=\'' . $period_id . '\' AND SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
                         $start_tm_chk = $time_chk[1]['START_TIME'];
                         $end_tm_chk = $time_chk[1]['END_TIME'];
 
@@ -288,7 +288,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'remove' && AllowEdit()
 if ($_REQUEST['modfunc'] != 'remove') {
 
 
-    $sql = 'SELECT PERIOD_ID,TITLE,SHORT_NAME,SORT_ORDER,LENGTH,START_TIME,END_TIME,ATTENDANCE AS UA,IGNORE_SCHEDULING AS IGS,ATTENDANCE,IGNORE_SCHEDULING FROM college_periods WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER';
+    $sql = 'SELECT PERIOD_ID,TITLE,SHORT_NAME,SORT_ORDER,LENGTH,START_TIME,END_TIME,ATTENDANCE AS UA,IGNORE_SCHEDULING AS IGS,ATTENDANCE,IGNORE_SCHEDULING FROM college_periods WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER';
     $QI = DBQuery($sql);
 
 
@@ -326,7 +326,7 @@ if ($_REQUEST['modfunc'] != 'remove') {
 
     $count = count($periods_RET);
     if ($count != 0) {
-        $maxPeriodId = DBGet(DBQuery("select max(PERIOD_ID) as maxPeriodId from college_periods WHERE SYEAR='" . UserSyear() . "' AND SCHOOL_ID='" . UserCollege() . "'"));
+        $maxPeriodId = DBGet(DBQuery("select max(PERIOD_ID) as maxPeriodId from college_periods WHERE SYEAR='" . UserSyear() . "' AND COLLEGE_ID='" . UserCollege() . "'"));
 
         $maxPeriodId = $maxPeriodId[1][MAXPERIODID];
         echo "<input type=hidden id=count name=count value=$maxPeriodId />";

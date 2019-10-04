@@ -41,7 +41,7 @@ echo '<center><div id="conf_div"></div></center>';
 
 echo '<div class="row" id="resp_table">';
 echo '<div class="col-md-4">';
-$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE COLLEGE_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
@@ -78,7 +78,7 @@ echo '<center><div id="conf_div"></div></center>';
 
 echo '<div class="row" id="resp_table">';
 echo '<div class="col-md-6">';
-$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE COLLEGE_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
@@ -133,7 +133,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
                 echo "<table cellspacing=0  border=\"0\" style=\"border-collapse:collapse\">";
                 echo "<tr><td colspan=3 style=\"height:18px\"></td></tr>";
-                $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . $student['STUDENT_ID'] . ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
+                $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . $student['STUDENT_ID'] . ' AND PROFILE_ID=3 AND COLLEGE_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
                 // if ($StudentPicturesPath && (($file = @fopen($picture_path = $StudentPicturesPath . '/' . UserStudentID() . '.JPG', 'r')) || ($file = @fopen($picture_path = $StudentPicturesPath . '/' . UserStudentID() . '.JPG', 'r')))) {
                 // echo '<tr><td width=300><IMG SRC="' . $picture_path . '?id=' . rand(6, 100000) . '" width=150  style="padding:4px; background-color:#fff; border:1px solid #333" ></td><td width=12px></td>';
                 if (count($stu_img_info) > 0) {
@@ -148,12 +148,12 @@ if ($_REQUEST['modfunc'] == 'save') {
 
                 # ---------------- Sql Including Comment ------------------------------- #
 
-                $sql = DBGet(DBQuery('SELECT s.gender AS GENDER, s.ethnicity AS ETHNICITY, s.common_name AS COMMON_NAME,  s.social_security AS SOCIAL_SEC_NO, s.birthdate AS BIRTHDAY, s.email AS EMAIL, s.phone AS PHONE, s.language AS LANGUAGE, se.START_DATE AS START_DATE,sec.TITLE AS STATUS, se.NEXT_SCHOOL AS ROLLING  FROM students s, student_enrollment se,student_enrollment_codes sec WHERE s.STUDENT_ID=\'' . $_SESSION['student_id'] . '\'  AND se.SCHOOL_ID=\'' . UserCollege() . '\' AND se.SYEAR=sec.SYEAR AND s.STUDENT_ID=se.STUDENT_ID'), array('BIRTHDAY' => 'ProperDate'));
+                $sql = DBGet(DBQuery('SELECT s.gender AS GENDER, s.ethnicity AS ETHNICITY, s.common_name AS COMMON_NAME,  s.social_security AS SOCIAL_SEC_NO, s.birthdate AS BIRTHDAY, s.email AS EMAIL, s.phone AS PHONE, s.language AS LANGUAGE, se.START_DATE AS START_DATE,sec.TITLE AS STATUS, se.NEXT_COLLEGE AS ROLLING  FROM students s, student_enrollment se,student_enrollment_codes sec WHERE s.STUDENT_ID=\'' . $_SESSION['student_id'] . '\'  AND se.COLLEGE_ID=\'' . UserCollege() . '\' AND se.SYEAR=sec.SYEAR AND s.STUDENT_ID=se.STUDENT_ID'), array('BIRTHDAY' => 'ProperDate'));
 
 
                 $sql = $sql[1];
 
-                $medical_info = DBGet((DBQuery('SELECT  mi.physician AS PHYSICIAN_NAME, mi.physician_phone AS PHYSICIAN_PHONO,mi.preferred_hospital AS HOSPITAL FROM medical_info mi WHERE mi.STUDENT_ID=\'' . $_SESSION['student_id'] . '\'  AND mi.SCHOOL_ID=\'' . UserCollege() . '\'')));
+                $medical_info = DBGet((DBQuery('SELECT  mi.physician AS PHYSICIAN_NAME, mi.physician_phone AS PHYSICIAN_PHONO,mi.preferred_hospital AS HOSPITAL FROM medical_info mi WHERE mi.STUDENT_ID=\'' . $_SESSION['student_id'] . '\'  AND mi.COLLEGE_ID=\'' . UserCollege() . '\'')));
                 $sql['PHYSICIAN_NAME'] = $medical_info[1]['PHYSICIAN_NAME'];
                 $sql['PHYSICIAN_PHONO'] = $medical_info[1]['PHYSICIAN_PHONO'];
                 $sql['HOSPITAL'] = $medical_info[1]['HOSPITAL'];
@@ -666,7 +666,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
 # ---------------------------------- Nurse Visit Record ---------------- #
 
-                $res_visit = DBGet(DBQuery("SELECT SCHOOL_DATE,TIME_IN,TIME_OUT,REASON,RESULT,COMMENTS FROM student_medical_visits WHERE student_id='" . $_SESSION['student_id'] . "'"), array('SCHOOL_DATE' => 'ProperDate'));
+                $res_visit = DBGet(DBQuery("SELECT COLLEGE_DATE,TIME_IN,TIME_OUT,REASON,RESULT,COMMENTS FROM student_medical_visits WHERE student_id='" . $_SESSION['student_id'] . "'"), array('COLLEGE_DATE' => 'ProperDate'));
 
                 if ($_REQUEST['category']['2'] && count($res_visit) >= 1) {
                     //------------------------------------------------------------------------------
@@ -675,9 +675,9 @@ if ($_REQUEST['modfunc'] == 'save') {
 				<tr><td colspan=2 style=\"height:5px;\"></td></tr>";
 
                     foreach ($res_visit as $row_visit) {
-                        if ($row_visit['SCHOOL_DATE'] != '') {
+                        if ($row_visit['COLLEGE_DATE'] != '') {
                             echo "<tr><td width=21% style='font-weight:bold'>Date:</td>";
-                            echo "<td width=79%>" . $row_visit['SCHOOL_DATE'] . "</td></tr>";
+                            echo "<td width=79%>" . $row_visit['COLLEGE_DATE'] . "</td></tr>";
                         }
                         if ($row_visit['TIME_IN'] != '') {
                             echo "<tr><td style='font-weight:bold'>Time In:</td>";
@@ -753,8 +753,8 @@ if ($_REQUEST['modfunc'] == 'save') {
 
 
                 if ($_REQUEST['category']['6']) {
-                    $stu_enr = DBGet(DBQuery('SELECT se.*,s.TITLE AS SCHOOL,sg.TITLE AS GRADE FROM student_enrollment se,colleges s,college_gradelevels sg WHERE se.STUDENT_ID=' . $_SESSION['student_id'] . ' AND se.SCHOOL_ID=s.ID AND se.GRADE_ID=sg.ID'), array('START_DATE' => 'ProperDate', 'END_DATE' => 'ProperDate'));
-                    $stu_enr_col = array('SCHOOL' => 'College', 'GRADE' => 'Grade Level', 'START_DATE' => 'Start Date', 'ENROLLMENT_CODE' => 'Enrollment Code', 'END_DATE' => 'End Date', 'DROP_CODE' => 'Drop Code');
+                    $stu_enr = DBGet(DBQuery('SELECT se.*,s.TITLE AS COLLEGE,sg.TITLE AS GRADE FROM student_enrollment se,colleges s,college_gradelevels sg WHERE se.STUDENT_ID=' . $_SESSION['student_id'] . ' AND se.COLLEGE_ID=s.ID AND se.GRADE_ID=sg.ID'), array('START_DATE' => 'ProperDate', 'END_DATE' => 'ProperDate'));
+                    $stu_enr_col = array('COLLEGE' => 'College', 'GRADE' => 'Grade Level', 'START_DATE' => 'Start Date', 'ENROLLMENT_CODE' => 'Enrollment Code', 'END_DATE' => 'End Date', 'DROP_CODE' => 'Drop Code');
 
                     foreach ($stu_enr as $si => $sd) {
                         $stu_enr[$si]['END_DATE'] = ($stu_enr[$si]['END_DATE'] != '' ? $stu_enr[$si]['END_DATE'] : 'N/A');

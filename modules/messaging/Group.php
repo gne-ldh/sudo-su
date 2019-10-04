@@ -245,7 +245,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'exist_group') {
     echo '<div class="form-group m-b-0"><label class="col-md-4 control-label text-right">&nbsp;</label>';
     echo '<div class="col-md-8">';
     if (User('PROFILE') == 'admin' || User('PROFILE') == 'teacher' || User('PROFILE') == 'parent')
-        echo '<label class="checkbox-inline checkbox-switch switch-xs switch-success"><INPUT type=checkbox name=_search_all_colleges value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '><span></span>Search All Colleges</label>';
+        echo '<label class="checkbox-inline checkbox-switch switch-xs switch-success"><INPUT type=checkbox name=_search_all_colleges value=Y' . (Preferences('DEFAULT_ALL_COLLEGES') == 'Y' ? ' CHECKED' : '') . '><span></span>Search All Colleges</label>';
     echo '<label class="checkbox-inline checkbox-switch switch-xs switch-success"><INPUT type=checkbox name=_dis_user value=Y><span></span>Include Disabled User</label>';
     echo '</div>'; //.col-md-8
     echo '</div>'; //.form-group

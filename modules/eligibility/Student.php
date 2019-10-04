@@ -58,7 +58,7 @@ echo '<div id="modal_default" class="modal fade">
 echo '<center><div id="conf_div"></div></center>';
 echo'<table id="resp_table"><tr><td valign="top">';
 echo '<div>';
-   $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
+   $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE COLLEGE_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
@@ -116,7 +116,7 @@ if ($_REQUEST['modfunc'] == 'remove' && AllowEdit()) {
 }
 
 if (UserStudentID() && !$_REQUEST['modfunc']) {
-    $start_end_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_config WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND PROGRAM=\'eligibility\' AND TITLE IN (\'' . 'START_DAY' . '\',\'' . 'END_DAY' . '\')'));
+    $start_end_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_config WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND PROGRAM=\'eligibility\' AND TITLE IN (\'' . 'START_DAY' . '\',\'' . 'END_DAY' . '\')'));
     if (count($start_end_RET)) {
         foreach ($start_end_RET as $value)
             $$value['TITLE'] = $value['VALUE'];
@@ -158,7 +158,7 @@ if (UserStudentID() && !$_REQUEST['modfunc']) {
         $end_date = strtoupper(date('d-M-y', $start_time + 60 * 60 * 24 * 7));
     }
 
-    $sql = 'SELECT max(unix_timestamp(END_DATE)) as END_DATE FROM eligibility_activities WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\'';
+    $sql = 'SELECT max(unix_timestamp(END_DATE)) as END_DATE FROM eligibility_activities WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\'';
     $end_year = DBGet(DBQuery($sql));
     $end_year = $end_year[1]['END_DATE'];
 
@@ -204,7 +204,7 @@ if (UserStudentID() && !$_REQUEST['modfunc']) {
 
     $RET = DBGet(DBQuery($qr), array('START_DATE' => 'ProperDate', 'END_DATE' => 'ProperDate'));
 
-    $activities_RET = DBGet(DBQuery('SELECT ID,TITLE FROM eligibility_activities WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
+    $activities_RET = DBGet(DBQuery('SELECT ID,TITLE FROM eligibility_activities WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
     if (count($activities_RET)) {
         foreach ($activities_RET as $value)
             $activities[$value['ID']] = $value['TITLE'];
@@ -224,7 +224,7 @@ if (UserStudentID() && !$_REQUEST['modfunc']) {
     echo '</FORM>';
 
     echo '</div><div class="col-md-6">';
-   $RET = DBGet(DBQuery('SELECT e.ELIGIBILITY_CODE,c.TITLE as COURSE_TITLE FROM eligibility e,courses c,course_periods cp WHERE e.STUDENT_ID=\'' . UserStudentID() . '\' AND e.SYEAR=\'' . UserSyear() . '\' AND e.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cp.COURSE_ID=c.COURSE_ID AND e.SCHOOL_DATE BETWEEN \'' . date('Y-m-d', strtotime($start_date)) . '\' AND \'' . date('Y-m-d', strtotime($end_date)) . '\''), array('ELIGIBILITY_CODE' => '_makeLower'));
+   $RET = DBGet(DBQuery('SELECT e.ELIGIBILITY_CODE,c.TITLE as COURSE_TITLE FROM eligibility e,courses c,course_periods cp WHERE e.STUDENT_ID=\'' . UserStudentID() . '\' AND e.SYEAR=\'' . UserSyear() . '\' AND e.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cp.COURSE_ID=c.COURSE_ID AND e.COLLEGE_DATE BETWEEN \'' . date('Y-m-d', strtotime($start_date)) . '\' AND \'' . date('Y-m-d', strtotime($end_date)) . '\''), array('ELIGIBILITY_CODE' => '_makeLower'));
     $columns = array('COURSE_TITLE' => 'Course', 'ELIGIBILITY_CODE' => 'Grade');
     ListOutputNew($RET, $columns, 'Course', 'Courses');
 

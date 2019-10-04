@@ -277,10 +277,10 @@ function GetMP($mp='',$column='TITLE',$syear,$college)
 	if(!$_openSIS['GetMP'])
 	{
            
-		$_openSIS['GetMP'] = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,POST_START_DATE,POST_END_DATE,\'college_quarters\' AS `TABLE`,\'SEMESTER_ID\' AS `PA_ID`,SORT_ORDER,SHORT_NAME,START_DATE,END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS FROM college_quarters         WHERE SYEAR=\''.$syear.'\' AND SCHOOL_ID=\''.$college.'\'
-					UNION      SELECT MARKING_PERIOD_ID,TITLE,POST_START_DATE,POST_END_DATE,\'college_semesters\' AS `TABLE`,\'YEAR_ID\' AS `PA_ID`,SORT_ORDER,SHORT_NAME,START_DATE,END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS FROM college_semesters        WHERE SYEAR=\''.$syear.'\' AND SCHOOL_ID=\''.$college.'\'
-					UNION      SELECT MARKING_PERIOD_ID,TITLE,POST_START_DATE,POST_END_DATE,\'college_years\' AS `TABLE`, \'-1\' AS `PA_ID`,SORT_ORDER,SHORT_NAME,START_DATE,END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS FROM college_years            WHERE SYEAR=\''.$syear.'\' AND SCHOOL_ID=\''.$college.'\'
-					UNION      SELECT MARKING_PERIOD_ID,TITLE,POST_START_DATE,POST_END_DATE,\'college_progress_periods\' AS `TABLE`, \'-1\' AS `PA_ID`,SORT_ORDER,SHORT_NAME,START_DATE,END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS FROM college_progress_periods WHERE SYEAR=\''.$syear.'\' AND SCHOOL_ID=\''.$college.'\''),array(),array('MARKING_PERIOD_ID'));
+		$_openSIS['GetMP'] = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,POST_START_DATE,POST_END_DATE,\'college_quarters\' AS `TABLE`,\'SEMESTER_ID\' AS `PA_ID`,SORT_ORDER,SHORT_NAME,START_DATE,END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS FROM college_quarters         WHERE SYEAR=\''.$syear.'\' AND COLLEGE_ID=\''.$college.'\'
+					UNION      SELECT MARKING_PERIOD_ID,TITLE,POST_START_DATE,POST_END_DATE,\'college_semesters\' AS `TABLE`,\'YEAR_ID\' AS `PA_ID`,SORT_ORDER,SHORT_NAME,START_DATE,END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS FROM college_semesters        WHERE SYEAR=\''.$syear.'\' AND COLLEGE_ID=\''.$college.'\'
+					UNION      SELECT MARKING_PERIOD_ID,TITLE,POST_START_DATE,POST_END_DATE,\'college_years\' AS `TABLE`, \'-1\' AS `PA_ID`,SORT_ORDER,SHORT_NAME,START_DATE,END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS FROM college_years            WHERE SYEAR=\''.$syear.'\' AND COLLEGE_ID=\''.$college.'\'
+					UNION      SELECT MARKING_PERIOD_ID,TITLE,POST_START_DATE,POST_END_DATE,\'college_progress_periods\' AS `TABLE`, \'-1\' AS `PA_ID`,SORT_ORDER,SHORT_NAME,START_DATE,END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS FROM college_progress_periods WHERE SYEAR=\''.$syear.'\' AND COLLEGE_ID=\''.$college.'\''),array(),array('MARKING_PERIOD_ID'));
 
         }
         
@@ -353,7 +353,7 @@ $cp=DBGet(DBQuery('SELECT * FROM course_periods WHERE COURSE_PERIOD_ID='.$course
 		return $percent;
 
 	if(!$_openSIS['_makeLetterGrade']['grades'][$grade_scale_id])
-		$_openSIS['_makeLetterGrade']['grades'][$grade_scale_id] = DBGet(DBQuery('SELECT TITLE,ID,BREAK_OFF FROM report_card_grades WHERE SYEAR=\''.$cp[1]['SYEAR'].'\' AND SCHOOL_ID=\''.$cp[1]['SCHOOL_ID'].'\' AND GRADE_SCALE_ID=\''.$grade_scale_id.'\' ORDER BY BREAK_OFF IS NOT NULL DESC,BREAK_OFF DESC,SORT_ORDER'));
+		$_openSIS['_makeLetterGrade']['grades'][$grade_scale_id] = DBGet(DBQuery('SELECT TITLE,ID,BREAK_OFF FROM report_card_grades WHERE SYEAR=\''.$cp[1]['SYEAR'].'\' AND COLLEGE_ID=\''.$cp[1]['COLLEGE_ID'].'\' AND GRADE_SCALE_ID=\''.$grade_scale_id.'\' ORDER BY BREAK_OFF IS NOT NULL DESC,BREAK_OFF DESC,SORT_ORDER'));
 	
 	foreach($_openSIS['_makeLetterGrade']['grades'][$grade_scale_id] as $grade)
 	{
@@ -390,11 +390,11 @@ if(count($validate) > 0)
                         if($k!='UPDATED_BY')
                         {
                             if($k=='ID')
-                                $data['data'][$i]['SCHOOL_ID']=$val;
+                                $data['data'][$i]['COLLEGE_ID']=$val;
                             else if($k=='SYEAR')
-                                $data['data'][$i]['SCHOOL_YEAR']=$val;
+                                $data['data'][$i]['COLLEGE_YEAR']=$val;
                              else if($k=='TITLE')
-                                $data['data'][$i]['SCHOOL_NAME']=$val;
+                                $data['data'][$i]['COLLEGE_NAME']=$val;
                              else if($k=='WWW_ADDRESS')
                                 $data['data'][$i]['URL']=$val;
                              else
@@ -416,18 +416,18 @@ if(count($validate) > 0)
             $i=1;
             foreach($college_info as $key=>$val)
             {
-                echo'<SCHOOL_'.$i.'>';
+                echo'<COLLEGE_'.$i.'>';
                 foreach ($val as $vkey => $value) {
                     if($vkey!='LAST_UPDATED')
                     {
                         if($vkey!='UPDATED_BY')
                         {
                             if($vkey=='ID')
-                                 echo '<SCHOOL_ID>'.htmlentities($value).'</SCHOOL_ID>';
+                                 echo '<COLLEGE_ID>'.htmlentities($value).'</COLLEGE_ID>';
                             else if($vkey=='SYEAR')
-                                 echo '<SCHOOL_YEAR>'.htmlentities($value).'</SCHOOL_YEAR>';
+                                 echo '<COLLEGE_YEAR>'.htmlentities($value).'</COLLEGE_YEAR>';
                             else if($vkey=='TITLE')
-                                 echo '<SCHOOL_NAME>'.htmlentities($value).'</SCHOOL_NAME>';
+                                 echo '<COLLEGE_NAME>'.htmlentities($value).'</COLLEGE_NAME>';
                             else if($vkey=='WWW_ADDRESS')
                                  echo '<URL>'.htmlentities($value).'</URL>';
                             else
@@ -435,7 +435,7 @@ if(count($validate) > 0)
                         }
                     }
                 }
-                 echo'</SCHOOL_'.$i.'>';
+                 echo'</COLLEGE_'.$i.'>';
                  $i++;
             }
             echo '</data>';

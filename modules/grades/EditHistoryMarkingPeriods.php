@@ -56,7 +56,7 @@ if ($_REQUEST['modfunc'] == 'update') {
             $id_RET = DBGet(DBQuery('SELECT  max(id) AS ID from marking_period_id_generator'));
             $MARKING_PERIOD_ID_VALUE = $id_RET[1]['ID'];
             $sql = 'INSERT INTO history_marking_periods ';
-            $fields = 'MARKING_PERIOD_ID, SCHOOL_ID, ';
+            $fields = 'MARKING_PERIOD_ID, COLLEGE_ID, ';
             $values = $MARKING_PERIOD_ID_VALUE . ", " . UserCollege() . ", ";
 
             $go = false;
@@ -85,7 +85,7 @@ if (!$_REQUEST['modfunc']) {
     DrawHeader(ProgramTitle(), SubmitButton('Save', '', 'class="btn btn-primary"'));
     echo '<hr class="no-margin"/>';
 
-    $sql = 'SELECT * FROM history_marking_periods WHERE SCHOOL_ID = ' . UserCollege() . ' ORDER BY POST_END_DATE';
+    $sql = 'SELECT * FROM history_marking_periods WHERE COLLEGE_ID = ' . UserCollege() . ' ORDER BY POST_END_DATE';
 
     $functions = array('MP_TYPE' => 'makeSelectInput',
         'NAME' => 'makeTextInput',
