@@ -1,4 +1,5 @@
 <?php
+/*
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
 #  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
@@ -70,4 +71,5 @@ $exceptions['scheduling'] = array(
 						'scheduling/Scheduler.php'=>true,
                         'scheduling/StudentScheduleReport.php'=>'Schedule Report'
 					);
+ */
 ?>
