@@ -26,7 +26,7 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-$menu['grades']['admin'] = array(
+/*$menu['grades']['admin'] = array(
 						'grades/ReportCards.php'=>'Report Cards',
 						//'grades/CalcGPA.php'=>'Calculate GPA',
 						'grades/Transcripts.php'=>'Transcripts',
@@ -82,5 +82,5 @@ $menu['users']['admin'] += array(
 
 $exceptions['grades'] = array(
 						'grades/CalcGPA.php'=>true
-					);
+					);*/
 ?>

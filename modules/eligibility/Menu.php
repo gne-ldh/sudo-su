@@ -1,4 +1,5 @@
 <?php
+/*
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
 #  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
@@ -57,4 +58,5 @@ $exceptions['eligibility'] = array(
 $exceptions['users'] += array(
 						'users/TeacherPrograms.php?include=eligibility/EnterEligibility.php'=>true
 					);
+ */
 ?>

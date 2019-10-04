@@ -25,7 +25,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #***************************************************************************************
-include('../../RedirectModulesInc.php');
+/*include('../../RedirectModulesInc.php');
 $menu['messaging']['admin'] = array(
 						'messaging/Inbox.php'=>'Inbox',
 						'messaging/Compose.php'=>'Compose',
@@ -62,4 +62,5 @@ $menu['messaging']['student'] = array(
 					);
 
 
+ */
 ?>
