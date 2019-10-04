@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -239,7 +239,7 @@ echo '</div>'; //.row
 #############################################CUSTOM FIELDS###############################
 
 
-echo '<h5 class="pt-20 text-primary">School Information</h5>';
+echo '<h5 class="pt-20 text-primary">College Information</h5>';
 
 
 echo '<div class="row">';
@@ -259,10 +259,10 @@ echo '</div>'; //.row
 
 
 if ($_REQUEST['student_id'] != 'new' && $student['SCHOOL_ID'])
-    $school_id = $student['SCHOOL_ID'];
+    $college_id = $student['SCHOOL_ID'];
 else
-    $school_id = UserSchool();
-$sql = 'SELECT ID,TITLE FROM school_gradelevels WHERE SCHOOL_ID=\'' . $school_id . '\' ORDER BY SORT_ORDER';
+    $college_id = UserCollege();
+$sql = 'SELECT ID,TITLE FROM college_gradelevels WHERE SCHOOL_ID=\'' . $college_id . '\' ORDER BY SORT_ORDER';
 $QI = DBQuery($sql);
 $grades_RET = DBGet($QI);
 unset($options);
@@ -270,7 +270,7 @@ if (count($grades_RET)) {
     foreach ($grades_RET as $value)
         $options[$value['ID']] = $value['TITLE'];
 }
-if ($_REQUEST['student_id'] != 'new' && $student['SCHOOL_ID'] != UserSchool()) {
+if ($_REQUEST['student_id'] != 'new' && $student['SCHOOL_ID'] != UserCollege()) {
     $allow_edit = $_openSIS['allow_edit'];
     $AllowEdit = $_openSIS['AllowEdit'][$_REQUEST['modname']];
     $_openSIS['AllowEdit'][$_REQUEST['modname']] = $_openSIS['allow_edit'] = false;
@@ -292,10 +292,10 @@ echo '</div>'; //.col-md-6
 
 
 if ($_REQUEST['student_id'] != 'new' && $student['SCHOOL_ID'])
-    $school_id = $student['SCHOOL_ID'];
+    $college_id = $student['SCHOOL_ID'];
 else
-    $school_id = UserSchool();
-$sql = 'SELECT * FROM school_gradelevel_sections WHERE SCHOOL_ID=\'' . $school_id . '\' ORDER BY SORT_ORDER';
+    $college_id = UserCollege();
+$sql = 'SELECT * FROM college_gradelevel_sections WHERE SCHOOL_ID=\'' . $college_id . '\' ORDER BY SORT_ORDER';
 $QI = DBQuery($sql);
 $sec_RET = DBGet($QI);
 unset($options);
@@ -303,7 +303,7 @@ if (count($sec_RET)) {
     foreach ($sec_RET as $value)
         $options[$value['ID']] = $value['NAME'];
 }
-if ($_REQUEST['student_id'] != 'new' && $student['SCHOOL_ID'] != UserSchool()) {
+if ($_REQUEST['student_id'] != 'new' && $student['SCHOOL_ID'] != UserCollege()) {
     $allow_edit = $_openSIS['allow_edit'];
     $AllowEdit = $_openSIS['AllowEdit'][$_REQUEST['modname']];
     $_openSIS['AllowEdit'][$_REQUEST['modname']] = $_openSIS['allow_edit'] = false;
@@ -372,7 +372,7 @@ echo '<div class="col-md-2">';
 
 
 if (UserStudentID()) {
-    $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . UserStudentID() . ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
+    $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . UserStudentID() . ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
 }
 if ($_REQUEST['student_id'] != 'new' && count($stu_img_info) > 0) {
 

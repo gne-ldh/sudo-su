@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -125,7 +125,7 @@ if (($_REQUEST['month_values'] && ($_POST['month_values'] || $_REQUEST['ajax']))
                     if (isset($error) && $error != '') {
                         echo '<div class="alert bg-danger alert-styled-left">' . $error . '</div>';
                     } else {
-                        $sql = 'SELECT ID,COURSE_ID,COURSE_PERIOD_ID,MARKING_PERIOD_ID FROM schedule WHERE STUDENT_ID=\'' . UserStudentID() . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\'';
+                        $sql = 'SELECT ID,COURSE_ID,COURSE_PERIOD_ID,MARKING_PERIOD_ID FROM schedule WHERE STUDENT_ID=\'' . UserStudentID() . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\'';
                         $schedules = DBGet(DBQuery($sql));
                         $c = count($schedules);
                         if ($c > 0) {
@@ -152,10 +152,10 @@ if (($_REQUEST['month_values'] && ($_POST['month_values'] || $_REQUEST['ajax']))
                                // SaveData($iu_extra, '', $field_names);
                             }
                         }
-                        $enroll_count = DBGet(DBQuery('SELECT * FROM student_enrollment WHERE STUDENT_ID=\'' . UserStudentID() . '\' AND SYEAR=' . UserSyear() . '  AND SCHOOL_ID=' . UserSchool() . ' ORDER BY START_DATE DESC LIMIT 1'));
+                        $enroll_count = DBGet(DBQuery('SELECT * FROM student_enrollment WHERE STUDENT_ID=\'' . UserStudentID() . '\' AND SYEAR=' . UserSyear() . '  AND SCHOOL_ID=' . UserCollege() . ' ORDER BY START_DATE DESC LIMIT 1'));
                         if ($enroll_count[1]['CALENDAR_ID'] == '' && $enroll_count[1]['GRADE_ID'] == '' && $enroll_count[1]['NEXT_SCHOOL'] == '') {
-                            $stu_grd_cal = DBGet(DBQuery('SELECT CALENDAR_ID,GRADE_ID,NEXT_SCHOOL FROM student_enrollment WHERE STUDENT_ID=\'' . UserStudentID() . '\' AND SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ' ORDER BY START_DATE DESC LIMIT 1,1'));
-                            $stu_grd_cal_max = DBGet(DBQuery('SELECT ID FROM student_enrollment WHERE STUDENT_ID=\'' . UserStudentID() . '\' AND SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ' ORDER BY START_DATE DESC LIMIT 1'));
+                            $stu_grd_cal = DBGet(DBQuery('SELECT CALENDAR_ID,GRADE_ID,NEXT_SCHOOL FROM student_enrollment WHERE STUDENT_ID=\'' . UserStudentID() . '\' AND SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserCollege() . ' ORDER BY START_DATE DESC LIMIT 1,1'));
+                            $stu_grd_cal_max = DBGet(DBQuery('SELECT ID FROM student_enrollment WHERE STUDENT_ID=\'' . UserStudentID() . '\' AND SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserCollege() . ' ORDER BY START_DATE DESC LIMIT 1'));
 
                             DBQuery('UPDATE student_enrollment SET CALENDAR_ID=' . $stu_grd_cal[1]['CALENDAR_ID'] . ',GRADE_ID=' . $stu_grd_cal[1]['GRADE_ID'] . ', NEXT_SCHOOL=\'' . $stu_grd_cal[1]['NEXT_SCHOOL'] . '\' WHERE ID=' . $stu_grd_cal_max[1]['ID']);
                         }
@@ -169,7 +169,7 @@ if (($_REQUEST['month_values'] && ($_POST['month_values'] || $_REQUEST['ajax']))
 }
 
 
-$functions = array('ENROLLMENT_CODE' => '_makeStartInputCodeenrl', 'DROP_CODE' => '_makeEndInputCodeenrl', 'SCHOOL_ID' => '_makeSchoolInput');
+$functions = array('ENROLLMENT_CODE' => '_makeStartInputCodeenrl', 'DROP_CODE' => '_makeEndInputCodeenrl', 'SCHOOL_ID' => '_makeCollegeInput');
 unset($THIS_RET);
 $student_RET_qry = 'SELECT e.SYEAR, s.FIRST_NAME,s.LAST_NAME,s.GENDER, e.ID,e.GRADE_ID,e.ENROLLMENT_CODE,e.START_DATE,e.DROP_CODE,e.END_DATE,e.END_DATE AS END,e.SCHOOL_ID,e.NEXT_SCHOOL,e.CALENDAR_ID FROM student_enrollment e,students s WHERE e.STUDENT_ID=\'' . UserStudentID() . '\' AND e.SYEAR=\'' . UserSyear() . '\' AND e.STUDENT_ID=s.STUDENT_ID ORDER BY e.START_DATE';
 $RET = DBGet(DBQuery($student_RET_qry));
@@ -183,7 +183,7 @@ if (count($RET)) {
 $date_counter = 1;
 
 //if($not_add==false)
-//	$link['add']['html'] = array('START_DATE'=>_makeEnrollmentDates('START_DATE',$date_counter,''),'ENROLLMENT_CODE'=>_makeStartInputCode('','ENROLLMENT_CODE'),'SCHOOL_ID'=>_makeSchoolInput('','SCHOOL_ID'));
+//	$link['add']['html'] = array('START_DATE'=>_makeEnrollmentDates('START_DATE',$date_counter,''),'ENROLLMENT_CODE'=>_makeStartInputCode('','ENROLLMENT_CODE'),'SCHOOL_ID'=>_makeCollegeInput('','SCHOOL_ID'));
 
 
 unset($THIS_RET);
@@ -213,20 +213,20 @@ if (count($RET)) {
 }
 
 
-$columns = array('START_DATE' => 'Start Date ', 'ENROLLMENT_CODE' => 'Enrollment Code', 'END_DATE' => 'Drop Date', 'DROP_CODE' => 'Drop Code', 'SCHOOL_ID' => 'School');
+$columns = array('START_DATE' => 'Start Date ', 'ENROLLMENT_CODE' => 'Enrollment Code', 'END_DATE' => 'Drop Date', 'DROP_CODE' => 'Drop Code', 'SCHOOL_ID' => 'College');
 
-$schools_RET = DBGet(DBQuery('SELECT ID,TITLE FROM schools WHERE ID!=\'' . UserSchool() . '\''));
-$next_school_options = array(UserSchool() => 'Next grade at current school', '0' => 'Retain', '-1' => 'Do not enroll after this school year');
-if (count($schools_RET)) {
-    foreach ($schools_RET as $school)
-        $next_school_options[$school['ID']] = $school['TITLE'];
+$colleges_RET = DBGet(DBQuery('SELECT ID,TITLE FROM colleges WHERE ID!=\'' . UserCollege() . '\''));
+$next_college_options = array(UserCollege() => 'Next grade at current college', '0' => 'Retain', '-1' => 'Do not enroll after this college year');
+if (count($colleges_RET)) {
+    foreach ($colleges_RET as $college)
+        $next_college_options[$college['ID']] = $college['TITLE'];
 }
 
-if (!UserSchool()) {
-    $user_school_RET = DBGet(DBQuery('SELECT SCHOOL_ID FROM student_enrollment WHERE STUDENT_ID=\'' . UserStudentID() . '\' LIMIT 1'));
-    $_SESSION['UserSchool'] = $user_school_RET[1]['SCHOOL_ID'];
+if (!UserCollege()) {
+    $user_college_RET = DBGet(DBQuery('SELECT SCHOOL_ID FROM student_enrollment WHERE STUDENT_ID=\'' . UserStudentID() . '\' LIMIT 1'));
+    $_SESSION['UserCollege'] = $user_college_RET[1]['SCHOOL_ID'];
 }
-$calendars_RET = DBGet(DBQuery('SELECT CALENDAR_ID,DEFAULT_CALENDAR,TITLE FROM school_calendars WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY DEFAULT_CALENDAR DESC'));
+$calendars_RET = DBGet(DBQuery('SELECT CALENDAR_ID,DEFAULT_CALENDAR,TITLE FROM college_calendars WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY DEFAULT_CALENDAR DESC'));
 
 if (count($calendars_RET)) {
     foreach ($calendars_RET as $calendar)
@@ -240,14 +240,14 @@ if ($_REQUEST['student_id'] != 'new') {
         $id = 'new';
 
     if ($id != 'new')
-        $next_school = $RET[count($RET)]['NEXT_SCHOOL'];
+        $next_college = $RET[count($RET)]['NEXT_SCHOOL'];
     if ($id != 'new')
         $calendar = $RET[count($RET)]['CALENDAR_ID'];
     $div = true;
 }
 else {
     $id = 'new';
-    $next_school = UserSchool();
+    $next_college = UserCollege();
     $calendar = $calendars_RET[1]['CALENDAR_ID'];
     $div = false;
 }
@@ -262,7 +262,7 @@ echo '<input type=hidden id=cal_stu_id value=' . $id . ' />';
 
 echo '<div class="row">';
 echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right" for="values[student_enrollment][' . $id . '][CALENDAR_ID]">Calendar <span class="text-danger">*</span></label><div class="col-lg-8">' . SelectInput($calendar, "values[student_enrollment][$id][CALENDAR_ID]", (!$calendar || !$div ? '' : '') . '' . (!$calendar || !$div ? '' : ''), $calendar_options, false, '', $div) . '</div></div></div>';
-echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right" for="values[student_enrollment][' . $id . '][NEXT_SCHOOL]">Rolling/Retention Options</label><div class="col-lg-8">' . SelectInput($next_school, "values[student_enrollment][$id][NEXT_SCHOOL]", (!$next_school || !$div ? '' : '') . '' . (!$next_school || !$div ? '' : ''), $next_school_options, false, '', $div) . '</div></div></div>';
+echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right" for="values[student_enrollment][' . $id . '][NEXT_SCHOOL]">Rolling/Retention Options</label><div class="col-lg-8">' . SelectInput($next_college, "values[student_enrollment][$id][NEXT_SCHOOL]", (!$next_college || !$div ? '' : '') . '' . (!$next_college || !$div ? '' : ''), $next_college_options, false, '', $div) . '</div></div></div>';
 echo '</div>'; //.row
 
 echo '<hr class="no-margin-bottom"/>';
@@ -270,16 +270,16 @@ echo '<hr class="no-margin-bottom"/>';
 if ($_REQUEST['student_id'] && $_REQUEST['student_id'] != 'new') {
 
 
-    $sql_enroll_id = DBGet(DBQuery('SELECT MAX(ID) AS M_ID FROM student_enrollment WHERE STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
+    $sql_enroll_id = DBGet(DBQuery('SELECT MAX(ID) AS M_ID FROM student_enrollment WHERE STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
 
     $enroll_id = $sql_enroll_id[1]['M_ID'];
 
-    $end_date = DBGet(DBQuery('SELECT END_DATE FROM student_enrollment WHERE STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND ID=\'' . $enroll_id . '\''));
+    $end_date = DBGet(DBQuery('SELECT END_DATE FROM student_enrollment WHERE STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND ID=\'' . $enroll_id . '\''));
 
     // print_r($_REQUEST);
     if ($end_date[1]['END_DATE']) {
         $end_date = $end_date[1]['END_DATE'];
-        DBQuery('UPDATE schedule SET END_DATE=\'' . $end_date . '\' WHERE STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND (END_DATE IS NULL OR \'' . $end_date . '\' < END_DATE )');
+        DBQuery('UPDATE schedule SET END_DATE=\'' . $end_date . '\' WHERE STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND (END_DATE IS NULL OR \'' . $end_date . '\' < END_DATE )');
         DBQuery('CALL SEAT_COUNT()');
     }
 }
@@ -293,7 +293,7 @@ if ($_REQUEST['student_id'] != 'new') {
     ListOutput($RET, $columns, 'Enrollment Record', 'Enrollment Records', $link);
     //echo "</div>";
     if ($id != 'new')
-        $next_school = $RET[count($RET)]['NEXT_SCHOOL'];
+        $next_college = $RET[count($RET)]['NEXT_SCHOOL'];
     if ($id != 'new')
         $calendar = $RET[count($RET)]['CALENDAR_ID'];
     $div = true;
@@ -303,7 +303,7 @@ else {
     echo '<div id="students">';
     ListOutputMod($RET, $columns, 'Enrollment Record', 'Enrollment Records', $link, array(), array('count' => false));
     echo "</div>";
-    $next_school = UserSchool();
+    $next_college = UserCollege();
     $calendar = $calendars_RET[1]['CALENDAR_ID'];
     $div = false;
 }

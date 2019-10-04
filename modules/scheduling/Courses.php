@@ -1,7 +1,7 @@
 <?php
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -30,7 +30,7 @@ unset($_SESSION['_REQUEST_vars']['subject_id']);unset($_SESSION['_REQUEST_vars']
 // if only one subject, select it automatically -- works for Course Setup and Choose a Course
 if($_REQUEST['modfunc']!='delete' && !$_REQUEST['subject_id'])
 {
-	$subjects_RET = DBGet(DBQuery('SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID=\''.UserSchool().'\' AND SYEAR=\''.UserSyear().'\''));
+	$subjects_RET = DBGet(DBQuery('SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\''));
 	if(count($subjects_RET)==1)
 		$_REQUEST['subject_id'] = $subjects_RET[1]['SUBJECT_ID'];
 }
@@ -44,10 +44,10 @@ if($_REQUEST['course_modfunc']=='search')
 
 	if($_REQUEST['search_term'])
 	{
-		$subjects_RET = DBGet(DBQuery("SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE (UPPER(TITLE) LIKE '%".strtoupper($_REQUEST['search_term'])."%' OR UPPER(SHORT_NAME) = '".strtoupper($_REQUEST['search_term'])."') AND SYEAR='".UserSyear()."' AND SCHOOL_ID='".UserSchool()."'"));
+		$subjects_RET = DBGet(DBQuery("SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE (UPPER(TITLE) LIKE '%".strtoupper($_REQUEST['search_term'])."%' OR UPPER(SHORT_NAME) = '".strtoupper($_REQUEST['search_term'])."') AND SYEAR='".UserSyear()."' AND SCHOOL_ID='".UserCollege()."'"));
                
-		$courses_RET = DBGet(DBQuery("SELECT SUBJECT_ID,COURSE_ID,TITLE FROM courses WHERE (UPPER(TITLE) LIKE '%".strtoupper($_REQUEST['search_term'])."%' OR UPPER(SHORT_NAME) = '".strtoupper($_REQUEST['search_term'])."') AND SYEAR='".UserSyear()."' AND SCHOOL_ID='".UserSchool()."'"));
-		$periods_RET = DBGet(DBQuery("SELECT c.SUBJECT_ID,cp.COURSE_ID,cp.COURSE_PERIOD_ID,cp.TITLE FROM course_periods cp,courses c WHERE cp.COURSE_ID=c.COURSE_ID AND (UPPER(cp.TITLE) LIKE '%".strtoupper($_REQUEST['search_term'])."%' OR UPPER(cp.SHORT_NAME) = '".strtoupper($_REQUEST['search_term'])."') AND cp.SYEAR='".UserSyear()."' AND cp.SCHOOL_ID='".UserSchool()."'"));
+		$courses_RET = DBGet(DBQuery("SELECT SUBJECT_ID,COURSE_ID,TITLE FROM courses WHERE (UPPER(TITLE) LIKE '%".strtoupper($_REQUEST['search_term'])."%' OR UPPER(SHORT_NAME) = '".strtoupper($_REQUEST['search_term'])."') AND SYEAR='".UserSyear()."' AND SCHOOL_ID='".UserCollege()."'"));
+		$periods_RET = DBGet(DBQuery("SELECT c.SUBJECT_ID,cp.COURSE_ID,cp.COURSE_PERIOD_ID,cp.TITLE FROM course_periods cp,courses c WHERE cp.COURSE_ID=c.COURSE_ID AND (UPPER(cp.TITLE) LIKE '%".strtoupper($_REQUEST['search_term'])."%' OR UPPER(cp.SHORT_NAME) = '".strtoupper($_REQUEST['search_term'])."') AND cp.SYEAR='".UserSyear()."' AND cp.SCHOOL_ID='".UserCollege()."'"));
 
 		echo '<TABLE><TR><TD valign=top>';
 		$link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]";
@@ -125,8 +125,8 @@ if($_REQUEST['tables'] && ($_POST['tables'] || $_REQUEST['ajax']) && AllowEdit()
 						$short_name = $current[1]['SHORT_NAME'];
 
 					$teacher = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME FROM staff WHERE SYEAR=\''.UserSyear().'\' AND STAFF_ID=\''.$staff_id.'\''));
-					$period = DBGet(DBQuery('SELECT TITLE FROM school_periods WHERE PERIOD_ID=\''.$period_id.'\' AND SCHOOL_ID=\''.UserSchool().'\' AND SYEAR=\''.UserSyear().'\''));
-					if(GetMP($marking_period_id,'TABLE')!='school_years')
+					$period = DBGet(DBQuery('SELECT TITLE FROM college_periods WHERE PERIOD_ID=\''.$period_id.'\' AND SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\''));
+					if(GetMP($marking_period_id,'TABLE')!='college_years')
 						$mp_title = GetMP($marking_period_id,'SHORT_NAME').' - ';
 					if(strlen($days)<5)
 						$mp_title .= $days.' - ';
@@ -138,9 +138,9 @@ if($_REQUEST['tables'] && ($_POST['tables'] || $_REQUEST['ajax']) && AllowEdit()
 
 					if(isset($columns['MARKING_PERIOD_ID']))
 					{
-						if(GetMP($columns['MARKING_PERIOD_ID'],'TABLE')=='school_years')
+						if(GetMP($columns['MARKING_PERIOD_ID'],'TABLE')=='college_years')
 							$columns['MP'] = 'FY';
-						elseif(GetMP($columns['MARKING_PERIOD_ID'],'TABLE')=='school_semesters')
+						elseif(GetMP($columns['MARKING_PERIOD_ID'],'TABLE')=='college_semesters')
 							$columns['MP'] = 'SEM';
 						else
 							$columns['MP'] = 'QTR';
@@ -173,7 +173,7 @@ if($_REQUEST['tables'] && ($_POST['tables'] || $_REQUEST['ajax']) && AllowEdit()
                                       $id[1]['ID']= $id[1]['AUTO_INCREMENT'];
                                       
 					$fields = 'SCHOOL_ID,SYEAR,';
-					$values ='\''.UserSchool().'\',\''.UserSyear().'\',';
+					$values ='\''.UserCollege().'\',\''.UserSyear().'\',';
 					$_REQUEST['subject_id'] = $id[1]['ID'];
 				}
 				elseif($table_name=='courses')
@@ -183,7 +183,7 @@ if($_REQUEST['tables'] && ($_POST['tables'] || $_REQUEST['ajax']) && AllowEdit()
                                         $id[1]['ID']= $id[1]['AUTO_INCREMENT'];
                                         $_REQUEST['course_id'] = $id[1]['ID'];
 					$fields = 'SUBJECT_ID,SCHOOL_ID,SYEAR,';
-					$values = '\''.$_REQUEST[subject_id].'\',\''.UserSchool().'\',\''.UserSyear().'\',';
+					$values = '\''.$_REQUEST[subject_id].'\',\''.UserCollege().'\',\''.UserSyear().'\',';
 					
 				}
 
@@ -196,7 +196,7 @@ if($_REQUEST['tables'] && ($_POST['tables'] || $_REQUEST['ajax']) && AllowEdit()
                                       // edited
 					$fields = 'SYEAR,SCHOOL_ID,COURSE_ID,TITLE,';
 					$teacher = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME FROM staff WHERE SYEAR=\''.UserSyear().'\' AND STAFF_ID=\''.$columns[TEACHER_ID].'\''));
-					$period = DBGet(DBQuery('SELECT TITLE FROM school_periods WHERE PERIOD_ID=\''.$columns[PERIOD_ID].'\' AND SCHOOL_ID=\''.UserSchool().'\' AND SYEAR=\''.UserSyear().'\''));
+					$period = DBGet(DBQuery('SELECT TITLE FROM college_periods WHERE PERIOD_ID=\''.$columns[PERIOD_ID].'\' AND SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\''));
 
 
 					if(!isset($columns['PARENT_ID']))
@@ -204,14 +204,14 @@ if($_REQUEST['tables'] && ($_POST['tables'] || $_REQUEST['ajax']) && AllowEdit()
 
 					if(isset($columns['MARKING_PERIOD_ID']))
 					{
-						if(GetMP($columns['MARKING_PERIOD_ID'],'TABLE')=='school_years')
+						if(GetMP($columns['MARKING_PERIOD_ID'],'TABLE')=='college_years')
 							$columns['MP'] = 'FY';
-						elseif(GetMP($columns['MARKING_PERIOD_ID'],'TABLE')=='school_semesters')
+						elseif(GetMP($columns['MARKING_PERIOD_ID'],'TABLE')=='college_semesters')
 							$columns['MP'] = 'SEM';
 						else
 							$columns['MP'] = 'QTR';
 
-						if(GetMP($columns['MARKING_PERIOD_ID'],'TABLE')!='school_years')
+						if(GetMP($columns['MARKING_PERIOD_ID'],'TABLE')!='college_years')
 							$mp_title = GetMP($columns['MARKING_PERIOD_ID'],'SHORT_NAME').' - ';
 					}
 
@@ -221,7 +221,7 @@ if($_REQUEST['tables'] && ($_POST['tables'] || $_REQUEST['ajax']) && AllowEdit()
 						$mp_title .= $columns['SHORT_NAME'].' - ';
 					$title = str_replace("'","''",$period[1]['TITLE'].' - '.$mp_title.$teacher[1]['FIRST_NAME'].' '.$teacher[1]['MIDDLE_NAME'].' '.$teacher[1]['LAST_NAME']);
 
-					$values = '\''.UserSyear().'\',\''.UserSchool().'\','.$_REQUEST[course_id].','.$title.',';
+					$values = '\''.UserSyear().'\',\''.UserCollege().'\','.$_REQUEST[course_id].','.$title.',';
 					$_REQUEST['course_period_id'] = $id[1]['ID'];
 				}
 
@@ -308,7 +308,7 @@ if((!$_REQUEST['modfunc'] || $_REQUEST['modfunc']=='choose_course') && !$_REQUES
 {
 	if($_REQUEST['modfunc']!='choose_course')
 		DrawBC("Scheduling > ".ProgramTitle());
-	$sql = 'SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID=\''.UserSchool().'\' AND SYEAR=\''.UserSyear().'\' ORDER BY TITLE';
+	$sql = 'SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\' ORDER BY TITLE';
 	$QI = DBQuery($sql);
 	$subjects_RET = DBGet($QI);
 
@@ -357,7 +357,7 @@ if((!$_REQUEST['modfunc'] || $_REQUEST['modfunc']=='choose_course') && !$_REQUES
 
 			$header .= '<TD>' . TextInput($RET['SHORT_NAME'],'tables[course_periods]['.$_REQUEST['course_period_id'].'][SHORT_NAME]','Short Name','class=form-control') . '</TD>';
 
-			$teachers_RET = DBGet(DBQuery('SELECT STAFF_ID,LAST_NAME,FIRST_NAME,MIDDLE_NAME FROM staff WHERE (SCHOOLS IS NULL OR FIND_IN_SET(\''.UserSchool().'\',SCHOOLS)>0) AND SYEAR=\''.UserSyear().'\' AND PROFILE='.'teacher'.' ORDER BY LAST_NAME,FIRST_NAME'));
+			$teachers_RET = DBGet(DBQuery('SELECT STAFF_ID,LAST_NAME,FIRST_NAME,MIDDLE_NAME FROM staff WHERE (SCHOOLS IS NULL OR FIND_IN_SET(\''.UserCollege().'\',SCHOOLS)>0) AND SYEAR=\''.UserSyear().'\' AND PROFILE='.'teacher'.' ORDER BY LAST_NAME,FIRST_NAME'));
 			if(count($teachers_RET))
 			{
 				foreach($teachers_RET as $teacher)
@@ -367,7 +367,7 @@ if((!$_REQUEST['modfunc'] || $_REQUEST['modfunc']=='choose_course') && !$_REQUES
 
 			$header .= '<TD>' . TextInput($RET['ROOM'],'tables[course_periods]['.$_REQUEST['course_period_id'].'][ROOM]','Room','class=form-control') . '</TD>';
 
-			$periods_RET = DBGet(DBQuery('SELECT PERIOD_ID,TITLE FROM school_periods WHERE SCHOOL_ID=\''.UserSchool().'\' AND SYEAR=\''.UserSyear().'\' ORDER BY SORT_ORDER'));
+			$periods_RET = DBGet(DBQuery('SELECT PERIOD_ID,TITLE FROM college_periods WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\' ORDER BY SORT_ORDER'));
 			if(count($periods_RET))
 			{
 				foreach($periods_RET as $period)
@@ -394,7 +394,7 @@ if((!$_REQUEST['modfunc'] || $_REQUEST['modfunc']=='choose_course') && !$_REQUES
 				$header .= '","days",true);\'>'.$RET['DAYS'].'</div></DIV><small><FONT color='.Preferences('TITLES').'>Meeting Days</FONT></small>';
 			$header .= '</TD>';
 			
-			$mp_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,SHORT_NAME,2 AS `TABLE`,SORT_ORDER FROM school_quarters WHERE SCHOOL_ID=\''.UserSchool().'\' AND SYEAR=\''.UserSyear().'\' UNION SELECT MARKING_PERIOD_ID,SHORT_NAME,1 AS `TABLE`,SORT_ORDER FROM school_semesters WHERE SCHOOL_ID=\''.UserSchool().'\' AND SYEAR=\''.UserSyear().'\' UNION SELECT MARKING_PERIOD_ID,SHORT_NAME,0 AS `TABLE`,SORT_ORDER FROM school_years WHERE SCHOOL_ID=\''.UserSchool().'\' AND SYEAR=\''.UserSyear().'\' ORDER BY 3,4'));
+			$mp_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,SHORT_NAME,2 AS `TABLE`,SORT_ORDER FROM college_quarters WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\' UNION SELECT MARKING_PERIOD_ID,SHORT_NAME,1 AS `TABLE`,SORT_ORDER FROM college_semesters WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\' UNION SELECT MARKING_PERIOD_ID,SHORT_NAME,0 AS `TABLE`,SORT_ORDER FROM college_years WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\' ORDER BY 3,4'));
 			unset($options);
 			if($_REQUEST['course_period_id']!='new')
 			{
@@ -421,14 +421,14 @@ if((!$_REQUEST['modfunc'] || $_REQUEST['modfunc']=='choose_course') && !$_REQUES
 			$header .= '<TD>' . CheckboxInput($RET['DOES_CLASS_RANK'],'tables[course_periods]['.$_REQUEST['course_period_id'].'][DOES_CLASS_RANK]','Affects Class Rank',$checked,$new,'<IMG SRC=assets/check.gif height=15 vspace=0 hspace=0 border=0>','<IMG SRC=assets/x.gif height=15 vspace=0 hspace=0 border=0>') . '</TD>';
 			$header .= '<TD>' . SelectInput($RET['GENDER_RESTRICTION'],'tables[course_periods]['.$_REQUEST['course_period_id'].'][GENDER_RESTRICTION]','Gender Restriction',array('N'=>'None','M'=>'Male','F'=>'Female'),false) . '</TD>';
 
-			$options_RET = DBGet(DBQuery("SELECT TITLE,ID FROM report_card_grade_scales WHERE SYEAR='".UserSyear()."' AND SCHOOL_ID='".UserSchool()."'"));
+			$options_RET = DBGet(DBQuery("SELECT TITLE,ID FROM report_card_grade_scales WHERE SYEAR='".UserSyear()."' AND SCHOOL_ID='".UserCollege()."'"));
 			$options = array();
 			foreach($options_RET as $option)
 				$options[$option['ID']] = $option['TITLE'];
 			$header .= '<TD>' . SelectInput($RET['GRADE_SCALE_ID'],'tables[course_periods]['.$_REQUEST['course_period_id'].'][GRADE_SCALE_ID]','Grading Scale',$options,'Not Graded') . '</TD>';
             //BJJ Added to handle credits
             $header .= '<TD>' . TextInput(sprintf('%0.3f',$RET['CREDITS']),'tables[course_periods]['.$_REQUEST['course_period_id'].'][CREDITS]','Credits','size=4 class=form-control') . '</TD>';
-			$options_RET = DBGet(DBQuery("SELECT TITLE,CALENDAR_ID FROM school_calendars WHERE SYEAR='".UserSyear()."' AND SCHOOL_ID='".UserSchool()."' ORDER BY DEFAULT_CALENDAR"));
+			$options_RET = DBGet(DBQuery("SELECT TITLE,CALENDAR_ID FROM college_calendars WHERE SYEAR='".UserSyear()."' AND SCHOOL_ID='".UserCollege()."' ORDER BY DEFAULT_CALENDAR"));
 			$options = array();
 			foreach($options_RET as $option)
 				$options[$option['CALENDAR_ID']] = $option['TITLE'];

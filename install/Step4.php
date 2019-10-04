@@ -1,7 +1,7 @@
 <?php
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -69,12 +69,12 @@ error_reporting(0);
                                     <li>System Requirements</li>
                                     <li>Database Connection</li>
                                     <li>Database Creation</li>
-                                    <li>School Information</li>
+                                    <li>College Information</li>
                                     <li class="active">Site Admin Account Setup</li>
                                     <li>Ready to Go!</li>
                                 </ul>
                                 <!--<h4 class="no-margin">Installation Instructions</h4>
-                                <p>Installer has successfully created your school.</p>
+                                <p>Installer has successfully created your college.</p>
                                 <p>The username and password you enter here will become the login credentials for the super administrator of the system.</p>
                                 <p>Please make sure you give a strong alphanumeric password to prevent unauthorized access to the system.</p>-->
                             </div>

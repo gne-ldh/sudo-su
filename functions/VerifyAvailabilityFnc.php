@@ -1,7 +1,7 @@
 <?php
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -47,8 +47,8 @@ function VerifyFixedSchedule($columns,$columns_var,$update=false)
     $days=$columns_var['DAYS'];
     $period=$columns_var['PERIOD_ID'];
     $room=$columns_var['ROOM_ID'];
-    $min_start_dt_chk_qr=DBGet(DBQuery("SELECT min(start_date) as start_date from  staff_school_relationship where staff_id in($all_teacher)"));
-    $min_start_dt_chk_pr=DBGet(DBQuery("SELECT min(start_date) as start_date from  staff_school_relationship where staff_id in($teacher)"));
+    $min_start_dt_chk_qr=DBGet(DBQuery("SELECT min(start_date) as start_date from  staff_college_relationship where staff_id in($all_teacher)"));
+    $min_start_dt_chk_pr=DBGet(DBQuery("SELECT min(start_date) as start_date from  staff_college_relationship where staff_id in($teacher)"));
  
     if($update)
     {
@@ -65,7 +65,7 @@ function VerifyFixedSchedule($columns,$columns_var,$update=false)
     {
         return 'Input valid details';
     }
-    $period_time =  DBGet(DBQuery("SELECT START_TIME, END_TIME FROM school_periods WHERE period_id={$period}"));
+    $period_time =  DBGet(DBQuery("SELECT START_TIME, END_TIME FROM college_periods WHERE period_id={$period}"));
     $period_time=$period_time[1];
     $start_time=$period_time['START_TIME'];
     $end_time=$period_time['END_TIME'];
@@ -78,7 +78,7 @@ function VerifyFixedSchedule($columns,$columns_var,$update=false)
     }
     $mp_append_sql=" AND begin_date<='$end_date' AND '$start_date'<=end_date AND IF (schedule_type='BLOCKED',course_period_date BETWEEN '$start_date' AND '$end_date','1')";
 
-    $period_append_sql=" AND period_id IN(SELECT period_id from school_periods WHERE start_time<='$end_time' AND '$start_time'<=end_time)";
+    $period_append_sql=" AND period_id IN(SELECT period_id from college_periods WHERE start_time<='$end_time' AND '$start_time'<=end_time)";
     $days_append_sql=' AND (';
     $days_room_append_sql=' AND (';
     $days_arr=str_split($days);
@@ -135,8 +135,8 @@ function VerifyVariableSchedule($columns)
     $mp_id=$columns['MARKING_PERIOD_ID'];
     $start_date=$columns['BEGIN_DATE'];
     $end_date=$columns['END_DATE'];
-     $min_start_dt_chk_qr=DBGet(DBQuery("SELECT min(start_date) as start_date from  staff_school_relationship where staff_id in($all_teacher)"));
-     $min_start_dt_chk_pr=DBGet(DBQuery("SELECT min(start_date) as start_date from  staff_school_relationship where staff_id in($teacher)"));
+     $min_start_dt_chk_qr=DBGet(DBQuery("SELECT min(start_date) as start_date from  staff_college_relationship where staff_id in($all_teacher)"));
+     $min_start_dt_chk_pr=DBGet(DBQuery("SELECT min(start_date) as start_date from  staff_college_relationship where staff_id in($teacher)"));
  
     if(!$_REQUEST['course_period_variable'])
         return 'Please input valid data';
@@ -227,8 +227,8 @@ function VerifyVariableSchedule_Update($columns)
     $end_date=$columns['END_DATE'];
     $id=$columns['ID'];
     $per_id=$columns['PERIOD_ID'];
-    $min_start_dt_chk_qr=DBGet(DBQuery("SELECT min(start_date) as start_date from  staff_school_relationship where staff_id in($all_teacher)"));
-    $min_start_dt_chk_pr=DBGet(DBQuery("SELECT min(start_date) as start_date from  staff_school_relationship where staff_id in($teacher)"));
+    $min_start_dt_chk_qr=DBGet(DBQuery("SELECT min(start_date) as start_date from  staff_college_relationship where staff_id in($all_teacher)"));
+    $min_start_dt_chk_pr=DBGet(DBQuery("SELECT min(start_date) as start_date from  staff_college_relationship where staff_id in($teacher)"));
  
     if(!$_REQUEST['course_period_variable'] ||  $columns['PERIOD_ID']='' ||  $columns['ROOM_ID']=='')
         return 'Please input valid data';
@@ -344,8 +344,8 @@ function VerifyBlockedSchedule($columns,$course_period_id,$sec,$edit=false)
         $mp_id=$cp_det_RET['MARKING_PERIOD_ID'];
         $start_date=$cp_det_RET['BEGIN_DATE'];
         $end_date=$cp_det_RET['END_DATE'];
-     $min_start_dt_chk_qr=DBGet(DBQuery("SELECT min(start_date) as start_date from  staff_school_relationship where staff_id in($all_teacher)"));
-     $min_start_dt_chk_pr=DBGet(DBQuery("SELECT min(start_date) as start_date from  staff_school_relationship where staff_id in($teacher)"));
+     $min_start_dt_chk_qr=DBGet(DBQuery("SELECT min(start_date) as start_date from  staff_college_relationship where staff_id in($all_teacher)"));
+     $min_start_dt_chk_pr=DBGet(DBQuery("SELECT min(start_date) as start_date from  staff_college_relationship where staff_id in($teacher)"));
 
     if($sec=='cpv')
     {
@@ -361,7 +361,7 @@ function VerifyBlockedSchedule($columns,$course_period_id,$sec,$edit=false)
             $period=$_REQUEST['values']['PERIOD_ID'];
             $room=$_REQUEST['values']['ROOM_ID'];
         }
-        $period_time =  DBGet(DBQuery("SELECT START_TIME, END_TIME FROM school_periods WHERE period_id={$period}"));
+        $period_time =  DBGet(DBQuery("SELECT START_TIME, END_TIME FROM college_periods WHERE period_id={$period}"));
         $period_time=$period_time[1];
         $start_time=$period_time['START_TIME'];
         $end_time=$period_time['END_TIME'];
@@ -471,7 +471,7 @@ function VerifyStudentSchedule($course_RET,$student_id='')
     }
     if(count($course_RET)>0)
     {
-        $schedule_exist = DBGet(DBQuery("SELECT *  FROM `schedule` WHERE `syear` =".$course_RET[1]['SYEAR']." AND `school_id` =".$course_RET[1]['SCHOOL_ID']." AND `student_id` =".$student_id." AND `course_id` =".$course_RET[1]['COURSE_ID']." AND `course_period_id` = ".$course_RET[1]['COURSE_PERIOD_ID'].' AND (END_DATE>="'.date('Y-m-d').'" OR END_DATE IS NULL OR END_DATE="0000-00-00")'));
+        $schedule_exist = DBGet(DBQuery("SELECT *  FROM `schedule` WHERE `syear` =".$course_RET[1]['SYEAR']." AND `college_id` =".$course_RET[1]['SCHOOL_ID']." AND `student_id` =".$student_id." AND `course_id` =".$course_RET[1]['COURSE_ID']." AND `course_period_id` = ".$course_RET[1]['COURSE_PERIOD_ID'].' AND (END_DATE>="'.date('Y-m-d').'" OR END_DATE IS NULL OR END_DATE="0000-00-00")'));
         if(count($schedule_exist)>0)
         {
             return 'Course period already scheduled';
@@ -519,7 +519,7 @@ function VerifyStudentSchedule($course_RET,$student_id='')
         $start_time=$course_RET[1]['START_TIME'];
         $end_time=$course_RET[1]['END_TIME'];
     
-        $period_days_append_sql=" AND course_period_id IN(SELECT course_period_id from course_period_var cpv,school_periods sp WHERE cpv.period_id=sp.period_id AND ignore_scheduling IS NULL AND sp.start_time<='$end_time' AND '$start_time'<=sp.end_time AND (";
+        $period_days_append_sql=" AND course_period_id IN(SELECT course_period_id from course_period_var cpv,college_periods sp WHERE cpv.period_id=sp.period_id AND ignore_scheduling IS NULL AND sp.start_time<='$end_time' AND '$start_time'<=sp.end_time AND (";
         $days_arr=str_split($days);
         foreach($days_arr as $day)
         {
@@ -529,7 +529,7 @@ function VerifyStudentSchedule($course_RET,$student_id='')
     }
     elseif($course_RET[1]['SCHEDULE_TYPE']=='VARIABLE')
     {
-        $period_days_append_sql=" AND course_period_id IN(SELECT course_period_id from course_period_var cpv,school_periods sp WHERE cpv.period_id=sp.period_id AND ignore_scheduling IS NULL AND (";
+        $period_days_append_sql=" AND course_period_id IN(SELECT course_period_id from course_period_var cpv,college_periods sp WHERE cpv.period_id=sp.period_id AND ignore_scheduling IS NULL AND (";
         foreach($course_RET as $period_day)
         {
             $period_days_append_sql .="(sp.start_time<='$period_day[END_TIME]' AND '$period_day[START_TIME]'<=sp.end_time AND DAYS LIKE '%$period_day[DAYS]%') OR ";
@@ -538,7 +538,7 @@ function VerifyStudentSchedule($course_RET,$student_id='')
     }
     elseif($course_RET[1]['SCHEDULE_TYPE']=='BLOCKED')
     {
-        $period_days_append_sql=" AND course_period_id IN(SELECT course_period_id from course_period_var cpv,school_periods sp WHERE cpv.period_id=sp.period_id AND ignore_scheduling IS NULL AND (";
+        $period_days_append_sql=" AND course_period_id IN(SELECT course_period_id from course_period_var cpv,college_periods sp WHERE cpv.period_id=sp.period_id AND ignore_scheduling IS NULL AND (";
         foreach($course_RET as $period_date)
         {
             $period_days_append_sql .="(sp.start_time<='$period_date[END_TIME]' AND '$period_date[START_TIME]'<=sp.end_time AND IF(course_period_date IS NULL, course_period_date='$period_date[COURSE_PERIOD_DATE]',DAYS LIKE '%$period_date[DAYS]%')) OR ";

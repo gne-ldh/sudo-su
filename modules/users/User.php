@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -41,7 +41,7 @@ if (isset($_REQUEST['user_checkbox']) && count($_REQUEST['user_checkbox']) > 0) 
 
 $st_flag = false;
 $error = false;
-$error_school = '';
+$error_college = '';
 if ($_REQUEST['staff_id'] != 'new') {
     $profile = DBGet(DBQuery('SELECT id FROM user_profiles WHERE profile = \'' . 'parent' . '\''));
     $parent_ids_arr = array();
@@ -128,7 +128,7 @@ if ($_REQUEST['modfunc'] == 'remove_stu') {
             $_openSIS['allow_edit'] = true;
     }
 
-    unset($schools);
+    unset($colleges);
 
     if ($_REQUEST['modfunc'] == 'update') {
         $up_go = 'n';
@@ -417,9 +417,9 @@ if ($_REQUEST['modfunc'] == 'remove_stu') {
         }
 
 
-        $sql = 'SELECT count(s.ID) as schools FROM schools s,staff st INNER JOIN staff_school_relationship ssr USING(staff_id) WHERE s.id=ssr.school_id AND ssr.syear=' . UserSyear() . ' AND st.staff_id=' . User('STAFF_ID');
-        $school_admin = DBGet(DBQuery($sql));
-        $submit_btn = SubmitButton('Save', '', 'class="btn btn-primary pull-right" onclick="return formcheck_user_user_mod(' . $_SESSION[staff_school_chkbox_id] . ');"');
+        $sql = 'SELECT count(s.ID) as colleges FROM colleges s,staff st INNER JOIN staff_college_relationship ssr USING(staff_id) WHERE s.id=ssr.college_id AND ssr.syear=' . UserSyear() . ' AND st.staff_id=' . User('STAFF_ID');
+        $college_admin = DBGet(DBQuery($sql));
+        $submit_btn = SubmitButton('Save', '', 'class="btn btn-primary pull-right" onclick="return formcheck_user_user_mod(' . $_SESSION[staff_college_chkbox_id] . ');"');
 
         PopTable('footer', $submit_btn);
         echo '</FORM>';

@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -36,7 +36,7 @@ include 'Warehouse.php';
                                 cpv.PERIOD_ID,s.MARKING_PERIOD_ID as COURSE_MARKING_PERIOD_ID,cp.MARKING_PERIOD_ID as mpa_id,cp.MP,sp.SORT_ORDER,
                                 c.TITLE,cp.COURSE_PERIOD_ID AS PERIOD_PULLDOWN,
                                 s.STUDENT_ID,r.TITLE AS ROOM,(SELECT GROUP_CONCAT(cpv.DAYS) FROM course_period_var cpv WHERE cpv.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID) as DAYS,SCHEDULER_LOCK,CONCAT(st.LAST_NAME, \'' . ' ' . '\' ,st.FIRST_NAME) AS MODIFIED_NAME
-                                FROM courses c,course_periods cp,course_period_var cpv,rooms r,school_periods sp,schedule s
+                                FROM courses c,course_periods cp,course_period_var cpv,rooms r,college_periods sp,schedule s
                                 LEFT JOIN staff st ON s.MODIFIED_BY = st.STAFF_ID
                                 WHERE
                                 s.COURSE_ID = c.COURSE_ID AND s.COURSE_ID = cp.COURSE_ID

@@ -1,7 +1,7 @@
 <?php
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -37,7 +37,7 @@ if($_REQUEST['title'])
     $gender_res = DBGet(DBQuery('SELECT GENDER_RESTRICTION FROM course_periods WHERE COURSE_PERIOD_ID='.$_REQUEST['course_period_id']));
     $marking_period= DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM course_periods WHERE COURSE_PERIOD_ID='.$_REQUEST['course_period_id']));
     if($marking_period[1]['MARKING_PERIOD_ID']==''){
-        $get_syear_mpid=DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM school_years WHERE SCHOOL_ID='.UserSchool().' AND SYEAR='.UserSyear()));
+        $get_syear_mpid=DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM college_years WHERE SCHOOL_ID='.UserCollege().' AND SYEAR='.UserSyear()));
         $marking_period=$get_syear_mpid;
     }
     $get_mp_det=DBGet(DBQuery('SELECT * FROM marking_periods WHERE MARKING_PERIOD_ID='.$marking_period[1]['MARKING_PERIOD_ID']));

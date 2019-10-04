@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for publirc and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -43,7 +43,7 @@ if ($btn == 'Update' || $btn == '') {
     $btn = 'old';
 }
 $nsc = optional_param('nsc', '', PARAM_SPCL);
-if ($_REQUEST['new_school'] != 'true') {
+if ($_REQUEST['new_college'] != 'true') {
     $ns = "NT";
 } else {
     $ns = "TT";
@@ -80,10 +80,10 @@ error_reporting(1);
 
 $start_time = time();
 include 'Warehouse.php';
-$old_school = UserSchool();
+$old_college = UserCollege();
 $old_syear = UserSyear();
 
-if ((!$_SESSION['UserMP'] || (optional_param('school', '', PARAM_SPCL) && optional_param('school', '', PARAM_SPCL) != $old_school) || (optional_param('syear', 0, PARAM_SPCL) && optional_param('syear', 0, PARAM_SPCL) != $old_syear)) && User('PROFILE') != 'parent')
+if ((!$_SESSION['UserMP'] || (optional_param('college', '', PARAM_SPCL) && optional_param('college', '', PARAM_SPCL) != $old_college) || (optional_param('syear', 0, PARAM_SPCL) && optional_param('syear', 0, PARAM_SPCL) != $old_syear)) && User('PROFILE') != 'parent')
     $_SESSION['UserMP'] = GetCurrentMP('QTR', DBDate());
 
 array_rwalk($_REQUEST, 'strip_tags');
@@ -183,11 +183,11 @@ echo '<div class="navbar navbar-inverse bg-white">
                 <ul class="nav navbar-nav navbar-right">';
 
 if (User('PROFILE') == 'teacher') {
-    echo "<li><FORM name=head_frm id=head_frm action=Side.php?modfunc=update&btnn=$btn&nsc=$ns&act=school method=POST><div class=\"form-group\"><INPUT type=hidden name=modcat value='' id=modcat_input>";
-    $RET = DBGet(DBQuery('SELECT s.ID,s.TITLE FROM schools s,staff st INNER JOIN staff_school_relationship ssr USING(staff_id) WHERE s.id=ssr.school_id AND ssr.syear=\'' . UserSyear() . '\' AND st.staff_id=\'' . $_SESSION[STAFF_ID] . '\' AND (ssr.END_DATE>=curdate() OR ssr.END_DATE=\'0000-00-00\' OR ssr.END_DATE IS NULL)'));
-    echo "<SELECT class=\"select-search\" style=\"width: 200px;\" name=school onChange='this.form.submit();'>";
-    foreach ($RET as $school) {
-        echo "<OPTION value=$school[ID]" . ((UserSchool() == $school['ID']) ? ' SELECTED' : '') . ">" . $school['TITLE'] . "</OPTION>";
+    echo "<li><FORM name=head_frm id=head_frm action=Side.php?modfunc=update&btnn=$btn&nsc=$ns&act=college method=POST><div class=\"form-group\"><INPUT type=hidden name=modcat value='' id=modcat_input>";
+    $RET = DBGet(DBQuery('SELECT s.ID,s.TITLE FROM colleges s,staff st INNER JOIN staff_college_relationship ssr USING(staff_id) WHERE s.id=ssr.college_id AND ssr.syear=\'' . UserSyear() . '\' AND st.staff_id=\'' . $_SESSION[STAFF_ID] . '\' AND (ssr.END_DATE>=curdate() OR ssr.END_DATE=\'0000-00-00\' OR ssr.END_DATE IS NULL)'));
+    echo "<SELECT class=\"select-search\" style=\"width: 200px;\" name=college onChange='this.form.submit();'>";
+    foreach ($RET as $college) {
+        echo "<OPTION value=$college[ID]" . ((UserCollege() == $college['ID']) ? ' SELECTED' : '') . ">" . $college['TITLE'] . "</OPTION>";
     }
     echo "</SELECT>";
     echo "</div></FORM></li>";
@@ -195,10 +195,10 @@ if (User('PROFILE') == 'teacher') {
     //===================================================================================================
     
     echo "<li><FORM name=head_frm id=head_frm action=Side.php?modfunc=update&btnn=$btn&nsc=$ns&act=syear method=POST><div class=\"form-group\"><INPUT type=hidden name=modcat value='' id=modcat_input>";
-    $school_years_RET = DBGet(DBQuery("SELECT YEAR(sy.START_DATE)AS START_DATE,YEAR(sy.END_DATE)AS END_DATE FROM school_years sy,staff st INNER JOIN staff_school_relationship ssr USING(staff_id) WHERE ssr.SYEAR=sy.SYEAR AND sy.school_id=ssr.school_id AND sy.school_id=" . UserSchool() . " AND st.staff_id=$_SESSION[STAFF_ID]"));
+    $college_years_RET = DBGet(DBQuery("SELECT YEAR(sy.START_DATE)AS START_DATE,YEAR(sy.END_DATE)AS END_DATE FROM college_years sy,staff st INNER JOIN staff_college_relationship ssr USING(staff_id) WHERE ssr.SYEAR=sy.SYEAR AND sy.college_id=ssr.college_id AND sy.college_id=" . UserCollege() . " AND st.staff_id=$_SESSION[STAFF_ID]"));
     echo "<SELECT class=\"select\" name=syear onChange='this.form.submit();' style='width:80;'>";
-    foreach ($school_years_RET as $school_years) {
-        echo "<OPTION value=$school_years[START_DATE]" . ((UserSyear() == $school_years['START_DATE']) ? ' SELECTED' : '') . ">$school_years[START_DATE]" . ($school_years[END_DATE] != $school_years[START_DATE] ? "-" . $school_years['END_DATE'] : '') . '</OPTION>';
+    foreach ($college_years_RET as $college_years) {
+        echo "<OPTION value=$college_years[START_DATE]" . ((UserSyear() == $college_years['START_DATE']) ? ' SELECTED' : '') . ">$college_years[START_DATE]" . ($college_years[END_DATE] != $college_years[START_DATE] ? "-" . $college_years['END_DATE'] : '') . '</OPTION>';
     }
     echo '</SELECT>';
     echo "</div></FORM></li>";
@@ -206,20 +206,20 @@ if (User('PROFILE') == 'teacher') {
     //===================================================================================================
     
     echo "<li><FORM name=head_frm id=head_frm action=Side.php?modfunc=update&btnn=$btn&nsc=$ns&act=mp method=POST><div class=\"form-group\"><INPUT type=hidden name=modcat value='' id=modcat_input>";
-    $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM school_quarters WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER"));
+    $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_quarters WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER"));
     if (!isset($_SESSION['UserMP'])) {
         $_SESSION['UserMP'] = GetCurrentMP('QTR', DBDate());
         $allMP = 'QTR';
     }
     if (!$RET) {
-        $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM school_semesters WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER"));
+        $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_semesters WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER"));
         if (!isset($_SESSION['UserMP'])) {
             $_SESSION['UserMP'] = GetCurrentMP('SEM', DBDate());
             $allMP = 'SEM';
         }
     }
     if (!$RET) {
-        $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM school_years WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER"));
+        $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_years WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER"));
         if (!isset($_SESSION['UserMP'])) {
             $_SESSION['UserMP'] = GetCurrentMP('FY', DBDate());
             $allMP = 'FY';
@@ -245,24 +245,24 @@ if (User('PROFILE') != 'teacher') {
                         ";
 
     if (User('PROFILE') == 'admin') {
-        $RET = DBGet(DBQuery("SELECT DISTINCT s.ID,s.TITLE FROM schools s,staff st INNER JOIN staff_school_relationship ssr USING(staff_id) WHERE s.id=ssr.school_id AND st.staff_id=$_SESSION[STAFF_ID] ORDER BY s.TITLE asc"));
-        echo "<SELECT class=\"select-search\" name=school onChange='this.form.submit();'>";
-        foreach ($RET as $school)
-            echo "<OPTION  style='padding-right:8px;' value=$school[ID]" . ((UserSchool() == $school['ID']) ? ' SELECTED' : '') . ">" . $school['TITLE'] . "</OPTION>";
+        $RET = DBGet(DBQuery("SELECT DISTINCT s.ID,s.TITLE FROM colleges s,staff st INNER JOIN staff_college_relationship ssr USING(staff_id) WHERE s.id=ssr.college_id AND st.staff_id=$_SESSION[STAFF_ID] ORDER BY s.TITLE asc"));
+        echo "<SELECT class=\"select-search\" name=college onChange='this.form.submit();'>";
+        foreach ($RET as $college)
+            echo "<OPTION  style='padding-right:8px;' value=$college[ID]" . ((UserCollege() == $college['ID']) ? ' SELECTED' : '') . ">" . $college['TITLE'] . "</OPTION>";
         echo "</SELECT>";
     }
 
     if (User('PROFILE') == 'parent') {
         $RET = DBGet(DBQuery("SELECT sju.STUDENT_ID, se.SCHOOL_ID FROM students s,students_join_people sju, student_enrollment se WHERE s.STUDENT_ID=sju.STUDENT_ID AND sju.PERSON_ID='" . User('STAFF_ID') . "' AND se.SYEAR=" . UserSyear() . " AND se.STUDENT_ID=sju.STUDENT_ID AND (('" . DBDate() . "' BETWEEN se.START_DATE AND se.END_DATE OR se.END_DATE IS NULL) AND '" . DBDate() . "'>=se.START_DATE)"));
         foreach ($RET as $student)
-            $_SESSION['UserSchool'] = $student['SCHOOL_ID'];
+            $_SESSION['UserCollege'] = $student['SCHOOL_ID'];
     }
 
     if (User('PROFILE') == 'parent' || User('PROFILE') == 'teacher') {
-        if (!$_SESSION['UserSchool']) {
+        if (!$_SESSION['UserCollege']) {
             $sch_id = DBGet(DBQuery("SELECT CURRENT_SCHOOL_ID FROM staff WHERE STAFF_ID='" . User('STAFF_ID') . "'"));
             $sch_id = $sch_id[1]['CURRENT_SCHOOL_ID'];
-            $_SESSION['UserSchool'] = $sch_id;
+            $_SESSION['UserCollege'] = $sch_id;
         }
     }
     echo '</FORM></div></li>';
@@ -272,57 +272,57 @@ if (User('PROFILE') != 'teacher') {
     echo "<li><div class=\"form-group\"><FORM name=head_frm id=head_frm action=Side.php?modfunc=update&btnn=$btn&nsc=$ns method=POST>
                         <INPUT type=hidden name=modcat value='' id=modcat_input>";
 
-    $school_years_RET1 = DBGet(DBQuery("SELECT START_DATE,END_DATE FROM school_years WHERE SCHOOL_ID=" . UserSchool()));
-    $school_years_RET1 = $school_years_RET1[1];
-    $school_years_RET1['START_DATE'] = explode("-", $school_years_RET1['START_DATE']);
-    $school_years_RET1['START_DATE'] = $school_years_RET1['START_DATE'][0];
-    $school_years_RET1['END_DATE'] = explode("-", $school_years_RET1['END_DATE']);
-    $school_years_RET1['END_DATE'] = $school_years_RET1['END_DATE'][0];
+    $college_years_RET1 = DBGet(DBQuery("SELECT START_DATE,END_DATE FROM college_years WHERE SCHOOL_ID=" . UserCollege()));
+    $college_years_RET1 = $college_years_RET1[1];
+    $college_years_RET1['START_DATE'] = explode("-", $college_years_RET1['START_DATE']);
+    $college_years_RET1['START_DATE'] = $college_years_RET1['START_DATE'][0];
+    $college_years_RET1['END_DATE'] = explode("-", $college_years_RET1['END_DATE']);
+    $college_years_RET1['END_DATE'] = $college_years_RET1['END_DATE'][0];
 
     echo "<SELECT class=\"select\" name=syear onChange='this.form.submit();'>";
 
-    if ($school_years_RET1['END_DATE'] > $school_years_RET1['START_DATE']) {
+    if ($college_years_RET1['END_DATE'] > $college_years_RET1['START_DATE']) {
         if (User('PROFILE') == 'student') {
-            $school_years_RET = DBGet(DBQuery("SELECT DISTINCT sy.START_DATE,sy.END_DATE FROM school_years sy,student_enrollment se WHERE se.SYEAR=sy.SYEAR AND se.STUDENT_ID='$_SESSION[STUDENT_ID]' AND sy.SCHOOL_ID=" . UserSchool() . " "));
+            $college_years_RET = DBGet(DBQuery("SELECT DISTINCT sy.START_DATE,sy.END_DATE FROM college_years sy,student_enrollment se WHERE se.SYEAR=sy.SYEAR AND se.STUDENT_ID='$_SESSION[STUDENT_ID]' AND sy.SCHOOL_ID=" . UserCollege() . " "));
         } elseif (User('PROFILE') == 'parent') {
             if (UserStudentID() == '') {
                 $stu_ID = DBGet(DBQuery("SELECT sju.STUDENT_ID,CONCAT(s.LAST_NAME,', ',s.FIRST_NAME) AS FULL_NAME,se.SCHOOL_ID FROM students s,students_join_people sju, student_enrollment se WHERE s.STUDENT_ID=sju.STUDENT_ID AND sju.PERSON_ID='" . User('STAFF_ID') . "' AND se.SYEAR=" . UserSyear() . " AND se.STUDENT_ID=sju.STUDENT_ID AND (('" . DBDate() . "' BETWEEN se.START_DATE AND se.END_DATE OR se.END_DATE IS NULL) AND '" . DBDate() . "'>=se.START_DATE)"));
                 $stu_ID = $stu_ID[1]['STUDENT_ID'];
             } else
                 $stu_ID = UserStudentID();
-            $school_years_RET = DBGet(DBQuery("SELECT DISTINCT sy.START_DATE,sy.END_DATE FROM school_years sy,student_enrollment se WHERE se.SYEAR=sy.SYEAR AND se.STUDENT_ID=" . $stu_ID . " AND sy.SCHOOL_ID=" . UserSchool() . " "));
+            $college_years_RET = DBGet(DBQuery("SELECT DISTINCT sy.START_DATE,sy.END_DATE FROM college_years sy,student_enrollment se WHERE se.SYEAR=sy.SYEAR AND se.STUDENT_ID=" . $stu_ID . " AND sy.SCHOOL_ID=" . UserCollege() . " "));
         }
         else {
-            $school_years_RET = DBGet(DBQuery("SELECT sy.START_DATE,sy.END_DATE FROM school_years sy ,staff s INNER JOIN staff_school_relationship ssr ON s.staff_id=ssr.staff_id WHERE sy.school_id=ssr.school_id AND sy.syear=ssr.syear AND sy.SCHOOL_ID=" . UserSchool() . " AND s.staff_id='$_SESSION[STAFF_ID]'"));
+            $college_years_RET = DBGet(DBQuery("SELECT sy.START_DATE,sy.END_DATE FROM college_years sy ,staff s INNER JOIN staff_college_relationship ssr ON s.staff_id=ssr.staff_id WHERE sy.college_id=ssr.college_id AND sy.syear=ssr.syear AND sy.SCHOOL_ID=" . UserCollege() . " AND s.staff_id='$_SESSION[STAFF_ID]'"));
         }
-        foreach ($school_years_RET as $school_years) {
-            $school_years['START_DATE'] = explode("-", $school_years['START_DATE']);
-            $school_years['START_DATE'] = $school_years['START_DATE'][0];
-            $school_years['END_DATE'] = explode("-", $school_years['END_DATE']);
-            $school_years['END_DATE'] = $school_years['END_DATE'][0];
-            echo "<OPTION value=$school_years[START_DATE]" . ((UserSyear() == $school_years['START_DATE']) ? ' SELECTED' : '') . "> $school_years[START_DATE]-" . ($school_years['END_DATE']) . "</OPTION>";
+        foreach ($college_years_RET as $college_years) {
+            $college_years['START_DATE'] = explode("-", $college_years['START_DATE']);
+            $college_years['START_DATE'] = $college_years['START_DATE'][0];
+            $college_years['END_DATE'] = explode("-", $college_years['END_DATE']);
+            $college_years['END_DATE'] = $college_years['END_DATE'][0];
+            echo "<OPTION value=$college_years[START_DATE]" . ((UserSyear() == $college_years['START_DATE']) ? ' SELECTED' : '') . "> $college_years[START_DATE]-" . ($college_years['END_DATE']) . "</OPTION>";
         }
-    } else if ($school_years_RET1['END_DATE'] == $school_years_RET1['START_DATE']) {
+    } else if ($college_years_RET1['END_DATE'] == $college_years_RET1['START_DATE']) {
         if (User('PROFILE') == 'student')
-            $school_years_RET = DBGet(DBQuery("SELECT DISTINCT sy.START_DATE,sy.END_DATE FROM school_years sy,student_enrollment se WHERE se.SYEAR=sy.SYEAR AND se.STUDENT_ID='$_SESSION[STUDENT_ID]' AND sy.SCHOOL_ID=" . UserSchool() . " "));
+            $college_years_RET = DBGet(DBQuery("SELECT DISTINCT sy.START_DATE,sy.END_DATE FROM college_years sy,student_enrollment se WHERE se.SYEAR=sy.SYEAR AND se.STUDENT_ID='$_SESSION[STUDENT_ID]' AND sy.SCHOOL_ID=" . UserCollege() . " "));
         elseif (User('PROFILE') == 'parent') {
             if (UserStudentID() == '') {
                 $stu_ID = DBGet(DBQuery("SELECT sju.STUDENT_ID,CONCAT(s.LAST_NAME,', ',s.FIRST_NAME) AS FULL_NAME,se.SCHOOL_ID FROM students s,students_join_people sju, student_enrollment se WHERE s.STUDENT_ID=sju.STUDENT_ID AND sju.PERSON_ID='" . User('STAFF_ID') . "' AND se.SYEAR=" . UserSyear() . " AND se.STUDENT_ID=sju.STUDENT_ID AND (('" . DBDate() . "' BETWEEN se.START_DATE AND se.END_DATE OR se.END_DATE IS NULL) AND '" . DBDate() . "'>=se.START_DATE)"));
                 $stu_ID = $stu_ID[1]['STUDENT_ID'];
             } else
                 $stu_ID = UserStudentID();
-            $school_years_RET = DBGet(DBQuery("SELECT DISTINCT sy.START_DATE,sy.END_DATE FROM school_years sy,student_enrollment se WHERE se.SYEAR=sy.SYEAR AND se.STUDENT_ID=" . $stu_ID . " AND sy.SCHOOL_ID=" . UserSchool() . " "));
+            $college_years_RET = DBGet(DBQuery("SELECT DISTINCT sy.START_DATE,sy.END_DATE FROM college_years sy,student_enrollment se WHERE se.SYEAR=sy.SYEAR AND se.STUDENT_ID=" . $stu_ID . " AND sy.SCHOOL_ID=" . UserCollege() . " "));
         }
         else {
-            if (UserSchool())
-                $school_years_RET = DBGet(DBQuery("SELECT sy.START_DATE,sy.END_DATE FROM school_years sy ,staff s INNER JOIN staff_school_relationship ssr ON s.staff_id=ssr.staff_id WHERE sy.school_id=ssr.school_id AND sy.syear=ssr.syear AND sy.SCHOOL_ID=" . UserSchool() . " AND s.staff_id='$_SESSION[STAFF_ID]'"));
+            if (UserCollege())
+                $college_years_RET = DBGet(DBQuery("SELECT sy.START_DATE,sy.END_DATE FROM college_years sy ,staff s INNER JOIN staff_college_relationship ssr ON s.staff_id=ssr.staff_id WHERE sy.college_id=ssr.college_id AND sy.syear=ssr.syear AND sy.SCHOOL_ID=" . UserCollege() . " AND s.staff_id='$_SESSION[STAFF_ID]'"));
             else
-                $school_years_RET = DBGet(DBQuery("SELECT sy.START_DATE,sy.END_DATE FROM school_years sy ,staff s WHERE s.SYEAR=sy.SYEAR  AND s.USERNAME=(SELECT USERNAME FROM staff  WHERE STAFF_ID='$_SESSION[STAFF_ID]')"));
+                $college_years_RET = DBGet(DBQuery("SELECT sy.START_DATE,sy.END_DATE FROM college_years sy ,staff s WHERE s.SYEAR=sy.SYEAR  AND s.USERNAME=(SELECT USERNAME FROM staff  WHERE STAFF_ID='$_SESSION[STAFF_ID]')"));
         }
-        foreach ($school_years_RET as $school_years) {
-            $school_years['START_DATE'] = explode("-", $school_years['START_DATE']);
-            $school_years_RET['START_DATE'] = $school_years['START_DATE'][0];
-            echo "<OPTION value=$school_years_RET[START_DATE]" . ((UserSyear() == $school_years_RET['START_DATE']) ? ' SELECTED' : '') . ">$school_years_RET[START_DATE]</OPTION>";
+        foreach ($college_years_RET as $college_years) {
+            $college_years['START_DATE'] = explode("-", $college_years['START_DATE']);
+            $college_years_RET['START_DATE'] = $college_years['START_DATE'][0];
+            echo "<OPTION value=$college_years_RET[START_DATE]" . ((UserSyear() == $college_years_RET['START_DATE']) ? ' SELECTED' : '') . ">$college_years_RET[START_DATE]</OPTION>";
         }
     }
     #}
@@ -343,7 +343,7 @@ if (User('PROFILE') != 'teacher') {
             foreach ($RET as $student) {
                 echo "<OPTION value=$student[STUDENT_ID]" . ((UserStudentID() == $student['STUDENT_ID']) ? ' SELECTED' : '') . ">" . $student['FULL_NAME'] . "</OPTION>";
                 if (UserStudentID() == $student['STUDENT_ID'])
-                    $_SESSION['UserSchool'] = $student['SCHOOL_ID'];
+                    $_SESSION['UserCollege'] = $student['SCHOOL_ID'];
             }
         }
         echo "</SELECT>";
@@ -360,18 +360,18 @@ if (User('PROFILE') != 'teacher') {
     echo "<li><div class=\"form-group\"><FORM name=head_frm id=head_frm action=Side.php?modfunc=update&btnn=$btn&nsc=$ns method=POST>
                         <INPUT type=hidden name=modcat value='' id=modcat_input>";
 
-    $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM school_quarters WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER"));
+    $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_quarters WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER"));
     if (!isset($_SESSION['UserMP']))
         $_SESSION['UserMP'] = GetCurrentMP('QTR', DBDate());
 
     if (!$RET) {
-        $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM school_semesters WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER"));
+        $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_semesters WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER"));
         if (!isset($_SESSION['UserMP']))
             $_SESSION['UserMP'] = GetCurrentMP('SEM', DBDate());
     }
 
     if (!$RET) {
-        $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM school_years WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER"));
+        $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_years WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER"));
         if (!isset($_SESSION['UserMP']))
             $_SESSION['UserMP'] = GetCurrentMP('FY', DBDate());
     }
@@ -425,7 +425,7 @@ echo '</div>';
 if (User('PROFILE') == 'teacher') {
     echo "<ul class=\"breadcrumb-elements\"><li><div class=\"form-group\"><FORM name=head_frm id=head_frm action=Side.php?modfunc=update&btnn=$btn&nsc=$ns&act=subject method=POST><INPUT type=hidden name=modcat value='' id=modcat_input>";
 
-    $sub = DBQuery("SELECT DISTINCT cs.TITLE, cs.SUBJECT_ID,cs.SCHOOL_ID FROM course_subjects as cs,course_details as cd WHERE cs.SUBJECT_ID=cd.SUBJECT_ID AND cd.SYEAR='" . UserSyear() . "' AND (cd.TEACHER_ID='" . User('STAFF_ID') . "' OR cd.SECONDARY_TEACHER_ID='" . User('STAFF_ID') . "') AND cs.SCHOOL_ID='" . UserSchool() . "' AND (cd.MARKING_PERIOD_ID IN (" . GetAllMP($allMP, UserMP()) . ") OR (cd.MARKING_PERIOD_ID IS NULL ))"); //AND cd.BEGIN_DATE<='".date('Y-m-d')."' AND cd.END_DATE>='".date('Y-m-d')."'))");
+    $sub = DBQuery("SELECT DISTINCT cs.TITLE, cs.SUBJECT_ID,cs.SCHOOL_ID FROM course_subjects as cs,course_details as cd WHERE cs.SUBJECT_ID=cd.SUBJECT_ID AND cd.SYEAR='" . UserSyear() . "' AND (cd.TEACHER_ID='" . User('STAFF_ID') . "' OR cd.SECONDARY_TEACHER_ID='" . User('STAFF_ID') . "') AND cs.SCHOOL_ID='" . UserCollege() . "' AND (cd.MARKING_PERIOD_ID IN (" . GetAllMP($allMP, UserMP()) . ") OR (cd.MARKING_PERIOD_ID IS NULL ))"); //AND cd.BEGIN_DATE<='".date('Y-m-d')."' AND cd.END_DATE>='".date('Y-m-d')."'))");
     $RET = DBGet($sub);
 
     if (!UserSubject()) {
@@ -443,13 +443,13 @@ if (User('PROFILE') == 'teacher') {
 //===================================================================================================		
     echo "</FORM></div></li>";
     echo "<li><div class=\"form-group\"><FORM name=head_frm id=head_frm action=Side.php?modfunc=update&btnn=$btn&nsc=$ns&act=course method=POST><INPUT type=hidden name=modcat value='' id=modcat_input>";
-    $course = DBQuery("SELECT DISTINCT cd.COURSE_TITLE, cd.COURSE_ID,cd.SUBJECT_ID,cd.SCHOOL_ID FROM course_details cd WHERE (cd.TEACHER_ID='" . User('STAFF_ID') . "' OR cd.SECONDARY_TEACHER_ID='" . User('STAFF_ID') . "') AND cd.SYEAR='" . UserSyear() . "' AND cd.SCHOOL_ID='" . UserSchool() . "' AND cd.SUBJECT_ID='" . UserSubject() . "' AND (cd.MARKING_PERIOD_ID IN (" . GetAllMP($allMP, UserMP()) . ") OR (cd.MARKING_PERIOD_ID IS NULL ))"); //AND cd.BEGIN_DATE<='".date('Y-m-d')."' AND cd.END_DATE>='".date('Y-m-d')."'))");					
+    $course = DBQuery("SELECT DISTINCT cd.COURSE_TITLE, cd.COURSE_ID,cd.SUBJECT_ID,cd.SCHOOL_ID FROM course_details cd WHERE (cd.TEACHER_ID='" . User('STAFF_ID') . "' OR cd.SECONDARY_TEACHER_ID='" . User('STAFF_ID') . "') AND cd.SYEAR='" . UserSyear() . "' AND cd.SCHOOL_ID='" . UserCollege() . "' AND cd.SUBJECT_ID='" . UserSubject() . "' AND (cd.MARKING_PERIOD_ID IN (" . GetAllMP($allMP, UserMP()) . ") OR (cd.MARKING_PERIOD_ID IS NULL ))"); //AND cd.BEGIN_DATE<='".date('Y-m-d')."' AND cd.END_DATE>='".date('Y-m-d')."'))");					
     $RET_temp= DBGet($course);
     $ret_increment=1;
     $RET=array();
     foreach($RET_temp as $ret_courses)
     {
-        $get_cps=DBGet(DBQuery("SELECT cpv.ID,cp.COURSE_PERIOD_ID,cp.MARKING_PERIOD_ID,cp.COURSE_ID,cp.TITLE,cp.SCHOOL_ID,cpv.PERIOD_ID FROM course_periods cp,course_period_var cpv WHERE cp.SYEAR='" . UserSyear() . "' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.SCHOOL_ID='" . UserSchool() . "' AND cp.COURSE_ID='" . $ret_courses['COURSE_ID'] . "' AND (TEACHER_ID='" . User('STAFF_ID') . "' OR SECONDARY_TEACHER_ID='" . User('STAFF_ID') . "') AND (MARKING_PERIOD_ID IN (" . GetAllMP($allMP, UserMP()) . ") OR (MARKING_PERIOD_ID IS NULL)) group by (cp.COURSE_PERIOD_ID)"));
+        $get_cps=DBGet(DBQuery("SELECT cpv.ID,cp.COURSE_PERIOD_ID,cp.MARKING_PERIOD_ID,cp.COURSE_ID,cp.TITLE,cp.SCHOOL_ID,cpv.PERIOD_ID FROM course_periods cp,course_period_var cpv WHERE cp.SYEAR='" . UserSyear() . "' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.SCHOOL_ID='" . UserCollege() . "' AND cp.COURSE_ID='" . $ret_courses['COURSE_ID'] . "' AND (TEACHER_ID='" . User('STAFF_ID') . "' OR SECONDARY_TEACHER_ID='" . User('STAFF_ID') . "') AND (MARKING_PERIOD_ID IN (" . GetAllMP($allMP, UserMP()) . ") OR (MARKING_PERIOD_ID IS NULL)) group by (cp.COURSE_PERIOD_ID)"));
         if(count($get_cps)>0)
         {
             $RET[$ret_increment]=$ret_courses;
@@ -475,14 +475,14 @@ if (User('PROFILE') == 'teacher') {
     echo "<li><div class=\"form-group\"><FORM name=head_frm id=head_frm action=Side.php?modfunc=update&btnn=$btn&nsc=$ns&act=period method=POST><INPUT type=hidden name=modcat value='' id=modcat_input>";
 
 
-    $QI = DBQuery("SELECT cpv.ID,cp.COURSE_PERIOD_ID,cp.MARKING_PERIOD_ID,cp.COURSE_ID,cp.TITLE,cp.SCHOOL_ID,cpv.PERIOD_ID FROM course_periods cp,course_period_var cpv WHERE cp.SYEAR='" . UserSyear() . "' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.SCHOOL_ID='" . UserSchool() . "' AND cp.COURSE_ID='" . UserCourse() . "' AND (TEACHER_ID='" . User('STAFF_ID') . "' OR SECONDARY_TEACHER_ID='" . User('STAFF_ID') . "') AND (MARKING_PERIOD_ID IN (" . GetAllMP($allMP, UserMP()) . ") OR (MARKING_PERIOD_ID IS NULL)) group by (cp.COURSE_PERIOD_ID)");
+    $QI = DBQuery("SELECT cpv.ID,cp.COURSE_PERIOD_ID,cp.MARKING_PERIOD_ID,cp.COURSE_ID,cp.TITLE,cp.SCHOOL_ID,cpv.PERIOD_ID FROM course_periods cp,course_period_var cpv WHERE cp.SYEAR='" . UserSyear() . "' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.SCHOOL_ID='" . UserCollege() . "' AND cp.COURSE_ID='" . UserCourse() . "' AND (TEACHER_ID='" . User('STAFF_ID') . "' OR SECONDARY_TEACHER_ID='" . User('STAFF_ID') . "') AND (MARKING_PERIOD_ID IN (" . GetAllMP($allMP, UserMP()) . ") OR (MARKING_PERIOD_ID IS NULL)) group by (cp.COURSE_PERIOD_ID)");
     $RET = DBGet($QI);
     $user_profile_ret = DBGet(DBQuery(" SELECT PROFILE FROM staff WHERE STAFF_ID=" . UserID()));
 
     if (!CpvId())
         $_SESSION['CpvId'] = $RET[1]['ID'];
 
-    $fy_id = DBGet(DBQuery("SELECT MARKING_PERIOD_ID FROM school_years WHERE SYEAR='" . UserSyear() . "' AND SCHOOL_ID='" . UserSchool() . "'"));
+    $fy_id = DBGet(DBQuery("SELECT MARKING_PERIOD_ID FROM college_years WHERE SYEAR='" . UserSyear() . "' AND SCHOOL_ID='" . UserCollege() . "'"));
     $fy_id = $fy_id[1]['MARKING_PERIOD_ID'];
 
     if (!UserCoursePeriod()) {
@@ -494,7 +494,7 @@ if (User('PROFILE') == 'teacher') {
         $flag = 0;
         foreach ($RET as $period) {
             $x_sel = "";
-            $period_det = DBGet(DBQuery('SELECT sp.TITLE as PERIOD_NAME,cpv.DAYS,cpv.COURSE_PERIOD_DATE FROM course_period_var cpv,school_periods sp WHERE cpv.ID=' . $period['ID'] . ' AND cpv.PERIOD_ID=sp.PERIOD_ID'));
+            $period_det = DBGet(DBQuery('SELECT sp.TITLE as PERIOD_NAME,cpv.DAYS,cpv.COURSE_PERIOD_DATE FROM course_period_var cpv,college_periods sp WHERE cpv.ID=' . $period['ID'] . ' AND cpv.PERIOD_ID=sp.PERIOD_ID'));
             $period_det = $period_det[1];
             $days_arr = array("Monday" => 'M', "Tuesday" => 'T', "Wednesday" => 'W', "Thursday" => 'H', "Friday" => 'F', "Saturday" => 'S', "Sunday" => 'U');
             if ($period_det['DAYS'] == '') {
@@ -527,7 +527,7 @@ if (User('PROFILE') != 'parent') {
     
     if(User('PROFILE')=='student')
     {
-    $img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . UserStudentID(). ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
+    $img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . UserStudentID(). ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
     $img_info=$img_info[1]['CONTENT'];
     }
     else
@@ -614,7 +614,7 @@ $current_menu = $menu[$current_mod][$current_user_profile][$current_mod_url];
 
 
 $menu_icons = array(
-    "schoolsetup" => "icon-library2",
+    "collegesetup" => "icon-library2",
     "students" => "icon-man-woman",
     "users" => "icon-users",
     "scheduling" => "icon-calendar3",
@@ -644,8 +644,8 @@ foreach ($_openSIS['Menu'] as $modcat => $programs) {
 
 
 
-        if (User('PROFILE') != 'admin' && $modcat == "schoolsetup") {
-            echo "<li " . (($current_mod == $modcat) ? 'class="active"' : '') . "><a HREF=javascript:void(0)><i class=\"{$menu_icons[$modcat]}\"></i><span>School Info</span></a>";
+        if (User('PROFILE') != 'admin' && $modcat == "collegesetup") {
+            echo "<li " . (($current_mod == $modcat) ? 'class="active"' : '') . "><a HREF=javascript:void(0)><i class=\"{$menu_icons[$modcat]}\"></i><span>College Info</span></a>";
         } elseif (User('PROFILE') != 'admin' && $modcat == "users") {
             echo "<li " . (($current_mod == $modcat) ? 'class="active"' : '') . "><a HREF=javascript:void(0)><i class=\"{$menu_icons[$modcat]}\"></i><span>My Info</span></a>";
         } elseif (User('PROFILE') == 'student' && $modcat == "students") {
@@ -659,8 +659,8 @@ foreach ($_openSIS['Menu'] as $modcat => $programs) {
 
             if ($modcat == 'eligibility') {
                 echo "<li " . (($current_mod == $modcat) ? 'class="active"' : '') . "><a HREF=javascript:void(0)><i class=\"{$menu_icons[$modcat]}\"></i><span>Extracurricular</span></a>";
-            } elseif ($modcat == 'schoolsetup')
-                echo "<li " . (($current_mod == $modcat) ? 'class="active"' : '') . "><a HREF=javascript:void(0)><i class=\"{$menu_icons[$modcat]}\"></i><span>School Setup</span></a>";
+            } elseif ($modcat == 'collegesetup')
+                echo "<li " . (($current_mod == $modcat) ? 'class="active"' : '') . "><a HREF=javascript:void(0)><i class=\"{$menu_icons[$modcat]}\"></i><span>College Setup</span></a>";
             else {
                 echo "<li " . (($current_mod == $modcat) ? 'class="active"' : '') . "><a HREF=javascript:void(0)><i class=\"{$menu_icons[$modcat]}\"></i><span>" . ucfirst(str_replace('_', ' ', $modcat)) . "</span></a>";
             }
@@ -701,9 +701,9 @@ foreach ($_openSIS['Menu'] as $modcat => $programs) {
                                 if ($modcat == 'tools' && $title != 'Backup Database')
                                     echo "<li  " . (($current_menu == $title) ? 'class="current-submenu"' : '') . "><A id=hm HREF=javascript:void(0) onClick='check_content(\"Ajax.php?modname=" . $file . " \");'  onmousedown='document.getElementById(\"header\").innerHTML = \"" . ucwords($modcat) . " <i class=\"icon-arrow-right5\"></i> " . "$title\"' onmouseup=\"document.getElementById('cframe').src='Bottom.php?modname=" . str_replace('&', '?', $file) . "';\">$title</A>";
                                 if ($modcat != 'tools')
-                                    echo "<li  " . (($current_menu == $title) ? 'class="current-submenu"' : '') . "><A id=hm HREF=javascript:void(0) onClick='check_content(\"Ajax.php?modname=" . $file . " \");'  onmousedown='document.getElementById(\"header\").innerHTML = \"" . ($modcat == 'schoolsetup' ? 'School Setup' : ucwords($modcat)) . " <i class=\"icon-arrow-right5\"></i> " . "$title\"' onmouseup=\"document.getElementById('cframe').src='Bottom.php?modname=" . str_replace('&', '?', $file) . "';\">$title</A>";
+                                    echo "<li  " . (($current_menu == $title) ? 'class="current-submenu"' : '') . "><A id=hm HREF=javascript:void(0) onClick='check_content(\"Ajax.php?modname=" . $file . " \");'  onmousedown='document.getElementById(\"header\").innerHTML = \"" . ($modcat == 'collegesetup' ? 'College Setup' : ucwords($modcat)) . " <i class=\"icon-arrow-right5\"></i> " . "$title\"' onmouseup=\"document.getElementById('cframe').src='Bottom.php?modname=" . str_replace('&', '?', $file) . "';\">$title</A>";
                             } else
-                                echo "<li  " . (($current_menu == $title) ? 'class="current-submenu"' : '') . "><A id=hm HREF=javascript:void(0) onClick='check_content(\"Ajax.php?modname=" . $file . " \");'  onmousedown='$(\"#header\").html(\"" . ($modcat == 'schoolsetup' ? 'School Setup' : ucwords($modcat)) . " <i class=icon-arrow-right5></i> " . $title."\");' onmouseup=\"$('#cframe').attr('src','Bottom.php?modname=" . str_replace('&', '?', $file) . "');\">$title</A>";
+                                echo "<li  " . (($current_menu == $title) ? 'class="current-submenu"' : '') . "><A id=hm HREF=javascript:void(0) onClick='check_content(\"Ajax.php?modname=" . $file . " \");'  onmousedown='$(\"#header\").html(\"" . ($modcat == 'collegesetup' ? 'College Setup' : ucwords($modcat)) . " <i class=icon-arrow-right5></i> " . $title."\");' onmouseup=\"$('#cframe').attr('src','Bottom.php?modname=" . str_replace('&', '?', $file) . "');\">$title</A>";
                         }
                     }
                 elseif ($keys[$key_index + 1] && !is_numeric($keys[$key_index + 1])) {
@@ -739,10 +739,10 @@ foreach ($_openSIS['Menu'] as $modcat => $programs) {
                             //                                            
                             if ($modcat != 'tools') {
 
-                                echo "<li " . (($current_menu == $title) ? 'class="current-submenu"' : '') . "><A id=dd HREF=javascript:void(0) onClick='check_content(\"Ajax.php?modname=" . $file . " \");'  onmousedown='document.getElementById(\"header\").innerHTML = \"" . ($modcat == 'schoolsetup' ? 'School Setup' : ucwords($modcat)) . " <i class=\"icon-arrow-right5\"></i> " . "$title\"' onmouseup=\"document.getElementById('cframe').src='Bottom.php?modname=" . $file . "';\">$title</A>";
+                                echo "<li " . (($current_menu == $title) ? 'class="current-submenu"' : '') . "><A id=dd HREF=javascript:void(0) onClick='check_content(\"Ajax.php?modname=" . $file . " \");'  onmousedown='document.getElementById(\"header\").innerHTML = \"" . ($modcat == 'collegesetup' ? 'College Setup' : ucwords($modcat)) . " <i class=\"icon-arrow-right5\"></i> " . "$title\"' onmouseup=\"document.getElementById('cframe').src='Bottom.php?modname=" . $file . "';\">$title</A>";
                             }
                         } else
-                            echo "<li " . (($current_menu == $title) ? 'class="current-submenu"' : '') . "><A id=dd HREF=javascript:void(0) onClick='check_content(\"Ajax.php?modname=" . $file . " \");'  onmousedown='document.getElementById(\"header\").innerHTML = \"" . ($modcat == 'schoolsetup' ? 'School Setup' : ucwords($modcat)) . " <i class=\"icon-arrow-right5\"></i> " . "$title\"' onmouseup=\"document.getElementById('cframe').src='Bottom.php?modname=" . $file . "';\">$title</A>";
+                            echo "<li " . (($current_menu == $title) ? 'class="current-submenu"' : '') . "><A id=dd HREF=javascript:void(0) onClick='check_content(\"Ajax.php?modname=" . $file . " \");'  onmousedown='document.getElementById(\"header\").innerHTML = \"" . ($modcat == 'collegesetup' ? 'College Setup' : ucwords($modcat)) . " <i class=\"icon-arrow-right5\"></i> " . "$title\"' onmouseup=\"document.getElementById('cframe').src='Bottom.php?modname=" . $file . "';\">$title</A>";
                     }
                 }
                 elseif ($keys[$key_index + 1] && !is_numeric($keys[$key_index + 1])) {
@@ -803,7 +803,7 @@ echo "<div id='content' name='content' class='clearfix'>";
 if (User('PROFILE') == 'admin') {
 
     $admin_COMMON_FROM = " FROM students s, student_address a,student_enrollment ssm ";
-    $admin_COMMON_WHERE = " WHERE s.STUDENT_ID=ssm.STUDENT_ID  AND a.STUDENT_ID=s.STUDENT_ID AND a.TYPE='Home Address' AND ssm.SYEAR=" . UserSyear() . " AND ssm.SCHOOL_ID=" . UserSchool() . " ";
+    $admin_COMMON_WHERE = " WHERE s.STUDENT_ID=ssm.STUDENT_ID  AND a.STUDENT_ID=s.STUDENT_ID AND a.TYPE='Home Address' AND ssm.SYEAR=" . UserSyear() . " AND ssm.SCHOOL_ID=" . UserCollege() . " ";
 
     if (optional_param('mp_comment', '', PARAM_NOTAGS) || $_SESSION['smc']) {
         $admin_COMMON_FROM .=" ,student_mp_comments smc";
@@ -856,7 +856,7 @@ if (User('PROFILE') == 'teacher') {
     $teacher_COMMON_FROM = " FROM students s, student_enrollment ssm, course_periods cp,
                                             schedule ss,student_address a ";
     $teacher_COMMON_WHERE = " WHERE a.STUDENT_ID=s.STUDENT_ID  AND a.TYPE='Home Address' AND s.STUDENT_ID=ssm.STUDENT_ID AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND ss.MARKING_PERIOD_ID IN (" . GetAllMP('', $queryMP) . ")
-                                                                                    AND (cp.TEACHER_ID='" . User('STAFF_ID') . "' OR cp.SECONDARY_TEACHER_ID='" . User('STAFF_ID') . "') AND cp.COURSE_PERIOD_ID='" . UserCoursePeriod() . "' AND (ssm.START_DATE IS NOT NULL AND ('" . DBDate() . "'<=ssm.END_DATE OR ssm.END_DATE IS NULL)) AND ssm.SYEAR=" . UserSyear() . " AND ssm.SCHOOL_ID=" . UserSchool() . " ";
+                                                                                    AND (cp.TEACHER_ID='" . User('STAFF_ID') . "' OR cp.SECONDARY_TEACHER_ID='" . User('STAFF_ID') . "') AND cp.COURSE_PERIOD_ID='" . UserCoursePeriod() . "' AND (ssm.START_DATE IS NOT NULL AND ('" . DBDate() . "'<=ssm.END_DATE OR ssm.END_DATE IS NULL)) AND ssm.SYEAR=" . UserSyear() . " AND ssm.SCHOOL_ID=" . UserCollege() . " ";
 
 
     if (optional_param('mp_comment', '', PARAM_SPCL) || $_SESSION['smc']) {
@@ -966,7 +966,7 @@ if ($_REQUEST['modname'] || $_GET['modname']) {
         $allowed = true;
     if (optional_param('modname', '', PARAM_NOTAGS) == 'ParentLookup.php')
         $allowed = true;
-    if (optional_param('modname', '', PARAM_NOTAGS) == 'schoolsetup/UploadLogo.php' && User('PROFILE') == 'admin')
+    if (optional_param('modname', '', PARAM_NOTAGS) == 'collegesetup/UploadLogo.php' && User('PROFILE') == 'admin')
         $allowed = true;
     if (optional_param('modname', '', PARAM_NOTAGS) == 'users/UploadUserPhoto.php')
         $allowed = true;

@@ -31,7 +31,7 @@ CREATE TRIGGER `tu_cp_missing_attendance`
     FOR EACH ROW
     BEGIN
     IF OLD.does_attendance<>NEW.does_attendance THEN
-	CALL ATTENDANCE_CALC(NEW.course_period_id, NEW.syear,NEW.school_id);
+	CALL ATTENDANCE_CALC(NEW.course_period_id, NEW.syear,NEW.college_id);
     END IF;
     END$$
 DELIMITER ;
@@ -59,7 +59,7 @@ CREATE TRIGGER `ti_cal_missing_attendance`
     DECLARE associations INT;
     SET associations = (SELECT COUNT(course_period_id) FROM `course_periods` WHERE calendar_id=NEW.calendar_id);
     IF associations>0 THEN
-	CALL ATTENDANCE_CALC_BY_DATE(NEW.school_date, NEW.syear,NEW.school_id);
+	CALL ATTENDANCE_CALC_BY_DATE(NEW.college_date, NEW.syear,NEW.college_id);
     END IF;
     END$$
 DELIMITER ;
@@ -68,5 +68,5 @@ DROP TRIGGER IF EXISTS `td_cal_missing_attendance`;
 CREATE TRIGGER `td_cal_missing_attendance`
     AFTER DELETE ON attendance_calendar
     FOR EACH ROW
-	DELETE mi.* FROM missing_attendance mi,course_periods cp WHERE mi.course_period_id=cp.course_period_id and cp.calendar_id=OLD.calendar_id AND mi.SCHOOL_DATE=OLD.school_date;
+	DELETE mi.* FROM missing_attendance mi,course_periods cp WHERE mi.course_period_id=cp.course_period_id and cp.calendar_id=OLD.calendar_id AND mi.SCHOOL_DATE=OLD.college_date;
 

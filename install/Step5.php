@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -87,7 +87,7 @@ if ($_SESSION['mod'] == 'upgrade') {
                                         <li>System Requirements</li>
                                         <li>Database Connection</li>
                                         <li>Database Creation</li>
-                                        <li>School Information</li>
+                                        <li>College Information</li>
                                         <li>Site Admin Account Setup</li>
                                         <li class="active">Ready to Go!</li>
                                     </ul>
@@ -129,22 +129,22 @@ if ($_SESSION['mod'] == 'upgrade') {
 
     fclose($fh);
     $display_text = '';
-    if ($_SESSION['school_installed'] == 'both') {
+    if ($_SESSION['college_installed'] == 'both') {
 
-        $display_text = "A  school has been created in the name of: " . $_SESSION['sname'] . ".
+        $display_text = "A  college has been created in the name of: " . $_SESSION['sname'] . ".
 
-You need to follow the instructions in the administrator manual for setting up the school properly. The manual is located in the docs folder.
+You need to follow the instructions in the administrator manual for setting up the college properly. The manual is located in the docs folder.
 <br><br>
-You have also installed the sample school data. You can select your school or the sample school by clicking on the drop down menu of the school select field on the upper right hand corner.";
-#You have also installed the sample school data, you can access it by clicking on the drop down menu  of  the school select field.";
-    } else if ($_SESSION['school_installed'] == 'user') {
-        $display_text = "A  school has been created in the name of: " . $_SESSION['sname'] . ".
+You have also installed the sample college data. You can select your college or the sample college by clicking on the drop down menu of the college select field on the upper right hand corner.";
+#You have also installed the sample college data, you can access it by clicking on the drop down menu  of  the college select field.";
+    } else if ($_SESSION['college_installed'] == 'user') {
+        $display_text = "A  college has been created in the name of: " . $_SESSION['sname'] . ".
 
-You need to follow the instructions in the administrator manual for setting up the school properly. The manual is located in the docs folder.";
-    } else if ($_SESSION['school_installed'] == 'sample') {
-        $display_text = "You have installed openSIS with a sample school data. Use this school to get familiar with the system and as a guide for creating your own school.  You can also follow the instructions in the administrator manual for setting up and configuring a new school. The manual is located in the docs folder.";
+You need to follow the instructions in the administrator manual for setting up the college properly. The manual is located in the docs folder.";
+    } else if ($_SESSION['college_installed'] == 'sample') {
+        $display_text = "You have installed openSIS with a sample college data. Use this college to get familiar with the system and as a guide for creating your own college.  You can also follow the instructions in the administrator manual for setting up and configuring a new college. The manual is located in the docs folder.";
     }
-    $display_text = "You have installed openSIS with a sample school data. Use this school to get familiar with the system and as a guide for creating your own school.  You can also follow the instructions in the administrator manual for setting up and configuring a new school. The manual is located in the docs folder.";
+    $display_text = "You have installed openSIS with a sample college data. Use this college to get familiar with the system and as a guide for creating your own college.  You can also follow the instructions in the administrator manual for setting up and configuring a new college. The manual is located in the docs folder.";
     echo '<!DOCTYPE html>
         <html lang="en">
             <head>
@@ -175,7 +175,7 @@ You need to follow the instructions in the administrator manual for setting up t
                                         <li>System Requirements</li>
                                         <li>Database Connection</li>
                                         <li>Database Creation</li>
-                                        <li>School Information</li>
+                                        <li>College Information</li>
                                         <li>Site Admin Account Setup</li>
                                         <li class="active">Ready to Go!</li>
                                     </ul>

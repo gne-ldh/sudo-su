@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -117,7 +117,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'add') {
             $course_id = paramlib_validation($colmn = PERIOD_ID, $_REQUEST['course_id']);
             $course_weight = substr($_REQUEST['course'], strpos($_REQUEST['course'], '-') + 1);
             $subject_id = $_REQUEST['subject_id'];
-            $mp_id = DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
+            $mp_id = DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM college_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
             $mp_id = UserMP();
             $same_course_check = DBGet(DBQuery('SELECT COURSE_ID FROM schedule_requests WHERE STUDENT_ID=\'' . UserStudentID() . '\' AND SYEAR=\'' . UserSyear() . '\''));
             foreach ($same_course_check as $key => $same_course) {
@@ -125,7 +125,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'add') {
                     $flag = false;
             }
             if ($flag)
-                DBQuery('INSERT INTO schedule_requests (SYEAR,SCHOOL_ID,STUDENT_ID,SUBJECT_ID,COURSE_ID,MARKING_PERIOD_ID) values(\'' . UserSyear() . '\',\'' . UserSchool() . '\',\'' . UserStudentID() . '\',\'' . $subject_id . '\',\'' . $course_id . '\',\'' . $mp_id . '\')');
+                DBQuery('INSERT INTO schedule_requests (SYEAR,SCHOOL_ID,STUDENT_ID,SUBJECT_ID,COURSE_ID,MARKING_PERIOD_ID) values(\'' . UserSyear() . '\',\'' . UserCollege() . '\',\'' . UserStudentID() . '\',\'' . $subject_id . '\',\'' . $course_id . '\',\'' . $mp_id . '\')');
             else
                 echo "<div class=\"alert bg-danger alert-styled-left\">" . "You have already requested for this course" . "</div>";
             unset($_REQUEST['modfunc']);
@@ -152,11 +152,11 @@ if (!$_REQUEST['modfunc'] && UserStudentID()) {
     $requests_RET = DBGet(DBQuery('SELECT r.REQUEST_ID,c.TITLE as COURSE,r.COURSE_ID,r.COURSE_WEIGHT,r.MARKING_PERIOD_ID,r.WITH_TEACHER_ID,r.NOT_TEACHER_ID,r.WITH_PERIOD_ID,r.NOT_PERIOD_ID FROM schedule_requests r,courses c WHERE r.COURSE_ID=c.COURSE_ID AND r.SYEAR=\'' . UserSyear() . '\' AND r.STUDENT_ID=\'' . UserStudentID() . '\''), $functions);
     $columns = array('COURSE' => 'Course', 'WITH_TEACHER_ID' => 'Teacher', 'WITH_PERIOD_ID' => 'Period');
 
-    $subjects_RET = DBGet(DBQuery('SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
+    $subjects_RET = DBGet(DBQuery('SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
     $subjects = CreateSelect($subjects_RET, 'subject_id', 'Select Subject', 'Modules.php?modname=' . $_REQUEST['modname'] . '&subject_id=');
 
     if ($_REQUEST['subject_id']) {
-        $courses_RET = DBGet(DBQuery('SELECT c.COURSE_ID,c.TITLE FROM courses c WHERE ' . ($_REQUEST['subject_id'] ? 'c.SUBJECT_ID=\'' . $_REQUEST['subject_id'] . '\' AND ' : '') . 'UPPER(c.TITLE) LIKE \'' . strtoupper($_REQUEST['course_title']) . '%' . '\' AND c.SYEAR=\'' . UserSyear() . '\' AND c.SCHOOL_ID=\'' . UserSchool() . '\''));
+        $courses_RET = DBGet(DBQuery('SELECT c.COURSE_ID,c.TITLE FROM courses c WHERE ' . ($_REQUEST['subject_id'] ? 'c.SUBJECT_ID=\'' . $_REQUEST['subject_id'] . '\' AND ' : '') . 'UPPER(c.TITLE) LIKE \'' . strtoupper($_REQUEST['course_title']) . '%' . '\' AND c.SYEAR=\'' . UserSyear() . '\' AND c.SCHOOL_ID=\'' . UserCollege() . '\''));
         $courses = CreateSelect($courses_RET, 'course_id', 'Select Course', 'Modules.php?modname=' . $_REQUEST['modname'] . '&subject_id=' . $_REQUEST['subject_id'] . '&course_id=');
     }
     if ($_REQUEST['course_id']) {
@@ -218,7 +218,7 @@ function _makeTeacher($value, $column) {
 function _makePeriod($value, $column) {
     global $THIS_RET;
 
-    $periods_RET = DBGet(DBQuery('SELECT p.TITLE,p.PERIOD_ID FROM school_periods p,course_periods cp,course_period_var cpv WHERE p.PERIOD_ID=cpv.PERIOD_ID AND cp.COURSE_ID=\'' . $THIS_RET['COURSE_ID'] . '\' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID'));
+    $periods_RET = DBGet(DBQuery('SELECT p.TITLE,p.PERIOD_ID FROM college_periods p,course_periods cp,course_period_var cpv WHERE p.PERIOD_ID=cpv.PERIOD_ID AND cp.COURSE_ID=\'' . $THIS_RET['COURSE_ID'] . '\' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID'));
     foreach ($periods_RET as $period)
         $options[$period['PERIOD_ID']] = $period['TITLE'];
 

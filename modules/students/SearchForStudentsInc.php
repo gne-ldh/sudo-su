@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -235,10 +235,10 @@ foreach ($res as $v) {
             
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">School Bus Pick-up</label><div class="col-lg-8"><label class="checkbox-inline"><input class="styled" type=checkbox name="home_bus_pickup"></label></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">College Bus Pick-up</label><div class="col-lg-8"><label class="checkbox-inline"><input class="styled" type=checkbox name="home_bus_pickup"></label></div></div>';
             echo '</div>'; //.col-md-6
             echo '<div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">School Bus Drop-off </label><div class="col-lg-8"><label class="checkbox-inline"><input class="styled" type=checkbox name="home_bus_droppoff"></label></div></div>';
+            echo '<div class="form-group"><label class="control-label col-lg-4 text-right">College Bus Drop-off </label><div class="col-lg-8"><label class="checkbox-inline"><input class="styled" type=checkbox name="home_bus_droppoff"></label></div></div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
             
@@ -425,7 +425,7 @@ foreach ($res as $v) {
             echo '<div class="col-md-12">';
             if (User('PROFILE') == 'admin') {
                 echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=address_group value=Y' . (Preferences('DEFAULT_FAMILIES') == 'Y' ? ' CHECKED' : '') . '> Group by Family</label>';
-                echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=_search_all_schools value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '> Search All Schools</label>';
+                echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=_search_all_colleges value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '> Search All Colleges</label>';
             }
             if ($_REQUEST['modname'] != 'students/StudentReenroll.php')
                 echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=include_inactive value=Y> Include Inactive Students</label>';
@@ -481,10 +481,10 @@ else {
 
             $filter_id = DBGet(DBQuery("SHOW TABLE STATUS LIKE 'filters'"));
             $filter_id= $filter_id[1]['AUTO_INCREMENT'];
-            DBQuery('INSERT INTO filters (FILTER_NAME'.($_REQUEST['filter_all_school']=='Y'?'':',SCHOOL_ID').($_REQUEST['filter_public']=='Y'?'':',SHOW_TO').') VALUES (\''.singleQuoteReplace("","",$_REQUEST['filter_name']).'\''.($_REQUEST['filter_all_school']=='Y'?'':','.UserSchool()).($_REQUEST['filter_public']=='Y'?'':','.UserID()).')');
+            DBQuery('INSERT INTO filters (FILTER_NAME'.($_REQUEST['filter_all_college']=='Y'?'':',SCHOOL_ID').($_REQUEST['filter_public']=='Y'?'':',SHOW_TO').') VALUES (\''.singleQuoteReplace("","",$_REQUEST['filter_name']).'\''.($_REQUEST['filter_all_college']=='Y'?'':','.UserCollege()).($_REQUEST['filter_public']=='Y'?'':','.UserID()).')');
 
 
-            $filters = array("last", "first", "stuid","altid","addr","grade","section","address_group","_search_all_schools","include_inactive","mp_comment","goal_title","goal_description","progress_name","progress_description","doctors_note_comments","type","imm_comments","med_alrt_title","reason","result","med_vist_comments");
+            $filters = array("last", "first", "stuid","altid","addr","grade","section","address_group","_search_all_colleges","include_inactive","mp_comment","goal_title","goal_description","progress_name","progress_description","doctors_note_comments","type","imm_comments","med_alrt_title","reason","result","med_vist_comments");
             foreach($filters as $filter_columns)
             {
                 if($_REQUEST[$filter_columns]!='')
@@ -550,8 +550,8 @@ else {
     $LO_columns = array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'Student ID', 'ALT_ID' => 'Alternate ID', 'GRADE_ID' => 'Grade', 'SECTION_ID' => 'Section', 'PHONE' => 'Phone');
     $name_link['FULL_NAME']['link'] = "Modules.php?modname=$_REQUEST[next_modname]";
     $name_link['FULL_NAME']['variables'] = array('student_id' => 'STUDENT_ID');
-    if ($_REQUEST['_search_all_schools'])
-        $name_link['FULL_NAME']['variables'] += array('school_id' => 'SCHOOL_ID');
+    if ($_REQUEST['_search_all_colleges'])
+        $name_link['FULL_NAME']['variables'] += array('college_id' => 'SCHOOL_ID');
 
     if (is_array($extra['link']))
         $link = $extra['link'] + $name_link;
@@ -616,7 +616,7 @@ else {
         echo '<td><div onclick="divToggle(\'#toggleAddress\');" id="toggleAddress">Any</div><div style="display:none;" id="toggleAddress_element" class="hide-element"><input type="text" id="addr" name="addr" class="form-control p-t-0 p-b-0 input-xs" placeholder="Address" /></div></td>';
        
         
-        $list = DBGet(DBQuery("SELECT DISTINCT TITLE,ID,SORT_ORDER FROM school_gradelevels WHERE SCHOOL_ID='" . UserSchool() . "' ORDER BY SORT_ORDER"));
+        $list = DBGet(DBQuery("SELECT DISTINCT TITLE,ID,SORT_ORDER FROM college_gradelevels WHERE SCHOOL_ID='" . UserCollege() . "' ORDER BY SORT_ORDER"));
         
         if($_REQUEST['filter_form']=='Y' && $_REQUEST['grade']!='')
         {
@@ -637,12 +637,12 @@ else {
         echo '<tr>';
         echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleSection\');">Section</a></th>';
         echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleGrpByFamily\');">Group by Family</a></th>';
-        echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleSearchAllSchool\');">Search All Schools</a></th>';
+        echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleSearchAllCollege\');">Search All Colleges</a></th>';
         echo '<th colspan="3"><a href="javascript:void(0);" onclick="divToggle(\'#toggleIncludeInactive\');">Include Inactive Students</a></th>';
         echo '</tr>';
         
         
-        $list = DBGet(DBQuery("SELECT DISTINCT NAME,ID,SORT_ORDER FROM school_gradelevel_sections WHERE SCHOOL_ID='" . UserSchool() . "' ORDER BY SORT_ORDER"));
+        $list = DBGet(DBQuery("SELECT DISTINCT NAME,ID,SORT_ORDER FROM college_gradelevel_sections WHERE SCHOOL_ID='" . UserCollege() . "' ORDER BY SORT_ORDER"));
         echo '<tr>';
         
         if($_REQUEST['filter_form']=='Y' && $_REQUEST['section']!='')
@@ -667,10 +667,10 @@ else {
         else
         echo '<td><div onclick="divToggle(\'#toggleGrpByFamily\');" id="toggleGrpByFamily">No</div><div style="display:none;" id="toggleGrpByFamily_element" class="hide-element"><div class="checkbox m-b-0"><label><input type="checkbox" id="address_group" name="address_group" value="Y"/></label></div></div></td>';
         
-        if($_REQUEST['filter_form']=='Y' && $_REQUEST['_search_all_schools']!='')
-        echo '<td><div id="toggleSearchAllSchool_element"><div class="checkbox m-b-0"><label><input type="checkbox" id="_search_all_schools" name="_search_all_schools" value="Y" checked/></label></div></div></td>';
+        if($_REQUEST['filter_form']=='Y' && $_REQUEST['_search_all_colleges']!='')
+        echo '<td><div id="toggleSearchAllCollege_element"><div class="checkbox m-b-0"><label><input type="checkbox" id="_search_all_colleges" name="_search_all_colleges" value="Y" checked/></label></div></div></td>';
         else    
-        echo '<td><div onclick="divToggle(\'#toggleSearchAllSchool\');" id="toggleSearchAllSchool">No</div><div style="display:none;" id="toggleSearchAllSchool_element" class="hide-element"><div class="checkbox m-b-0"><label><input type="checkbox" id="_search_all_schools" name="_search_all_schools" value="Y"/></label></div></div></td>';
+        echo '<td><div onclick="divToggle(\'#toggleSearchAllCollege\');" id="toggleSearchAllCollege">No</div><div style="display:none;" id="toggleSearchAllCollege_element" class="hide-element"><div class="checkbox m-b-0"><label><input type="checkbox" id="_search_all_colleges" name="_search_all_colleges" value="Y"/></label></div></div></td>';
         
         if($_REQUEST['filter_form']=='Y' && $_REQUEST['include_inactive']!='')
         echo '<td colspan="3"><div id="toggleIncludeInactive_element"><div class="checkbox m-b-0"><label><input type="checkbox" id="include_inactive" name="include_inactive" value="Y" checked/></label></div></div></td>';
@@ -832,7 +832,7 @@ else {
         echo '</div>';
         echo '<div class="col-sm-6 col-md-6 col-lg-6 text-lg-right text-md-right text-sm-right">';
         echo '<a HREF=javascript:void(0) data-toggle="modal" data-target="#modal_default_filter" class="btn btn-primary display-inline-block" onClick="setFilterValues();">Save Filter</a>';
-        $filters=DBGet(DBQuery('SELECT * FROM filters WHERE SCHOOL_ID IN ('.UserSchool().',0) AND SHOW_TO IN ('. UserID().',0)'));
+        $filters=DBGet(DBQuery('SELECT * FROM filters WHERE SCHOOL_ID IN ('.UserCollege().',0) AND SHOW_TO IN ('. UserID().',0)'));
         echo '<div class="m-l-10 display-inline-block"><select name="filter" class="form-control form-control-bordered width-auto"  onchange="this.form.submit();"><option value="">-- Load Filter --</option>';
         foreach ($filters as $value)
         echo '<option value='.$value['FILTER_ID'].' '.($_REQUEST['filter']==$value['FILTER_ID']?'SELECTED':'').' >'.$value['FILTER_NAME'].'</option>';
@@ -876,7 +876,7 @@ else {
         echo  '<input type="hidden" id="section_hidden" name="section"/>';
         
         echo '<div id="address_group_hidden"></div>';
-        echo '<div id="_search_all_schools_hidden"></div>';
+        echo '<div id="_search_all_colleges_hidden"></div>';
         echo '<div id="include_inactive_hidden"></div>';
 
         echo  '<input type="hidden" id="mp_comment_hidden" name="mp_comment"/>';
@@ -902,9 +902,9 @@ else {
         echo '</div>'; //.form-group
         
         echo '<div class="form-group">';        
-        echo '<label class="control-label text-right col-lg-4">All School</label>';
+        echo '<label class="control-label text-right col-lg-4">All College</label>';
         echo '<div class="col-lg-8">';
-        echo '<div class="checkbox checkbox-switch switch-success"><label><input type="checkbox" name="filter_all_school" value="Y"><span></span></label></div>';
+        echo '<div class="checkbox checkbox-switch switch-success"><label><input type="checkbox" name="filter_all_college" value="Y"><span></span></label></div>';
         echo '</div>'; //.col-lg-8
         echo '</div>'; //.form-group
         
@@ -958,9 +958,9 @@ else {
 
 
             if (User('PROFILE') == 'admin')
-                $_SESSION['UserSchool'] = $students_RET[1]['LIST_SCHOOL_ID'];
+                $_SESSION['UserCollege'] = $students_RET[1]['LIST_SCHOOL_ID'];
             if (User('PROFILE') == 'teacher')
-                $_SESSION['UserSchool'] = $students_RET[1]['SCHOOL_ID'];
+                $_SESSION['UserCollege'] = $students_RET[1]['SCHOOL_ID'];
 
 
             //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
@@ -982,7 +982,7 @@ else {
 
 function _make_sections($value) {
     if ($value != '') {
-        $get = DBGet(DBQuery('SELECT NAME FROM school_gradelevel_sections WHERE ID=' . $value));
+        $get = DBGet(DBQuery('SELECT NAME FROM college_gradelevel_sections WHERE ID=' . $value));
         return $get[1]['NAME'];
     } else
         return '';

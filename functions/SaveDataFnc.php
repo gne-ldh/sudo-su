@@ -1,7 +1,7 @@
 <?php
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -164,7 +164,7 @@ function SaveData($iu_extra,$fields_done=false,$field_names=false)
                                              $sql[$table] .= $up_values;
                                              if($column == 'END_DATE' && $table=='student_enrollment' )
                                              {
-                                                $sc_qr=  DBGet(DBQuery('SELECT course_period_id from schedule  WHERE STUDENT_ID=\''.$_REQUEST['student_id'].'\' AND SCHOOL_ID=\''.UserSchool().'\'  AND SYEAR=\''.UserSyear().'\'  AND (END_DATE IS NULL OR \''.$value.'\' < END_DATE )'));
+                                                $sc_qr=  DBGet(DBQuery('SELECT course_period_id from schedule  WHERE STUDENT_ID=\''.$_REQUEST['student_id'].'\' AND SCHOOL_ID=\''.UserCollege().'\'  AND SYEAR=\''.UserSyear().'\'  AND (END_DATE IS NULL OR \''.$value.'\' < END_DATE )'));
 
                                                 foreach($sc_qr as $v)
                                                                  {
@@ -177,7 +177,7 @@ function SaveData($iu_extra,$fields_done=false,$field_names=false)
                                                                         else
                                                                          $final_end_date=date('Y-m-d',strtotime($sc_end_date));   
 
-                                                                       DBQuery('UPDATE schedule SET END_DATE=\''.$final_end_date.'\' WHERE STUDENT_ID=\''.$_REQUEST['student_id'].'\' AND SCHOOL_ID=\''.UserSchool().'\'  AND SYEAR=\''.UserSyear().'\' and course_period_id=\''.$v['COURSE_PERIOD_ID'].'\'');  
+                                                                       DBQuery('UPDATE schedule SET END_DATE=\''.$final_end_date.'\' WHERE STUDENT_ID=\''.$_REQUEST['student_id'].'\' AND SCHOOL_ID=\''.UserCollege().'\'  AND SYEAR=\''.UserSyear().'\' and course_period_id=\''.$v['COURSE_PERIOD_ID'].'\'');  
                                                                    }
   
                                              }
@@ -193,7 +193,7 @@ function SaveData($iu_extra,$fields_done=false,$field_names=false)
                             $sql[$table] = 'UPDATE '.$table.' SET '.substr($sql[$table],0,-1).' WHERE '.str_replace('__ID__',$id,$iu_extra[$table]);
                             if($table=='student_enrollment')
                             {
-                                  $enrollment_record=DBGet(DBQuery("SELECT * FROM student_enrollment WHERE STUDENT_ID='$_REQUEST[student_id]' AND SYEAR='".UserSyear()."' AND SCHOOL_ID='".UserSchool()."'"));
+                                  $enrollment_record=DBGet(DBQuery("SELECT * FROM student_enrollment WHERE STUDENT_ID='$_REQUEST[student_id]' AND SYEAR='".UserSyear()."' AND SCHOOL_ID='".UserCollege()."'"));
                                   $enrollment_record=$enrollment_record[1];
                                   
                             }

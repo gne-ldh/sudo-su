@@ -20,7 +20,7 @@ $(function() {
         minimumResultsForSearch: Infinity
     });
     
-    $('.select-school').select2();
+    $('.select-college').select2();
 
 
     // Select with search

@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for publirc and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -37,9 +37,9 @@ if ($_REQUEST['modfunc'] == 'detail' && $_REQUEST['student_id'] && $_REQUEST['st
 
             $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] = date("Y-m-d", strtotime($_REQUEST['year_TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '-' . $_REQUEST['month_TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '-' . $_REQUEST['day_TRANSFER']['STUDENT_ENROLLMENT_END_DATE']));
 
-            $gread_exists = DBGet(DBQuery('SELECT COUNT(TITLE) AS PRESENT,ID FROM school_gradelevels WHERE SCHOOL_ID=\'' . $_REQUEST['TRANSFER']['SCHOOL'] . '\' AND TITLE=(SELECT TITLE FROM
-                            school_gradelevels WHERE ID=(SELECT GRADE_ID FROM student_enrollment WHERE
-                            STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND SCHOOL_ID=\'' . UserSchool() . '\'  AND SYEAR=\'' . UserSyear() . '\'  ORDER BY ID DESC LIMIT 1))'));  //pinki
+            $gread_exists = DBGet(DBQuery('SELECT COUNT(TITLE) AS PRESENT,ID FROM college_gradelevels WHERE SCHOOL_ID=\'' . $_REQUEST['TRANSFER']['SCHOOL'] . '\' AND TITLE=(SELECT TITLE FROM
+                            college_gradelevels WHERE ID=(SELECT GRADE_ID FROM student_enrollment WHERE
+                            STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND SCHOOL_ID=\'' . UserCollege() . '\'  AND SYEAR=\'' . UserSyear() . '\'  ORDER BY ID DESC LIMIT 1))'));  //pinki
 
             $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_START'] = date("Y-m-d", strtotime($_REQUEST['year_TRANSFER']['STUDENT_ENROLLMENT_START'] . '-' . $_REQUEST['month_TRANSFER']['STUDENT_ENROLLMENT_START'] . '-' . $_REQUEST['day_TRANSFER']['STUDENT_ENROLLMENT_START']));
 
@@ -47,18 +47,18 @@ if ($_REQUEST['modfunc'] == 'detail' && $_REQUEST['student_id'] && $_REQUEST['st
 
 
             if (strtotime($_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_START']) >= strtotime($_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'])) {
-                $check_asociation = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) as REC_EX FROM student_enrollment WHERE STUDENT_ID=' . $_REQUEST['student_id'] . ' AND SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ' AND START_DATE<=\'' . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '\' AND (END_DATE IS NULL OR END_DATE=\'0000-00-00\' AND END_DATE<=\'' . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '\') ORDER BY ID DESC LIMIT 0,1'));
+                $check_asociation = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) as REC_EX FROM student_enrollment WHERE STUDENT_ID=' . $_REQUEST['student_id'] . ' AND SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserCollege() . ' AND START_DATE<=\'' . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '\' AND (END_DATE IS NULL OR END_DATE=\'0000-00-00\' AND END_DATE<=\'' . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '\') ORDER BY ID DESC LIMIT 0,1'));
                 if ($check_asociation[1]['REC_EX'] != 0) {
-                    DBQuery('UPDATE student_enrollment SET DROP_CODE=\'' . $drop_code . '\',END_DATE=\'' . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '\' WHERE STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND SCHOOL_ID=\'' . UserSchool() . '\'  AND SYEAR=\'' . UserSyear() . '\'');  //pinki    
-                    $syear_RET = DBGet(DBQuery("SELECT MAX(SYEAR) AS SYEAR,TITLE FROM school_years WHERE SCHOOL_ID=" . $_REQUEST['TRANSFER']['SCHOOL']));
+                    DBQuery('UPDATE student_enrollment SET DROP_CODE=\'' . $drop_code . '\',END_DATE=\'' . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '\' WHERE STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND SCHOOL_ID=\'' . UserCollege() . '\'  AND SYEAR=\'' . UserSyear() . '\'');  //pinki    
+                    $syear_RET = DBGet(DBQuery("SELECT MAX(SYEAR) AS SYEAR,TITLE FROM college_years WHERE SCHOOL_ID=" . $_REQUEST['TRANSFER']['SCHOOL']));
                     $syear = $syear_RET[1]['SYEAR'];
                     $enroll_code = DBGet(DBQuery('SELECT id FROM student_enrollment_codes WHERE syear=\'' . $syear . '\' AND type=\'TrnE\''));  //pinki
-                    $last_school_RET = DBGet(DBQuery('SELECT SCHOOL_ID FROM student_enrollment WHERE STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND SYEAR=\'' . UserSyear() . '\'')); //pinki
-                    $last_school = $last_school_RET[1]['SCHOOL_ID'];
+                    $last_college_RET = DBGet(DBQuery('SELECT SCHOOL_ID FROM student_enrollment WHERE STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND SYEAR=\'' . UserSyear() . '\'')); //pinki
+                    $last_college = $last_college_RET[1]['SCHOOL_ID'];
                     $sch_id = $_REQUEST['TRANSFER']['SCHOOL'];
-                    $num_default_cal = DBGet(DBQuery('SELECT CALENDAR_ID FROM school_calendars WHERE SCHOOL_ID=' . $_REQUEST['TRANSFER']['SCHOOL'] . ' AND DEFAULT_CALENDAR=\'Y\' '));
+                    $num_default_cal = DBGet(DBQuery('SELECT CALENDAR_ID FROM college_calendars WHERE SCHOOL_ID=' . $_REQUEST['TRANSFER']['SCHOOL'] . ' AND DEFAULT_CALENDAR=\'Y\' '));
                     if (empty($num_default_cal)) {
-                        $qr = DBGet(DBQuery('SELECT CALENDAR_ID FROM school_calendars WHERE SCHOOL_ID=' . $_REQUEST['TRANSFER']['SCHOOL'] . ' LIMIT 0,1'));
+                        $qr = DBGet(DBQuery('SELECT CALENDAR_ID FROM college_calendars WHERE SCHOOL_ID=' . $_REQUEST['TRANSFER']['SCHOOL'] . ' LIMIT 0,1'));
 
                         $calender_id = $qr[1]['CALENDAR_ID'];
                     }
@@ -68,16 +68,16 @@ if ($_REQUEST['modfunc'] == 'detail' && $_REQUEST['student_id'] && $_REQUEST['st
                         $calender_id = 'NULL';
                     }
                     if ($gread_exists[1]['PRESENT'] == 1 && $gread_exists[1]['ID']) {
-                        DBQuery("INSERT INTO student_enrollment (SYEAR ,SCHOOL_ID ,STUDENT_ID ,GRADE_ID ,START_DATE ,END_DATE ,ENROLLMENT_CODE ,DROP_CODE ,NEXT_SCHOOL ,CALENDAR_ID ,LAST_SCHOOL) VALUES (" . $syear . "," . $_REQUEST['TRANSFER']['SCHOOL'] . "," . $_REQUEST['student_id'] . "," . $_REQUEST['TRANSFER']['Grade_Level'] . ",'" . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_START'] . "',''," . $enroll_code[1]['ID'] . ",'','" . $_REQUEST['TRANSFER']['SCHOOL'] . "',$calender_id,$last_school)");
+                        DBQuery("INSERT INTO student_enrollment (SYEAR ,SCHOOL_ID ,STUDENT_ID ,GRADE_ID ,START_DATE ,END_DATE ,ENROLLMENT_CODE ,DROP_CODE ,NEXT_SCHOOL ,CALENDAR_ID ,LAST_SCHOOL) VALUES (" . $syear . "," . $_REQUEST['TRANSFER']['SCHOOL'] . "," . $_REQUEST['student_id'] . "," . $_REQUEST['TRANSFER']['Grade_Level'] . ",'" . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_START'] . "',''," . $enroll_code[1]['ID'] . ",'','" . $_REQUEST['TRANSFER']['SCHOOL'] . "',$calender_id,$last_college)");
                     } else {
-                        DBQuery("INSERT INTO student_enrollment (SYEAR ,SCHOOL_ID ,STUDENT_ID ,GRADE_ID ,START_DATE ,END_DATE ,ENROLLMENT_CODE ,DROP_CODE ,NEXT_SCHOOL ,CALENDAR_ID ,LAST_SCHOOL) VALUES (" . $syear . "," . $_REQUEST['TRANSFER']['SCHOOL'] . "," . $_REQUEST['student_id'] . "," . $_REQUEST['TRANSFER']['Grade_Level'] . ",'" . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_START'] . "',''," . $enroll_code[1]['ID'] . ",'','" . $_REQUEST['TRANSFER']['SCHOOL'] . "',$calender_id,$last_school)");
+                        DBQuery("INSERT INTO student_enrollment (SYEAR ,SCHOOL_ID ,STUDENT_ID ,GRADE_ID ,START_DATE ,END_DATE ,ENROLLMENT_CODE ,DROP_CODE ,NEXT_SCHOOL ,CALENDAR_ID ,LAST_SCHOOL) VALUES (" . $syear . "," . $_REQUEST['TRANSFER']['SCHOOL'] . "," . $_REQUEST['student_id'] . "," . $_REQUEST['TRANSFER']['Grade_Level'] . ",'" . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_START'] . "',''," . $enroll_code[1]['ID'] . ",'','" . $_REQUEST['TRANSFER']['SCHOOL'] . "',$calender_id,$last_college)");
                     }
-                    $trans_school = $syear_RET[1]['TITLE'];
+                    $trans_college = $syear_RET[1]['TITLE'];
 
                     $trans_student_RET = DBGet(DBQuery("SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX FROM students WHERE STUDENT_ID='" . $_REQUEST['student_id'] . "'"));
 
                     $trans_student = $trans_student_RET[1]['LAST_NAME'] . ' ' . $trans_student_RET[1]['FIRST_NAME'];
-                    DBQuery('UPDATE medical_info SET SCHOOL_ID=' . $_REQUEST['TRANSFER']['SCHOOL'] . ', SYEAR=' . $syear . ' WHERE STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\'');
+                    DBQuery('UPDATE medical_info SET SCHOOL_ID=' . $_REQUEST['TRANSFER']['SCHOOL'] . ', SYEAR=' . $syear . ' WHERE STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\'');
                     unset($_REQUEST['modfunc']);
                     unset($_SESSION['_REQUEST_vars']['student_id']);
                     echo '<SCRIPT language=javascript>opener.document.location = "Modules.php?modname=students/Student.php&modfunc=&search_modfunc=list&next_modname=students/Student.php&stuid=' . $_REQUEST['student_id'] . '"; window.close();</script>';
@@ -94,26 +94,26 @@ if ($_REQUEST['modfunc'] == 'detail' && $_REQUEST['student_id'] && $_REQUEST['st
         } else {
 
             if ($_REQUEST['TRANSFER']['SCHOOL'] == '' && $_REQUEST['TRANSFER']['Grade_Level'] != '')
-                echo '<SCRIPT language=javascript>alert("Please select School");window.close();</script>';
+                echo '<SCRIPT language=javascript>alert("Please select College");window.close();</script>';
             if ($_REQUEST['TRANSFER']['SCHOOL'] != '' && $_REQUEST['TRANSFER']['Grade_Level'] == '')
                 echo '<SCRIPT language=javascript>alert("Please select Grade Level");window.close();</script>';
             if ($_REQUEST['TRANSFER']['SCHOOL'] == '' && $_REQUEST['TRANSFER']['Grade_Level'] == '')
                 unset($_REQUEST['modfunc']);
-            echo '<SCRIPT language=javascript>alert("Please select School and Grade Level");window.close();</script>';
+            echo '<SCRIPT language=javascript>alert("Please select College and Grade Level");window.close();</script>';
         }
     }
     else {
 
-        $sql = "SELECT ID,TITLE FROM schools WHERE ID !=" . UserSchool();
-        $sql2 = DBGet(DBQuery('SELECT ID,TITLE FROM schools WHERE ID !=' . UserSchool() . '  LIMIT 0,1'));
+        $sql = "SELECT ID,TITLE FROM colleges WHERE ID !=" . UserCollege();
+        $sql2 = DBGet(DBQuery('SELECT ID,TITLE FROM colleges WHERE ID !=' . UserCollege() . '  LIMIT 0,1'));
         $sch_id = $sql2[1]['ID'];
         if ($sch_id != '') {
             $QI = DBQuery($sql);
-            $schools_RET = DBGet($QI);
-            foreach ($schools_RET as $school_array) {
-                $options[$school_array['ID']] = $school_array['TITLE'];
+            $colleges_RET = DBGet($QI);
+            foreach ($colleges_RET as $college_array) {
+                $options[$college_array['ID']] = $college_array['TITLE'];
             }
-            $res = DBGet(DBQuery('SELECT * FROM school_gradelevels WHERE school_id=' . $sch_id . ''));
+            $res = DBGet(DBQuery('SELECT * FROM college_gradelevels WHERE college_id=' . $sch_id . ''));
             foreach ($res as $res1) {
                 $options1[$res1['ID']] = $res1['TITLE'];
             }
@@ -128,7 +128,7 @@ if ($_REQUEST['modfunc'] == 'detail' && $_REQUEST['student_id'] && $_REQUEST['st
             echo '<div class="modal-body">';
             echo '<input type="hidden" name="values[student_enrollment]['.$_REQUEST['student_id'].'][DROP_CODE]" value="'.$_REQUEST['drop_code'].'" />';
             echo '<div class="form-group datepicker-group">';
-            echo '<label class="control-label">Current school drop date</label>';
+            echo '<label class="control-label">Current college drop date</label>';
             //echo DateInput_for_EndInputModal('', 'TRANSFER[STUDENT_ENROLLMENT_END_DATE]', '', $div, true);
             echo custom_datepicker('222', 'TRANSFER[STUDENT_ENROLLMENT_END_DATE]');
 
@@ -145,7 +145,7 @@ if ($_REQUEST['modfunc'] == 'detail' && $_REQUEST['student_id'] && $_REQUEST['st
             echo '</div>';
 
             echo '<div class="form-group">';
-            echo '<label class="control-label">New school\'s enrollment date</label>';
+            echo '<label class="control-label">New college\'s enrollment date</label>';
             //echo DateInput_for_EndInputModal('', 'TRANSFER[STUDENT_ENROLLMENT_START]', '', $div, true);
             echo custom_datepicker('223', 'TRANSFER[STUDENT_ENROLLMENT_START]');
             echo '</div>';
@@ -162,7 +162,7 @@ if ($_REQUEST['modfunc'] == 'detail' && $_REQUEST['student_id'] && $_REQUEST['st
             unset($_REQUEST['button']);
             unset($_SESSION['_REQUEST_vars']['button']);
         } else {
-            echo '<div align=center>There is only one school in the system so student cannot be transfered to any other school<br /><br>
+            echo '<div align=center>There is only one college in the system so student cannot be transfered to any other college<br /><br>
                    <input type=button class="btn btn-default" value=Close onclick=\'window.close();\'></div>
                     </form>';
 //            PopTableWindow('footer');

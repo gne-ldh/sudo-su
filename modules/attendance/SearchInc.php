@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -177,7 +177,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             echo '<div class="col-md-12">';
             if (User('PROFILE') == 'admin') {
                 echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=address_group value=Y' . (Preferences('DEFAULT_FAMILIES') == 'Y' ? ' CHECKED' : '') . '> Group by Family</label>';
-                echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=_search_all_schools value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '> Search All Schools</label>';
+                echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=_search_all_colleges value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '> Search All Colleges</label>';
             }
             echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=include_inactive value=Y>Include Inactive students</label>';
             echo '</div>'; //.col-md-12
@@ -242,8 +242,8 @@ else {
     $LO_columns = array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'Student ID', 'ALT_ID' => 'Alternate ID', 'GRADE_ID' => 'Grade', 'PHONE' => 'Phone');
     $name_link['FULL_NAME']['link'] = "Modules.php?modname=$_REQUEST[next_modname]";
     $name_link['FULL_NAME']['variables'] = array('student_id' => 'STUDENT_ID');
-    if ($_REQUEST['_search_all_schools'])
-        $name_link['FULL_NAME']['variables'] += array('school_id' => 'SCHOOL_ID');
+    if ($_REQUEST['_search_all_colleges'])
+        $name_link['FULL_NAME']['variables'] += array('college_id' => 'SCHOOL_ID');
 
     if (is_array($extra['link']))
         $link = $extra['link'] + $name_link;
@@ -298,9 +298,9 @@ else {
         if (!is_array($students_RET[1]['STUDENT_ID'])) {
             $_SESSION['student_id'] = $students_RET[1]['STUDENT_ID'];
             if (User('PROFILE') == 'admin')
-                $_SESSION['UserSchool'] = $students_RET[1]['LIST_SCHOOL_ID'];
+                $_SESSION['UserCollege'] = $students_RET[1]['LIST_SCHOOL_ID'];
             if (User('PROFILE') == 'teacher')
-                $_SESSION['UserSchool'] = $students_RET[1]['SCHOOL_ID'];
+                $_SESSION['UserCollege'] = $students_RET[1]['SCHOOL_ID'];
 
             //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             unset($_REQUEST['search_modfunc']);
