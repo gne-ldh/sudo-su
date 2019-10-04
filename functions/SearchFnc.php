@@ -151,7 +151,7 @@ function Search($type, $extra = array(), $search_from_grade = '') {
 
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            echo '<div class="form-group"><label class="control-label text-right col-lg-4">Student ID</label><div class="col-lg-8"><input type=text name="stuid" size=30 placeholder="Student ID" class="form-control"></div></div>';
+            echo '<div class="form-group"><label class="control-label text-right col-lg-4">College Roll No</label><div class="col-lg-8"><input type=text name="stuid" size=30 placeholder="College Roll No" class="form-control"></div></div>';
             // echo '</div><div class="col-md-6">';
             // echo '<div class="form-group"><label class="control-label text-right col-lg-4">Alt ID</label><div class="col-lg-8"><input type=text name="altid" size=30 placeholder="Alt ID" class="form-control"></div></div>';
             // echo '</div>'; //.col-md-6
@@ -500,7 +500,7 @@ function Search_GroupSchedule($type, $extra = array()) {
         case 'general_info':
             echo '<div class="form-group"><label class="control-label">Last Name</label><input type=text name="last" size=30 class="form-control"></div>';
             echo '<div class="form-group"><label class="control-label">First Name</label><input type=text name="first" size=30 class="form-control"></div>';
-            echo '<div class="form-group"><label class="control-label">Student ID</label><input type=text name="stuid" size=30 class="form-control"></div>';
+            echo '<div class="form-group"><label class="control-label">College Roll No</label><input type=text name="stuid" size=30 class="form-control"></div>';
             echo '<div class="form-group"><label class="control-label">Alt ID</label><input type=text name="altid" size=30 class="form-control"></div>';
             echo '<div class="form-group"><label class="control-label">Address</label><input type=text name="addr" size=30 class="form-control"></div>';
 
@@ -709,7 +709,7 @@ function Search_absence_summary($type, $extra = array(), $search_from_grade = ''
             echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">First Name</label><div class="col-lg-8"><input type=text name="first" placeholder="First Name" size=30 class="form-control"></div></div></div>';
             echo '</div>';
             echo '<div class="row">';
-            echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">Student ID</label><div class="col-lg-8"><input type=text name="stuid" placeholder="Student ID" size=30 class="form-control"></div></div></div>';
+            echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">College Roll No</label><div class="col-lg-8"><input type=text name="stuid" placeholder="College Roll No" size=30 class="form-control"></div></div></div>';
             echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">Alt ID</label><div class="col-lg-8"><input type=text name="altid" placeholder="Alt ID" size=30 class="form-control"></div></div></div>';
             echo '</div>';
             echo '<div class="row">';
@@ -951,7 +951,7 @@ function SearchStaff($type, $extra = array()) {
         case 'general_info':
             echo '<tr><td align=right width=120>Last Name</td><td><input type=text name="last" size=30 class="cell_floating"></td></tr>';
             echo '<tr><td align=right width=120>First Name</td><td><input type=text name="first" size=30 class="cell_floating"></td></tr>';
-            echo '<tr><td align=right width=120>Student ID</td><td><input type=text name="stuid" size=30 class="cell_floating"></td></tr>';
+            echo '<tr><td align=right width=120>College Roll No</td><td><input type=text name="stuid" size=30 class="cell_floating"></td></tr>';
             echo '<tr><td align=right width=120>National ID</td><td><input type=text name="altid" size=30 class="cell_floating"></td></tr>';
             echo '<tr><td align=right width=120>Address</td><td><input type=text name="addr" size=30 class="cell_floating"></td></tr>';
 

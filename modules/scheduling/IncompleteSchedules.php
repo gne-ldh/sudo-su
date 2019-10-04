@@ -85,7 +85,7 @@ else {
     $link['FULL_NAME']['variables'] = array('student_id' => 'STUDENT_ID');
     echo '<div class="panel panel-default">';
     echo '<div class="table-responsive">';
-    ListOutput($bad_students, array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'Student ID', 'GRADE_ID' => 'Grade') + $extra['columns_after'], $singular, $plural, $link);
+    ListOutput($bad_students, array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'College Roll No', 'GRADE_ID' => 'Grade') + $extra['columns_after'], $singular, $plural, $link);
     echo "</div>"; //.table-responsive
     echo "</div>"; //.panel.panel-default
 }

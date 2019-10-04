@@ -44,7 +44,7 @@ if($_REQUEST['modfunc']=='save')
   
 	if(count($RET))
 	{
-                        $column_name=array('STUDENT_ID'=>'Student ID','ALT_ID'=>'Alternate ID','FULL_NAME'=>'Student','CONTACT_TYPE'=>'Type','RELATION'=>'Relation','RELATION_NAME'=>'Relation\'s Name','STREET'=>'Street','ADDRESS'=>'Address','CITY'=>'City','STATE'=>'State','ZIP'=>'Zip','WORK_PHONE'=>'Work Phone','HOME_PHONE'=>'Home Phone','CELL_PHONE'=>'Cell Phone','EMAIL_ID'=>'Email Address');
+                        $column_name=array('STUDENT_ID'=>'College Roll No','ALT_ID'=>'Alternate ID','FULL_NAME'=>'Student','CONTACT_TYPE'=>'Type','RELATION'=>'Relation','RELATION_NAME'=>'Relation\'s Name','STREET'=>'Street','ADDRESS'=>'Address','CITY'=>'City','STATE'=>'State','ZIP'=>'Zip','WORK_PHONE'=>'Work Phone','HOME_PHONE'=>'Home Phone','CELL_PHONE'=>'Cell Phone','EMAIL_ID'=>'Email Address');
                         $singular='Student Contact';
                         $plural='Student Contacts';
                         $options=array('search' => false);

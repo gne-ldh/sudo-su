@@ -246,11 +246,11 @@ echo '<div class="row">';
 echo '<div class="col-md-6">';
 echo '<div class="form-group">';
 if ($_REQUEST['student_id'] == 'new') {
-    echo NoInput('Will automatically be assigned', 'Student ID');
+    echo NoInput('Will automatically be assigned', 'College Roll No');
 
     echo '<span id="ajax_output_stid"></span>';
 } else
-    echo NoInput(UserStudentID(), 'Student ID');
+    echo NoInput(UserStudentID(), 'College Roll No');
 echo '</div></div><div class="col-md-6"><div class="form-group">';
 echo TextInput($student['ALT_ID'], 'students[ALT_ID]', 'Alternate ID', 'size=10 maxlength=45');
 echo '</div></div>'; //.col-md-6
