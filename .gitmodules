@@ -1,4 +1,0 @@
-[submodule "formtools"]
-	path = formtools
-	url = https://github.com/formtools/core.git
-	branch = 3.0.18
