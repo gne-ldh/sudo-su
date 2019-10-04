@@ -195,7 +195,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
 //
 //            PopTable('footer', $extra['footer'] . $extra_footer);
 //	    echo '<input type="button" value="Create Admission Form" onclick="location.href=\'https://google.com\'" />';
-    	    echo '<a href="http://localhost/sudo-su/formtools/index.php" target="_blank">Create Admission Form</a>';
+    	    echo '<a href="formtools/index.php" target="_blank">Create Admission Form</a>';
     	    echo '</FORM>';
             // set focus to last name text box
 	    echo '<script type="text/javascript">
