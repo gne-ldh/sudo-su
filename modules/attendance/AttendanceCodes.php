@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -33,7 +33,7 @@ if ($_REQUEST['values'] && ($_POST['values'] || $_REQUEST['ajax'])) {
     foreach ($_REQUEST['values'] as $id => $columns) {
         if (!(isset($columns['TITLE']) && trim($columns['TITLE']) == '')) {
             if ($columns['DEFAULT_CODE'] == 'Y')
-                DBQuery('UPDATE attendance_codes SET DEFAULT_CODE=NULL WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND TABLE_NAME=\'' . $_REQUEST['table'] . '\'');
+                DBQuery('UPDATE attendance_codes SET DEFAULT_CODE=NULL WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND TABLE_NAME=\'' . $_REQUEST['table'] . '\'');
 
             if ($id != 'new') {
                 $flag = 1;
@@ -44,7 +44,7 @@ if ($_REQUEST['values'] && ($_POST['values'] || $_REQUEST['ajax'])) {
                         $samedata = DBGet(DBQuery('Select TITLE from attendance_codes WHERE ID=\'' . $id . '\''));
                         if ($samedata[1]['TITLE'] != $value) {
 
-                            $validate_title = DBGet(DBQuery('SELECT COUNT(1) as TITLE_EX FROM attendance_codes WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ' AND TITLE=\'' . str_replace("'", "''", $value) . '\''));
+                            $validate_title = DBGet(DBQuery('SELECT COUNT(1) as TITLE_EX FROM attendance_codes WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserCollege() . ' AND TITLE=\'' . str_replace("'", "''", $value) . '\''));
                             if ($validate_title[1]['TITLE_EX'] != 0) {
                                 echo "<div class=\"alert bg-warning alert-styled-left\">Unable to save data, because category title already exists.</div>";
                                 $flag = 0;
@@ -61,7 +61,7 @@ if ($_REQUEST['values'] && ($_POST['values'] || $_REQUEST['ajax'])) {
             else {
                 $sql = 'INSERT INTO attendance_codes ';
                 $fields = 'SCHOOL_ID,SYEAR,TABLE_NAME,';
-                $values = '\'' . UserSchool() . '\',\'' . UserSyear() . '\',\'' . $_REQUEST['table'] . '\',';
+                $values = '\'' . UserCollege() . '\',\'' . UserSyear() . '\',\'' . $_REQUEST['table'] . '\',';
 
 
                 $go = 0;
@@ -79,7 +79,7 @@ if ($_REQUEST['values'] && ($_POST['values'] || $_REQUEST['ajax'])) {
                     }
                 }
                 $sql .= '(' . substr($fields, 0, -1) . ') values(' . substr($values, 0, -1) . ')';
-                $validate_title = DBGet(DBQuery('SELECT COUNT(1) as TITLE_EX FROM attendance_codes WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ' AND TITLE=\'' . singleQuoteReplace("", "", $title) . '\''));
+                $validate_title = DBGet(DBQuery('SELECT COUNT(1) as TITLE_EX FROM attendance_codes WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserCollege() . ' AND TITLE=\'' . singleQuoteReplace("", "", $title) . '\''));
                 if ($validate_title[1]['TITLE_EX'] != 0 || $new_cat == 'Attendance') {
                     echo "<div class=\"alert bg-warning alert-styled-left\">Unable to save data, because title already exists.</div>";
                 } else {
@@ -99,11 +99,11 @@ if ($_REQUEST['new_category_title'] && $_REQUEST['cat_edit_id'] == '') {
 
     $new_cat = optional_param('new_category_title', '', PARAM_SPCL);
     if ($new_cat) {
-        $validate_title = DBGet(DBQuery('SELECT COUNT(1) as TITLE_EX FROM attendance_code_categories WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ' AND TITLE=\'' . singleQuoteReplace("", "", $new_cat) . '\''));
+        $validate_title = DBGet(DBQuery('SELECT COUNT(1) as TITLE_EX FROM attendance_code_categories WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserCollege() . ' AND TITLE=\'' . singleQuoteReplace("", "", $new_cat) . '\''));
         if ($validate_title[1]['TITLE_EX'] != 0 || $new_cat == 'Attendance') {
             echo "<font color='red'><b>Unable to save data, because category title already exists.</b></font>";
         } else
-            DBQuery('INSERT INTO attendance_code_categories (SYEAR,SCHOOL_ID,TITLE) values(\'' . UserSyear() . '\',\'' . UserSchool() . '\',\'' . singleQuoteReplace("", "", $new_cat) . '\')');
+            DBQuery('INSERT INTO attendance_code_categories (SYEAR,SCHOOL_ID,TITLE) values(\'' . UserSyear() . '\',\'' . UserCollege() . '\',\'' . singleQuoteReplace("", "", $new_cat) . '\')');
 
         // possible modification start
         $id = DBGet(DBQuery('SELECT max(ID) as ID from attendance_code_categories'));
@@ -118,7 +118,7 @@ if ($_REQUEST['new_category_title'] && $_REQUEST['cat_edit_id'] == '') {
 if ($_REQUEST['new_category_title'] != '' && $_REQUEST['cat_edit_id'] != '') {
     $title = str_replace('"', '""', $_REQUEST['new_category_title']);
     $title = str_replace("'", "''", $title);
-    $validate_title = DBGet(DBQuery('SELECT COUNT(1) as TITLE_EX FROM attendance_code_categories WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ' AND TITLE=\'' . $title . '\' AND ID!=' . $_REQUEST['cat_edit_id']));
+    $validate_title = DBGet(DBQuery('SELECT COUNT(1) as TITLE_EX FROM attendance_code_categories WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserCollege() . ' AND TITLE=\'' . $title . '\' AND ID!=' . $_REQUEST['cat_edit_id']));
     if ($validate_title[1]['TITLE_EX'] != 0 || $_REQUEST['new_category_title'] == 'Attendance') {
         echo "<div class=\"alert bg-warning alert-styled-left\">Unable to save data, because category title already exists.</div>";
     } else {
@@ -161,7 +161,7 @@ if (optional_param('modfunc', '', PARAM_ALPHA) == 'remove') {
 if ($_REQUEST['modfunc'] != 'remove') {
     if ($_REQUEST['table'] !== 'new') {
 
-        $sql = 'SELECT ID,TITLE,SHORT_NAME,TYPE,DEFAULT_CODE,STATE_CODE,SORT_ORDER,TABLE_NAME FROM attendance_codes WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND TABLE_NAME=\'' . $_REQUEST['table'] . '\' ORDER BY SORT_ORDER,TITLE';
+        $sql = 'SELECT ID,TITLE,SHORT_NAME,TYPE,DEFAULT_CODE,STATE_CODE,SORT_ORDER,TABLE_NAME FROM attendance_codes WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND TABLE_NAME=\'' . $_REQUEST['table'] . '\' ORDER BY SORT_ORDER,TITLE';
 
 
         $QI = DBQuery($sql);
@@ -185,7 +185,7 @@ if ($_REQUEST['modfunc'] != 'remove') {
     echo '<input type="hidden" name="h1" id="h1" value="' . $attandance_id . '">';
 
     $tabs = array(array('title' => 'Attendance', 'link' => "Modules.php?modname=$_REQUEST[modname]&table=0"));
-    $categories_RET = DBGet(DBQuery('SELECT ID,TITLE FROM attendance_code_categories WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY TITLE'));
+    $categories_RET = DBGet(DBQuery('SELECT ID,TITLE FROM attendance_code_categories WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY TITLE'));
     foreach ($categories_RET as $category)
         $tabs[] = array('title' => $category['TITLE'], 'link' => "Modules.php?modname=$_REQUEST[modname]&table=" . $category['ID']);
 

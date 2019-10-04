@@ -1,7 +1,7 @@
 <?php
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -48,11 +48,11 @@ function User($item)
                         {
                             $sql = 'SELECT USERNAME,CONCAT(s.FIRST_NAME,\' \',s.LAST_NAME) AS NAME,\'student\' AS PROFILE,\'3\' AS PROFILE_ID,CONCAT(\',\',se.SCHOOL_ID,\',\') AS SCHOOLS,se.SYEAR,se.SCHOOL_ID FROM students s,student_enrollment se,login_authentication la WHERE la.USER_ID=s.STUDENT_ID AND la.PROFILE_ID = 3 AND s.STUDENT_ID='.$_SESSION[STUDENT_ID].' AND se.SYEAR=\''.$_SESSION[UserSyear].'\'   AND se.STUDENT_ID=s.STUDENT_ID ORDER BY se.END_DATE DESC LIMIT 1';
                             $_openSIS['User'] = DBGet(DBQuery($sql));
-			$_SESSION['UserSchool'] = $_openSIS['User'][1]['SCHOOL_ID'];
+			$_SESSION['UserCollege'] = $_openSIS['User'][1]['SCHOOL_ID'];
 		}
 		else
                 {
-			$_SESSION['UserSchool'] = $_openSIS['User'][1]['SCHOOL_ID'];
+			$_SESSION['UserCollege'] = $_openSIS['User'][1]['SCHOOL_ID'];
 		}
                 }
 		else
@@ -122,7 +122,7 @@ function Preferences($item,$program='Preferences')
 }
 function StaffCategory($staff_id)
 {
-    $category=DBGet(DBquery('SELECT CATEGORY FROM staff_school_info WHERE STAFF_ID='.$staff_id));
+    $category=DBGet(DBquery('SELECT CATEGORY FROM staff_college_info WHERE STAFF_ID='.$staff_id));
     return ($category[1]['CATEGORY']==''?'N/A':$category[1]['CATEGORY']);
 }
 ?>

@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -52,7 +52,7 @@ if (optional_param('delete', '', PARAM_ALPHA) == 'true') {
         $sid = optional_param('studentidx', '', PARAM_ALPHANUM);
         $cnt = optional_param('deletecheck', '', PARAM_INT);
         $pid = optional_param('periodidx', '', PARAM_SPCL);
-        $sdt = $_REQUEST['schooldatex'];
+        $sdt = $_REQUEST['collegedatex'];
 
 
 
@@ -144,18 +144,18 @@ if ((!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) && $_REQUEST['
             $periodidr = $rr['PERIOD_ID'];
             $firstr = $rr['FIRST_NAME'];
             $lastr = $rr['LAST_NAME'];
-            $schooldater = $rr['SCHOOL_DATE'];
+            $collegedater = $rr['SCHOOL_DATE'];
             $titler = $rr['TITLE'];
             $startr = $rr['START_DATE'];
             $endr = $rr['END_DATE'];
 
-            if ($schooldater > $endr) {
+            if ($collegedater > $endr) {
                 $afterr = "Y";
             }
 
-            if (($studentidr == $studentid2) && ($courseidr == $courseid2) && ($schooldater == $schooldate2) && ($startr == $start2)) {
+            if (($studentidr == $studentid2) && ($courseidr == $courseid2) && ($collegedater == $collegedate2) && ($startr == $start2)) {
                 $totalrows++;
-            } else if (($schooldater > $endr) && ($endr != NULL) && ($startr == $start2)) {
+            } else if (($collegedater > $endr) && ($endr != NULL) && ($startr == $start2)) {
                 $totalrows++;
             } else {
                 //Do nothing
@@ -164,7 +164,7 @@ if ((!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) && $_REQUEST['
             $studentid2 = $studentidr;
             $courseid2 = $courseidr;
             $periodid2 = $periodidr;
-            $schooldate2 = $schooldater;
+            $collegedate2 = $collegedater;
             $first2 = $firstr;
             $last2 = $lastr;
             $title2 = $titler;
@@ -238,17 +238,17 @@ if ((!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) && $_REQUEST['
             $periodid = $r['PERIOD_ID'];
             $first = $r['FIRST_NAME'];
             $last = $r['LAST_NAME'];
-            $schooldate = $r['SCHOOL_DATE'];
+            $collegedate = $r['SCHOOL_DATE'];
             $title = $r['TITLE'];
             $short_name = $r['SHORT_NAME'];
             $start = $r['START_DATE'];
             $end = $r['END_DATE'];
 
-            if ($schooldate > $end) {
+            if ($collegedate > $end) {
                 $after = "Y";
             }
 
-            if (($studentid == $studentid2) && ($courseid == $courseid2) && ($schooldate == $schooldate2) && ($start == $start2) && ($periodid == $periodid2)) {
+            if (($studentid == $studentid2) && ($courseid == $courseid2) && ($collegedate == $collegedate2) && ($start == $start2) && ($periodid == $periodid2)) {
 
                 $URIcount++;
 
@@ -257,7 +257,7 @@ if ((!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) && $_REQUEST['
                     echo "<input type=hidden name=delete value=true>";
                     echo "<input type=hidden name=studentidx[$count] value=$studentid>";
                     echo "<input type=hidden name=periodidx[$count] value=$courseid>";
-                    echo "<input type=hidden name=schooldatex[$count] value=$schooldate>";
+                    echo "<input type=hidden name=collegedatex[$count] value=$collegedate>";
 
                     if ($yellow == 0) {
                         $color = 'F8F8F9';
@@ -266,11 +266,11 @@ if ((!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) && $_REQUEST['
                         $color = Preferences('COLOR');
                         $yellow = 0;
                     }
-                    echo "<tr class=odd><td ><input type=checkbox name=deletecheck[$count] value=$count></td><td bgcolor=#$color><font color=#000000><FONT size=-1>$first $last ($studentid)</td><td bgcolor=#$color><font color=#000000><FONT size=-1>$short_name ($courseid)</td><td bgcolor=#$color><font color=#000000><FONT size=-1>$start &nbsp</td><td bgcolor=#$color><font color=#000000><FONT size=-1>$end &nbsp</td><td bgcolor=#$color><font color=#000000><FONT size=-1>$schooldate</td></tr>";
+                    echo "<tr class=odd><td ><input type=checkbox name=deletecheck[$count] value=$count></td><td bgcolor=#$color><font color=#000000><FONT size=-1>$first $last ($studentid)</td><td bgcolor=#$color><font color=#000000><FONT size=-1>$short_name ($courseid)</td><td bgcolor=#$color><font color=#000000><FONT size=-1>$start &nbsp</td><td bgcolor=#$color><font color=#000000><FONT size=-1>$end &nbsp</td><td bgcolor=#$color><font color=#000000><FONT size=-1>$collegedate</td></tr>";
 
                     $count++;
                 }
-            } else if (($schooldate > $end) && ($end != NULL) && ($start == $start2)) {
+            } else if (($collegedate > $end) && ($end != NULL) && ($start == $start2)) {
 
                 $URIcount++;
 
@@ -279,7 +279,7 @@ if ((!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) && $_REQUEST['
                     echo "<input type=hidden name=delete value=true>";
                     echo "<input type=hidden name=studentidx[$count] value=$studentid>";
                     echo "<input type=hidden name=periodidx[$count] value=$courseid>";
-                    echo "<input type=hidden name=schooldatex[$count] value=$schooldate>";
+                    echo "<input type=hidden name=collegedatex[$count] value=$collegedate>";
 
                     if ($yellow == 0) {
                         $color = 'F8F8F9';
@@ -288,7 +288,7 @@ if ((!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) && $_REQUEST['
                         $color = Preferences('COLOR');
                         $yellow = 0;
                     }
-                    echo "<tr class=even><td ><input type=checkbox name=deletecheck[$count] value=$count></td><td bgcolor=#$color><font color=#000000><FONT size=-1>$first $last ($studentid)</td><td bgcolor=#$color><font color=#000000><FONT size=-1>$short_name ($courseid)</td><td bgcolor=#$color><font color=#000000><FONT size=-1>$start &nbsp</td><td bgcolor=#$color><font color=#000000><FONT size=-1>$end &nbsp</td><td bgcolor=#$color><font color=#000000><FONT size=-1>$schooldate</td></tr>";
+                    echo "<tr class=even><td ><input type=checkbox name=deletecheck[$count] value=$count></td><td bgcolor=#$color><font color=#000000><FONT size=-1>$first $last ($studentid)</td><td bgcolor=#$color><font color=#000000><FONT size=-1>$short_name ($courseid)</td><td bgcolor=#$color><font color=#000000><FONT size=-1>$start &nbsp</td><td bgcolor=#$color><font color=#000000><FONT size=-1>$end &nbsp</td><td bgcolor=#$color><font color=#000000><FONT size=-1>$collegedate</td></tr>";
 
                     $count++;
                 }
@@ -299,7 +299,7 @@ if ((!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) && $_REQUEST['
             $studentid2 = $studentid;
             $courseid2 = $courseid;
             $periodid2 = $periodid;
-            $schooldate2 = $schooldate;
+            $collegedate2 = $collegedate;
             $first2 = $first;
             $last2 = $last;
             $title2 = $title;

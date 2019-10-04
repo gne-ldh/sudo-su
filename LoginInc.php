@@ -1,7 +1,7 @@
 <?php
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -78,7 +78,7 @@ Warehouse('header', $extra_header);
                 <div class="panel-body">
 
                     <div class="row">
-                        <!--                        <div class="col-md-5 text-center school-logo">
+                        <!--                        <div class="col-md-5 text-center college-logo">
                                                     <img src="assets/images/peach_county_logo.png" width="180" />
                                                 </div>-->
                         <div class="col-md-12">

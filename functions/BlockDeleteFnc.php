@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -29,15 +29,15 @@
 
 function BlockDelete($item) {
     switch ($item) {
-        case 'school':
-            $find_student = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) AS STUDENT_EXIST FROM student_enrollment WHERE SCHOOL_ID=\'' . UserSchool() . '\''));
+        case 'college':
+            $find_student = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) AS STUDENT_EXIST FROM student_enrollment WHERE SCHOOL_ID=\'' . UserCollege() . '\''));
             $find_student = $find_student[1]['STUDENT_EXIST'];
-            $find_staff = DBGet(DBQuery('SELECT COUNT(STAFF_ID) AS STAFF_EXIST FROM staff WHERE CURRENT_SCHOOL_ID=\'' . UserSchool() . '\''));
+            $find_staff = DBGet(DBQuery('SELECT COUNT(STAFF_ID) AS STAFF_EXIST FROM staff WHERE CURRENT_SCHOOL_ID=\'' . UserCollege() . '\''));
             $find_staff = $find_staff[1]['STAFF_EXIST'];
             if ($find_student > 0 && $find_staff > 0) {
                 PopTable('header', 'Unable to Delete');
-                echo '<h5 class="text-danger text-center">This School cannot be deleted. There are Students and Teachers in this School</h5>';
-                $btn = '<a href=Modules.php?modname=schoolsetup/Schools.php&school_id=' . UserSchool() . ' style="text-decoration:none">back to School Information</a>';
+                echo '<h5 class="text-danger text-center">This College cannot be deleted. There are Students and Teachers in this College</h5>';
+                $btn = '<a href=Modules.php?modname=collegesetup/Colleges.php&college_id=' . UserCollege() . ' style="text-decoration:none">back to College Information</a>';
                 PopTable('footer', $btn, 'style="text-align:center"');
                 return false;
             } else
@@ -50,7 +50,7 @@ function BlockDelete($item) {
             if ($find_student > 0) {
                 PopTable('header', 'Unable to Delete');
                 echo '<h5 class="text-danger text-center">Subject cannot be deleted. There are <b>' . $find_student . '</b> Students Enrolled</h5>';
-                $btn = '<a href=Modules.php?modname=schoolsetup/Courses.php&subject_id=' . strip_tags(trim($_REQUEST['subject_id'])) . ' class="btn btn-default"><i class="icon-arrow-left7"></i> Back to Subject</a>';
+                $btn = '<a href=Modules.php?modname=collegesetup/Courses.php&subject_id=' . strip_tags(trim($_REQUEST['subject_id'])) . ' class="btn btn-default"><i class="icon-arrow-left7"></i> Back to Subject</a>';
                 PopTable('footer', $btn, 'style="text-align:center"');
                 return false;
             } else
@@ -63,7 +63,7 @@ function BlockDelete($item) {
             if ($find_student > 0) {
                 PopTable('header', 'Unable to Delete');
                 echo '<h5 class="text-danger text-center">Course cannot be deleted. There are <b>' . $find_student . '</b> Students Enrolled</h5>';
-                $btn = '<a href=Modules.php?modname=schoolsetup/Courses.php&subject_id=' . strip_tags(trim($_REQUEST['subject_id'])) . '&course_id=' . strip_tags(trim($_REQUEST['course_id'])) . ' class="btn btn-default"><i class="icon-arrow-left7"></i> Back to Course</a>';
+                $btn = '<a href=Modules.php?modname=collegesetup/Courses.php&subject_id=' . strip_tags(trim($_REQUEST['subject_id'])) . '&course_id=' . strip_tags(trim($_REQUEST['course_id'])) . ' class="btn btn-default"><i class="icon-arrow-left7"></i> Back to Course</a>';
                 PopTable('footer', $btn, 'style="text-align:center"');
                 return false;
             } else
@@ -76,7 +76,7 @@ function BlockDelete($item) {
             if ($find_student > 0) {
                 PopTable('header', 'Unable to Delete');
                 echo '<h5 class="text-danger text-center">Course period cannot be deleted. There are <b>' . $find_student . '</b> Students Enrolled</h5>';
-                $btn = '<a href=Modules.php?modname=schoolsetup/Courses.php&subject_id=' . strip_tags(trim($_REQUEST['subject_id'])) . '&course_id=' . strip_tags(trim($_REQUEST['course_id'])) . '&course_period_id=' . strip_tags(trim($_REQUEST['course_period_id'])) . ' class="btn btn-default"><i class="icon-arrow-left7"></i> Back to course period</a>';
+                $btn = '<a href=Modules.php?modname=collegesetup/Courses.php&subject_id=' . strip_tags(trim($_REQUEST['subject_id'])) . '&course_id=' . strip_tags(trim($_REQUEST['course_id'])) . '&course_period_id=' . strip_tags(trim($_REQUEST['course_period_id'])) . ' class="btn btn-default"><i class="icon-arrow-left7"></i> Back to course period</a>';
                 PopTable('footer', $btn, 'style="text-align:center"');
                 return false;
             } else

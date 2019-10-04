@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -203,7 +203,7 @@ if (!$_REQUEST['modfunc']) {
     unset($td);
     $swap_tabs = 'n';
     foreach ($RET as $ti => $td) {
-        if ($td['TITLE'] == 'School Information')
+        if ($td['TITLE'] == 'College Information')
             $swap_tabs = 'y';
     }
 
@@ -212,7 +212,7 @@ if (!$_REQUEST['modfunc']) {
         foreach ($RET as $ti => $td) {
             if ($td['TITLE'] == 'Demographic Info')
                 $new_tabs[1] = $td;
-            elseif ($td['TITLE'] == 'School Information')
+            elseif ($td['TITLE'] == 'College Information')
                 $new_tabs[2] = $td;
 
             else {

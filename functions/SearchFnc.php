@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -44,8 +44,8 @@ function Search($type, $extra = array(), $search_from_grade = '') {
             if ($_REQUEST['student_id']) {
                 if ($_REQUEST['student_id'] != 'new') {
                     $_SESSION['student_id'] = $_REQUEST['student_id'];
-                    if ($_REQUEST['school_id'])
-                        $_SESSION['UserSchool'] = $_REQUEST['school_id'];
+                    if ($_REQUEST['college_id'])
+                        $_SESSION['UserCollege'] = $_REQUEST['college_id'];
                 } else
                     unset($_SESSION['student_id']);
 //                if (!$_REQUEST['_openSIS_PDF'])
@@ -71,8 +71,8 @@ function Search($type, $extra = array(), $search_from_grade = '') {
             if ($_REQUEST['student_id']) {
                 if ($_REQUEST['student_id'] != 'new') {
                     $_SESSION['student_id'] = $_REQUEST['student_id'];
-                    if ($_REQUEST['school_id'])
-                        $_SESSION['UserSchool'] = $_REQUEST['school_id'];
+                    if ($_REQUEST['college_id'])
+                        $_SESSION['UserCollege'] = $_REQUEST['college_id'];
                 } else
                     unset($_SESSION['student_id']);
 //                if (!$_REQUEST['_openSIS_PDF'])
@@ -94,8 +94,8 @@ function Search($type, $extra = array(), $search_from_grade = '') {
             if ($_REQUEST['staff_id']) {
                 if ($_REQUEST['staff_id'] != 'new') {
                     $_SESSION['staff_id'] = $_REQUEST['staff_id'];
-                    if ($_REQUEST['school_id'])
-                        $_SESSION['UserSchool'] = $_REQUEST['school_id'];
+                    if ($_REQUEST['college_id'])
+                        $_SESSION['UserCollege'] = $_REQUEST['college_id'];
                 } else
                     unset($_SESSION['staff_id']);
 //                if (!$_REQUEST['_openSIS_PDF'])
@@ -122,8 +122,8 @@ function Search($type, $extra = array(), $search_from_grade = '') {
             if ($_REQUEST['staff_id']) {
                 if ($_REQUEST['staff_id'] != 'new') {
                     $_SESSION['staff_id'] = $_REQUEST['staff_id'];
-                    if ($_REQUEST['school_id'])
-                        $_SESSION['UserSchool'] = $_REQUEST['school_id'];
+                    if ($_REQUEST['college_id'])
+                        $_SESSION['UserCollege'] = $_REQUEST['college_id'];
                 } else
                     unset($_SESSION['staff_id']);
 //                if (!$_REQUEST['_openSIS_PDF'])
@@ -162,7 +162,7 @@ function Search($type, $extra = array(), $search_from_grade = '') {
             echo '<div class="col-md-6">';
             echo '<div class="form-group clearfix"><label class="control-label text-right col-lg-4">Address</label><div class="col-lg-8"><input type=text name="addr" size=30 placeholder="Address" class="form-control"></div></div>';
             echo '</div><div class="col-md-6">';
-            $list = DBGet(DBQuery("SELECT DISTINCT TITLE,ID,SORT_ORDER FROM school_gradelevels WHERE SCHOOL_ID='" . UserSchool() . "' ORDER BY SORT_ORDER"));
+            $list = DBGet(DBQuery("SELECT DISTINCT TITLE,ID,SORT_ORDER FROM college_gradelevels WHERE SCHOOL_ID='" . UserCollege() . "' ORDER BY SORT_ORDER"));
             echo '<div class="form-group"><label class="control-label text-right col-lg-4">Grade</label><div class="col-lg-8"><SELECT name=grade class="form-control"><OPTION value="">Not Specified</OPTION>';
 
             foreach ($list as $value)
@@ -174,7 +174,7 @@ function Search($type, $extra = array(), $search_from_grade = '') {
 
             echo '<div class="row">';
             echo '<div class="col-md-6">';
-            $list = DBGet(DBQuery("SELECT DISTINCT NAME,ID,SORT_ORDER FROM school_gradelevel_sections WHERE SCHOOL_ID='" . UserSchool() . "' ORDER BY SORT_ORDER"));
+            $list = DBGet(DBQuery("SELECT DISTINCT NAME,ID,SORT_ORDER FROM college_gradelevel_sections WHERE SCHOOL_ID='" . UserCollege() . "' ORDER BY SORT_ORDER"));
 //            echo '<div class="form-group"><label class="control-label col-lg-4">Section</label><div class="col-lg-8"><SELECT name=section class="form-control"><OPTION value="">Not Specified</OPTION>';
 //            echo '</div><div class="col-md-6">';
             echo '<div class="form-group"><label class="control-label text-right col-lg-4">Section</label><div class="col-lg-8"><SELECT name=section class="form-control"><OPTION value="">Not Specified</OPTION>';
@@ -415,8 +415,8 @@ function Search_Miss_Attn($type, $extra = array()) {
             if ($_REQUEST['staff_id']) {
                 if ($_REQUEST['staff_id'] != 'new') {
                     $_SESSION['staff_id'] = $_REQUEST['staff_id'];
-                    if ($_REQUEST['school_id'])
-                        $_SESSION['UserSchool'] = $_REQUEST['school_id'];
+                    if ($_REQUEST['college_id'])
+                        $_SESSION['UserCollege'] = $_REQUEST['college_id'];
                 } else
                     unset($_SESSION['staff_id']);
 //                if (!$_REQUEST['_openSIS_PDF'])
@@ -455,8 +455,8 @@ function Search_GroupSchedule($type, $extra = array()) {
             if ($_REQUEST['student_id']) {
                 if ($_REQUEST['student_id'] != 'new') {
                     $_SESSION['student_id'] = $_REQUEST['student_id'];
-                    if ($_REQUEST['school_id'])
-                        $_SESSION['UserSchool'] = $_REQUEST['school_id'];
+                    if ($_REQUEST['college_id'])
+                        $_SESSION['UserCollege'] = $_REQUEST['college_id'];
                 } else
                     unset($_SESSION['student_id']);
 //                if (!$_REQUEST['_openSIS_PDF'])
@@ -479,8 +479,8 @@ function Search_GroupSchedule($type, $extra = array()) {
             if ($_REQUEST['staff_id']) {
                 if ($_REQUEST['staff_id'] != 'new') {
                     $_SESSION['staff_id'] = $_REQUEST['staff_id'];
-                    if ($_REQUEST['school_id'])
-                        $_SESSION['UserSchool'] = $_REQUEST['school_id'];
+                    if ($_REQUEST['college_id'])
+                        $_SESSION['UserCollege'] = $_REQUEST['college_id'];
                 } else
                     unset($_SESSION['staff_id']);
 //                if (!$_REQUEST['_openSIS_PDF'])
@@ -504,7 +504,7 @@ function Search_GroupSchedule($type, $extra = array()) {
             echo '<div class="form-group"><label class="control-label">Alt ID</label><input type=text name="altid" size=30 class="form-control"></div>';
             echo '<div class="form-group"><label class="control-label">Address</label><input type=text name="addr" size=30 class="form-control"></div>';
 
-            $list = DBGet(DBQuery("SELECT DISTINCT TITLE,ID,SORT_ORDER FROM school_gradelevels WHERE SCHOOL_ID='" . UserSchool() . "' ORDER BY SORT_ORDER"));
+            $list = DBGet(DBQuery("SELECT DISTINCT TITLE,ID,SORT_ORDER FROM college_gradelevels WHERE SCHOOL_ID='" . UserCollege() . "' ORDER BY SORT_ORDER"));
             echo '<div class="form-group"><label class="control-label">Grade</label><SELECT class="form-control" name=grade><OPTION value="" class="cell_floating">Not Specified</OPTION>';
             foreach ($list as $value)
                 echo "<OPTION value=$value[ID]>$value[TITLE]</OPTION>";
@@ -661,8 +661,8 @@ function Search_absence_summary($type, $extra = array(), $search_from_grade = ''
             if ($_REQUEST['student_id']) {
                 if ($_REQUEST['student_id'] != 'new') {
                     $_SESSION['student_id'] = $_REQUEST['student_id'];
-                    if ($_REQUEST['school_id'])
-                        $_SESSION['UserSchool'] = $_REQUEST['school_id'];
+                    if ($_REQUEST['college_id'])
+                        $_SESSION['UserCollege'] = $_REQUEST['college_id'];
                 } else
                     unset($_SESSION['student_id']);
 //                if (!$_REQUEST['_openSIS_PDF'])
@@ -685,8 +685,8 @@ function Search_absence_summary($type, $extra = array(), $search_from_grade = ''
             if ($_REQUEST['staff_id']) {
                 if ($_REQUEST['staff_id'] != 'new') {
                     $_SESSION['staff_id'] = $_REQUEST['staff_id'];
-                    if ($_REQUEST['school_id'])
-                        $_SESSION['UserSchool'] = $_REQUEST['school_id'];
+                    if ($_REQUEST['college_id'])
+                        $_SESSION['UserCollege'] = $_REQUEST['college_id'];
                 } else
                     unset($_SESSION['staff_id']);
 //                if (!$_REQUEST['_openSIS_PDF'])
@@ -715,7 +715,7 @@ function Search_absence_summary($type, $extra = array(), $search_from_grade = ''
             echo '<div class="row">';
             echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">Address</label><div class="col-lg-8"><input type=text name="addr" placeholder="Address" size=30 class="form-control"></div></div></div>';
 
-            $list = DBGet(DBQuery('SELECT DISTINCT TITLE,ID,SORT_ORDER FROM school_gradelevels WHERE SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'));
+            $list = DBGet(DBQuery('SELECT DISTINCT TITLE,ID,SORT_ORDER FROM college_gradelevels WHERE SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER'));
             echo '<div class="col-md-6"><div class="form-group"><label class="control-label col-lg-4 text-right">Grade</label><div class="col-lg-8"><SELECT name=grade class="form-control"><OPTION value="">Not Specified</OPTION>';
             foreach ($list as $value)
                 echo "<OPTION value=$value[ID]>$value[TITLE]</OPTION>";
@@ -878,8 +878,8 @@ function SearchStaff($type, $extra = array()) {
             if ($_REQUEST['student_id']) {
                 if ($_REQUEST['student_id'] != 'new') {
                     $_SESSION['student_id'] = $_REQUEST['student_id'];
-                    if ($_REQUEST['school_id'])
-                        $_SESSION['UserSchool'] = $_REQUEST['school_id'];
+                    if ($_REQUEST['college_id'])
+                        $_SESSION['UserCollege'] = $_REQUEST['college_id'];
                 }
                 else {
                     unset($_SESSION['student_id']);
@@ -917,8 +917,8 @@ function SearchStaff($type, $extra = array()) {
                         $_SESSION['fn'] = 'staff';
 
 
-                    if ($_REQUEST['school_id'])
-                        $_SESSION['UserSchool'] = $_REQUEST['school_id'];
+                    if ($_REQUEST['college_id'])
+                        $_SESSION['UserCollege'] = $_REQUEST['college_id'];
                 }
                 else {
                     unset($_SESSION['staff_id']);
@@ -955,7 +955,7 @@ function SearchStaff($type, $extra = array()) {
             echo '<tr><td align=right width=120>National ID</td><td><input type=text name="altid" size=30 class="cell_floating"></td></tr>';
             echo '<tr><td align=right width=120>Address</td><td><input type=text name="addr" size=30 class="cell_floating"></td></tr>';
 
-            $list = DBGet(DBQuery("SELECT DISTINCT TITLE,ID,SORT_ORDER FROM SCHOOL_GRADELEVELS WHERE SCHOOL_ID='" . UserSchool() . "' ORDER BY SORT_ORDER"));
+            $list = DBGet(DBQuery("SELECT DISTINCT TITLE,ID,SORT_ORDER FROM SCHOOL_GRADELEVELS WHERE SCHOOL_ID='" . UserCollege() . "' ORDER BY SORT_ORDER"));
             echo '<TR><TD align=right width=120>Grade</TD><TD><SELECT name=grade><OPTION value="" class="cell_floating">Not Specified</OPTION>';
             foreach ($list as $value)
                 echo "<OPTION value=$value[ID]>$value[TITLE]</OPTION>";
@@ -1121,8 +1121,8 @@ function stafflist($type, $extra = array()) {
                         $_SESSION['fn'] = 'user';
                     else
                         $_SESSION['fn'] = 'staff';
-                    if ($_REQUEST['school_id'])
-                        $_SESSION['UserSchool'] = $_REQUEST['school_id'];
+                    if ($_REQUEST['college_id'])
+                        $_SESSION['UserCollege'] = $_REQUEST['college_id'];
                 }
 
 //                if (!$_REQUEST['_openSIS_PDF'])

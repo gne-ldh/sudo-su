@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that
 #  include staff demographic info, scheduling, grade book, attendance,
@@ -160,7 +160,7 @@ if (User('PROFILE') != 'admin' && User('PROFILE') != 'teacher' && $_REQUEST['sta
     exit;
 }
 if ($_REQUEST['s_err'] == 'y') {
-    echo '<font style="color:red"><b>Start date can not be before school\'s start date</b></font>';
+    echo '<font style="color:red"><b>Start date can not be before college\'s start date</b></font>';
     unset($_REQUEST['s_err']);
 }
 if (!$_REQUEST['include']) {
@@ -171,7 +171,7 @@ if (!$_REQUEST['include']) {
         $_REQUEST['category_id'] = '1';
     elseif ($_REQUEST['include'] == 'AddressInc')
         $_REQUEST['category_id'] = '2';
-    elseif ($_REQUEST['include'] == 'SchoolsInfoInc')
+    elseif ($_REQUEST['include'] == 'CollegesInfoInc')
         $_REQUEST['category_id'] = '3';
     elseif ($_REQUEST['include'] == 'CertificationInfoInc')
         $_REQUEST['category_id'] = '4';
@@ -195,7 +195,7 @@ if (User('PROFILE') != 'admin') {
         $_openSIS['allow_edit'] = true;
 }
 
-unset($schools);
+unset($colleges);
 
 if ($_REQUEST['category_id'] == 2 && !isset($_REQUEST['address_id'])) {
     $address_id = DBGet(DBQuery("SELECT STAFF_ADDRESS_ID AS ADDRESS_ID FROM staff_address WHERE STAFF_ID='" . UserStaffID() . "'"));
@@ -207,15 +207,15 @@ if ($_REQUEST['category_id'] == 2 && !isset($_REQUEST['address_id'])) {
 }
 
 
-if ($_REQUEST['category_id'] == 3 && !isset($_REQUEST['school_info_id'])) {
-    $school_info_id_RET = DBGet(DBQuery("SELECT STAFF_SCHOOL_INFO_ID AS SCHOOL_INFO_ID
-        FROM staff_school_info
+if ($_REQUEST['category_id'] == 3 && !isset($_REQUEST['college_info_id'])) {
+    $college_info_id_RET = DBGet(DBQuery("SELECT STAFF_SCHOOL_INFO_ID AS SCHOOL_INFO_ID
+        FROM staff_college_info
          WHERE STAFF_ID='" . UserStaffID() . "'"));
-    $school_info_id = $school_info_id_RET[1]['SCHOOL_INFO_ID'];
-    if ($school_info_id && $school_info_id > 0)
-        $_REQUEST['school_info_id'] = $school_info_id;
+    $college_info_id = $college_info_id_RET[1]['SCHOOL_INFO_ID'];
+    if ($college_info_id && $college_info_id > 0)
+        $_REQUEST['college_info_id'] = $college_info_id;
     else
-        $_REQUEST['school_info_id'] = 'new';
+        $_REQUEST['college_info_id'] = 'new';
 }
 
 if ($_REQUEST['category_id'] == 4 && !isset($_REQUEST['certification_id'])) {
@@ -231,13 +231,13 @@ if ($_REQUEST['category_id'] == 4 && !isset($_REQUEST['certification_id'])) {
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
 
 if (count($_REQUEST['values']['SCHOOLS'])>0) {
-        $school_array = $_REQUEST['values']['SCHOOLS'];
-        $cur_school = array_keys($school_array);
+        $college_array = $_REQUEST['values']['SCHOOLS'];
+        $cur_college = array_keys($college_array);
         if ($_REQUEST['staff_id'] == 'new')
-            $_REQUEST['staff']['CURRENT_SCHOOL_ID'] = $cur_school[0];
+            $_REQUEST['staff']['CURRENT_SCHOOL_ID'] = $cur_college[0];
         else {
-            if ($cur_school[0])
-                $_REQUEST['staff_school']['CURRENT_SCHOOL_ID'] = $cur_school[0];
+            if ($cur_college[0])
+                $_REQUEST['staff_college']['CURRENT_SCHOOL_ID'] = $cur_college[0];
         }
     }
 
@@ -250,14 +250,14 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
     if (count($_POST['staff']) && (User('PROFILE') == 'admin' || User('PROFILE') == 'teacher' || basename($_SERVER['PHP_SELF']) == 'index.php') || $_REQUEST['ajax']) {
         if ($_REQUEST['staff_id'] && $_REQUEST['staff_id'] != 'new') {
             $profile_RET = DBGet(DBQuery("SELECT s.PROFILE,la.PROFILE_ID,la.USERNAME FROM login_authentication la,staff s WHERE la.USER_ID='$_REQUEST[staff_id]' and la.USER_ID=s.STAFF_ID AND la.PROFILE_ID NOT IN (0,3) "));
-            $this_school_RET_mod = DBGet(DBQuery("SELECT s.*,l.* FROM staff s,login_authentication l  WHERE l.USER_ID=s.STAFF_ID AND l.PROFILE_ID NOT IN (3,4) AND s.STAFF_ID=" . $_REQUEST[staff_id]));
+            $this_college_RET_mod = DBGet(DBQuery("SELECT s.*,l.* FROM staff s,login_authentication l  WHERE l.USER_ID=s.STAFF_ID AND l.PROFILE_ID NOT IN (3,4) AND s.STAFF_ID=" . $_REQUEST[staff_id]));
 
-            $this_school_mod = $this_school_RET_mod[1];
+            $this_college_mod = $this_college_RET_mod[1];
 
-            $username = $this_school_mod['USERNAME'];
-            $password = $this_school_mod['PASSWORD'];
-            $this_school_RET = DBGet(DBQuery("SELECT * FROM staff_school_info   WHERE   STAFF_ID=" . $_REQUEST[staff_id]));
-            $this_school = $this_school_RET[1];
+            $username = $this_college_mod['USERNAME'];
+            $password = $this_college_mod['PASSWORD'];
+            $this_college_RET = DBGet(DBQuery("SELECT * FROM staff_college_info   WHERE   STAFF_ID=" . $_REQUEST[staff_id]));
+            $this_college = $this_college_RET[1];
             if (isset($_REQUEST['staff']['PROFILE']) && $_REQUEST['staff']['PROFILE'] != $profile_RET[1]['PROFILE_ID']) {
                 if ($_REQUEST['staff']['PROFILE'] == 'admin')
                     $_REQUEST['staff']['PROFILE_ID'] = '1';
@@ -268,9 +268,9 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
             }
 
             if ($_REQUEST['staff']['USERNAME'] && $_REQUEST['staff']['USERNAME'] != $profile_RET[1]['USERNAME']) {
-                $existing_staff = DBGet(DBQuery('SELECT ssr.SYEAR FROM staff s,staff_school_relationship ssr WHERE s.STAFF_ID=ssr.STAFF_ID AND s.USERNAME=\'' . $_REQUEST['staff']['USERNAME'] . '\' AND ssr.SYEAR=(SELECT SYEAR FROM staff_school_relationship WHERE STAFF_ID=\'' . $_REQUEST[staff_id] . '\')'));
+                $existing_staff = DBGet(DBQuery('SELECT ssr.SYEAR FROM staff s,staff_college_relationship ssr WHERE s.STAFF_ID=ssr.STAFF_ID AND s.USERNAME=\'' . $_REQUEST['staff']['USERNAME'] . '\' AND ssr.SYEAR=(SELECT SYEAR FROM staff_college_relationship WHERE STAFF_ID=\'' . $_REQUEST[staff_id] . '\')'));
                 if (count($existing_staff))
-                    BackPrompt('A user with that username already exists for the ' . $existing_staff[1]['SYEAR'] . ' school year. Choose a different username and try again.');
+                    BackPrompt('A user with that username already exists for the ' . $existing_staff[1]['SYEAR'] . ' college year. Choose a different username and try again.');
             }
 
             if (count($_REQUEST['month_staff'])) {
@@ -295,8 +295,8 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
                 if ($_REQUEST['staff']['PHYSICAL_DISABILITY'] == 'N' && !isset($_REQUEST['staff']['DISABILITY_DESC']))
                     DBQuery('UPDATE staff SET DISABILITY_DESC=Null WHERE STAFF_ID=' . $_REQUEST[staff_id]);
 
-                if ($username == '' || $password == '' || $this_school['JOINING_DATE'] == '') {
-                    echo "<script>window.location.href='Modules.php?modname=users/Staff.php&include=SchoolsInfoInc&category_id=3'</script>";
+                if ($username == '' || $password == '' || $this_college['JOINING_DATE'] == '') {
+                    echo "<script>window.location.href='Modules.php?modname=users/Staff.php&include=CollegesInfoInc&category_id=3'</script>";
                 }
 //                        if(!isset($_REQUEST['staff']['PHYSICAL_DISABILITY']) && isset($_REQUEST['staff']['DISABILITY_DESC']))
 //                        {
@@ -380,7 +380,7 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
                     DBQuery($sql);
 
                     if (isset($flg_cp) && $flg_cp == 1) {
-                        $chk_assoc_cp = DBGet(DBQuery('SELECT course_period_id,title,short_name from course_periods WHERE school_id=' . UserSchool() . ' AND syear=' . UserSyear() . ' and teacher_id=' . $_REQUEST[staff_id]));
+                        $chk_assoc_cp = DBGet(DBQuery('SELECT course_period_id,title,short_name from course_periods WHERE college_id=' . UserCollege() . ' AND syear=' . UserSyear() . ' and teacher_id=' . $_REQUEST[staff_id]));
 
                         $new_tec_name = DBGet(DBQuery("SELECT concat(first_name,' ',last_name)  as name FROM  staff  WHERE STAFF_ID=" . $_REQUEST[staff_id]));
                         $new_tec_name = $new_tec_name[1]['NAME'];
@@ -485,7 +485,7 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
 
 
             $fields = 'CURRENT_SCHOOL_ID,';
-            $values = UserSchool() . ',';
+            $values = UserCollege() . ',';
 
             if (count($_REQUEST['month_staff'])) {
                 foreach ($_REQUEST['month_staff'] as $column => $value) {
@@ -606,17 +606,17 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
                 }
 
                 $_SESSION['staff_id'] = $_REQUEST['staff_id'] = $staff_id;
-                echo "<script>window.location.href='Modules.php?modname=users/Staff.php&include=SchoolsInfoInc&category_id=3&modfunc='</script>";
-                if ($school_array) {
+                echo "<script>window.location.href='Modules.php?modname=users/Staff.php&include=CollegesInfoInc&category_id=3&modfunc='</script>";
+                if ($college_array) {
                     $rel_value = '';
-                    foreach ($school_array as $school_id => $yes) {
-                        if ($_REQUEST['day_values']['START_DATE'][$school_id]) {
-                            $start_date = $_REQUEST['day_values']['START_DATE'][$school_id] . "-" . $_REQUEST['month_values']['START_DATE'][$school_id] . "-" . $_REQUEST['year_values']['START_DATE'][$school_id];
+                    foreach ($college_array as $college_id => $yes) {
+                        if ($_REQUEST['day_values']['START_DATE'][$college_id]) {
+                            $start_date = $_REQUEST['day_values']['START_DATE'][$college_id] . "-" . $_REQUEST['month_values']['START_DATE'][$college_id] . "-" . $_REQUEST['year_values']['START_DATE'][$college_id];
                         } else {
                             $start_date = '';
                         }
-                        if ($_REQUEST['day_values']['END_DATE'][$school_id]) {
-                            $end_date = $_REQUEST['day_values']['END_DATE'][$school_id] . "-" . $_REQUEST['month_values']['END_DATE'][$school_id] . "-" . $_REQUEST['year_values']['END_DATE'][$school_id];
+                        if ($_REQUEST['day_values']['END_DATE'][$college_id]) {
+                            $end_date = $_REQUEST['day_values']['END_DATE'][$college_id] . "-" . $_REQUEST['month_values']['END_DATE'][$college_id] . "-" . $_REQUEST['year_values']['END_DATE'][$college_id];
                         } else {
                             $end_date = '';
                         }
@@ -629,22 +629,22 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
                         if (($start_date != '' && VerifyDate($start_date)) || ($end_date != '' && VerifyDate($end_date)) || ($start_date == '' && $end_date == '')) {
                             $day_valid = true;
 
-                            $user_syear_RET = DBGet(DBQuery('SELECT MAX(syear) AS USERSYEAR FROM school_years WHERE school_id=\'' . $school_id . '\''));
+                            $user_syear_RET = DBGet(DBQuery('SELECT MAX(syear) AS USERSYEAR FROM college_years WHERE college_id=\'' . $college_id . '\''));
                             $usersyear = $user_syear_RET[1]['USERSYEAR'];
-                            $rel_value .="($staff_id,$school_id,$usersyear,'" . date('Y-m-d', strtotime($start_date)) . "','" . $end_date . "'),";
+                            $rel_value .="($staff_id,$college_id,$usersyear,'" . date('Y-m-d', strtotime($start_date)) . "','" . $end_date . "'),";
                         } else {
                             $day_valid = true;
-                            $user_syear_RET = DBGet(DBQuery('SELECT MAX(syear) AS USERSYEAR FROM school_years WHERE school_id=\'' . $school_id . '\''));
+                            $user_syear_RET = DBGet(DBQuery('SELECT MAX(syear) AS USERSYEAR FROM college_years WHERE college_id=\'' . $college_id . '\''));
                             $usersyear = $user_syear_RET[1]['USERSYEAR'];
-                            $rel_value .="($staff_id,$school_id,$usersyear,'0000-00-00','" . $end_date . "'),";
+                            $rel_value .="($staff_id,$college_id,$usersyear,'0000-00-00','" . $end_date . "'),";
                         }
                     }
                     $rel_value = substr($rel_value, 0, -1);
-                    DBQuery("INSERT INTO staff_school_relationship(staff_id,school_id,syear,start_date,end_date)VALUES ($rel_value)");
+                    DBQuery("INSERT INTO staff_college_relationship(staff_id,college_id,syear,start_date,end_date)VALUES ($rel_value)");
                     $_SESSION['staff_id'] = $_REQUEST['staff_id'] = $staff_id;
                 } else {
-                    $val = DBGet(DBQuery("SELECT MAX(syear) as syear FROM school_years WHERE school_id='" . UserSchool() . "'"));
-                    DBQuery("INSERT INTO staff_school_relationship(staff_id,school_id,syear,start_date) values ('" . $staff_id . "','" . UserSchool() . "','" . $val[1]['SYEAR'] . "','" . date('Y-m-d') . "')");
+                    $val = DBGet(DBQuery("SELECT MAX(syear) as syear FROM college_years WHERE college_id='" . UserCollege() . "'"));
+                    DBQuery("INSERT INTO staff_college_relationship(staff_id,college_id,syear,start_date) values ('" . $staff_id . "','" . UserCollege() . "','" . $val[1]['SYEAR'] . "','" . date('Y-m-d') . "')");
                 }
             } else {
                 echo "<div class='alert bg-danger alert-styled-left'>Unable to save data, because " . $custom_TITLE . ' is required.</div>';
@@ -750,7 +750,7 @@ if ((UserStaffID() || $_REQUEST['staff_id'] == 'new') && ((basename($_SERVER['PH
                 elseif ($category['ID'] == '2')
                     $include = 'AddressInc';
                 elseif ($category['ID'] == '3') {
-                    $include = 'SchoolsInfoInc';
+                    $include = 'CollegesInfoInc';
                     if (User('PROFILE') == 'teacher')
                         $_REQUEST['teacher_view'] = 'y';
                 }
@@ -771,7 +771,7 @@ if ((UserStaffID() || $_REQUEST['staff_id'] == 'new') && ((basename($_SERVER['PH
         unset($td);
         $swap_tabs = 'n';
         foreach ($tabs as $ti => $td) {
-            if ($td['title'] == 'School Information')
+            if ($td['title'] == 'College Information')
                 $swap_tabs = 'y';
         }
 
@@ -779,7 +779,7 @@ if ((UserStaffID() || $_REQUEST['staff_id'] == 'new') && ((basename($_SERVER['PH
             foreach ($tabs as $ti => $td) {
                 if ($td['title'] == 'Demographic Info')
                     $new_tabs[0] = $td;
-                elseif ($td['title'] == 'School Information')
+                elseif ($td['title'] == 'College Information')
                     $new_tabs[1] = $td;
                 else
                     $new_tabs[$ti + 1] = $td;
@@ -823,25 +823,25 @@ if ((UserStaffID() || $_REQUEST['staff_id'] == 'new') && ((basename($_SERVER['PH
         if (User('PROFILE') == 'admin') {
 
             if (isset($_SESSION['staff_id'])) {
-                $this_school_RET_mod = DBGet(DBQuery("SELECT s.*,l.* FROM staff s,login_authentication l  WHERE l.USER_ID=s.STAFF_ID AND l.PROFILE_ID NOT IN (3,4) AND s.STAFF_ID=" . UserStaffID()));
+                $this_college_RET_mod = DBGet(DBQuery("SELECT s.*,l.* FROM staff s,login_authentication l  WHERE l.USER_ID=s.STAFF_ID AND l.PROFILE_ID NOT IN (3,4) AND s.STAFF_ID=" . UserStaffID()));
 
-                $this_school_mod = $this_school_RET_mod[1];
+                $this_college_mod = $this_college_RET_mod[1];
 
-                $username = $this_school_mod['USERNAME'];
-                $password = $this_school_mod['PASSWORD'];
-                $this_school_RET = DBGet(DBQuery("SELECT * FROM staff_school_info   WHERE   STAFF_ID=" . UserStaffID()));
-                $this_school = $this_school_RET[1];
+                $username = $this_college_mod['USERNAME'];
+                $password = $this_college_mod['PASSWORD'];
+                $this_college_RET = DBGet(DBQuery("SELECT * FROM staff_college_info   WHERE   STAFF_ID=" . UserStaffID()));
+                $this_college = $this_college_RET[1];
             } else {
                 $username = '';
                 $password = '';
-                $this_school['JOINING_DATE'] = '';
+                $this_college['JOINING_DATE'] = '';
             }
 
             if ($_REQUEST['staff_id'] != 'new') {
-                if ($_REQUEST['category_id'] == 1 && ($username == '' || $password == '' || $this_school['JOINING_DATE'] == '')) {
+                if ($_REQUEST['category_id'] == 1 && ($username == '' || $password == '' || $this_college['JOINING_DATE'] == '')) {
                     echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton('Save & Next', '', 'class="btn btn-primary pull-right" onClick="return formcheck_add_staff(0);"') . '</div></div>';
                 }
-                if ($_REQUEST['category_id'] == 1 && $username != '' && $password != '' && $this_school['JOINING_DATE'] != '') {
+                if ($_REQUEST['category_id'] == 1 && $username != '' && $password != '' && $this_college['JOINING_DATE'] != '') {
                     echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton('Save', '', 'class="btn btn-primary pull-right" onClick="return formcheck_add_staff(0);"') . '</div></div>';
                 }
                 if ($_REQUEST['category_id'] != 1) {
@@ -855,16 +855,16 @@ if ((UserStaffID() || $_REQUEST['staff_id'] == 'new') && ((basename($_SERVER['PH
                 if ($_REQUEST['category_id'] != 3) {
                     echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton('Save & Next', '', 'class="btn btn-primary pull-right" onClick="return formcheck_add_staff(0);"') . '</div></div>';
                 } else {
-                    if ($_SESSION[staff_school_chkbox_id] != '') {
-                        echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton('Save', '', 'class="btn btn-primary pull-right" onClick="return formcheck_add_staff(' . $_SESSION[staff_school_chkbox_id] . ');"') . '</div></div>';
+                    if ($_SESSION[staff_college_chkbox_id] != '') {
+                        echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton('Save', '', 'class="btn btn-primary pull-right" onClick="return formcheck_add_staff(' . $_SESSION[staff_college_chkbox_id] . ');"') . '</div></div>';
                     } else
                         echo '<div class="panel-footer"><div class="heading-elements">' . SubmitButton('Save', '', 'class="btn btn-primary pull-right" onClick="return formcheck_add_staff(0);"') . '</div></div>';
-                    unset($_SESSION[staff_school_chkbox_id]);
+                    unset($_SESSION[staff_college_chkbox_id]);
                 }
             }
         }
         elseif (User('PROFILE') == 'teacher') {
-            if ($_REQUEST['include'] != 'ScheduleInc' && $_REQUEST['include'] != 'SchoolsInfoInc')
+            if ($_REQUEST['include'] != 'ScheduleInc' && $_REQUEST['include'] != 'CollegesInfoInc')
                 echo '<div class="panel-footer"><div class="heading-elements">'.SubmitButton('Save', '', 'class="btn btn-primary pull-right" onClick="return formcheck_add_staff(0);"').'</div></div>';
         }
         echo '</FORM>';

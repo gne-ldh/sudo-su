@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -52,7 +52,7 @@ if ($_REQUEST['modfunc'] == 'search') {
         echo $extra['search'];
     Search('student_fields', is_array($extra['student_fields']) ? $extra['student_fields'] : array());
     if (User('PROFILE') == 'admin'){
-        echo '<div class="text-center m-15"><div class="text-left display-inline-block"><label class="checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=_search_all_schools value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '><span></span>Search All Schools</label></div></div>';
+        echo '<div class="text-center m-15"><div class="text-left display-inline-block"><label class="checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=_search_all_colleges value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '><span></span>Search All Colleges</label></div></div>';
     }
     $btn = '<div class="p-l-20">' . Buttons('Submit') . '</div>';
     PopTable('footer', $btn);
@@ -74,7 +74,7 @@ if (!$_REQUEST['modfunc']) {
     $advanced_link = "<A class=text-pink HREF=Modules.php?modname=$_REQUEST[modname]&modfunc=search&list_by_day=$_REQUEST[list_by_day]&day_start=$_REQUEST[day_start]&day_end=$_REQUEST[day_end]&month_start=$_REQUEST[month_start]&month_end=$_REQUEST[month_end]&year_start=$_REQUEST[year_start]&year_end=$_REQUEST[year_end]><i class=\"icon-cog\"></i> Advanced</A>";
     ///////////////////////Old Date Picker///////////////////////////////
     ///////////////////////New Date Picker///////////////////////////////
-    echo '<div class="form-inline"><div class="col-md-12"><div class="inline-block">' . DateInputAY($start_date, 'start', 1) . '</div> &nbsp; &nbsp; - &nbsp; &nbsp; <div class="inline-block">' . DateInputAY($end_date, 'end', 2) . '</div> &nbsp; &nbsp; <label class="checkbox-inline checkbox-switch switch-success switch-xs"><input type="checkbox" value="Y" name="all_school" id="all_school" /><span></span>All School</label> &nbsp; <INPUT type=submit value=Go class="btn btn-primary"> &nbsp;' . $advanced_link . '</div></div>';
+    echo '<div class="form-inline"><div class="col-md-12"><div class="inline-block">' . DateInputAY($start_date, 'start', 1) . '</div> &nbsp; &nbsp; - &nbsp; &nbsp; <div class="inline-block">' . DateInputAY($end_date, 'end', 2) . '</div> &nbsp; &nbsp; <label class="checkbox-inline checkbox-switch switch-success switch-xs"><input type="checkbox" value="Y" name="all_college" id="all_college" /><span></span>All College</label> &nbsp; <INPUT type=submit value=Go class="btn btn-primary"> &nbsp;' . $advanced_link . '</div></div>';
     echo '</FORM>';
     echo '</div>';
 
@@ -88,49 +88,49 @@ if (!$_REQUEST['modfunc']) {
 
 
 
-        $sql_school = DBGet(DBQuery('SELECT DISTINCT SCHOOL_ID FROM staff_school_relationship WHERE STAFF_ID=' . User('STAFF_ID')));
+        $sql_college = DBGet(DBQuery('SELECT DISTINCT SCHOOL_ID FROM staff_college_relationship WHERE STAFF_ID=' . User('STAFF_ID')));
 
 
-        foreach ($sql_school as $school_key => $school_value) {
-            $in_schools_raw .= ',' . $school_value['SCHOOL_ID'];
+        foreach ($sql_college as $college_key => $college_value) {
+            $in_colleges_raw .= ',' . $college_value['SCHOOL_ID'];
         }
-        $in_schools_raw = $in_schools_raw;
+        $in_colleges_raw = $in_colleges_raw;
 
 
-        $in_schools = substr($in_schools_raw, 1);
+        $in_colleges = substr($in_colleges_raw, 1);
 
-        $permited_schools = explode(",", $in_schools);
-        $sch_count = count($permited_schools);
+        $permited_colleges = explode(",", $in_colleges);
+        $sch_count = count($permited_colleges);
 
 
 
 
 
         if ($sch_count == 1) {
-            $student_days_possible = DBGet(DBQuery('SELECT ap.SCHOOL_DATE, CONCAT(s.FIRST_NAME, \' \', s.LAST_NAME,\' \') as STUDENTS, sg.TITLE as GRADE, sp.TITLE as PERIOD, ac.TITLE as STATUS from attendance_period ap, students s, school_gradelevels sg, attendance_codes ac, student_enrollment ssm, school_periods sp where ssm.syear=\'' . UserSyear() . '\' and ap.attendance_code=ac.id and ssm.grade_id=sg.id and ap.period_id=sp.period_id and ap.student_id=s.student_id and ssm.student_id=ap.student_id AND ssm.school_id in (' . $in_schools . ') AND ap.SCHOOL_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\' ' . $extra['WHERE'] . ''), array('SCHOOL_DATE' => 'ProperDate', 'GRADE' => 'GRADE', 'STUDENTS' => 'STUDENTS', 'PRESENT' => '_makeByDay', 'ABSENT' => '_makeByDay', 'ADA' => '_makeByDay'));
+            $student_days_possible = DBGet(DBQuery('SELECT ap.SCHOOL_DATE, CONCAT(s.FIRST_NAME, \' \', s.LAST_NAME,\' \') as STUDENTS, sg.TITLE as GRADE, sp.TITLE as PERIOD, ac.TITLE as STATUS from attendance_period ap, students s, college_gradelevels sg, attendance_codes ac, student_enrollment ssm, college_periods sp where ssm.syear=\'' . UserSyear() . '\' and ap.attendance_code=ac.id and ssm.grade_id=sg.id and ap.period_id=sp.period_id and ap.student_id=s.student_id and ssm.student_id=ap.student_id AND ssm.college_id in (' . $in_colleges . ') AND ap.SCHOOL_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\' ' . $extra['WHERE'] . ''), array('SCHOOL_DATE' => 'ProperDate', 'GRADE' => 'GRADE', 'STUDENTS' => 'STUDENTS', 'PRESENT' => '_makeByDay', 'ABSENT' => '_makeByDay', 'ADA' => '_makeByDay'));
 
             $columns = array('SCHOOL_DATE' => 'Date', 'STUDENTS' => 'Student Name', 'GRADE' => 'Grade', 'PERIOD' => 'Period Name', 'STATUS' => 'Attendance Status');
         } else {
 
-            if ($_REQUEST['all_school'] == 'Y') {
-                $student_days_possible = DBGet(DBQuery('SELECT ap.SCHOOL_DATE, CONCAT(s.FIRST_NAME, \' \', s.LAST_NAME,\' \') as STUDENTS, sg.TITLE as GRADE, sp.TITLE as PERIOD, ac.TITLE as STATUS, sc.TITLE AS SCHOOL from attendance_period ap, students s, school_gradelevels sg, attendance_codes ac, student_enrollment ssm, school_periods sp, schools sc where ssm.syear=\'' . UserSyear() . '\' and ap.attendance_code=ac.id and ssm.grade_id=sg.id and ap.period_id=sp.period_id and ap.student_id=s.student_id and ssm.student_id=ap.student_id AND sc.id=ssm.school_id AND ssm.school_id in (' . $in_schools . ') AND ap.SCHOOL_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\' ' . $extra['WHERE'] . ' '), array('SCHOOL_DATE' => 'ProperDate', 'GRADE' => 'GRADE', 'STUDENTS' => 'STUDENTS', 'PRESENT' => '_makeByDay', 'ABSENT' => '_makeByDay', 'ADA' => '_makeByDay'));
+            if ($_REQUEST['all_college'] == 'Y') {
+                $student_days_possible = DBGet(DBQuery('SELECT ap.SCHOOL_DATE, CONCAT(s.FIRST_NAME, \' \', s.LAST_NAME,\' \') as STUDENTS, sg.TITLE as GRADE, sp.TITLE as PERIOD, ac.TITLE as STATUS, sc.TITLE AS SCHOOL from attendance_period ap, students s, college_gradelevels sg, attendance_codes ac, student_enrollment ssm, college_periods sp, colleges sc where ssm.syear=\'' . UserSyear() . '\' and ap.attendance_code=ac.id and ssm.grade_id=sg.id and ap.period_id=sp.period_id and ap.student_id=s.student_id and ssm.student_id=ap.student_id AND sc.id=ssm.college_id AND ssm.college_id in (' . $in_colleges . ') AND ap.SCHOOL_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\' ' . $extra['WHERE'] . ' '), array('SCHOOL_DATE' => 'ProperDate', 'GRADE' => 'GRADE', 'STUDENTS' => 'STUDENTS', 'PRESENT' => '_makeByDay', 'ABSENT' => '_makeByDay', 'ADA' => '_makeByDay'));
             } else {
-                $student_days_possible = DBGet(DBQuery('SELECT ap.SCHOOL_DATE, CONCAT(s.FIRST_NAME, \' \', s.LAST_NAME,\' \') as STUDENTS, sg.TITLE as GRADE, sp.TITLE as PERIOD, ac.TITLE as STATUS, sc.TITLE AS SCHOOL from attendance_period ap, students s, school_gradelevels sg, attendance_codes ac, student_enrollment ssm, school_periods sp, schools sc where ssm.syear=\'' . UserSyear() . '\' and sc.id=\'' . UserSchool() . '\' and ap.attendance_code=ac.id and ssm.grade_id=sg.id and ap.period_id=sp.period_id and ap.student_id=s.student_id and ssm.student_id=ap.student_id AND sc.id=ssm.school_id AND ssm.school_id in (' . $in_schools . ') AND ap.SCHOOL_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\' ' . $extra['WHERE'] . ' '), array('SCHOOL_DATE' => 'ProperDate', 'GRADE' => 'GRADE', 'STUDENTS' => 'STUDENTS', 'PRESENT' => '_makeByDay', 'ABSENT' => '_makeByDay', 'ADA' => '_makeByDay'));
+                $student_days_possible = DBGet(DBQuery('SELECT ap.SCHOOL_DATE, CONCAT(s.FIRST_NAME, \' \', s.LAST_NAME,\' \') as STUDENTS, sg.TITLE as GRADE, sp.TITLE as PERIOD, ac.TITLE as STATUS, sc.TITLE AS SCHOOL from attendance_period ap, students s, college_gradelevels sg, attendance_codes ac, student_enrollment ssm, college_periods sp, colleges sc where ssm.syear=\'' . UserSyear() . '\' and sc.id=\'' . UserCollege() . '\' and ap.attendance_code=ac.id and ssm.grade_id=sg.id and ap.period_id=sp.period_id and ap.student_id=s.student_id and ssm.student_id=ap.student_id AND sc.id=ssm.college_id AND ssm.college_id in (' . $in_colleges . ') AND ap.SCHOOL_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\' ' . $extra['WHERE'] . ' '), array('SCHOOL_DATE' => 'ProperDate', 'GRADE' => 'GRADE', 'STUDENTS' => 'STUDENTS', 'PRESENT' => '_makeByDay', 'ABSENT' => '_makeByDay', 'ADA' => '_makeByDay'));
             }
 
-            $columns = array('SCHOOL_DATE' => 'Date', 'STUDENTS' => 'Student Name', 'GRADE' => 'Grade', 'PERIOD' => 'Period Name', 'STATUS' => 'Attendance Status', 'SCHOOL' => 'School');
+            $columns = array('SCHOOL_DATE' => 'Date', 'STUDENTS' => 'Student Name', 'GRADE' => 'Grade', 'PERIOD' => 'Period Name', 'STATUS' => 'Attendance Status', 'SCHOOL' => 'College');
         }
         ListOutput($student_days_possible, $columns, 'Attendance record', 'Attendance records', $link);
     } else {
-        $cal_days = DBGet(DBQuery('SELECT count(*) AS COUNT,CALENDAR_ID FROM attendance_calendar WHERE ' . ($_REQUEST['_search_all_schools'] != 'Y' ? 'SCHOOL_ID=\'' . UserSchool() . '\' AND ' : '') . ' SYEAR=\'' . UserSyear() . '\' AND SCHOOL_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\' GROUP BY CALENDAR_ID'), array(), array('CALENDAR_ID'));
-        $calendars_RET = DBGet(DBQuery('SELECT CALENDAR_ID,TITLE FROM school_calendars WHERE SYEAR=\'' . UserSyear() . '\' ' . ($_REQUEST['_search_all_schools'] != 'Y' ? ' AND SCHOOL_ID=\'' . UserSchool() . '\'' : '')), array(), array('CALENDAR_ID'));
+        $cal_days = DBGet(DBQuery('SELECT count(*) AS COUNT,CALENDAR_ID FROM attendance_calendar WHERE ' . ($_REQUEST['_search_all_colleges'] != 'Y' ? 'SCHOOL_ID=\'' . UserCollege() . '\' AND ' : '') . ' SYEAR=\'' . UserSyear() . '\' AND SCHOOL_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\' GROUP BY CALENDAR_ID'), array(), array('CALENDAR_ID'));
+        $calendars_RET = DBGet(DBQuery('SELECT CALENDAR_ID,TITLE FROM college_calendars WHERE SYEAR=\'' . UserSyear() . '\' ' . ($_REQUEST['_search_all_colleges'] != 'Y' ? ' AND SCHOOL_ID=\'' . UserCollege() . '\'' : '')), array(), array('CALENDAR_ID'));
 
 
 
         $extra['WHERE'] .= ' GROUP BY ssm.GRADE_ID,ssm.CALENDAR_ID';
 
         $student_days_absent = DBGet(DBQuery('SELECT ssm.GRADE_ID,ssm.CALENDAR_ID,COALESCE(sum(ad.STATE_VALUE-1)*-1,0) AS STATE_VALUE FROM attendance_day ad,student_enrollment ssm,students s WHERE s.STUDENT_ID=ssm.STUDENT_ID AND ad.STUDENT_ID=ssm.STUDENT_ID AND ssm.SYEAR=\'' . UserSyear() . '\' AND ad.SYEAR=ssm.SYEAR AND ad.SCHOOL_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\' AND (ad.SCHOOL_DATE BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND ssm.START_DATE <= ad.SCHOOL_DATE)) ' . $extra['WHERE']), array(''), array('GRADE_ID', 'CALENDAR_ID'));
-        $student_days_possible = DBGet(DBQuery('SELECT ssm.GRADE_ID,ssm.CALENDAR_ID,\'\' AS DAYS_POSSIBLE,count(*) AS ATTENDANCE_POSSIBLE,count(*) AS STUDENTS,\'\' AS PRESENT,\'\' AS ABSENT,\'\' AS ADA,\'\' AS AVERAGE_ATTENDANCE,\'\' AS AVERAGE_ABSENT FROM student_enrollment ssm,attendance_calendar ac,students s WHERE s.STUDENT_ID=ssm.STUDENT_ID AND ssm.SYEAR=\'' . UserSyear() . '\' AND ac.SYEAR=ssm.SYEAR AND ac.CALENDAR_ID=ssm.CALENDAR_ID AND ' . ($_REQUEST['_search_all_schools'] != 'Y' ? 'ssm.SCHOOL_ID=\'' . UserSchool() . '\' AND ' : '') . ' ssm.SCHOOL_ID=ac.SCHOOL_ID AND (ac.SCHOOL_DATE BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND ssm.START_DATE <= ac.SCHOOL_DATE)) AND ac.SCHOOL_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\' ' . $extra['WHERE']), array('GRADE_ID' => '_make', 'STUDENTS' => '_make', 'PRESENT' => '_make', 'ABSENT' => '_make', 'ADA' => '_make', 'AVERAGE_ATTENDANCE' => '_make', 'AVERAGE_ABSENT' => '_make', 'DAYS_POSSIBLE' => '_make'));
+        $student_days_possible = DBGet(DBQuery('SELECT ssm.GRADE_ID,ssm.CALENDAR_ID,\'\' AS DAYS_POSSIBLE,count(*) AS ATTENDANCE_POSSIBLE,count(*) AS STUDENTS,\'\' AS PRESENT,\'\' AS ABSENT,\'\' AS ADA,\'\' AS AVERAGE_ATTENDANCE,\'\' AS AVERAGE_ABSENT FROM student_enrollment ssm,attendance_calendar ac,students s WHERE s.STUDENT_ID=ssm.STUDENT_ID AND ssm.SYEAR=\'' . UserSyear() . '\' AND ac.SYEAR=ssm.SYEAR AND ac.CALENDAR_ID=ssm.CALENDAR_ID AND ' . ($_REQUEST['_search_all_colleges'] != 'Y' ? 'ssm.SCHOOL_ID=\'' . UserCollege() . '\' AND ' : '') . ' ssm.SCHOOL_ID=ac.SCHOOL_ID AND (ac.SCHOOL_DATE BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND ssm.START_DATE <= ac.SCHOOL_DATE)) AND ac.SCHOOL_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\' ' . $extra['WHERE']), array('GRADE_ID' => '_make', 'STUDENTS' => '_make', 'PRESENT' => '_make', 'ABSENT' => '_make', 'ADA' => '_make', 'AVERAGE_ATTENDANCE' => '_make', 'AVERAGE_ABSENT' => '_make', 'DAYS_POSSIBLE' => '_make'));
 
         $columns = array('GRADE_ID' => 'Grade', 'STUDENTS' => 'Total Attendance', 'DAYS_POSSIBLE' => 'Days Possible', 'PRESENT' => 'Present', 'ABSENT' => 'Absent', 'ADA' => 'ADA', 'AVERAGE_ATTENDANCE' => 'Average Attendance', 'AVERAGE_ABSENT' => 'Average Absent');
         $link['add']['html'] = array('GRADE_ID' => '<b>Total</b>', 'STUDENTS' => round($sum['STUDENTS'], 1), 'DAYS_POSSIBLE' => $cal_days[key($cal_days)][1]['COUNT'], 'PRESENT' => $sum['PRESENT'], 'ADA' => Percent(($sum['PRESENT']) / ($sum['PRESENT'] + $sum['ABSENT'])), 'ABSENT' => $sum['ABSENT'], 'AVERAGE_ATTENDANCE' => round($sum['AVERAGE_ATTENDANCE'], 1), 'AVERAGE_ABSENT' => round($sum['AVERAGE_ABSENT'], 1));

@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -31,7 +31,7 @@ if ($_REQUEST['modfunc'] == 'save') {
     if (count($_REQUEST['cp_arr'])) {
         $cp_list = '\'' . implode('\',\'', $_REQUEST['cp_arr']) . '\'';
 
-        $course_periods_RET = DBGet(DBQuery('SELECT cp.COURSE_PERIOD_ID,cp.TITLE,TEACHER_ID FROM course_periods cp,course_period_var cpv WHERE cp.COURSE_PERIOD_ID IN (' . $cp_list . ') AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID ORDER BY (SELECT SORT_ORDER FROM school_periods WHERE PERIOD_ID=cpv.PERIOD_ID)'));
+        $course_periods_RET = DBGet(DBQuery('SELECT cp.COURSE_PERIOD_ID,cp.TITLE,TEACHER_ID FROM course_periods cp,course_period_var cpv WHERE cp.COURSE_PERIOD_ID IN (' . $cp_list . ') AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID ORDER BY (SELECT SORT_ORDER FROM college_periods WHERE PERIOD_ID=cpv.PERIOD_ID)'));
 
         if ($_REQUEST['include_teacher'] == 'Y')
             $teachers_RET = DBGet(DBQuery('SELECT STAFF_ID,LAST_NAME,FIRST_NAME,IMG_CONTENT FROM staff WHERE STAFF_ID IN (SELECT TEACHER_ID FROM course_periods WHERE COURSE_PERIOD_ID IN (' . $cp_list . '))'), array(), array('STAFF_ID'));
@@ -43,14 +43,14 @@ if ($_REQUEST['modfunc'] == 'save') {
             $teacher_id = $course_period['TEACHER_ID'];
 
             if ($teacher_id) {
-                $_openSIS['User'] = array(1 => array('STAFF_ID' => $teacher_id, 'NAME' => 'name', 'PROFILE' => 'teacher', 'SCHOOLS' => ',' . UserSchool() . ',', 'SYEAR' => UserSyear()));
+                $_openSIS['User'] = array(1 => array('STAFF_ID' => $teacher_id, 'NAME' => 'name', 'PROFILE' => 'teacher', 'SCHOOLS' => ',' . UserCollege() . ',', 'SYEAR' => UserSyear()));
                 $_SESSION['UserCoursePeriod'] = $course_period_id;
 
                 $extra = array('SELECT_ONLY' => 's.STUDENT_ID,s.LAST_NAME,s.FIRST_NAME', 'ORDER_BY' => 's.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME');
                 $RET = GetStuList($extra);
                 if (count($RET)) {
                     echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-                    echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">Student Class Pictures</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                    echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetCollege(UserCollege()) . "<div style=\"font-size:12px;\">Student Class Pictures</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                     echo '<TABLE border=0 style=border-collapse:collapse>';
                     echo '<TR><TD colspan=5 align=center  style=font-size:15px; font-weight:bold;>' . UserSyear() . '-' . (UserSyear() + 1) . ' - ' . $course_period['TITLE'] . '</TD></TR>';
                     $i = 0;
@@ -85,7 +85,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                         
                         if($student_id)
                         {
-                        $stu_img_info= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID='.$student_id.' AND PROFILE_ID=3 AND SCHOOL_ID='. UserSchool().' AND SYEAR='.UserSyear().' AND FILE_INFO=\'stuimg\''));
+                        $stu_img_info= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID='.$student_id.' AND PROFILE_ID=3 AND SCHOOL_ID='. UserCollege().' AND SYEAR='.UserSyear().' AND FILE_INFO=\'stuimg\''));
                         $StudentPicturesPath=1;
                         }   
                         else
@@ -146,7 +146,7 @@ echo '<div class="modal-body">';
 echo '<div id="conf_div" class="text-center"></div>';
 echo '<div class="row" id="resp_table">';
 echo '<div class="col-md-4">';
-$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
@@ -210,7 +210,7 @@ function mySearch($type, $extra = '') {
 
         PopTable('header', 'Search');
 
-        $RET = DBGet(DBQuery('SELECT s.STAFF_ID,CONCAT(s.LAST_NAME,\'' . ',' . '\',s.FIRST_NAME) AS FULL_NAME FROM staff s,staff_school_relationship ssr WHERE s.STAFF_ID=ssr.STAFF_ID AND s.PROFILE=\'' . 'teacher' . '\' AND position(\'' . UserSchool() . '\' IN ssr.SCHOOL_ID)>0 AND ssr.SYEAR=\'' . UserSyear() . '\' ORDER BY FULL_NAME'));
+        $RET = DBGet(DBQuery('SELECT s.STAFF_ID,CONCAT(s.LAST_NAME,\'' . ',' . '\',s.FIRST_NAME) AS FULL_NAME FROM staff s,staff_college_relationship ssr WHERE s.STAFF_ID=ssr.STAFF_ID AND s.PROFILE=\'' . 'teacher' . '\' AND position(\'' . UserCollege() . '\' IN ssr.SCHOOL_ID)>0 AND ssr.SYEAR=\'' . UserSyear() . '\' ORDER BY FULL_NAME'));
         echo '<div class="row">';
         echo '<div class="col-lg-6">';
         echo '<div class="form-group"><label class="control-label col-lg-4">Teacher</label><div class="col-lg-8">';
@@ -220,7 +220,7 @@ function mySearch($type, $extra = '') {
         echo '</SELECT></div></div>';
         echo '</div>'; //.col-lg-6
 
-        $RET = DBGet(DBQuery('SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY TITLE'));
+        $RET = DBGet(DBQuery('SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY TITLE'));
         echo '<div class="col-lg-6">';
         echo '<div class="form-group"><label class="control-label col-lg-4">Subject</label><div class="col-lg-8">';
         echo "<SELECT name=subject_id class=\"form-control\"><OPTION value=''>N/A</OPTION>";
@@ -230,7 +230,7 @@ function mySearch($type, $extra = '') {
         echo '</div>'; //.col-lg-6
         echo '</div>'; //.row
 
-        $RET = DBGet(DBQuery('SELECT PERIOD_ID,TITLE FROM school_periods WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'));
+        $RET = DBGet(DBQuery('SELECT PERIOD_ID,TITLE FROM college_periods WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER'));
         echo '<div class="row">';
         echo '<div class="col-lg-6">';
         echo '<div class="form-group"><label class="control-label col-lg-4">Period</label><div class="col-lg-8">';
@@ -274,12 +274,12 @@ function mySearch($type, $extra = '') {
             if ($_REQUEST['period_id'])
                 $where .= " AND cpv.PERIOD_ID='" . $_REQUEST['period_id'] . "'";
 
-            $sql = 'SELECT cp.COURSE_PERIOD_ID,cp.TITLE,sp.ATTENDANCE FROM course_periods cp,course_period_var cpv,school_periods sp' . $from . ' WHERE cp.SCHOOL_ID=\'' . UserSchool() . '\' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.SYEAR=\'' . UserSyear() . '\' AND sp.PERIOD_ID=cpv.PERIOD_ID' . $where . '';
+            $sql = 'SELECT cp.COURSE_PERIOD_ID,cp.TITLE,sp.ATTENDANCE FROM course_periods cp,course_period_var cpv,college_periods sp' . $from . ' WHERE cp.SCHOOL_ID=\'' . UserCollege() . '\' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.SYEAR=\'' . UserSyear() . '\' AND sp.PERIOD_ID=cpv.PERIOD_ID' . $where . '';
         }
         elseif (User('PROFILE') == 'teacher') {
-            $sql = 'SELECT cp.COURSE_PERIOD_ID,cp.TITLE,sp.ATTENDANCE FROM course_periods cp,course_period_var cpv,school_periods sp WHERE cp.SCHOOL_ID=\'' . UserSchool() . '\' AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.TEACHER_ID=\'' . User('STAFF_ID') . '\' AND sp.PERIOD_ID=cpv.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID';
+            $sql = 'SELECT cp.COURSE_PERIOD_ID,cp.TITLE,sp.ATTENDANCE FROM course_periods cp,course_period_var cpv,college_periods sp WHERE cp.SCHOOL_ID=\'' . UserCollege() . '\' AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.TEACHER_ID=\'' . User('STAFF_ID') . '\' AND sp.PERIOD_ID=cpv.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID';
         } else {
-            $sql = 'SELECT cp.COURSE_PERIOD_ID,cp.TITLE,sp.ATTENDANCE FROM course_periods cp,course_period_var cpv,school_periods sp,schedule ss WHERE cp.SCHOOL_ID=\'' . UserSchool() . '\' AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND ss.SYEAR=\'' . UserSyear() . '\' AND ss.STUDENT_ID=\'' . UserStudentID() . '\' AND (CURRENT_DATE>=ss.START_DATE AND (ss.END_DATE IS NULL OR CURRENT_DATE<=ss.END_DATE)) AND sp.PERIOD_ID=cpv.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID';
+            $sql = 'SELECT cp.COURSE_PERIOD_ID,cp.TITLE,sp.ATTENDANCE FROM course_periods cp,course_period_var cpv,college_periods sp,schedule ss WHERE cp.SCHOOL_ID=\'' . UserCollege() . '\' AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND ss.SYEAR=\'' . UserSyear() . '\' AND ss.STUDENT_ID=\'' . UserStudentID() . '\' AND (CURRENT_DATE>=ss.START_DATE AND (ss.END_DATE IS NULL OR CURRENT_DATE<=ss.END_DATE)) AND sp.PERIOD_ID=cpv.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID';
         }
         $sql .= ' GROUP BY cp.COURSE_PERIOD_ID ORDER BY sp.PERIOD_ID';
 

@@ -1,7 +1,7 @@
 <?php
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -213,7 +213,7 @@ function listuser($sql, $filename){
 }
 
 function listStudents($sql, $filename){
-	$columns=array('Student', 'Grade', 'Student ID', 'School');
+	$columns=array('Student', 'Grade', 'Student ID', 'College');
 	echo "<div style='position: relative; width: 788px; height: 300px; z-index: 1; border: 1px solid #ADBCC9' id='divStudents'>".listuser_grid("obj", $columns, getUserData($sql), $filename, "student_id")."</div>";
 }
 

@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -57,7 +57,7 @@ if ($_REQUEST['modfunc'] == 'update') {
             $MARKING_PERIOD_ID_VALUE = $id_RET[1]['ID'];
             $sql = 'INSERT INTO history_marking_periods ';
             $fields = 'MARKING_PERIOD_ID, SCHOOL_ID, ';
-            $values = $MARKING_PERIOD_ID_VALUE . ", " . UserSchool() . ", ";
+            $values = $MARKING_PERIOD_ID_VALUE . ", " . UserCollege() . ", ";
 
             $go = false;
             foreach ($columns as $column => $value)
@@ -85,22 +85,22 @@ if (!$_REQUEST['modfunc']) {
     DrawHeader(ProgramTitle(), SubmitButton('Save', '', 'class="btn btn-primary"'));
     echo '<hr class="no-margin"/>';
 
-    $sql = 'SELECT * FROM history_marking_periods WHERE SCHOOL_ID = ' . UserSchool() . ' ORDER BY POST_END_DATE';
+    $sql = 'SELECT * FROM history_marking_periods WHERE SCHOOL_ID = ' . UserCollege() . ' ORDER BY POST_END_DATE';
 
     $functions = array('MP_TYPE' => 'makeSelectInput',
         'NAME' => 'makeTextInput',
         'POST_END_DATE' => 'makeDateInput',
-        'SYEAR' => 'makeSchoolYearSelectInput'
+        'SYEAR' => 'makeCollegeYearSelectInput'
     );
     $LO_columns = array('MP_TYPE' => 'Type',
         'NAME' => 'Name',
         'POST_END_DATE' => 'Grade Post Date',
-        'SYEAR' => 'School Year'
+        'SYEAR' => 'College Year'
     );
     $link['add']['html'] = array('MP_TYPE' => makeSelectInput('', 'MP_TYPE'),
         'NAME' => makeTextInput('', 'NAME'),
         'POST_END_DATE' => makeDateInput('', 'POST_END_DATE'),
-        'SYEAR' => makeSchoolYearSelectInput('', 'SYEAR')
+        'SYEAR' => makeCollegeYearSelectInput('', 'SYEAR')
     );
 
 
@@ -159,7 +159,7 @@ function makeSelectInput($value, $name) {
     return SelectInput(trim($value), "values[$id][$name]", '', $options, false);
 }
 
-function makeSchoolYearSelectInput($value, $name) {
+function makeCollegeYearSelectInput($value, $name) {
     global $THIS_RET;
 
     if ($THIS_RET['MARKING_PERIOD_ID'])
