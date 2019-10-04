@@ -46,7 +46,7 @@ if (isset($_REQUEST['student_id']) && $_REQUEST['student_id'] != 'new' || UserSt
         $stu_id = $_REQUEST['student_id'];
     else
         $stu_id = UserStudentID();
-    $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,SCHOOL_ID FROM students,student_enrollment WHERE students.STUDENT_ID=\'' . $stu_id . '\' AND student_enrollment.STUDENT_ID = students.STUDENT_ID '));
+    $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,COLLEGE_ID FROM students,student_enrollment WHERE students.STUDENT_ID=\'' . $stu_id . '\' AND student_enrollment.STUDENT_ID = students.STUDENT_ID '));
 
     $count_student_RET = DBGet(DBQuery('SELECT COUNT(*) AS NUM FROM students'));
     if ($count_student_RET[1]['NUM'] > 1) {

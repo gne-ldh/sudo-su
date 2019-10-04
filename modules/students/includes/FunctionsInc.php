@@ -249,7 +249,7 @@ function _makeEnrollmentDates($column, $counter = 0, $ret_array = '') {//student
 
         $value = $ret_array[$column];
         if ($column == 'START_DATE' && $value == '') {
-            $value = DBGet(DBQuery('SELECT min(SCHOOL_DATE) AS START_DATE FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
+            $value = DBGet(DBQuery('SELECT min(COLLEGE_DATE) AS START_DATE FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
             $value = $value[1]['START_DATE'];
             if (!$value || DBDate('mysql') > $value)
                 $value = DBDate('mysql');
@@ -260,7 +260,7 @@ function _makeEnrollmentDates($column, $counter = 0, $ret_array = '') {//student
     else {
         if ($column == 'START_DATE') {
 
-            $value = DBGet(DBQuery('SELECT min(SCHOOL_DATE) AS START_DATE,SYEAR FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
+            $value = DBGet(DBQuery('SELECT min(COLLEGE_DATE) AS START_DATE,SYEAR FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
 
             $val_syear = $value[1]['SYEAR'];
             $value = $value[1]['START_DATE'];
@@ -395,7 +395,7 @@ function _makeStartInputDate($value, $column) {//student enrollment info tab
         $id = $THIS_RET['ID'];
     elseif ($_REQUEST['student_id'] == 'new') {
         $id = 'new';
-        $default = DBGet(DBQuery('SELECT min(SCHOOL_DATE) AS START_DATE FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
+        $default = DBGet(DBQuery('SELECT min(COLLEGE_DATE) AS START_DATE FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
         $default = $default[1]['START_DATE'];
         if (!$default || DBDate() > $default)
             $default = DBDate();
@@ -436,7 +436,7 @@ function _makeStartInputDateenrl($value, $column) {//student enrollment tab
         $id = $THIS_RET['ID'];
     elseif ($_REQUEST['student_id'] == 'new') {
         $id = 'new';
-        $default = DBGet(DBQuery('SELECT min(SCHOOL_DATE) AS START_DATE FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
+        $default = DBGet(DBQuery('SELECT min(COLLEGE_DATE) AS START_DATE FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
         $default = $default[1]['START_DATE'];
         if (!$default || DBDate() > $default)
             $default = DBDate();
@@ -549,8 +549,8 @@ function _makeCollegeInput($value, $column) {
     foreach ($colleges as $sid => $college)
         $options[$sid] = $college[1]['TITLE'];
     // mab - allow college to be editted if illegal value
-    if ($THIS_RET['SCHOOL_ID']) {
-        $name = DBGet(DBQuery('SELECT TITLE FROM colleges WHERE ID=\'' . $THIS_RET['SCHOOL_ID'] . '\''));
+    if ($THIS_RET['COLLEGE_ID']) {
+        $name = DBGet(DBQuery('SELECT TITLE FROM colleges WHERE ID=\'' . $THIS_RET['COLLEGE_ID'] . '\''));
         return $name[1]['TITLE'] . '<input type=hidden name=enrollment_id value="' . $id . '" />';
     } elseif ($_REQUEST['student_id'] != 'new') {
         if ($id != 'new') {
@@ -558,9 +558,9 @@ function _makeCollegeInput($value, $column) {
                 $name = DBGet(DBQuery('SELECT TITLE FROM colleges WHERE ID=\'' . UserCollege() . '\''));
                 return $name[1]['TITLE'] . '<input type=hidden name=enrollment_id value="' . $id . '" />';
             } else
-                return SelectInput($value, 'values[student_enrollment][' . $id . '][SCHOOL_ID]', '', $options);
+                return SelectInput($value, 'values[student_enrollment][' . $id . '][COLLEGE_ID]', '', $options);
         } else
-            return SelectInput(UserCollege(), 'values[student_enrollment][' . $id . '][SCHOOL_ID]', '', $options, false, '', false);
+            return SelectInput(UserCollege(), 'values[student_enrollment][' . $id . '][COLLEGE_ID]', '', $options, false, '', false);
     } else
         return $colleges[UserCollege()][1]['TITLE'] . '<input type=hidden name=enrollment_id value="' . $id . '" />';
 }

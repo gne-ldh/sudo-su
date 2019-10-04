@@ -43,11 +43,11 @@ function GetUserColleges($staff_id,$str=false)
       if(User('PROFILE_ID')!=4 && User('PROFILE')!='parent')
       {
         $str_return='';
-        $colleges=DBGet(DBQuery('SELECT SCHOOL_ID FROM staff_college_relationship WHERE staff_id='.$staff_id.' AND syear='.  UserSyear()));
+        $colleges=DBGet(DBQuery('SELECT COLLEGE_ID FROM staff_college_relationship WHERE staff_id='.$staff_id.' AND syear='.  UserSyear()));
         foreach($colleges as $college)
         {
-            $return[]=$college['SCHOOL_ID'];
-            $str_return .=$college['SCHOOL_ID'].',';
+            $return[]=$college['COLLEGE_ID'];
+            $str_return .=$college['COLLEGE_ID'].',';
         }
         if($str==true)
         {
@@ -60,8 +60,8 @@ function GetUserColleges($staff_id,$str=false)
       }
       else if (User('PROFILE_ID')==4 || User('PROFILE')=='parent')
       {
-          $colleges=DBGet(DBQuery('SELECT SCHOOL_ID FROM student_enrollment WHERE STUDENT_ID='.UserStudentID().' AND SYEAR='.UserSyear().' ORDER BY ID DESC LIMIT 0,1'));
-          return $colleges[1]['SCHOOL_ID'];
+          $colleges=DBGet(DBQuery('SELECT COLLEGE_ID FROM student_enrollment WHERE STUDENT_ID='.UserStudentID().' AND SYEAR='.UserSyear().' ORDER BY ID DESC LIMIT 0,1'));
+          return $colleges[1]['COLLEGE_ID'];
       }
 }
 

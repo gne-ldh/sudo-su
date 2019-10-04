@@ -140,14 +140,14 @@ if ($_REQUEST['modfunc'] == 'save') {
                     $posted_arr = explode('-', $firstrec['POSTED']);
 
 
-                    if ($firstrec['SCHOOL_ID'] != '' && $firstrec['SYEAR'] != '') {
-                        $gradelevel = DBGet(DBQuery('SELECT sg.TITLE FROM college_gradelevels sg,student_enrollment se WHERE se.STUDENT_ID=' . $firstrec['STUDENT_ID'] . ' AND se.SCHOOL_ID=' . $firstrec['SCHOOL_ID'] . ' AND se.SYEAR=' . $firstrec['SYEAR'] . ' AND se.GRADE_ID=sg.ID ORDER BY se.ID DESC LIMIT 0,1'));
+                    if ($firstrec['COLLEGE_ID'] != '' && $firstrec['SYEAR'] != '') {
+                        $gradelevel = DBGet(DBQuery('SELECT sg.TITLE FROM college_gradelevels sg,student_enrollment se WHERE se.STUDENT_ID=' . $firstrec['STUDENT_ID'] . ' AND se.COLLEGE_ID=' . $firstrec['COLLEGE_ID'] . ' AND se.SYEAR=' . $firstrec['SYEAR'] . ' AND se.GRADE_ID=sg.ID ORDER BY se.ID DESC LIMIT 0,1'));
                         $gradelevel = $gradelevel[1]['TITLE'];
                     }
                     if ($gradelevel == '' && $firstrec['MP_SOURCE'] == 'History')
                         $gradelevel = ($firstrec['GRADELEVEL'] != '' ? $firstrec['GRADELEVEL'] : 'Not Found');
 
-                    $course_html[$colnum] .= '<h4 class="f-s-15 m-b-0 m-t-0"><span class="text-blue">' . $firstrec[SCHOOL_NAME] . '</span> - ' . $firstrec['MP_NAME'] . ' (' . $gradelevel . ')</h4>';
+                    $course_html[$colnum] .= '<h4 class="f-s-15 m-b-0 m-t-0"><span class="text-blue">' . $firstrec[COLLEGE_NAME] . '</span> - ' . $firstrec['MP_NAME'] . ' (' . $gradelevel . ')</h4>';
                     $course_html[$colnum] .= '<p class="m-t-0 m-b-5">Posted Date : ' . $posted_arr[1] . '/' . $posted_arr[0] . '</p>';
                     $course_html[$colnum] .= '<table class="invoice-table table-bordered">';
                     $course_html[$colnum] .= '<thead>';
@@ -396,7 +396,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                 <?php
                 $picturehtml = '';
                 if ($_REQUEST['show_photo']) {
-                    $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . $student_id . ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
+                    $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . $student_id . ' AND PROFILE_ID=3 AND COLLEGE_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
                     if (count($stu_img_info) > 0) {
                         $picturehtml = '<td valign="top" align="left" width=30%><img style="padding:4px; width:144px; border:1px solid #333333; background-color:#fff;" src="data:image/jpeg;base64,' . base64_encode($stu_img_info[1]['CONTENT']) . '"></td>';
                     } else {
@@ -509,7 +509,7 @@ if (!$_REQUEST['modfunc']) {
     echo '<div id="conf_div" class="text-center"></div>';
     echo '<div class="row" id="resp_table">';
     echo '<div class="col-md-4">';
-    $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+    $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE COLLEGE_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
     $QI = DBQuery($sql);
     $subjects_RET = DBGet($QI);
 

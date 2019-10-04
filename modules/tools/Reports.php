@@ -30,18 +30,18 @@ include('../../RedirectModulesInc.php');
 ini_set('memory_limit', '120000000000M');
 ini_set('max_execution_time', '50000000');
 if ($_REQUEST['func'] == 'Basic') {
-    $num_colleges = DBGet(DBQuery('SELECT COUNT(ID) as TOTAL_SCHOOLS FROM colleges'));
-    $num_colleges = $num_colleges[1]['TOTAL_SCHOOLS'];
+    $num_colleges = DBGet(DBQuery('SELECT COUNT(ID) as TOTAL_COLLEGES FROM colleges'));
+    $num_colleges = $num_colleges[1]['TOTAL_COLLEGES'];
 
-    $num_students = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) as TOTAL_STUDENTS FROM students WHERE STUDENT_ID IN (SELECT DISTINCT STUDENT_ID FROM student_enrollment WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserCollege() . ')'));
+    $num_students = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) as TOTAL_STUDENTS FROM students WHERE STUDENT_ID IN (SELECT DISTINCT STUDENT_ID FROM student_enrollment WHERE SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege() . ')'));
     $num_students = $num_students[1]['TOTAL_STUDENTS'];
-    $male = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) as MALE FROM students WHERE GENDER=\'Male\' AND STUDENT_ID IN (SELECT DISTINCT STUDENT_ID FROM student_enrollment WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserCollege() . ')'));
+    $male = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) as MALE FROM students WHERE GENDER=\'Male\' AND STUDENT_ID IN (SELECT DISTINCT STUDENT_ID FROM student_enrollment WHERE SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege() . ')'));
     $male = $male[1]['MALE'];
-    $female = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) as FEMALE FROM students WHERE GENDER=\'Female\' AND STUDENT_ID IN (SELECT DISTINCT STUDENT_ID FROM student_enrollment WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserCollege() . ')'));
+    $female = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) as FEMALE FROM students WHERE GENDER=\'Female\' AND STUDENT_ID IN (SELECT DISTINCT STUDENT_ID FROM student_enrollment WHERE SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege() . ')'));
     $female = $female[1]['FEMALE'];
     $num_staff = 0;
     $num_teacher = 0;
-    $num_users = DBGet(DBQuery('SELECT COUNT(DISTINCT s.STAFF_ID) as TOTAL_USER,IF(PROFILE_ID=2,\'Teacher\',\'Staff\') as PROFILEID FROM staff s,staff_college_relationship ssr WHERE s.STAFF_ID=ssr.STAFF_ID AND SYEAR = ' . UserSyear() . ' AND SCHOOL_ID=' . UserCollege() . ' AND SCHOOL_ID IN (SELECT ID FROM colleges ) GROUP BY PROFILEID'));
+    $num_users = DBGet(DBQuery('SELECT COUNT(DISTINCT s.STAFF_ID) as TOTAL_USER,IF(PROFILE_ID=2,\'Teacher\',\'Staff\') as PROFILEID FROM staff s,staff_college_relationship ssr WHERE s.STAFF_ID=ssr.STAFF_ID AND SYEAR = ' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege() . ' AND COLLEGE_ID IN (SELECT ID FROM colleges ) GROUP BY PROFILEID'));
 
     foreach ($num_users as $gt_dt) {
         if ($gt_dt['PROFILEID'] == 'Staff')
@@ -50,7 +50,7 @@ if ($_REQUEST['func'] == 'Basic') {
             $num_teacher = $gt_dt['TOTAL_USER'];
     }
 
-    $num_parent = DBGet(DBQuery('SELECT COUNT(distinct p.STAFF_ID) as TOTAL_PARENTS FROM people p,students_join_people sjp WHERE sjp.PERSON_ID=p.STAFF_ID AND sjp.STUDENT_ID IN (SELECT DISTINCT STUDENT_ID FROM student_enrollment WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserCollege() . ')'));
+    $num_parent = DBGet(DBQuery('SELECT COUNT(distinct p.STAFF_ID) as TOTAL_PARENTS FROM people p,students_join_people sjp WHERE sjp.PERSON_ID=p.STAFF_ID AND sjp.STUDENT_ID IN (SELECT DISTINCT STUDENT_ID FROM student_enrollment WHERE SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege() . ')'));
     if ($num_parent[1]['TOTAL_PARENTS'] == '')
         $num_parent = 0;
     else
@@ -189,7 +189,7 @@ if ($_REQUEST['func'] == 'Ins_r') {
 
                     $column_check = explode('_', $i);
                     if ($column_check[0] == 'CUSTOM') {
-                        $check_validity = DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM college_custom_fields WHERE ID=' . $column_check[1] . ' AND (SCHOOL_ID=' . $get_college_info[$key]['ID'].' OR SCHOOL_ID=0)'));
+                        $check_validity = DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM college_custom_fields WHERE ID=' . $column_check[1] . ' AND (COLLEGE_ID=' . $get_college_info[$key]['ID'].' OR COLLEGE_ID=0)'));
                         if ($check_validity[1]['REC_EX'] == 0)
                             $j = 'NOT_AVAILABLE_FOR';
                     }
@@ -270,7 +270,7 @@ if ($_REQUEST['func'] == 'Ins_r') {
     }
 }
 if ($_REQUEST['func'] == 'Ins_cf') {
-    $get_colleges_cf = DBGet(DBQuery('SELECT s.TITLE AS SCHOOL,s.ID,sc.* FROM colleges s,college_custom_fields sc WHERE s.ID=sc.SCHOOL_ID ORDER BY sc.SCHOOL_ID'));
+    $get_colleges_cf = DBGet(DBQuery('SELECT s.TITLE AS COLLEGE,s.ID,sc.* FROM colleges s,college_custom_fields sc WHERE s.ID=sc.COLLEGE_ID ORDER BY sc.COLLEGE_ID'));
     foreach ($get_colleges_cf as $cf_i => $cf_d) {
         foreach ($cf_d as $cfd_i => $cfd_d) {
             if ($cfd_i == 'TYPE') {
@@ -306,11 +306,11 @@ if ($_REQUEST['func'] == 'Ins_cf') {
         unset($cfd_d);
     }
     foreach ($get_colleges_cf as $g_i => $gd) {
-        $gt_fld_v = DBGet(DBQuery('SELECT CUSTOM_' . $gd['ID'] . ' as FIELD from colleges WHERE ID=' . $gd['SCHOOL_ID']));
+        $gt_fld_v = DBGet(DBQuery('SELECT CUSTOM_' . $gd['ID'] . ' as FIELD from colleges WHERE ID=' . $gd['COLLEGE_ID']));
         $get_colleges_cf[$g_i]['C_VALUE'] = $gt_fld_v[1]['FIELD'];
     }
 
-    $column = array('SCHOOL' => 'College', 'TYPE' => 'Custom Field Type', 'TITLE' => 'Custom Field Name', 'SELECT_OPTIONS' => 'Options', 'SYSTEM_FIELD' => 'System Field', 'REQUIRED' => 'Required Field');
+    $column = array('COLLEGE' => 'College', 'TYPE' => 'Custom Field Type', 'TITLE' => 'Custom Field Name', 'SELECT_OPTIONS' => 'Options', 'SYSTEM_FIELD' => 'System Field', 'REQUIRED' => 'Required Field');
 
     echo '<div class="panel panel-default">';
     ListOutput($get_colleges_cf, $column, 'Custom Field', 'Custom Fields');

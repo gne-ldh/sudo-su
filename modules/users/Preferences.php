@@ -75,8 +75,8 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
             $_REQUEST['values']['Preferences']['SEARCH'] = 'N';
         if ($_REQUEST['tab'] == 'student_listing' && $_REQUEST['values']['Preferences']['DEFAULT_FAMILIES'] != 'Y')
             $_REQUEST['values']['Preferences']['DEFAULT_FAMILIES'] = 'N';
-        if ($_REQUEST['tab'] == 'student_listing' && $_REQUEST['values']['Preferences']['DEFAULT_ALL_SCHOOLS'] != 'Y')
-            $_REQUEST['values']['Preferences']['DEFAULT_ALL_SCHOOLS'] = 'N';
+        if ($_REQUEST['tab'] == 'student_listing' && $_REQUEST['values']['Preferences']['DEFAULT_ALL_COLLEGES'] != 'Y')
+            $_REQUEST['values']['Preferences']['DEFAULT_ALL_COLLEGES'] = 'N';
         if ($_REQUEST['tab'] == 'display_options' && $_REQUEST['values']['Preferences']['HIDDEN'] != 'Y')
             $_REQUEST['values']['Preferences']['HIDDEN'] = 'N';
         if ($_REQUEST['tab'] == 'display_options' && $_REQUEST['values']['Preferences']['HIDE_ALERTS'] != 'Y')
@@ -163,7 +163,7 @@ if (!$_REQUEST['modfunc']) {
         if (User('PROFILE') == 'admin') {
             echo '<div id="show_other_options" ' . ((Preferences('SEARCH') == 'Y') ? 'style="display:inline-block"' : 'style="display:none"') . '>';
             echo '<div class="checkbox checkbox-switch switch-success switch-xs p-b-10"><label><INPUT type=checkbox id="family" name=values[Preferences][DEFAULT_FAMILIES] value=Y' . ((Preferences('DEFAULT_FAMILIES') == 'Y') ? ' CHECKED' : '') . '><span></span> Group by family by default</label></div>';
-            echo '<div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox id="all_college" name=values[Preferences][DEFAULT_ALL_SCHOOLS] value=Y' . ((Preferences('DEFAULT_ALL_SCHOOLS') == 'Y') ? ' CHECKED' : '') . '><span></span> Search all colleges by default</label></div>';
+            echo '<div class="checkbox checkbox-switch switch-success switch-xs"><label><INPUT type=checkbox id="all_college" name=values[Preferences][DEFAULT_ALL_COLLEGES] value=Y' . ((Preferences('DEFAULT_ALL_COLLEGES') == 'Y') ? ' CHECKED' : '') . '><span></span> Search all colleges by default</label></div>';
             echo '</div>';
         }
         echo '</div>'; //.col-md-6

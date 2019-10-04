@@ -39,8 +39,8 @@ $_SESSION['NY'] = $next_syear;
 echo '<div id="start_date" class="text-danger"></div>';
 
 echo '<table width="80%" cellpadding="6" cellspacing="6"><tr><td width="50%" valign="top"><div id="back_db" style="display: none; padding-top:60px;" align="center"><img src="assets/missing_attn_loader.gif" /><br/><br/><strong>Saving database for backup before rollover, please donot click anywhere.....</strong></div><div id="calculating" style="display: none; padding-top:60px;" align="center"><img src="assets/rollover_anim.gif" /><br/><br/><strong>College year rolling over, please wait...</strong></div><div id="response" style="font-size:14px"></div></td></tr></table>';
-$notice_roll_date = DBGet(DBQuery('SELECT SYEAR FROM college_years WHERE SYEAR>\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
-$cur_session_RET = DBGet(DBQuery('SELECT YEAR(start_date) AS PRE,YEAR(end_date) AS POST FROM college_years WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\''));
+$notice_roll_date = DBGet(DBQuery('SELECT SYEAR FROM college_years WHERE SYEAR>\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
+$cur_session_RET = DBGet(DBQuery('SELECT YEAR(start_date) AS PRE,YEAR(end_date) AS POST FROM college_years WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\''));
 if ($cur_session_RET[1]['PRE'] == $cur_session_RET[1]['POST']) {
     $cur_session = $cur_session_RET[1]['PRE'];
 } else {

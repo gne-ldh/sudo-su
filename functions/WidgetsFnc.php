@@ -40,11 +40,11 @@ function Widgets($item, $allow_widget = false) {
                         if ($_REQUEST['w_course_period_id_which'] == 'course') {
                             $course = DBGet(DBQuery('SELECT c.TITLE AS COURSE_TITLE,cp.TITLE,cp.COURSE_ID FROM course_periods cp,courses c WHERE c.COURSE_ID=cp.COURSE_ID AND cp.COURSE_PERIOD_ID=\'' . $_REQUEST['w_course_period_id'] . '\''));
                             $extra['FROM'] .= ',schedule w_ss';
-                            $extra['WHERE'] .= ' AND w_ss.STUDENT_ID=s.STUDENT_ID AND w_ss.SYEAR=ssm.SYEAR AND w_ss.SCHOOL_ID=ssm.SCHOOL_ID AND w_ss.COURSE_ID=\'' . $course[1]['COURSE_ID'] . '\' AND (\'' . DBDate() . '\' BETWEEN w_ss.START_DATE AND w_ss.END_DATE OR w_ss.END_DATE IS NULL)';
+                            $extra['WHERE'] .= ' AND w_ss.STUDENT_ID=s.STUDENT_ID AND w_ss.SYEAR=ssm.SYEAR AND w_ss.COLLEGE_ID=ssm.COLLEGE_ID AND w_ss.COURSE_ID=\'' . $course[1]['COURSE_ID'] . '\' AND (\'' . DBDate() . '\' BETWEEN w_ss.START_DATE AND w_ss.END_DATE OR w_ss.END_DATE IS NULL)';
                             $_openSIS['SearchTerms'] .= '<font color=gray><b>Course: </b></font>' . $course[1]['COURSE_TITLE'] . '<BR>';
                         } else {
                             $extra['FROM'] .= ',schedule w_ss';
-                            $extra['WHERE'] .= ' AND w_ss.STUDENT_ID=s.STUDENT_ID AND w_ss.SYEAR=ssm.SYEAR AND w_ss.SCHOOL_ID=ssm.SCHOOL_ID AND w_ss.COURSE_PERIOD_ID=\'' . $_REQUEST['w_course_period_id'] . '\' AND (\'' . DBDate() . '\' BETWEEN w_ss.START_DATE AND w_ss.END_DATE OR w_ss.END_DATE IS NULL)';
+                            $extra['WHERE'] .= ' AND w_ss.STUDENT_ID=s.STUDENT_ID AND w_ss.SYEAR=ssm.SYEAR AND w_ss.COLLEGE_ID=ssm.COLLEGE_ID AND w_ss.COURSE_PERIOD_ID=\'' . $_REQUEST['w_course_period_id'] . '\' AND (\'' . DBDate() . '\' BETWEEN w_ss.START_DATE AND w_ss.END_DATE OR w_ss.END_DATE IS NULL)';
                             $course = DBGet(DBQuery('SELECT c.TITLE AS COURSE_TITLE,cp.TITLE,cp.COURSE_ID FROM course_periods cp,courses c WHERE c.COURSE_ID=cp.COURSE_ID AND cp.COURSE_PERIOD_ID=\'' . $_REQUEST['w_course_period_id'] . '\''));
                             $_openSIS['SearchTerms'] .= '<font color=gray><b>Course Period: </b></font>' . $course[1]['COURSE_TITLE'] . ': ' . $course[1]['TITLE'] . '<BR>';
                         }
@@ -66,7 +66,7 @@ function Widgets($item, $allow_widget = false) {
 //                    $extra['search'] .= '<center><div id="conf_div"></div></center>';
 //                    $extra['search'] .='<table id="resp_table"><tr><td valign="top">';
 //                    $extra['search'] .= '<div>';
-//                    $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
+//                    $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE COLLEGE_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
 //                    $QI = DBQuery($sql);
 //                    $subjects_RET = DBGet($QI);
 //                    $extra['search'] .=  count($subjects_RET). ((count($subjects_RET)==1)?' Subject was':' Subjects were').' found.<br>';
@@ -98,7 +98,7 @@ function Widgets($item, $allow_widget = false) {
                         $course = DBGet(DBQuery('SELECT c.TITLE FROM courses c WHERE c.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\''));
                         if (!$_REQUEST['not_request_course']) {
                             $extra['FROM'] .= ',schedule_requests scr';
-                            $extra['WHERE'] .= ' AND scr.STUDENT_ID=s.STUDENT_ID AND scr.SYEAR=ssm.SYEAR AND scr.SCHOOL_ID=ssm.SCHOOL_ID AND scr.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\'';
+                            $extra['WHERE'] .= ' AND scr.STUDENT_ID=s.STUDENT_ID AND scr.SYEAR=ssm.SYEAR AND scr.COLLEGE_ID=ssm.COLLEGE_ID AND scr.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\'';
 
                             $_openSIS['SearchTerms'] .= '<font color=gray><b>Request: </b></font>' . $course[1]['TITLE'] . '<BR>';
                         } else {
@@ -119,7 +119,7 @@ function Widgets($item, $allow_widget = false) {
 //                        $course = DBGet(DBQuery('SELECT c.TITLE FROM courses c WHERE c.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\''));
 //                        if (!$_REQUEST['not_request_course']) {
 //                            $extra['FROM'] .= ',schedule_requests scr';
-//                            $extra['WHERE'] .= ' AND scr.STUDENT_ID=s.STUDENT_ID AND scr.SYEAR=ssm.SYEAR AND scr.SCHOOL_ID=ssm.SCHOOL_ID AND scr.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\'';
+//                            $extra['WHERE'] .= ' AND scr.STUDENT_ID=s.STUDENT_ID AND scr.SYEAR=ssm.SYEAR AND scr.COLLEGE_ID=ssm.COLLEGE_ID AND scr.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\'';
 //
 //                            $_openSIS['SearchTerms'] .= '<font color=gray><b>Request: </b></font>' . $course[1]['TITLE'] . '<BR>';
 //                        } else {
@@ -199,7 +199,7 @@ function Widgets($item, $allow_widget = false) {
                     $extra['WHERE'] .= ' AND sgr.CGPA BETWEEN ' . $_REQUEST[cgpa_low] . ' AND ' . $_REQUEST[cgpa_high] . ' ';
                     $_openSIS['SearchTerms'] .= '<div class=\"form-group\"><label>CGPA between: </label><p>' . $_REQUEST['cgpa_low'] . ' &amp; ' . $_REQUEST['cgpa_high'] . '</p></div>';
                 }
-                $qrtrs_query = DBGet(DBQuery('SELECT COUNT(*) as QUARTER FROM college_quarters where SCHOOL_ID=\'' . UserCollege() . '\' and SYEAR=\'' . UserSyear() . '\''));
+                $qrtrs_query = DBGet(DBQuery('SELECT COUNT(*) as QUARTER FROM college_quarters where COLLEGE_ID=\'' . UserCollege() . '\' and SYEAR=\'' . UserSyear() . '\''));
                 if ($qrtrs_query[1]['QUARTER'] > 1) {
                     $extra['search'] .= "<div class=\"form-group\"><div class=\"col-md-12\"><label class=\"checkbox-inline\"><INPUT class=\"styled\" type=checkbox name=list_gpa value=Y> Marking Period GPA</label></div></div>";
                     $extra['search'] .= "<div class=\"form-group\"><div class=\"col-md-12\"><label class=\"radio-inline\"><INPUT class=\"styled\" type=radio name=gpa_term value=" . GetParentMP('SEM', UserMP()) . "> " . GetMP(GetParentMP('SEM', UserMP()), 'SHORT_NAME') . "</label>";
@@ -232,7 +232,7 @@ function Widgets($item, $allow_widget = false) {
                     $extra['WHERE'] .= ' AND sgc.CLASS_RANK BETWEEN \'' . $_REQUEST[class_rank_low] . '\' AND \'' . $_REQUEST[class_rank_high] . '\'';
                     $_openSIS['SearchTerms'] .= '<div class="form-group"><label class="control-label">Class Rank between :</label><p>' . $_REQUEST['class_rank_low'] . ' &amp; ' . $_REQUEST['class_rank_high'] . '</p></div>';
                 }
-                $qrtrs_query = DBGet(DBQuery('SELECT COUNT(*) as QUARTER FROM college_quarters where SCHOOL_ID=\'' . UserCollege() . '\' and SYEAR=\'' . UserSyear() . '\''));
+                $qrtrs_query = DBGet(DBQuery('SELECT COUNT(*) as QUARTER FROM college_quarters where COLLEGE_ID=\'' . UserCollege() . '\' and SYEAR=\'' . UserSyear() . '\''));
                 if ($qrtrs_query[1]['QUARTER'] > 1) {
                     $extra['search'] .= "<h6 class=\"text-primary\">Class Rank</h6>";
                     $extra['search'] .= "<div class=\"form-group\"><div class=\"col-lg-12\"><label class=\"radio-inline\"><INPUT class=\"styled\" type=radio name=class_rank_term value=CUM checked> Cumulative</label></div></div>";
@@ -253,7 +253,7 @@ function Widgets($item, $allow_widget = false) {
             case 'letter_grade':
                 if (count($_REQUEST['letter_grade'])) {
                     $_openSIS['SearchTerms'] .= '<h5 class="help-block">With' . ($_REQUEST['letter_grade_exclude'] == 'Y' ? 'out' : '') . ' Report Card Grade: </h5>';
-                    $letter_grades_RET = DBGet(DBQuery('SELECT ID,TITLE FROM report_card_grades WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\''), array(), array('ID'));
+                    $letter_grades_RET = DBGet(DBQuery('SELECT ID,TITLE FROM report_card_grades WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\''), array(), array('ID'));
                     foreach ($_REQUEST['letter_grade'] as $grade => $Y) {
                         $letter_grades .= ",'$grade'";
                         $_openSIS['SearchTerms'] .= $letter_grades_RET[$grade][1]['TITLE'] . ', ';
@@ -262,7 +262,7 @@ function Widgets($item, $allow_widget = false) {
                     $extra['WHERE'] .= " AND " . ($_REQUEST['letter_grade_exclude'] == 'Y' ? 'NOT ' : '') . "EXISTS (SELECT '' FROM student_report_card_grades sg3 WHERE sg3.STUDENT_ID=ssm.STUDENT_ID AND sg3.SYEAR=ssm.SYEAR AND sg3.REPORT_CARD_GRADE_ID IN (" . substr($letter_grades, 1) . ")" . ($_REQUEST['letter_grade_term'] != '' ? "AND sg3.MARKING_PERIOD_ID='" . $_REQUEST['letter_grade_term'] . "' " : '') . ")";
                     $_openSIS['SearchTerms'] .= '<BR>';
                 }
-                $qrtrs_query = DBGet(DBQuery('SELECT COUNT(*) as QUARTER FROM college_quarters where SCHOOL_ID=\'' . UserCollege() . '\' and SYEAR=\'' . UserSyear() . '\''));
+                $qrtrs_query = DBGet(DBQuery('SELECT COUNT(*) as QUARTER FROM college_quarters where COLLEGE_ID=\'' . UserCollege() . '\' and SYEAR=\'' . UserSyear() . '\''));
                 if ($qrtrs_query[1]['QUARTER'] > 1) {
                     $extra['search'] .= "<h6 class=\"text-primary\">Letter Grade</h6>";
                     $extra['search'] .= "<div class=\"form-group\"><div class=\"col-lg-12\"><label class=\"checkbox-inline\"><INPUT class=\"styled\" type=checkbox name=letter_grade_exclude value=Y> Did not receive</label></div></div>";
@@ -282,7 +282,7 @@ function Widgets($item, $allow_widget = false) {
                     $extra['search'] .= "</div></div>";
                 }
                 if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
-                    $letter_grades_RET = DBGet(DBQuery('SELECT rg.ID,rg.TITLE,rg.GRADE_SCALE_ID FROM report_card_grades rg,report_card_grade_scales rs WHERE rg.SCHOOL_ID=\'' . UserCollege() . '\' AND rg.SYEAR=\'' . UserSyear() . '\' AND rs.ID=rg.GRADE_SCALE_ID' . (User('PROFILE') == 'teacher' ? ' AND rg.GRADE_SCALE_ID=(SELECT GRADE_SCALE_ID FROM course_periods WHERE COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\')' : '') . ' ORDER BY rs.SORT_ORDER,rs.ID,rg.BREAK_OFF IS NOT NULL DESC,rg.BREAK_OFF DESC,rg.SORT_ORDER'), array(), array('GRADE_SCALE_ID'));
+                    $letter_grades_RET = DBGet(DBQuery('SELECT rg.ID,rg.TITLE,rg.GRADE_SCALE_ID FROM report_card_grades rg,report_card_grade_scales rs WHERE rg.COLLEGE_ID=\'' . UserCollege() . '\' AND rg.SYEAR=\'' . UserSyear() . '\' AND rs.ID=rg.GRADE_SCALE_ID' . (User('PROFILE') == 'teacher' ? ' AND rg.GRADE_SCALE_ID=(SELECT GRADE_SCALE_ID FROM course_periods WHERE COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\')' : '') . ' ORDER BY rs.SORT_ORDER,rs.ID,rg.BREAK_OFF IS NOT NULL DESC,rg.BREAK_OFF DESC,rg.SORT_ORDER'), array(), array('GRADE_SCALE_ID'));
                 $extra['search'] .= "<div class=\"form-group\"><div class=\"col-md-12\">";
                 foreach ($letter_grades_RET as $grades) {
                     $i = 0;
@@ -298,7 +298,7 @@ function Widgets($item, $allow_widget = false) {
 
             case 'eligibility':
                 if ($_REQUEST['ineligible'] == 'Y') {
-                    $start_end_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_config WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND PROGRAM=\'eligibility\' AND TITLE IN (\'START_DAY\',\'END_DAY\')'));
+                    $start_end_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_config WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND PROGRAM=\'eligibility\' AND TITLE IN (\'START_DAY\',\'END_DAY\')'));
                     if (count($start_end_RET)) {
                         foreach ($start_end_RET as $value)
                             $$value['TITLE'] = $value['VALUE'];
@@ -330,7 +330,7 @@ function Widgets($item, $allow_widget = false) {
 
                     $start_date = strtoupper(date('d-M-y', time() - ($today - $START_DAY) * 60 * 60 * 24));
                     $end_date = strtoupper(date('d-M-y', time()));
-                    $extra['WHERE'] .= ' AND (SELECT count(*) FROM eligibility e WHERE ssm.STUDENT_ID=e.STUDENT_ID AND e.SYEAR=ssm.SYEAR AND e.SCHOOL_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\' AND e.ELIGIBILITY_CODE=\'FAILING\') > \'0\'';
+                    $extra['WHERE'] .= ' AND (SELECT count(*) FROM eligibility e WHERE ssm.STUDENT_ID=e.STUDENT_ID AND e.SYEAR=ssm.SYEAR AND e.COLLEGE_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\' AND e.ELIGIBILITY_CODE=\'FAILING\') > \'0\'';
                     $_openSIS['SearchTerms'] .= '<font color=gray><b>Extracurricular: </b></font>Ineligible<BR>';
                 }
                 $extra['search'] .= '<div class="form-group">';
@@ -349,7 +349,7 @@ function Widgets($item, $allow_widget = false) {
                     $_openSIS['SearchTerms'] .= '<span class="text-danger">Activity: </span>' . $activity[1]['TITLE'] . '<BR>';
                 }
                 if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
-                    $activities_RET = DBGet(DBQuery('SELECT ID,TITLE FROM eligibility_activities WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\''));
+                    $activities_RET = DBGet(DBQuery('SELECT ID,TITLE FROM eligibility_activities WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\''));
                 $select = "<SELECT name=activity_id class=\"form-control\"><OPTION value=''>Not Specified</OPTION>";
                 if (count($activities_RET)) {
                     foreach ($activities_RET as $activity)

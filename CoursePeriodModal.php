@@ -23,13 +23,13 @@ if ($_POST['button'] == 'Clear & Exit') {
     else {
         $cpblocked_RET = DBGet(DBQuery("SELECT COURSE_PERIOD_DATE,PERIOD_ID,ROOM_ID,DOES_ATTENDANCE FROM course_period_var where course_period_id=$_REQUEST[course_period_id] AND course_period_date='" . $_REQUEST['meet_date'] . "' AND id='" . $_REQUEST['id'] . "'"));
         $cpblocked_RET = $cpblocked_RET[1];
-        $periods_RET = DBGet(DBQuery("SELECT PERIOD_ID,TITLE FROM college_periods WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER"));
+        $periods_RET = DBGet(DBQuery("SELECT PERIOD_ID,TITLE FROM college_periods WHERE COLLEGE_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER"));
         if (count($periods_RET)) {
             foreach ($periods_RET as $period)
                 $periods[$period['PERIOD_ID']] = $period['TITLE'];
         }
 
-        $room_RET = DBGet(DBQuery("SELECT ROOM_ID,TITLE FROM rooms WHERE SCHOOL_ID='" . UserCollege() . "' ORDER BY SORT_ORDER"));
+        $room_RET = DBGet(DBQuery("SELECT ROOM_ID,TITLE FROM rooms WHERE COLLEGE_ID='" . UserCollege() . "' ORDER BY SORT_ORDER"));
         if (count($room_RET)) {
             foreach ($room_RET as $room)
                 $rooms[$room['ROOM_ID']] = $room['TITLE'];

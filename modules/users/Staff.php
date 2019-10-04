@@ -208,10 +208,10 @@ if ($_REQUEST['category_id'] == 2 && !isset($_REQUEST['address_id'])) {
 
 
 if ($_REQUEST['category_id'] == 3 && !isset($_REQUEST['college_info_id'])) {
-    $college_info_id_RET = DBGet(DBQuery("SELECT STAFF_SCHOOL_INFO_ID AS SCHOOL_INFO_ID
+    $college_info_id_RET = DBGet(DBQuery("SELECT STAFF_COLLEGE_INFO_ID AS COLLEGE_INFO_ID
         FROM staff_college_info
          WHERE STAFF_ID='" . UserStaffID() . "'"));
-    $college_info_id = $college_info_id_RET[1]['SCHOOL_INFO_ID'];
+    $college_info_id = $college_info_id_RET[1]['COLLEGE_INFO_ID'];
     if ($college_info_id && $college_info_id > 0)
         $_REQUEST['college_info_id'] = $college_info_id;
     else
@@ -230,14 +230,14 @@ if ($_REQUEST['category_id'] == 4 && !isset($_REQUEST['certification_id'])) {
 }
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
 
-if (count($_REQUEST['values']['SCHOOLS'])>0) {
-        $college_array = $_REQUEST['values']['SCHOOLS'];
+if (count($_REQUEST['values']['COLLEGES'])>0) {
+        $college_array = $_REQUEST['values']['COLLEGES'];
         $cur_college = array_keys($college_array);
         if ($_REQUEST['staff_id'] == 'new')
-            $_REQUEST['staff']['CURRENT_SCHOOL_ID'] = $cur_college[0];
+            $_REQUEST['staff']['CURRENT_COLLEGE_ID'] = $cur_college[0];
         else {
             if ($cur_college[0])
-                $_REQUEST['staff_college']['CURRENT_SCHOOL_ID'] = $cur_college[0];
+                $_REQUEST['staff_college']['CURRENT_COLLEGE_ID'] = $cur_college[0];
         }
     }
 
@@ -313,7 +313,7 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
                 foreach ($_REQUEST['staff'] as $column_name => $value) {
                     if ($column_name == 'BIRTHDATE' && $value!='')
                         $value = date("Y-m-d", strtotime($value));
-                    if ($column_name == 'SCHOOLS')
+                    if ($column_name == 'COLLEGES')
                         continue;
                     if (strpos($column_name, "CUSTOM") == 0) {
                         $go = true;
@@ -484,7 +484,7 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
             $sql = "INSERT INTO staff ";
 
 
-            $fields = 'CURRENT_SCHOOL_ID,';
+            $fields = 'CURRENT_COLLEGE_ID,';
             $values = UserCollege() . ',';
 
             if (count($_REQUEST['month_staff'])) {
@@ -508,7 +508,7 @@ if (count($_REQUEST['values']['SCHOOLS'])>0) {
                     $value = date("Y-m-d", strtotime($value));
                    
                 }
-                if ($column == 'SCHOOLS')
+                if ($column == 'COLLEGES')
                     continue;
                 if (strpos($column, "CUSTOM") == 0) {
                     $custom = DBGet(DBQuery("SHOW COLUMNS FROM staff WHERE FIELD='" . $column . "'"));

@@ -94,7 +94,7 @@ if(optional_param('modfunc','',PARAM_SPCL)=='update' && $_POST)
 		{
 			
 			 $_SESSION['UserCollege'] = optional_param('college','',PARAM_SPCL);
- 			DBQuery("UPDATE staff SET CURRENT_SCHOOL_ID='".UserCollege()."' WHERE STAFF_ID='".User('STAFF_ID')."'");
+ 			DBQuery("UPDATE staff SET CURRENT_COLLEGE_ID='".UserCollege()."' WHERE STAFF_ID='".User('STAFF_ID')."'");
   		
                                         unset($_SESSION['UserSyear']);
 		unset($_SESSION['UserMP']);
@@ -102,17 +102,17 @@ if(optional_param('modfunc','',PARAM_SPCL)=='update' && $_POST)
 		unset($_SESSION['UserCourse']);
 		unset($_SESSION['UserCoursePeriod']);
 		
-                                        $college_years_RET=DBGet(DBQuery("SELECT MAX(sy.SYEAR) AS SYEAR FROM college_years sy,staff s INNER JOIN staff_college_relationship ssr USING(staff_id) WHERE ssr.college_id=sy.college_id AND sy.syear=ssr.syear AND sy.SCHOOL_ID=".UserCollege()." AND  STAFF_ID='$_SESSION[STAFF_ID]'"));
+                                        $college_years_RET=DBGet(DBQuery("SELECT MAX(sy.SYEAR) AS SYEAR FROM college_years sy,staff s INNER JOIN staff_college_relationship ssr USING(staff_id) WHERE ssr.college_id=sy.college_id AND sy.syear=ssr.syear AND sy.COLLEGE_ID=".UserCollege()." AND  STAFF_ID='$_SESSION[STAFF_ID]'"));
                                         $_SESSION['UserSyear']=$college_years_RET[1]['SYEAR'];
 
-                                        $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_quarters WHERE SCHOOL_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY SORT_ORDER"));
+                                        $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_quarters WHERE COLLEGE_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY SORT_ORDER"));
                                         if(!isset($_SESSION['UserMP']))
                                         {
                                                 $_SESSION['UserMP'] = GetCurrentMP('QTR',DBDate());
 		}
                                         if(!$RET)
                                         {
-                                            $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_semesters WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER"));
+                                            $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_semesters WHERE COLLEGE_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER"));
                                             if (!isset($_SESSION['UserMP'])) 
                                             {
                                                 $_SESSION['UserMP'] = GetCurrentMP('SEM', DBDate());
@@ -121,7 +121,7 @@ if(optional_param('modfunc','',PARAM_SPCL)=='update' && $_POST)
 
                                         if(!$RET)
                                         {
-                                            $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_years WHERE SCHOOL_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY SORT_ORDER"));
+                                            $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_years WHERE COLLEGE_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY SORT_ORDER"));
                                             if  (!isset($_SESSION['UserMP'])) 
                                             {
                                                 $_SESSION['UserMP'] = GetCurrentMP('FY', DBDate());
@@ -139,14 +139,14 @@ if(optional_param('modfunc','',PARAM_SPCL)=='update' && $_POST)
 			unset($_SESSION['UserSubject']);
 			unset($_SESSION['UserCourse']);
 			unset($_SESSION['UserCoursePeriod']);
-                                        $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_quarters WHERE SCHOOL_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY SORT_ORDER"));
+                                        $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_quarters WHERE COLLEGE_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY SORT_ORDER"));
                                         if(!isset($_SESSION['UserMP']))
                                         {
                                                 $_SESSION['UserMP'] = GetCurrentMP('QTR',DBDate());
                                         }	
                                         if(!$RET)
                                         {
-                                            $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_semesters WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER"));
+                                            $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_semesters WHERE COLLEGE_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER"));
                                             if (!isset($_SESSION['UserMP'])) {
                                                 $_SESSION['UserMP'] = GetCurrentMP('SEM', DBDate());
                                             }
@@ -154,7 +154,7 @@ if(optional_param('modfunc','',PARAM_SPCL)=='update' && $_POST)
 			
                                         if(!$RET)
                                         {
-                                            $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_years WHERE SCHOOL_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY SORT_ORDER"));
+                                            $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_years WHERE COLLEGE_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY SORT_ORDER"));
                                             if  (!isset($_SESSION['UserMP'])) {
                                                 $_SESSION['UserMP'] = GetCurrentMP('FY', DBDate());
 		}
@@ -204,21 +204,21 @@ if(optional_param('modfunc','',PARAM_SPCL)=='update' && $_POST)
                        if ($_POST['college']) 
                         {
                             $_SESSION['UserCollege'] = clean_param($_REQUEST['college'], PARAM_NOTAGS);
-                            DBQuery("UPDATE staff SET CURRENT_SCHOOL_ID='" . UserCollege() . "' WHERE STAFF_ID='" . $_SESSION['STAFF_ID']. "'");
+                            DBQuery("UPDATE staff SET CURRENT_COLLEGE_ID='" . UserCollege() . "' WHERE STAFF_ID='" . $_SESSION['STAFF_ID']. "'");
                             unset($_SESSION['UserSyear']);
                             unset($_SESSION['UserMP']);
  
-                            $college_years_RET=DBGet(DBQuery("SELECT MAX(sy.SYEAR) AS SYEAR FROM college_years sy,staff_college_relationship ssr WHERE ssr.SYEAR=sy.SYEAR AND sy.SCHOOL_ID=".UserCollege()." AND ssr.STAFF_ID='$_SESSION[STAFF_ID]'"));
+                            $college_years_RET=DBGet(DBQuery("SELECT MAX(sy.SYEAR) AS SYEAR FROM college_years sy,staff_college_relationship ssr WHERE ssr.SYEAR=sy.SYEAR AND sy.COLLEGE_ID=".UserCollege()." AND ssr.STAFF_ID='$_SESSION[STAFF_ID]'"));
                             $_SESSION['UserSyear']=$college_years_RET[1]['SYEAR'];
  
-                            $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_quarters WHERE SCHOOL_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY SORT_ORDER"));
+                            $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_quarters WHERE COLLEGE_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY SORT_ORDER"));
                             if(!isset($_SESSION['UserMP']))
                             {
                                     $_SESSION['UserMP'] = GetCurrentMP('QTR',DBDate());
                             }	
                             if(!$RET)
                             {
-                                $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_semesters WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER"));
+                                $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_semesters WHERE COLLEGE_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER"));
                                 if (!isset($_SESSION['UserMP'])) {
                                     $_SESSION['UserMP'] = GetCurrentMP('SEM', DBDate());
                                 }
@@ -226,7 +226,7 @@ if(optional_param('modfunc','',PARAM_SPCL)=='update' && $_POST)
  
                             if(!$RET)
                             {
-                                $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_years WHERE SCHOOL_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY SORT_ORDER"));
+                                $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_years WHERE COLLEGE_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY SORT_ORDER"));
                                 if  (!isset($_SESSION['UserMP'])) {
                                     $_SESSION['UserMP'] = GetCurrentMP('FY', DBDate());
                                 }
@@ -239,14 +239,14 @@ if(optional_param('modfunc','',PARAM_SPCL)=='update' && $_POST)
                             unset($_SESSION['_REQUEST_vars']['student_id']);
                             $_SESSION['UserSyear'] = optional_param('syear', '', PARAM_SPCL);
                             unset($_SESSION['UserMP']);
-                            $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_quarters WHERE SCHOOL_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY SORT_ORDER"));
+                            $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_quarters WHERE COLLEGE_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY SORT_ORDER"));
                             if(!isset($_SESSION['UserMP']))
                             {
                                     $_SESSION['UserMP'] = GetCurrentMP('QTR',DBDate());
                             }	
                             if(!$RET)
                             {
-                                $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_semesters WHERE SCHOOL_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY SORT_ORDER"));
+                                $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_semesters WHERE COLLEGE_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY SORT_ORDER"));
                                 if(!isset($_SESSION['UserMP']))
                                 {
                                         $_SESSION['UserMP'] = GetCurrentMP('SEM',DBDate());
@@ -255,7 +255,7 @@ if(optional_param('modfunc','',PARAM_SPCL)=='update' && $_POST)
 
                             if(!$RET)
                             {
-                                $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_years WHERE SCHOOL_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY SORT_ORDER"));
+                                $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_years WHERE COLLEGE_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY SORT_ORDER"));
                                 if(!isset($_SESSION['UserMP']))
                                 {
                                         $_SESSION['UserMP'] = GetCurrentMP('FY',DBDate());
@@ -277,14 +277,14 @@ if(optional_param('modfunc','',PARAM_SPCL)=='update' && $_POST)
         {
             $_SESSION['UserSyear'] = optional_param('syear', '', PARAM_SPCL);
             unset ($_SESSION['UserMP']);
-            $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_quarters WHERE SCHOOL_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY SORT_ORDER"));
+            $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_quarters WHERE COLLEGE_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY SORT_ORDER"));
             if(!isset($_SESSION['UserMP']))
             {
                     $_SESSION['UserMP'] = GetCurrentMP('QTR',DBDate());
          }
             if(!$RET)
             {
-                $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_semesters WHERE SCHOOL_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY SORT_ORDER"));
+                $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_semesters WHERE COLLEGE_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY SORT_ORDER"));
                 if(!isset($_SESSION['UserMP']))
                 {
                         $_SESSION['UserMP'] = GetCurrentMP('SEM',DBDate());
@@ -293,7 +293,7 @@ if(optional_param('modfunc','',PARAM_SPCL)=='update' && $_POST)
 
             if(!$RET)
             {
-                $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_years WHERE SCHOOL_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY SORT_ORDER"));
+                $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_years WHERE COLLEGE_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY SORT_ORDER"));
                 if(!isset($_SESSION['UserMP']))
                 {
                         $_SESSION['UserMP'] = GetCurrentMP('FY',DBDate());
@@ -325,10 +325,10 @@ if(!$_SESSION['student_id'] && User('PROFILE')=='student')
 
 if(!$_SESSION['UserCollege'])
 {
-	if(User('PROFILE')=='admin' && (!User('SCHOOLS') || strpos(User('SCHOOLS'),','.User('CURRENT_SCHOOL_ID').',')!==false))
-		$_SESSION['UserCollege'] = User('CURRENT_SCHOOL_ID');
+	if(User('PROFILE')=='admin' && (!User('COLLEGES') || strpos(User('COLLEGES'),','.User('CURRENT_COLLEGE_ID').',')!==false))
+		$_SESSION['UserCollege'] = User('CURRENT_COLLEGE_ID');
 	elseif(User('PROFILE')=='student')
-		$_SESSION['UserCollege'] = trim(User('SCHOOLS'),',');
+		$_SESSION['UserCollege'] = trim(User('COLLEGES'),',');
 	elseif(User('PROFILE')=='teacher')
 	{
 		
@@ -341,9 +341,9 @@ if(!$_SESSION['UserCollege'])
               $mp = GetAllMP('FY',UserMP());
             
             
-                $QI = DBQuery("SELECT cp.SCHOOL_ID FROM course_periods cp, college_periods sp,courses c WHERE c.COURSE_ID=cp.COURSE_ID AND cp.PERIOD_ID=sp.PERIOD_ID AND cp.SYEAR='".UserSyear()."' AND cp.TEACHER_ID='".User('STAFF_ID')."''".(UserMP()?' AND cp.MARKING_PERIOD_ID IN ('.$mp.')':'')."' ORDER BY sp.SORT_ORDER LIMIT 1");
+                $QI = DBQuery("SELECT cp.COLLEGE_ID FROM course_periods cp, college_periods sp,courses c WHERE c.COURSE_ID=cp.COURSE_ID AND cp.PERIOD_ID=sp.PERIOD_ID AND cp.SYEAR='".UserSyear()."' AND cp.TEACHER_ID='".User('STAFF_ID')."''".(UserMP()?' AND cp.MARKING_PERIOD_ID IN ('.$mp.')':'')."' ORDER BY sp.SORT_ORDER LIMIT 1");
 		$RET = DBGet($QI);
-		$_SESSION['UserCollege'] = $RET[1]['SCHOOL_ID'];
+		$_SESSION['UserCollege'] = $RET[1]['COLLEGE_ID'];
 	}
 }
 
@@ -424,7 +424,7 @@ echo "<TD class=BoxContents style='border: inset #C9C9C9 2px; background-image:u
 	<BR>";
 if(User('PROFILE')=='admin')
 {
-	$colleges = substr(str_replace(",","','",User('SCHOOLS')),2,-2);
+	$colleges = substr(str_replace(",","','",User('COLLEGES')),2,-2);
 	$QI = DBQuery("SELECT ID,TITLE FROM colleges".($colleges?" WHERE ID IN ($colleges)":''));
 	$RET = DBGet($QI);
 
@@ -455,7 +455,7 @@ echo '</SELECT><BR>';
 
 if(User('PROFILE')=='parent')
 {
-	$RET = DBGet(DBQuery("SELECT sju.STUDENT_ID, CONCAT(s.LAST_NAME,', ',s.FIRST_NAME) AS FULL_NAME,se.SCHOOL_ID FROM students s,students_join_people sju, student_enrollment se WHERE s.STUDENT_ID=sju.STUDENT_ID AND sju.PERSON_ID='".User('STAFF_ID')."' AND se.SYEAR=".UserSyear()." AND se.STUDENT_ID=sju.STUDENT_ID AND (('".DBDate()."' BETWEEN se.START_DATE AND se.END_DATE OR se.END_DATE IS NULL) AND '".DBDate()."'>=se.START_DATE)"));
+	$RET = DBGet(DBQuery("SELECT sju.STUDENT_ID, CONCAT(s.LAST_NAME,', ',s.FIRST_NAME) AS FULL_NAME,se.COLLEGE_ID FROM students s,students_join_people sju, student_enrollment se WHERE s.STUDENT_ID=sju.STUDENT_ID AND sju.PERSON_ID='".User('STAFF_ID')."' AND se.SYEAR=".UserSyear()." AND se.STUDENT_ID=sju.STUDENT_ID AND (('".DBDate()."' BETWEEN se.START_DATE AND se.END_DATE OR se.END_DATE IS NULL) AND '".DBDate()."'>=se.START_DATE)"));
 
 	if(!UserStudentID())
 		$_SESSION['student_id'] = $RET[1]['STUDENT_ID'];
@@ -467,7 +467,7 @@ if(User('PROFILE')=='parent')
 		{
 			echo "<OPTION value=$student[STUDENT_ID]".((UserStudentID()==$student['STUDENT_ID'])?' SELECTED':'').">".$student['FULL_NAME']."</OPTION>";
 			if(UserStudentID()==$student['STUDENT_ID'])
-				$_SESSION['UserCollege'] = $student['SCHOOL_ID'];
+				$_SESSION['UserCollege'] = $student['COLLEGE_ID'];
 		}
 	}
 	echo "</SELECT><BR>";
@@ -478,7 +478,7 @@ if(User('PROFILE')=='parent')
 
 
 
-$RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_quarters WHERE SCHOOL_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY SORT_ORDER"));
+$RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_quarters WHERE COLLEGE_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY SORT_ORDER"));
 echo "<SELECT name=mp onChange='document.forms[0].submit();'>";
 if(count($RET))
 {

@@ -35,7 +35,7 @@ $urg_sch_id = $row_urg_sch_id[1];
 if (UserCollege() != '')
     $college_id = UserCollege();
 else
-    $college_id = $urg_sch_id['SCHOOL_ID'];
+    $college_id = $urg_sch_id['COLLEGE_ID'];
 
 $i = 0;
 $gid = $_REQUEST[goal_id];
@@ -68,7 +68,7 @@ unset($_SESSION['_REQUEST_vars']['course_period_id']);
 
 // if only one subject, select it automatically -- works for Course Setup and Choose a Course
 if ($_REQUEST['modfunc'] != 'delete' && !$_REQUEST['goal_id']) {
-    $subjects_RET = DBGet(DBQuery('SELECT GOAL_ID,GOAL_TITLE FROM student_goal WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' AND STUDENT_ID=\'' . UserStudentID() . '\''));
+    $subjects_RET = DBGet(DBQuery('SELECT GOAL_ID,GOAL_TITLE FROM student_goal WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' AND STUDENT_ID=\'' . UserStudentID() . '\''));
 
     if (count($subjects_RET) == 1)
         $_REQUEST['goal_id'] = $subjects_RET[1]['GOAL_ID'];
@@ -204,7 +204,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
 
                     $id = DBGet(DBQuery('SHOW TABLE STATUS LIKE \'student_goal\''));
                     $id[1]['ID'] = $id[1]['AUTO_INCREMENT'];
-                    $fields = 'STUDENT_ID,SCHOOL_ID,SYEAR,START_DATE,END_DATE,';
+                    $fields = 'STUDENT_ID,COLLEGE_ID,SYEAR,START_DATE,END_DATE,';
                     $values = '\'' . UserStudentID() . '\',\'' . UserCollege() . '\',\'' . UserSyear() . '\',\'' . $start_date . '\',\'' . $end_date . '\',';
                     $_REQUEST['goal_id'] = $id[1]['ID'];
                 } elseif ($table_name == 'student_goal_progress') {
@@ -289,7 +289,7 @@ if ((!clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) || clean_param($_REQUEST['
     if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) != 'choose_course')
         DrawBC("Students > " . ProgramTitle());
 
-    $sql = 'SELECT GOAL_ID,GOAL_TITLE FROM student_goal WHERE SCHOOL_ID=\'' . $college_id . '\' AND SYEAR=\'' . UserSyear() . '\' AND STUDENT_ID=\'' . UserStudentID() . '\' ORDER BY START_DATE DESC';
+    $sql = 'SELECT GOAL_ID,GOAL_TITLE FROM student_goal WHERE COLLEGE_ID=\'' . $college_id . '\' AND SYEAR=\'' . UserSyear() . '\' AND STUDENT_ID=\'' . UserStudentID() . '\' ORDER BY START_DATE DESC';
 
     $QI = DBQuery($sql);
     $subjects_RET = DBGet($QI);

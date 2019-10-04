@@ -27,7 +27,7 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-$start_end_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_config WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND PROGRAM=\'eligibility\' AND TITLE IN (\'' . 'START_DAY' . '\',\'' . 'END_DAY' . '\')'));
+$start_end_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_config WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND PROGRAM=\'eligibility\' AND TITLE IN (\'' . 'START_DAY' . '\',\'' . 'END_DAY' . '\')'));
 if (count($start_end_RET)) {
     foreach ($start_end_RET as $value)
         $$value['TITLE'] = $value['VALUE'];
@@ -71,8 +71,8 @@ if ($_REQUEST['search_modfunc'] || User('PROFILE') == 'parent' || User('PROFILE'
     $tmp_PHP_SELF = PreparePHP_SELF();
     echo "<FORM name=stud_list id=stud_list action=$tmp_PHP_SELF method=POST>";
 
-    $begin_year = DBGet(DBQuery('SELECT min(unix_timestamp(SCHOOL_DATE)) as SCHOOL_DATE FROM attendance_calendar WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\''));
-    $begin_year = $begin_year[1]['SCHOOL_DATE'];
+    $begin_year = DBGet(DBQuery('SELECT min(unix_timestamp(COLLEGE_DATE)) as COLLEGE_DATE FROM attendance_calendar WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\''));
+    $begin_year = $begin_year[1]['COLLEGE_DATE'];
 
     $date_select = "<OPTION value=$start>" . date('M d, Y', $start) . ' - ' . date('M d, Y', $end) . '</OPTION>';
 
@@ -94,7 +94,7 @@ if ($_REQUEST['search_modfunc'] || User('PROFILE') == 'parent' || User('PROFILE'
 }
 $extra['SELECT'] = ',e.ELIGIBILITY_CODE,c.TITLE as COURSE_TITLE';
 $extra['FROM'] = ',eligibility e,courses c,course_periods cp';
-$extra['WHERE'] = ' AND e.STUDENT_ID=ssm.STUDENT_ID AND e.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cp.COURSE_ID=c.COURSE_ID AND e.SCHOOL_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\'';
+$extra['WHERE'] = ' AND e.STUDENT_ID=ssm.STUDENT_ID AND e.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cp.COURSE_ID=c.COURSE_ID AND e.COLLEGE_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\'';
 
 $extra['functions'] = array('ELIGIBILITY_CODE' => '_makeLower');
 $extra['group'] = array('STUDENT_ID');
@@ -144,7 +144,7 @@ echo '<div class="modal-body">';
 echo '<div id="conf_div" class="text-center"></div>';
 echo '<div class="row" id="resp_table">';
 echo '<div class="col-md-4">';
-$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE COLLEGE_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 

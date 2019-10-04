@@ -33,28 +33,28 @@
  */
 //print_r($_REQUEST['values']);
 if ($_REQUEST['teacher_view'] != 'y') {
-    $sql_college_admin = 'SELECT ssr.SCHOOL_ID FROM colleges s,staff st INNER JOIN staff_college_relationship ssr USING(staff_id) WHERE s.id=ssr.college_id AND ssr.syear=' . UserSyear() . ' AND st.staff_id=' . User('STAFF_ID');
+    $sql_college_admin = 'SELECT ssr.COLLEGE_ID FROM colleges s,staff st INNER JOIN staff_college_relationship ssr USING(staff_id) WHERE s.id=ssr.college_id AND ssr.syear=' . UserSyear() . ' AND st.staff_id=' . User('STAFF_ID');
     $college_admin = DBGet(DBQuery($sql_college_admin));
     foreach ($college_admin as $index => $college) {
-        if ($_REQUEST['day_values']['START_DATE'][$college['SCHOOL_ID']]) {
+        if ($_REQUEST['day_values']['START_DATE'][$college['COLLEGE_ID']]) {
 
-            //$start_date = $_REQUEST['day_values']['START_DATE'][$college['SCHOOL_ID']] . "-" . $_REQUEST['month_values']['START_DATE'][$college['SCHOOL_ID']] . "-" . $_REQUEST['year_values']['START_DATE'][$college['SCHOOL_ID']];
-            //$check_start_date = $_REQUEST['year_values']['START_DATE'][$college['SCHOOL_ID']] . '-' . MonthFormatter(strtoupper($_REQUEST['month_values']['START_DATE'][$college['SCHOOL_ID']]), 1) . '-' . $_REQUEST['day_values']['START_DATE'][$college['SCHOOL_ID']];
-            $start_date = $_REQUEST['year_values']['START_DATE'][$college['SCHOOL_ID']] . "-" . $_REQUEST['month_values']['START_DATE'][$college['SCHOOL_ID']] . "-" . $_REQUEST['day_values']['START_DATE'][$college['SCHOOL_ID']];
-            $check_start_date = $_REQUEST['year_values']['START_DATE'][$college['SCHOOL_ID']] . '-' . $_REQUEST['month_values']['START_DATE'][$college['SCHOOL_ID']] . '-' . $_REQUEST['day_values']['START_DATE'][$college['SCHOOL_ID']];
+            //$start_date = $_REQUEST['day_values']['START_DATE'][$college['COLLEGE_ID']] . "-" . $_REQUEST['month_values']['START_DATE'][$college['COLLEGE_ID']] . "-" . $_REQUEST['year_values']['START_DATE'][$college['COLLEGE_ID']];
+            //$check_start_date = $_REQUEST['year_values']['START_DATE'][$college['COLLEGE_ID']] . '-' . MonthFormatter(strtoupper($_REQUEST['month_values']['START_DATE'][$college['COLLEGE_ID']]), 1) . '-' . $_REQUEST['day_values']['START_DATE'][$college['COLLEGE_ID']];
+            $start_date = $_REQUEST['year_values']['START_DATE'][$college['COLLEGE_ID']] . "-" . $_REQUEST['month_values']['START_DATE'][$college['COLLEGE_ID']] . "-" . $_REQUEST['day_values']['START_DATE'][$college['COLLEGE_ID']];
+            $check_start_date = $_REQUEST['year_values']['START_DATE'][$college['COLLEGE_ID']] . '-' . $_REQUEST['month_values']['START_DATE'][$college['COLLEGE_ID']] . '-' . $_REQUEST['day_values']['START_DATE'][$college['COLLEGE_ID']];
         } else {
             $start_date = '';
             $check_start_date = '';
         }
-        if ($_REQUEST['day_values']['END_DATE'][$college['SCHOOL_ID']]) {
+        if ($_REQUEST['day_values']['END_DATE'][$college['COLLEGE_ID']]) {
             $end_month = array("01" => "JAN", "02" => "FEB", "03" => "MAR", "04" => "APR", "05" => "MAY", "06" => "JUN", "07" => "JUL", "08" => "AUG", "09" => "SEP", "10" => "OCT", "11" => "NOV", "12" => "DEC");
             foreach ($end_month as $ei => $ed) {
-                if ($ed == $_REQUEST['month_values']['END_DATE'][$college['SCHOOL_ID']])
-                    $_REQUEST['month_values']['END_DATE'][$college['SCHOOL_ID']] = $ei;
+                if ($ed == $_REQUEST['month_values']['END_DATE'][$college['COLLEGE_ID']])
+                    $_REQUEST['month_values']['END_DATE'][$college['COLLEGE_ID']] = $ei;
             }
 
-            //$end_date = $_REQUEST['day_values']['END_DATE'][$college['SCHOOL_ID']] . "-" . $_REQUEST['month_values']['END_DATE'][$college['SCHOOL_ID']] . "-" . $_REQUEST['year_values']['END_DATE'][$college['SCHOOL_ID']];
-            $end_date = $_REQUEST['year_values']['END_DATE'][$college['SCHOOL_ID']] . "-" . $_REQUEST['month_values']['END_DATE'][$college['SCHOOL_ID']] . "-" . $_REQUEST['day_values']['END_DATE'][$college['SCHOOL_ID']];
+            //$end_date = $_REQUEST['day_values']['END_DATE'][$college['COLLEGE_ID']] . "-" . $_REQUEST['month_values']['END_DATE'][$college['COLLEGE_ID']] . "-" . $_REQUEST['year_values']['END_DATE'][$college['COLLEGE_ID']];
+            $end_date = $_REQUEST['year_values']['END_DATE'][$college['COLLEGE_ID']] . "-" . $_REQUEST['month_values']['END_DATE'][$college['COLLEGE_ID']] . "-" . $_REQUEST['day_values']['END_DATE'][$college['COLLEGE_ID']];
         }
         else {
             $end_date = '';
@@ -62,15 +62,15 @@ if ($_REQUEST['teacher_view'] != 'y') {
         if (($start_date != '' && VerifyDate(date('d-M-Y',strtotime($start_date)))) || ($end_date != '' && VerifyDate(date('d-M-Y',strtotime($end_date)))) || ($start_date == '' && $end_date == '')) {
 
  
-            if (in_array($college['SCHOOL_ID'], $cur_college)) {
-                $colleges_each_staff = DBGet(DBQuery('SELECT SCHOOL_ID,START_DATE,END_DATE FROM staff_college_relationship WHERE staff_id=\'' . $_REQUEST[staff_id] . '\' AND syear=\'' . UserSyear() . '\' AND SCHOOL_ID=' . $college['SCHOOL_ID']));
+            if (in_array($college['COLLEGE_ID'], $cur_college)) {
+                $colleges_each_staff = DBGet(DBQuery('SELECT COLLEGE_ID,START_DATE,END_DATE FROM staff_college_relationship WHERE staff_id=\'' . $_REQUEST[staff_id] . '\' AND syear=\'' . UserSyear() . '\' AND COLLEGE_ID=' . $college['COLLEGE_ID']));
                 if ($colleges_each_staff[1]['START_DATE'] == '')
-                    DBQuery('UPDATE staff_college_relationship SET START_DATE=\'0000-00-00\' WHERE staff_id=\'' . $_REQUEST[staff_id] . '\' AND syear=\'' . UserSyear() . '\' AND SCHOOL_ID=' . $college['SCHOOL_ID']);
+                    DBQuery('UPDATE staff_college_relationship SET START_DATE=\'0000-00-00\' WHERE staff_id=\'' . $_REQUEST[staff_id] . '\' AND syear=\'' . UserSyear() . '\' AND COLLEGE_ID=' . $college['COLLEGE_ID']);
 
-                $colleges_each_staff = DBGet(DBQuery('SELECT SCHOOL_ID,START_DATE,END_DATE FROM staff_college_relationship WHERE staff_id=\'' . $_REQUEST[staff_id] . '\' AND syear=\'' . UserSyear() . '\' AND SCHOOL_ID=' . $college['SCHOOL_ID']));
+                $colleges_each_staff = DBGet(DBQuery('SELECT COLLEGE_ID,START_DATE,END_DATE FROM staff_college_relationship WHERE staff_id=\'' . $_REQUEST[staff_id] . '\' AND syear=\'' . UserSyear() . '\' AND COLLEGE_ID=' . $college['COLLEGE_ID']));
                 $start = $colleges_each_staff[1]['START_DATE'];
 
-                $colleges_start_date = DBGet(DBQuery('SELECT START_DATE FROM college_years WHERE SCHOOL_ID=' . $college['SCHOOL_ID'] . ' AND SYEAR=' . UserSyear()));
+                $colleges_start_date = DBGet(DBQuery('SELECT START_DATE FROM college_years WHERE COLLEGE_ID=' . $college['COLLEGE_ID'] . ' AND SYEAR=' . UserSyear()));
                 $colleges_start_date = $colleges_start_date[1]['START_DATE'];
 
                 // $colleges_each_staff[1]['START_DATE'] = date('d-m-Y', strtotime($colleges_each_staff[1]['START_DATE']));
@@ -85,10 +85,10 @@ if ($_REQUEST['teacher_view'] != 'y') {
                 if (!empty($colleges_each_staff) && $start != '') {
                     $update = 'false';
                     unset($sql_up);
-                    foreach ($_REQUEST['values']['SCHOOLS'] as $index => $value) {
+                    foreach ($_REQUEST['values']['COLLEGES'] as $index => $value) {
                         if($value!='Y' && $value!='N' && $value!='')
                         $value = 'Y';
-                        if ($index == $college['SCHOOL_ID'] && $value == 'Y') {
+                        if ($index == $college['COLLEGE_ID'] && $value == 'Y') {
                             $update = 'go';
                         }
                     }
@@ -97,37 +97,37 @@ if ($_REQUEST['teacher_view'] != 'y') {
 
                         if ($start_date != '' && $end_date != '' && $end_date != NULL) {
                             if (strtotime($start_date) <= strtotime($end_date))
-                                $sql_up = 'UPDATE staff_college_relationship SET START_DATE=\'' . date('Y-m-d', strtotime($start_date)) . '\', END_DATE=\'' . date('Y-m-d', strtotime($end_date)) . '\' where staff_id=\'' . $_REQUEST[staff_id] . '\' AND syear=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . $college['SCHOOL_ID'] . '\'';
+                                $sql_up = 'UPDATE staff_college_relationship SET START_DATE=\'' . date('Y-m-d', strtotime($start_date)) . '\', END_DATE=\'' . date('Y-m-d', strtotime($end_date)) . '\' where staff_id=\'' . $_REQUEST[staff_id] . '\' AND syear=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . $college['COLLEGE_ID'] . '\'';
                             else
                                 $error = 'end_date';
                         }
                         elseif ($start_date == '' && $end_date != '') {
-                            if (isset($_REQUEST['day_values']['START_DATE'][$college['SCHOOL_ID']]) && $_REQUEST['day_values']['START_DATE'][$college['SCHOOL_ID']] == '') {
+                            if (isset($_REQUEST['day_values']['START_DATE'][$college['COLLEGE_ID']]) && $_REQUEST['day_values']['START_DATE'][$college['COLLEGE_ID']] == '') {
                                 $error1 = 'start_date';
                             } else {
                                 if (strtotime($colleges_each_staff[1]['START_DATE']) <= strtotime($end_date))
-                                    $sql_up = 'UPDATE staff_college_relationship SET END_DATE=\'' . date('Y-m-d', strtotime($end_date)) . '\' where staff_id=\'' . $_REQUEST[staff_id] . '\' AND syear=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . $college['SCHOOL_ID'] . '\'';
+                                    $sql_up = 'UPDATE staff_college_relationship SET END_DATE=\'' . date('Y-m-d', strtotime($end_date)) . '\' where staff_id=\'' . $_REQUEST[staff_id] . '\' AND syear=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . $college['COLLEGE_ID'] . '\'';
                                 else
                                     $error = 'end_date';
                             }
                         }
                         elseif ($start_date != '' && ($end_date == '' || $end_date == NULL) && strtotime($start) != strtotime($start_date)) {
                             if (strtotime($colleges_each_staff[1]['END_DATE']) >= strtotime($start_date) || $colleges_each_staff[1]['END_DATE'] == '0000-00-00' || $colleges_each_staff[1]['END_DATE'] == NULl) {
-                                $cp_check = DBGet(DBQuery('SELECT * FROM course_periods WHERE SYEAR=' . UserSyear() . ' AND BEGIN_DATE <\'' . date('Y-m-d', strtotime($start_date)) . '\' AND (TEACHER_ID=' . $_REQUEST[staff_id] . ' OR SECONDARY_TEACHER_ID=' . $_REQUEST[staff_id] . ') AND SCHOOL_ID=\'' . $college['SCHOOL_ID'] . '\' '));
+                                $cp_check = DBGet(DBQuery('SELECT * FROM course_periods WHERE SYEAR=' . UserSyear() . ' AND BEGIN_DATE <\'' . date('Y-m-d', strtotime($start_date)) . '\' AND (TEACHER_ID=' . $_REQUEST[staff_id] . ' OR SECONDARY_TEACHER_ID=' . $_REQUEST[staff_id] . ') AND COLLEGE_ID=\'' . $college['COLLEGE_ID'] . '\' '));
 
                                 if ($cp_check[1]['COURSE_PERIOD_ID'] == '') {
-                                    $sql_up = 'UPDATE staff_college_relationship SET START_DATE=\'' . date('Y-m-d', strtotime($start_date)) . '\' where staff_id=\'' . $_REQUEST[staff_id] . '\' AND syear=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . $college['SCHOOL_ID'] . '\'';
+                                    $sql_up = 'UPDATE staff_college_relationship SET START_DATE=\'' . date('Y-m-d', strtotime($start_date)) . '\' where staff_id=\'' . $_REQUEST[staff_id] . '\' AND syear=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . $college['COLLEGE_ID'] . '\'';
                                 } else {
                                     $error = 'cp_association';
                                 }
                             } else
                                 $error = 'end_date';
                         }
-                        elseif (isset($_REQUEST['day_values']['START_DATE'][$college['SCHOOL_ID']]) && isset($_REQUEST['day_values']['END_DATE'][$college['SCHOOL_ID']]) && $_REQUEST['day_values']['START_DATE'][$college['SCHOOL_ID']] == '' && $_REQUEST['day_values']['END_DATE'][$college['SCHOOL_ID']] == '') {
+                        elseif (isset($_REQUEST['day_values']['START_DATE'][$college['COLLEGE_ID']]) && isset($_REQUEST['day_values']['END_DATE'][$college['COLLEGE_ID']]) && $_REQUEST['day_values']['START_DATE'][$college['COLLEGE_ID']] == '' && $_REQUEST['day_values']['END_DATE'][$college['COLLEGE_ID']] == '') {
 
-                            $sql_up = 'UPDATE staff_college_relationship SET START_DATE=\'0000-00-00\', END_DATE=\'0000-00-00\' where staff_id=\'' . $_REQUEST[staff_id] . '\' AND syear=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . $college['SCHOOL_ID'] . '\'';
-                        } elseif (isset($_REQUEST['day_values']['END_DATE'][$college['SCHOOL_ID']]) && $_REQUEST['day_values']['END_DATE'][$college['SCHOOL_ID']] == '') {
-                            $sql_up = 'UPDATE staff_college_relationship SET END_DATE=\'0000-00-00\' where staff_id=\'' . $_REQUEST[staff_id] . '\' AND syear=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . $college['SCHOOL_ID'] . '\'';
+                            $sql_up = 'UPDATE staff_college_relationship SET START_DATE=\'0000-00-00\', END_DATE=\'0000-00-00\' where staff_id=\'' . $_REQUEST[staff_id] . '\' AND syear=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . $college['COLLEGE_ID'] . '\'';
+                        } elseif (isset($_REQUEST['day_values']['END_DATE'][$college['COLLEGE_ID']]) && $_REQUEST['day_values']['END_DATE'][$college['COLLEGE_ID']] == '') {
+                            $sql_up = 'UPDATE staff_college_relationship SET END_DATE=\'0000-00-00\' where staff_id=\'' . $_REQUEST[staff_id] . '\' AND syear=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . $college['COLLEGE_ID'] . '\'';
                         }
 
                         if (!$error && !$error1 && $sql_up != '') {
@@ -138,13 +138,13 @@ if ($_REQUEST['teacher_view'] != 'y') {
                 } else {
 
                     $sql_up = 'INSERT INTO staff_college_relationship(staff_id,syear,college_id';
-                    $sql_up_data = 'VALUES(\'' . $_REQUEST[staff_id] . '\',\'' . UserSyear() . '\',\'' . $college['SCHOOL_ID'] . '\'';
+                    $sql_up_data = 'VALUES(\'' . $_REQUEST[staff_id] . '\',\'' . UserSyear() . '\',\'' . $college['COLLEGE_ID'] . '\'';
 
                     if ($start_date != '') {
                         $sql_up.=',start_date';
                     }
                     if ($end_date != '') {
-                        if ($_REQUEST['day_values']['START_DATE'][$college['SCHOOL_ID']] != '') {
+                        if ($_REQUEST['day_values']['START_DATE'][$college['COLLEGE_ID']] != '') {
 
                             $sql_up.=',end_date';
                         }
@@ -153,7 +153,7 @@ if ($_REQUEST['teacher_view'] != 'y') {
                         $sql_up_data.=',\'' . date('Y-m-d', strtotime($start_date)) . '\'';
                     }
                     if ($end_date != '') {
-                        if ($_REQUEST['day_values']['START_DATE'][$college['SCHOOL_ID']] != '')
+                        if ($_REQUEST['day_values']['START_DATE'][$college['COLLEGE_ID']] != '')
                             $sql_up_data.=',\'' . date('Y-m-d', strtotime($end_date)) . '\'';
                     }
                     $sql_up.=')' . $sql_up_data . ')';
@@ -171,10 +171,10 @@ if ($_REQUEST['teacher_view'] != 'y') {
             else {
                 $user_profile = DBGet(DBQuery("SELECT PROFILE_ID FROM staff WHERE STAFF_ID='" . $_REQUEST['staff_id'] . "'"));
                 if ($user_profile[1]['PROFILE_ID'] != '' && count($cur_college)>0) {
-                    $college_selected = implode(',', array_unique(array_keys($_REQUEST['values']['SCHOOLS'])));
+                    $college_selected = implode(',', array_unique(array_keys($_REQUEST['values']['COLLEGES'])));
                     $del_qry.="DELETE FROM staff_college_relationship WHERE STAFF_ID='" . $_REQUEST['staff_id'] . "' AND SYEAR='" . UserSyear() . "'";
                     if ($college_selected != '')
-                        $del_qry.=" AND SCHOOL_ID NOT IN (" . $college_selected . ")";
+                        $del_qry.=" AND COLLEGE_ID NOT IN (" . $college_selected . ")";
 
                     DBQuery($del_qry);
 
@@ -213,26 +213,26 @@ if ($_REQUEST['teacher_view'] != 'y') {
 }
 
 if ($_REQUEST['month_values']['JOINING_DATE'] && $_REQUEST['day_values']['JOINING_DATE'] && $_REQUEST['year_values']['JOINING_DATE']) {
-    $_REQUEST['values']['SCHOOL']['JOINING_DATE'] = $_REQUEST['year_values']['JOINING_DATE'] . '-' . $_REQUEST['month_values']['JOINING_DATE'] . '-' . $_REQUEST['day_values']['JOINING_DATE'];
-    $_REQUEST['values']['SCHOOL']['JOINING_DATE'] = date("Y-m-d", strtotime($_REQUEST['values']['SCHOOL']['JOINING_DATE']));
+    $_REQUEST['values']['COLLEGE']['JOINING_DATE'] = $_REQUEST['year_values']['JOINING_DATE'] . '-' . $_REQUEST['month_values']['JOINING_DATE'] . '-' . $_REQUEST['day_values']['JOINING_DATE'];
+    $_REQUEST['values']['COLLEGE']['JOINING_DATE'] = date("Y-m-d", strtotime($_REQUEST['values']['COLLEGE']['JOINING_DATE']));
 } elseif (isset($_REQUEST['month_values']['JOINING_DATE']) && isset($_REQUEST['day_values']['JOINING_DATE']) && isset($_REQUEST['year_values']['JOINING_DATE']))
-    $_REQUEST['values']['SCHOOL']['JOINING_DATE'] = '';
+    $_REQUEST['values']['COLLEGE']['JOINING_DATE'] = '';
 
 
 if ($_REQUEST['month_values']['ENDING_DATE'] && $_REQUEST['day_values']['ENDING_DATE'] && $_REQUEST['year_values']['ENDING_DATE']) {
-    $_REQUEST['values']['SCHOOL']['ENDING_DATE'] = $_REQUEST['year_values']['ENDING_DATE'] . '-' . $_REQUEST['month_values']['ENDING_DATE'] . '-' . $_REQUEST['day_values']['ENDING_DATE'];
-    $_REQUEST['values']['SCHOOL']['ENDING_DATE'] = date("Y-m-d", strtotime($_REQUEST['values']['SCHOOL']['ENDING_DATE']));
+    $_REQUEST['values']['COLLEGE']['ENDING_DATE'] = $_REQUEST['year_values']['ENDING_DATE'] . '-' . $_REQUEST['month_values']['ENDING_DATE'] . '-' . $_REQUEST['day_values']['ENDING_DATE'];
+    $_REQUEST['values']['COLLEGE']['ENDING_DATE'] = date("Y-m-d", strtotime($_REQUEST['values']['COLLEGE']['ENDING_DATE']));
 } elseif (isset($_REQUEST['month_values']['ENDING_DATE']) && isset($_REQUEST['day_values']['ENDING_DATE']) && isset($_REQUEST['year_values']['ENDING_DATE']))
-    $_REQUEST['values']['SCHOOL']['ENDING_DATE'] = '';
+    $_REQUEST['values']['COLLEGE']['ENDING_DATE'] = '';
 
-$end_date = $_REQUEST['values']['SCHOOL']['ENDING_DATE'];
-unset($_REQUEST['values']['SCHOOL']['ENDING_DATE']);
-$_REQUEST['values']['SCHOOL']['END_DATE'] = $end_date;
+$end_date = $_REQUEST['values']['COLLEGE']['ENDING_DATE'];
+unset($_REQUEST['values']['COLLEGE']['ENDING_DATE']);
+$_REQUEST['values']['COLLEGE']['END_DATE'] = $end_date;
 
-if ($_REQUEST['values']['SCHOOL_IDS']) {
-    $_REQUEST['values']['SCHOOL']['SCHOOL_ACCESS'] = ',';
-    foreach ($_REQUEST['values']['SCHOOL_IDS'] as $key => $val) {
-        $_REQUEST['values']['SCHOOL']['SCHOOL_ACCESS'].=$key . ",";
+if ($_REQUEST['values']['COLLEGE_IDS']) {
+    $_REQUEST['values']['COLLEGE']['COLLEGE_ACCESS'] = ',';
+    foreach ($_REQUEST['values']['COLLEGE_IDS'] as $key => $val) {
+        $_REQUEST['values']['COLLEGE']['COLLEGE_ACCESS'].=$key . ",";
     }
 }
 
@@ -248,7 +248,7 @@ if ($number != 0) {
 }
 
 
-if ($_REQUEST['values']['SCHOOL']['OPENSIS_PROFILE'] == '1') {
+if ($_REQUEST['values']['COLLEGE']['OPENSIS_PROFILE'] == '1') {
     $college_id1 = DBGet(DBQuery("SELECT ID FROM colleges"));
 
     foreach ($college_id1 as $index => $val) {
@@ -256,27 +256,27 @@ if ($_REQUEST['values']['SCHOOL']['OPENSIS_PROFILE'] == '1') {
     }
 
     $colleges = implode(",", $colleges);
-    $_REQUEST['values']['SCHOOL']['SCHOOL_ACCESS'] = "," . $colleges . ",";
+    $_REQUEST['values']['COLLEGE']['COLLEGE_ACCESS'] = "," . $colleges . ",";
 } else {
-    foreach ($_REQUEST['values']['SCHOOLS'] as $college => $val) {
+    foreach ($_REQUEST['values']['COLLEGES'] as $college => $val) {
         if ($val == 'Y') {
             $colleges[] = $college;
         }
     }
     $colleges = implode(",", $colleges);
-    $_REQUEST['values']['SCHOOL']['SCHOOL_ACCESS'] = "," . $colleges . ",";
+    $_REQUEST['values']['COLLEGE']['COLLEGE_ACCESS'] = "," . $colleges . ",";
 }
 
 if ($select == '') {
 //    print_r($_REQUEST);exit;
-    if ($_REQUEST['values']['SCHOOL']['OPENSIS_ACCESS'] == 'Y') {
+    if ($_REQUEST['values']['COLLEGE']['OPENSIS_ACCESS'] == 'Y') {
         $sql = "INSERT INTO staff_college_info ";
         $fields = 'STAFF_ID,';
         $values = "'" . UserStaffID() . "',";
-        foreach ($_REQUEST['values']['SCHOOL'] as $column => $value) {
+        foreach ($_REQUEST['values']['COLLEGE'] as $column => $value) {
 
 
-            if ($column == 'SCHOOL_ACCESS' && $value == ',,')
+            if ($column == 'COLLEGE_ACCESS' && $value == ',,')
                 $value = ',' . UserCollege() . ',';
             if ($value) {
 
@@ -305,8 +305,8 @@ if ($select == '') {
         $staff = $staff_CHECK[1];
         $sql_staff = "UPDATE staff SET ";
 
-        if ($_REQUEST['staff_college']['CURRENT_SCHOOL_ID'])
-            $sql_staff.="PROFILE_ID='" . $update_staff['OPENSIS_PROFILE'] . "',PROFILE='" . $profile . "',CURRENT_SCHOOL_ID='" . $_REQUEST['staff_college']['CURRENT_SCHOOL_ID'] . "',";
+        if ($_REQUEST['staff_college']['CURRENT_COLLEGE_ID'])
+            $sql_staff.="PROFILE_ID='" . $update_staff['OPENSIS_PROFILE'] . "',PROFILE='" . $profile . "',CURRENT_COLLEGE_ID='" . $_REQUEST['staff_college']['CURRENT_COLLEGE_ID'] . "',";
         else
             $sql_staff.="PROFILE_ID='" . $update_staff['OPENSIS_PROFILE'] . "',PROFILE='" . $profile . "',";
 
@@ -372,11 +372,11 @@ if ($select == '') {
                 $sql_up.=')';
             }
         }
-    } elseif ($_REQUEST['values']['SCHOOL']['OPENSIS_ACCESS'] == 'N') {
+    } elseif ($_REQUEST['values']['COLLEGE']['OPENSIS_ACCESS'] == 'N') {
         $sql = "INSERT INTO staff_college_info ";
         $fields = 'STAFF_ID,';
         $values = "'" . UserStaffID() . "',";
-        foreach ($_REQUEST['values']['SCHOOL'] as $column => $value) {
+        foreach ($_REQUEST['values']['COLLEGE'] as $column => $value) {
 
 //            if ($column == 'OPENSIS_PROFILE') {
 //                $fields .= $column . ',';
@@ -445,14 +445,14 @@ if ($select == '') {
     }
 } else {
     
-    if ($_REQUEST['values']['SCHOOL']['OPENSIS_ACCESS'] == 'Y') {
-         if(count($_REQUEST['values']['SCHOOLS'])==0)
+    if ($_REQUEST['values']['COLLEGE']['OPENSIS_ACCESS'] == 'Y') {
+         if(count($_REQUEST['values']['COLLEGES'])==0)
                 {
                     $sch_err= "<div class=\"alert bg-danger alert-styled-left\">Please Select atleast one College.</div>";
                 }
         $sql = "UPDATE staff_college_info  SET ";
 
-        foreach ($_REQUEST['values']['SCHOOL'] as $column => $value) {
+        foreach ($_REQUEST['values']['COLLEGE'] as $column => $value) {
 
             if (strtoupper($column) == 'OPENSIS_PROFILE' || strtoupper($column) == 'CATEGORY') {
                 $check_prof = DBGet(DBQuery('SELECT * FROM staff_college_info WHERE STAFF_ID=' . UserStaffID()));
@@ -503,7 +503,7 @@ if ($select == '') {
         $sql_staff = "UPDATE staff SET ";
 
         $sql_staff.=" PROFILE_ID='" . $update_staff['OPENSIS_PROFILE'] . "',
-                                       PROFILE='" . $profile . "',CURRENT_SCHOOL_ID='" . $_REQUEST['staff_college']['CURRENT_SCHOOL_ID'] . "',";
+                                       PROFILE='" . $profile . "',CURRENT_COLLEGE_ID='" . $_REQUEST['staff_college']['CURRENT_COLLEGE_ID'] . "',";
 
         foreach ($_REQUEST['staff_college'] as $field => $value) {
             if ($field == 'IS_DISABLE') {
@@ -568,15 +568,15 @@ if ($select == '') {
             }
         }
        
-    } elseif ($_REQUEST['values']['SCHOOL']['OPENSIS_ACCESS'] == 'N') {
-         if(count($_REQUEST['values']['SCHOOLS'])==0)
+    } elseif ($_REQUEST['values']['COLLEGE']['OPENSIS_ACCESS'] == 'N') {
+         if(count($_REQUEST['values']['COLLEGES'])==0)
                 {
                     $sch_err= "<div class=\"alert bg-danger alert-styled-left\">Please Select atleast one College.</div>";
                 }
 
         $sql = "UPDATE staff_college_info  SET ";
 
-        foreach ($_REQUEST['values']['SCHOOL'] as $column => $value) {
+        foreach ($_REQUEST['values']['COLLEGE'] as $column => $value) {
 //                                                 if(stripos($_SERVER['SERVER_SOFTWARE'], 'linux')){
 //                                                        $sql .= "$column='".str_replace("'","\'",str_replace("`","''",$value))."',";
 //                                                        }else
@@ -585,7 +585,7 @@ if ($select == '') {
         $sql = substr($sql, 0, -1) . " WHERE STAFF_ID='" . UserStaffID() . "'";
         DBQuery($sql);
         
-        if(isset($_REQUEST['values']['SCHOOL']['OPENSIS_PROFILE']) && $_REQUEST['values']['SCHOOL']['OPENSIS_PROFILE']!='')
+        if(isset($_REQUEST['values']['COLLEGE']['OPENSIS_PROFILE']) && $_REQUEST['values']['COLLEGE']['OPENSIS_PROFILE']!='')
         {
         
         $update_staff_RET = DBGet(DBQuery("SELECT  * FROM staff_college_info where STAFF_ID='" . UserStaffID() . "'"));
@@ -635,8 +635,8 @@ if ($select == '') {
         }
         }
         
-        unset($_REQUEST['values']['SCHOOL']['SCHOOL_ACCESS']);
-        unset($_REQUEST['values']['SCHOOL']['OPENSIS_PROFILE']);
+        unset($_REQUEST['values']['COLLEGE']['COLLEGE_ACCESS']);
+        unset($_REQUEST['values']['COLLEGE']['OPENSIS_PROFILE']);
     }
 }
 if($sch_err!='')
@@ -696,11 +696,11 @@ if (!$_REQUEST['modfunc']) {
             echo '<div class="row">';
             echo '<div class="col-md-6">';
             if (User('PROFILE_ID') == 0 && $prof_check[1]['PROFILE_ID'] == 0 && User('STAFF_ID') == UserStaffID())
-                echo '<div class="form-group"><label class="control-label text-right col-lg-4">Category <span class=text-danger>*</span></label><div class="col-lg-8">' . SelectInput($this_college['CATEGORY'], 'values[SCHOOL][CATEGORY]', '', array('Super Administrator' => 'Super Administrator', 'Administrator' => 'Administrator', 'Teacher' => 'Teacher', 'Non Teaching Staff' => 'Non Teaching Staff', 'Custodian' => 'Custodian', 'Principal' => 'Principal', 'Clerk' => 'Clerk'), false) . '</div></div>';
+                echo '<div class="form-group"><label class="control-label text-right col-lg-4">Category <span class=text-danger>*</span></label><div class="col-lg-8">' . SelectInput($this_college['CATEGORY'], 'values[COLLEGE][CATEGORY]', '', array('Super Administrator' => 'Super Administrator', 'Administrator' => 'Administrator', 'Teacher' => 'Teacher', 'Non Teaching Staff' => 'Non Teaching Staff', 'Custodian' => 'Custodian', 'Principal' => 'Principal', 'Clerk' => 'Clerk'), false) . '</div></div>';
             else
-                echo '<div class="form-group"><label class="control-label text-right col-lg-4">Category <span class=text-danger>*</span></label><div class="col-lg-8">' . SelectInput($this_college['CATEGORY'], 'values[SCHOOL][CATEGORY]', '', array('Administrator' => 'Administrator', 'Teacher' => 'Teacher', 'Non Teaching Staff' => 'Non Teaching Staff', 'Custodian' => 'Custodian', 'Principal' => 'Principal', 'Clerk' => 'Clerk'), false) . '</div></div>';
+                echo '<div class="form-group"><label class="control-label text-right col-lg-4">Category <span class=text-danger>*</span></label><div class="col-lg-8">' . SelectInput($this_college['CATEGORY'], 'values[COLLEGE][CATEGORY]', '', array('Administrator' => 'Administrator', 'Teacher' => 'Teacher', 'Non Teaching Staff' => 'Non Teaching Staff', 'Custodian' => 'Custodian', 'Principal' => 'Principal', 'Clerk' => 'Clerk'), false) . '</div></div>';
             echo '</div><div class="col-md-6">';
-            echo '<div class="form-group">' . TextInput($this_college['JOB_TITLE'], 'values[SCHOOL][JOB_TITLE]', 'Job Title', 'class=cell_medium') . '</div>';
+            echo '<div class="form-group">' . TextInput($this_college['JOB_TITLE'], 'values[COLLEGE][JOB_TITLE]', 'Job Title', 'class=cell_medium') . '</div>';
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
             
@@ -710,14 +710,14 @@ if (!$_REQUEST['modfunc']) {
             echo '<input type=hidden id=end_date_college value="' . $get_end_date . '" >';
             echo '</div><div class="col-md-6">';
             echo '<div class="form-group"><label class="control-label text-right col-lg-4">End Date</label><div class="col-lg-8">' . DateInputAY($this_college['END_DATE']!="" ? $this_college['END_DATE'] : "", 'values[ENDING_DATE]', 2, '') . '</div></div>';
-            echo "<INPUT type=hidden name=values[SCHOOL][HOME_SCHOOL] value=" . UserCollege() . ">";
+            echo "<INPUT type=hidden name=values[COLLEGE][HOME_COLLEGE] value=" . UserCollege() . ">";
             echo '</div>'; //.col-md-6
             echo '</div>'; //.row
             
             $staff_profile = DBGet(DBQuery("SELECT PROFILE_ID FROM staff WHERE STAFF_ID='" . UserStaffID() . "'"));
             echo '<div class="row">';
             echo '<div class="col-lg-6">';
-            echo '<div class="form-group"><label class="control-label text-right col-lg-4">Profile</label><div class="col-lg-8">' . SelectInput($this_college['OPENSIS_PROFILE'], 'values[SCHOOL][OPENSIS_PROFILE]', '', $option, false, 'id=values[SCHOOL][OPENSIS_PROFILE]') . '</div></div>';
+            echo '<div class="form-group"><label class="control-label text-right col-lg-4">Profile</label><div class="col-lg-8">' . SelectInput($this_college['OPENSIS_PROFILE'], 'values[COLLEGE][OPENSIS_PROFILE]', '', $option, false, 'id=values[COLLEGE][OPENSIS_PROFILE]') . '</div></div>';
             echo '</div>'; //.col-lg-6            
             echo '</div>'; //.row
             
@@ -726,7 +726,7 @@ if (!$_REQUEST['modfunc']) {
             if ($this_college_mod['USERNAME'] && (!$this_college['OPENSIS_ACCESS'] == 'Y')) {
                 echo '<div class="row">';
                 echo '<div class="col-md-12">';
-                echo '<h5 class="text-primary inline-block">openSIS Access Information</h5><div class="inline-block p-l-15"><label class="radio-inline p-t-0"><input type="radio" id="noaccs" name="values[SCHOOL][OPENSIS_ACCESS]" value="N" onClick="hidediv();">No Access</label><label class="radio-inline p-t-0"><input type="radio" id="r4" name="values[SCHOOL][OPENSIS_ACCESS]" value="Y" onClick="showdiv();" checked>Access</label></div>';
+                echo '<h5 class="text-primary inline-block">openSIS Access Information</h5><div class="inline-block p-l-15"><label class="radio-inline p-t-0"><input type="radio" id="noaccs" name="values[COLLEGE][OPENSIS_ACCESS]" value="N" onClick="hidediv();">No Access</label><label class="radio-inline p-t-0"><input type="radio" id="r4" name="values[COLLEGE][OPENSIS_ACCESS]" value="Y" onClick="showdiv();" checked>Access</label></div>';
                 echo '</div>'; //.col-md-6
                 echo '</div>'; //.row
                 echo '<div id="hideShow" class="mt-15">';
@@ -734,13 +734,13 @@ if (!$_REQUEST['modfunc']) {
                 if ($this_college['OPENSIS_ACCESS'] == 'N'){
                     echo '<div class="row">';
                     echo '<div class="col-md-12">';
-                    echo '<h5 class="text-primary inline-block">openSIS Access Information</h5><div class="inline-block p-l-15"><label class="radio-inline p-t-0"><input type="radio" id="noaccs" name="values[SCHOOL][OPENSIS_ACCESS]" value="N" checked>No Access</label><label class="radio-inline p-t-0"><input type="radio" id="r4" name="values[SCHOOL][OPENSIS_ACCESS]" value="Y" >Access</label></div>';
+                    echo '<h5 class="text-primary inline-block">openSIS Access Information</h5><div class="inline-block p-l-15"><label class="radio-inline p-t-0"><input type="radio" id="noaccs" name="values[COLLEGE][OPENSIS_ACCESS]" value="N" checked>No Access</label><label class="radio-inline p-t-0"><input type="radio" id="r4" name="values[COLLEGE][OPENSIS_ACCESS]" value="Y" >Access</label></div>';
                     echo '</div>'; //.col-md-6
                     echo '</div>'; //.row
                 }elseif ($this_college['OPENSIS_ACCESS'] == 'Y'){
                     echo '<div class="row">';
                     echo '<div class="col-md-12">';
-                    echo '<h5 class="text-primary inline-block">openSIS Access Information</h5><div class="inline-block p-l-15"><label class="radio-inline p-t-0"><input type="radio" id="noaccs" name="values[SCHOOL][OPENSIS_ACCESS]" value="N">No Access</label><label class="radio-inline p-t-0"><input type="radio" id="r4" name="values[SCHOOL][OPENSIS_ACCESS]" value="Y"  checked>&nbsp;Access</label></div>';
+                    echo '<h5 class="text-primary inline-block">openSIS Access Information</h5><div class="inline-block p-l-15"><label class="radio-inline p-t-0"><input type="radio" id="noaccs" name="values[COLLEGE][OPENSIS_ACCESS]" value="N">No Access</label><label class="radio-inline p-t-0"><input type="radio" id="r4" name="values[COLLEGE][OPENSIS_ACCESS]" value="Y"  checked>&nbsp;Access</label></div>';
                     echo '</div>'; //.col-md-6
                     echo '</div>'; //.row
                 }
@@ -749,7 +749,7 @@ if (!$_REQUEST['modfunc']) {
             elseif (!$this_college_mod['USERNAME'] || $this_college['OPENSIS_ACCESS'] == 'N') {
                 echo '<div class="row">';
                 echo '<div class="col-md-12">';
-                echo '<h5 class="text-primary inline-block">openSIS Access Information</h5><div class="inline-block p-l-15"><label class="radio-inline p-t-0"><input type="radio" id="noaccs" name="values[SCHOOL][OPENSIS_ACCESS]" value="N" onClick="hidediv();" checked>No Access</label><label class="radio-inline p-t-0"><input type="radio" id="r4" name="values[SCHOOL][OPENSIS_ACCESS]" value="Y" onClick="showdiv();">&nbsp;Access</label></div>';
+                echo '<h5 class="text-primary inline-block">openSIS Access Information</h5><div class="inline-block p-l-15"><label class="radio-inline p-t-0"><input type="radio" id="noaccs" name="values[COLLEGE][OPENSIS_ACCESS]" value="N" onClick="hidediv();" checked>No Access</label><label class="radio-inline p-t-0"><input type="radio" id="r4" name="values[COLLEGE][OPENSIS_ACCESS]" value="Y" onClick="showdiv();">&nbsp;Access</label></div>';
                 echo '</div>'; //.col-md-6
                 echo '</div>'; //.row
                 echo '<div id="hideShow" class="mt-15" style="display:none">';
@@ -759,7 +759,7 @@ if (!$_REQUEST['modfunc']) {
 //            $staff_profile = DBGet(DBQuery("SELECT PROFILE_ID FROM staff WHERE STAFF_ID='" . UserStaffID() . "'"));
 //            echo '<div class="row">';
 //            echo '<div class="col-lg-6">';
-//            echo '<div class="form-group"><label class="control-label text-right col-lg-4">Profile</label><div class="col-lg-8">' . SelectInput($this_college['OPENSIS_PROFILE'], 'values[SCHOOL][OPENSIS_PROFILE]', '', $option, false, 'id=values[SCHOOL][OPENSIS_PROFILE]') . '</div></div>';
+//            echo '<div class="form-group"><label class="control-label text-right col-lg-4">Profile</label><div class="col-lg-8">' . SelectInput($this_college['OPENSIS_PROFILE'], 'values[COLLEGE][OPENSIS_PROFILE]', '', $option, false, 'id=values[COLLEGE][OPENSIS_PROFILE]') . '</div></div>';
 //            echo '</div>'; //.col-lg-6            
 //            echo '</div>'; //.row
             
@@ -801,9 +801,9 @@ if (!$_REQUEST['modfunc']) {
             
             echo '</div>'; //#hideShow
             
-            if ($this_college['SCHOOL_ACCESS']) {
+            if ($this_college['COLLEGE_ACCESS']) {
 
-                $pieces = explode(",", $this_college['SCHOOL_ACCESS']);
+                $pieces = explode(",", $this_college['COLLEGE_ACCESS']);
             }
 
             
@@ -811,15 +811,15 @@ if (!$_REQUEST['modfunc']) {
             if ($profile_return[1]['PROFILE_ID'] != '') {
                 echo '<h5 class="text-primary">College Information</h5>';
                 echo '<hr/>';
-                $functions = array('START_DATE' => '_makeStartInputDate', 'PROFILE' => '_makeUserProfile', 'END_DATE' => '_makeEndInputDate', 'SCHOOL_ID' => '_makeCheckBoxInput_gen', 'ID' => '_makeStatus');
+                $functions = array('START_DATE' => '_makeStartInputDate', 'PROFILE' => '_makeUserProfile', 'END_DATE' => '_makeEndInputDate', 'COLLEGE_ID' => '_makeCheckBoxInput_gen', 'ID' => '_makeStatus');
 
 
-                $sql = 'SELECT s.ID,ssr.SCHOOL_ID as SCH_ID,ssr.SCHOOL_ID,s.TITLE,ssr.START_DATE,ssr.END_DATE,st.PROFILE FROM colleges s,staff st INNER JOIN staff_college_relationship ssr USING(staff_id) WHERE s.id=ssr.college_id  AND st.staff_id=' . User('STAFF_ID') . ' AND ssr.SYEAR='.UserSyear().' GROUP BY ssr.SCHOOL_ID';
+                $sql = 'SELECT s.ID,ssr.COLLEGE_ID as SCH_ID,ssr.COLLEGE_ID,s.TITLE,ssr.START_DATE,ssr.END_DATE,st.PROFILE FROM colleges s,staff st INNER JOIN staff_college_relationship ssr USING(staff_id) WHERE s.id=ssr.college_id  AND st.staff_id=' . User('STAFF_ID') . ' AND ssr.SYEAR='.UserSyear().' GROUP BY ssr.COLLEGE_ID';
                 $college_admin = DBGet(DBQuery($sql), $functions);
                 //print_r($college_admin);
-//                $columns = array('SCHOOL_ID' => '<a><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'unused\');" /></a>', 'TITLE' => 'College', 'PROFILE' => 'Profile', 'START_DATE' => 'Start Date', 'END_DATE' => 'Drop Date', 'ID' => 'Status');
+//                $columns = array('COLLEGE_ID' => '<a><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'unused\');" /></a>', 'TITLE' => 'College', 'PROFILE' => 'Profile', 'START_DATE' => 'Start Date', 'END_DATE' => 'Drop Date', 'ID' => 'Status');
                 
-                $columns = array('SCHOOL_ID' => '<a><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'values[SCHOOLS]\');" /></a>', 'TITLE' => 'College', 'PROFILE' => 'Profile', 'START_DATE' => 'Start Date', 'END_DATE' => 'Drop Date', 'ID' => 'Status');
+                $columns = array('COLLEGE_ID' => '<a><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'values[COLLEGES]\');" /></a>', 'TITLE' => 'College', 'PROFILE' => 'Profile', 'START_DATE' => 'Start Date', 'END_DATE' => 'Drop Date', 'ID' => 'Status');
                 $college_ids_for_hidden=array();
                 echo '<div id="hidden_checkboxes">';
                 foreach($college_admin as $sai=>$sad){
@@ -827,7 +827,7 @@ if (!$_REQUEST['modfunc']) {
 //                    print_r($sad);
                     $college_ids_for_hidden[]=$sad['SCH_ID'];
                     if(strip_tags($sad['ID'])=='Active')
-                    echo '<input type=hidden name="values[SCHOOLS]['.$sad['SCH_ID'].']" value="Y" data-checkbox-hidden-id="'.$sad['SCH_ID'].'" />';
+                    echo '<input type=hidden name="values[COLLEGES]['.$sad['SCH_ID'].']" value="Y" data-checkbox-hidden-id="'.$sad['SCH_ID'].'" />';
                 }
                 echo '</div>';
                 $college_ids_for_hidden=implode(',',$college_ids_for_hidden);
@@ -885,7 +885,7 @@ function _makeStartInputDate($value, $column) {
     if ($_REQUEST['staff_id'] == 'new') {
         $date_value = '';
     } else {
-        $sql = 'SELECT ssr.START_DATE FROM staff s,staff_college_relationship ssr  WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=' . UserSyear();
+        $sql = 'SELECT ssr.START_DATE FROM staff s,staff_college_relationship ssr  WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.COLLEGE_ID=' . $THIS_RET['COLLEGE_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=' . UserSyear();
         $user_exist_college = DBGet(DBQuery($sql));
         if ($user_exist_college[1]['START_DATE'] == '0000-00-00' || $user_exist_college[1]['START_DATE'] == '')
             $date_value = '';
@@ -901,7 +901,7 @@ function _makeUserProfile($value, $column) {
     if ($_REQUEST['staff_id'] == 'new') {
         $profile_value = '';
     } else {
-        $sql = 'SELECT up.TITLE FROM staff s,staff_college_relationship ssr,user_profiles up  WHERE ssr.STAFF_ID=s.STAFF_ID AND up.ID=s.PROFILE_ID AND ssr.SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=   (SELECT MAX(SYEAR) FROM  staff_college_relationship WHERE SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ')';
+        $sql = 'SELECT up.TITLE FROM staff s,staff_college_relationship ssr,user_profiles up  WHERE ssr.STAFF_ID=s.STAFF_ID AND up.ID=s.PROFILE_ID AND ssr.COLLEGE_ID=' . $THIS_RET['COLLEGE_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=   (SELECT MAX(SYEAR) FROM  staff_college_relationship WHERE COLLEGE_ID=' . $THIS_RET['COLLEGE_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ')';
         $user_profile = DBGet(DBQuery($sql));
         $profile_value = $user_profile[1]['TITLE'];
     }
@@ -914,7 +914,7 @@ function _makeEndInputDate($value, $column) {
         $date_value = '';
     } else {
 
-        $sql = 'SELECT ssr.END_DATE FROM staff s,staff_college_relationship ssr  WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=   (SELECT MAX(SYEAR) FROM  staff_college_relationship WHERE SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ')';
+        $sql = 'SELECT ssr.END_DATE FROM staff s,staff_college_relationship ssr  WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.COLLEGE_ID=' . $THIS_RET['COLLEGE_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=   (SELECT MAX(SYEAR) FROM  staff_college_relationship WHERE COLLEGE_ID=' . $THIS_RET['COLLEGE_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ')';
         $user_exist_college = DBGet(DBQuery($sql));
         if ($user_exist_college[1]['END_DATE'] == '0000-00-00' || $user_exist_college[1]['END_DATE'] == '')
             $date_value = '';
@@ -933,8 +933,8 @@ function _makeCheckBoxInput_gen($value, $column) {
     $_SESSION[staff_college_chkbox_id] ++;
     $staff_college_chkbox_id = $_SESSION[staff_college_chkbox_id];
     if ($_REQUEST['staff_id'] == 'new') {
-        return '<TABLE class=LO_field><TR>' . '<TD>' . "<input name=unused[$THIS_RET[ID]]  type='checkbox' id=$staff_college_chkbox_id onClick='setHiddenCheckbox(\"values[SCHOOLS][$THIS_RET[ID]]\",this,$THIS_RET[ID]);' />" . '</TD></TR></TABLE>';
-//        return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('', 'values[SCHOOLS][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_SCHOOLS' . $staff_college_chkbox_id) . '</TD></TR></TABLE>';
+        return '<TABLE class=LO_field><TR>' . '<TD>' . "<input name=unused[$THIS_RET[ID]]  type='checkbox' id=$staff_college_chkbox_id onClick='setHiddenCheckbox(\"values[COLLEGES][$THIS_RET[ID]]\",this,$THIS_RET[ID]);' />" . '</TD></TR></TABLE>';
+//        return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('', 'values[COLLEGES][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_COLLEGES' . $staff_college_chkbox_id) . '</TD></TR></TABLE>';
     } else {
         $sql = '';
         $staff_infor_qr = DBGet(DBQuery('select * from staff_college_relationship where STAFF_ID=\'' . $_SESSION['staff_selected'] . '\' AND SYEAR='. UserSyear()));
@@ -943,26 +943,26 @@ function _makeCheckBoxInput_gen($value, $column) {
             $i=0;
             foreach($staff_infor_qr as $skey => $sval)
             {
-                $sch_li[$i]=$sval['SCHOOL_ID'];
+                $sch_li[$i]=$sval['COLLEGE_ID'];
                 $i++;
             }
         }
-        //$sch_li = explode(',', trim($staff_infor_qr[1]['SCHOOL_ACCESS']));
-        $dates = DBGet(DBQuery("SELECT ssr.START_DATE,ssr.END_DATE FROM staff s,staff_college_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID='" . $THIS_RET['SCHOOL_ID'] . "' AND ssr.STAFF_ID='" . $_SESSION['staff_selected'] . "' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_college_relationship WHERE SCHOOL_ID='" . $THIS_RET['SCHOOL_ID'] . "' AND STAFF_ID='" . $_SESSION['staff_selected'] . "')"));
-        if ($dates[1]['START_DATE'] == '0000-00-00' && $dates[1]['END_DATE'] == '0000-00-00' && in_array($THIS_RET['SCHOOL_ID'], $sch_li)) {
-            $sql = 'SELECT SCHOOL_ID FROM staff s,staff_college_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_college_relationship WHERE SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ')';
+        //$sch_li = explode(',', trim($staff_infor_qr[1]['COLLEGE_ACCESS']));
+        $dates = DBGet(DBQuery("SELECT ssr.START_DATE,ssr.END_DATE FROM staff s,staff_college_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.COLLEGE_ID='" . $THIS_RET['COLLEGE_ID'] . "' AND ssr.STAFF_ID='" . $_SESSION['staff_selected'] . "' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_college_relationship WHERE COLLEGE_ID='" . $THIS_RET['COLLEGE_ID'] . "' AND STAFF_ID='" . $_SESSION['staff_selected'] . "')"));
+        if ($dates[1]['START_DATE'] == '0000-00-00' && $dates[1]['END_DATE'] == '0000-00-00' && in_array($THIS_RET['COLLEGE_ID'], $sch_li)) {
+            $sql = 'SELECT COLLEGE_ID FROM staff s,staff_college_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.COLLEGE_ID=' . $THIS_RET['COLLEGE_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_college_relationship WHERE COLLEGE_ID=' . $THIS_RET['COLLEGE_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ')';
         }
-        if ($dates[1]['START_DATE'] == '0000-00-00' && $dates[1]['END_DATE'] != '0000-00-00' && in_array($THIS_RET['SCHOOL_ID'], $sch_li)) {
-            $sql = 'SELECT SCHOOL_ID FROM staff s,staff_college_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_college_relationship WHERE SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ') AND (ssr.END_DATE>=CURDATE() OR ssr.END_DATE=\'0000-00-00\' OR ssr.END_DATE IS NULL)';
+        if ($dates[1]['START_DATE'] == '0000-00-00' && $dates[1]['END_DATE'] != '0000-00-00' && in_array($THIS_RET['COLLEGE_ID'], $sch_li)) {
+            $sql = 'SELECT COLLEGE_ID FROM staff s,staff_college_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.COLLEGE_ID=' . $THIS_RET['COLLEGE_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_college_relationship WHERE COLLEGE_ID=' . $THIS_RET['COLLEGE_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ') AND (ssr.END_DATE>=CURDATE() OR ssr.END_DATE=\'0000-00-00\' OR ssr.END_DATE IS NULL)';
         }
-        if ($dates[1]['START_DATE'] != '0000-00-00' && in_array($THIS_RET['SCHOOL_ID'], $sch_li)) {
-            $sql = 'SELECT SCHOOL_ID FROM staff s,staff_college_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_college_relationship WHERE SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ')  AND (ssr.START_DATE>=ssr.END_DATE OR ssr.START_DATE=\'0000-00-00\' OR ssr.END_DATE>=CURDATE() OR ssr.END_DATE IS NULL)';
+        if ($dates[1]['START_DATE'] != '0000-00-00' && in_array($THIS_RET['COLLEGE_ID'], $sch_li)) {
+            $sql = 'SELECT COLLEGE_ID FROM staff s,staff_college_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.COLLEGE_ID=' . $THIS_RET['COLLEGE_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_college_relationship WHERE COLLEGE_ID=' . $THIS_RET['COLLEGE_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ')  AND (ssr.START_DATE>=ssr.END_DATE OR ssr.START_DATE=\'0000-00-00\' OR ssr.END_DATE>=CURDATE() OR ssr.END_DATE IS NULL)';
         }
         if ($sql != '')
             $user_exist_college = DBGet(DBQuery($sql));
         else
             $user_exist_college = array();
-//        if($THIS_RET['SCHOOL_ID']==108 || $THIS_RET['SCHOOL_ID']==109)
+//        if($THIS_RET['COLLEGE_ID']==108 || $THIS_RET['COLLEGE_ID']==109)
 //            echo $sql;
 //        if(!empty($user_exist_college)){
 //            
@@ -970,28 +970,28 @@ function _makeCheckBoxInput_gen($value, $column) {
 //        echo '<br>'.$THIS_RET[ID].'<hr>';}
 //        if (!empty($user_exist_college)) {
 //            if (SelectedUserProfile('PROFILE_ID') == 0)
-//                return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('Y', 'values[SCHOOLS][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_SCHOOLS onclick="return false;" onkeydown="return false;" ' . $staff_college_chkbox_id) . '</TD></TR></TABLE>';
+//                return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('Y', 'values[COLLEGES][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_COLLEGES onclick="return false;" onkeydown="return false;" ' . $staff_college_chkbox_id) . '</TD></TR></TABLE>';
 //            else
-//                return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('Y', 'values[SCHOOLS][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_SCHOOLS' . $staff_college_chkbox_id) . '</TD></TR></TABLE>';
+//                return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('Y', 'values[COLLEGES][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_COLLEGES' . $staff_college_chkbox_id) . '</TD></TR></TABLE>';
 //        }
 //        else {
 //            if (SelectedUserProfile('PROFILE_ID') == 0)
-//                return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('Y', 'values[SCHOOLS][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_SCHOOLS onclick="return false;" onkeydown="return false;" ' . $staff_college_chkbox_id) . '</TD></TR></TABLE>';
+//                return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('Y', 'values[COLLEGES][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_COLLEGES onclick="return false;" onkeydown="return false;" ' . $staff_college_chkbox_id) . '</TD></TR></TABLE>';
 //            else
-//                return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('', 'values[SCHOOLS][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_SCHOOLS' . $staff_college_chkbox_id) . '</TD></TR></TABLE>';
+//                return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('', 'values[COLLEGES][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_COLLEGES' . $staff_college_chkbox_id) . '</TD></TR></TABLE>';
 //        }
         
         if (!empty($user_exist_college)) {
             if (SelectedUserProfile('PROFILE_ID') == 0)
-                return '<TABLE class=LO_field><TR>' . '<TD>' ."<input checked name=unused[$THIS_RET[ID]] type='checkbox'  id=$THIS_RET[ID] onClick='setHiddenCheckbox(\"values[SCHOOLS][$THIS_RET[ID]]\",this,$THIS_RET[ID]);'  />" . '</TD></TR></TABLE>';
+                return '<TABLE class=LO_field><TR>' . '<TD>' ."<input checked name=unused[$THIS_RET[ID]] type='checkbox'  id=$THIS_RET[ID] onClick='setHiddenCheckbox(\"values[COLLEGES][$THIS_RET[ID]]\",this,$THIS_RET[ID]);'  />" . '</TD></TR></TABLE>';
             else
-                return '<TABLE class=LO_field><TR>' . '<TD>' ."<input checked name=unused[$THIS_RET[ID]]  type='checkbox' id=$THIS_RET[ID] onClick='setHiddenCheckbox(\"values[SCHOOLS][$THIS_RET[ID]]\",this,$THIS_RET[ID]);' />". '</TD></TR></TABLE>';
+                return '<TABLE class=LO_field><TR>' . '<TD>' ."<input checked name=unused[$THIS_RET[ID]]  type='checkbox' id=$THIS_RET[ID] onClick='setHiddenCheckbox(\"values[COLLEGES][$THIS_RET[ID]]\",this,$THIS_RET[ID]);' />". '</TD></TR></TABLE>';
         }
         else {
             if (SelectedUserProfile('PROFILE_ID') == 0)
-                return '<TABLE class=LO_field><TR>' . '<TD>' . "<input name=unused[$THIS_RET[ID]]  type='checkbox' id=$THIS_RET[ID] onClick='setHiddenCheckbox(\"values[SCHOOLS][$THIS_RET[ID]]\",this,$THIS_RET[ID]);' />" . '</TD></TR></TABLE>';
+                return '<TABLE class=LO_field><TR>' . '<TD>' . "<input name=unused[$THIS_RET[ID]]  type='checkbox' id=$THIS_RET[ID] onClick='setHiddenCheckbox(\"values[COLLEGES][$THIS_RET[ID]]\",this,$THIS_RET[ID]);' />" . '</TD></TR></TABLE>';
             else
-                return '<TABLE class=LO_field><TR>' . '<TD>' ."<input name=unused[$THIS_RET[ID]]  type='checkbox' id=$THIS_RET[ID] onClick='setHiddenCheckbox(\"values[SCHOOLS][$THIS_RET[ID]]\",this,$THIS_RET[ID]);' />" . '</TD></TR></TABLE>';
+                return '<TABLE class=LO_field><TR>' . '<TD>' ."<input name=unused[$THIS_RET[ID]]  type='checkbox' id=$THIS_RET[ID] onClick='setHiddenCheckbox(\"values[COLLEGES][$THIS_RET[ID]]\",this,$THIS_RET[ID]);' />" . '</TD></TR></TABLE>';
         }
         
     }
@@ -1003,22 +1003,22 @@ function _makeStatus($value, $column) {
         $status_value = '';
     else {
 
-        $dates = DBGet(DBQuery("SELECT ssr.START_DATE,ssr.END_DATE FROM staff s,staff_college_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID='" . $THIS_RET['SCHOOL_ID'] . "' AND ssr.STAFF_ID='" . $_SESSION['staff_selected'] . "' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_college_relationship WHERE SCHOOL_ID='" . $THIS_RET['SCHOOL_ID'] . "' AND STAFF_ID='" . $_SESSION['staff_selected'] . "')"));
+        $dates = DBGet(DBQuery("SELECT ssr.START_DATE,ssr.END_DATE FROM staff s,staff_college_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.COLLEGE_ID='" . $THIS_RET['COLLEGE_ID'] . "' AND ssr.STAFF_ID='" . $_SESSION['staff_selected'] . "' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_college_relationship WHERE COLLEGE_ID='" . $THIS_RET['COLLEGE_ID'] . "' AND STAFF_ID='" . $_SESSION['staff_selected'] . "')"));
         if ($dates[1]['START_DATE'] == '0000-00-00' && $dates[1]['END_DATE'] == '0000-00-00') {
-            $sql = 'SELECT SCHOOL_ID FROM staff s,staff_college_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_college_relationship WHERE SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ')';
+            $sql = 'SELECT COLLEGE_ID FROM staff s,staff_college_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.COLLEGE_ID=' . $THIS_RET['COLLEGE_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_college_relationship WHERE COLLEGE_ID=' . $THIS_RET['COLLEGE_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ')';
         }
 
         if ($dates[1]['START_DATE'] == '0000-00-00' && $dates[1]['END_DATE'] != '0000-00-00') {
-            $sql = 'SELECT SCHOOL_ID FROM staff s,staff_college_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_college_relationship WHERE SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ') AND (ssr.END_DATE>=CURDATE() OR ssr.END_DATE=\'0000-00-00\' OR ssr.END_DATE IS NULL)';
+            $sql = 'SELECT COLLEGE_ID FROM staff s,staff_college_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.COLLEGE_ID=' . $THIS_RET['COLLEGE_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_college_relationship WHERE COLLEGE_ID=' . $THIS_RET['COLLEGE_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ') AND (ssr.END_DATE>=CURDATE() OR ssr.END_DATE=\'0000-00-00\' OR ssr.END_DATE IS NULL)';
         }
         if ($dates[1]['START_DATE'] != '0000-00-00' && $dates[1]['END_DATE'] == '0000-00-00') {
-            $sql = 'SELECT SCHOOL_ID FROM staff s,staff_college_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_college_relationship WHERE SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ') ';
+            $sql = 'SELECT COLLEGE_ID FROM staff s,staff_college_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.COLLEGE_ID=' . $THIS_RET['COLLEGE_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_college_relationship WHERE COLLEGE_ID=' . $THIS_RET['COLLEGE_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ') ';
         }
         if ($dates[1]['START_DATE'] != '0000-00-00' && $dates[1]['END_DATE'] != '0000-00-00') {
-            $sql = 'SELECT SCHOOL_ID FROM staff s,staff_college_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_college_relationship WHERE SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ')  AND ssr.END_DATE>=\'' . date('Y-m-d') . '\' ';
+            $sql = 'SELECT COLLEGE_ID FROM staff s,staff_college_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.COLLEGE_ID=' . $THIS_RET['COLLEGE_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_college_relationship WHERE COLLEGE_ID=' . $THIS_RET['COLLEGE_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ')  AND ssr.END_DATE>=\'' . date('Y-m-d') . '\' ';
         }
         if ($dates[1]['START_DATE'] != '0000-00-00') {
-            $sql = 'SELECT SCHOOL_ID FROM staff s,staff_college_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_college_relationship WHERE SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ')  AND (ssr.END_DATE>=\'' . date('Y-m-d') . '\' OR ssr.END_DATE IS NULL OR ssr.END_DATE=\'0000-00-00\')';
+            $sql = 'SELECT COLLEGE_ID FROM staff s,staff_college_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.COLLEGE_ID=' . $THIS_RET['COLLEGE_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_college_relationship WHERE COLLEGE_ID=' . $THIS_RET['COLLEGE_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ')  AND (ssr.END_DATE>=\'' . date('Y-m-d') . '\' OR ssr.END_DATE IS NULL OR ssr.END_DATE=\'0000-00-00\')';
         }
         $user_exist_college = DBGet(DBQuery($sql));
         if (!empty($user_exist_college))

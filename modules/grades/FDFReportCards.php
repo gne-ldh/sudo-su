@@ -35,7 +35,7 @@ if(count($_REQUEST['mp_arr']))
 }
 
 $extra['search'] = '<TR><TD align=right>Marking Periods</TD><TD><TABLE>';
-$mps_RET = DBGet(DBQuery('SELECT SEMESTER_ID,MARKING_PERIOD_ID,SHORT_NAME FROM college_quarters WHERE SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserCollege().'\' ORDER BY SORT_ORDER'),array(),array('SEMESTER_ID'));
+$mps_RET = DBGet(DBQuery('SELECT SEMESTER_ID,MARKING_PERIOD_ID,SHORT_NAME FROM college_quarters WHERE SYEAR=\''.UserSyear().'\' AND COLLEGE_ID=\''.UserCollege().'\' ORDER BY SORT_ORDER'),array(),array('SEMESTER_ID'));
 foreach($mps_RET as $sem=>$quarters)
 {
 	$extra['search'] .= '<TR>';
@@ -102,7 +102,7 @@ else
 	Widgets('class_rank');
 	Widgets('letter_grade');
 	$attendance_RET = GetStuList($extra);
-	$attendance_codes = DBGet(DBQuery('SELECT SHORT_NAME FROM attendance_codes WHERE SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserCollege().'\' AND TABLE_NAME=\'0\''));
+	$attendance_codes = DBGet(DBQuery('SELECT SHORT_NAME FROM attendance_codes WHERE SYEAR=\''.UserSyear().'\' AND COLLEGE_ID=\''.UserCollege().'\' AND TABLE_NAME=\'0\''));
 
 	// GET THE DAILY ATTENDANCE
 	unset($extra);
@@ -123,7 +123,7 @@ else
 		$original_PDF .= fgets($FP,4096);
 	fclose($FP);
 	
-	$comment_codes = DBGet(DBQuery('SELECT TITLE FROM report_card_comments WHERE SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserCollege().'\' ORDER BY TITLE'));
+	$comment_codes = DBGet(DBQuery('SELECT TITLE FROM report_card_comments WHERE SYEAR=\''.UserSyear().'\' AND COLLEGE_ID=\''.UserCollege().'\' ORDER BY TITLE'));
 	for($i=1;$i<=count($comment_codes);$i++)
 		$original_PDF = str_replace('(default[comment_codes]['.$i.'])','('.$comment_codes[$i]['TITLE'].')',$original_PDF);
 	for($i;$i<=18;$i++)
@@ -225,8 +225,8 @@ else
 			$this_PDF = str_replace('/T(values[students][GRADE_ID])',"/T(values[$student_count][students][GRADE_ID])",$this_PDF);
 			$this_PDF = str_replace('(default[students][GRADE_ID])','('.par_rep("/<!-- [0-9]+ -->/",'',$course_periods[$course_period_id][key($course_periods[$course_period_id])][1]['GRADE_ID']).')',$this_PDF);
 
-			$this_PDF = str_replace('/T(values[students][SCHOOL])',"/T(values[$student_count][students][SCHOOL])",$this_PDF);
-			$this_PDF = str_replace('(default[students][SCHOOL])','('.GetCollege(UserCollege()).')',$this_PDF);
+			$this_PDF = str_replace('/T(values[students][COLLEGE])',"/T(values[$student_count][students][COLLEGE])",$this_PDF);
+			$this_PDF = str_replace('(default[students][COLLEGE])','('.GetCollege(UserCollege()).')',$this_PDF);
 
 			$this_PDF = str_replace('/T(values[students][SYEAR])',"/T(values[$student_count][students][SYEAR])",$this_PDF);
 			$this_PDF = str_replace('(default[students][SYEAR])','('.UserSyear().' - '.(UserSyear()+1).')',$this_PDF);

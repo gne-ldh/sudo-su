@@ -35,24 +35,24 @@ function User($item)
 		if($_SESSION['STAFF_ID'])
 		{
                     if($_SESSION['PROFILE_ID']!=4)
-                    $sql = 'SELECT STAFF_ID,USERNAME,CONCAT(FIRST_NAME,\' \',LAST_NAME) AS NAME,PROFILE,la.PROFILE_ID,CURRENT_SCHOOL_ID,EMAIL FROM staff s ,login_authentication la WHERE la.USER_ID=s.STAFF_ID AND la.PROFILE_ID <> 3 AND la.PROFILE_ID=s.PROFILE_ID AND STAFF_ID='.$_SESSION[STAFF_ID];
+                    $sql = 'SELECT STAFF_ID,USERNAME,CONCAT(FIRST_NAME,\' \',LAST_NAME) AS NAME,PROFILE,la.PROFILE_ID,CURRENT_COLLEGE_ID,EMAIL FROM staff s ,login_authentication la WHERE la.USER_ID=s.STAFF_ID AND la.PROFILE_ID <> 3 AND la.PROFILE_ID=s.PROFILE_ID AND STAFF_ID='.$_SESSION[STAFF_ID];
                     if($_SESSION['PROFILE_ID']==4 || $_SESSION['PROFILE']=='parent')
-                    $sql = 'SELECT p.STAFF_ID,la.USERNAME,CONCAT(p.FIRST_NAME,\' \',p.LAST_NAME) AS NAME,p.PROFILE,p.PROFILE_ID,p.CURRENT_SCHOOL_ID,p.EMAIL FROM people p ,login_authentication la WHERE la.USER_ID=p.STAFF_ID AND la.PROFILE_ID <> 3  AND la.PROFILE_ID=p.PROFILE_ID AND STAFF_ID='.$_SESSION[STAFF_ID];
+                    $sql = 'SELECT p.STAFF_ID,la.USERNAME,CONCAT(p.FIRST_NAME,\' \',p.LAST_NAME) AS NAME,p.PROFILE,p.PROFILE_ID,p.CURRENT_COLLEGE_ID,p.EMAIL FROM people p ,login_authentication la WHERE la.USER_ID=p.STAFF_ID AND la.PROFILE_ID <> 3  AND la.PROFILE_ID=p.PROFILE_ID AND STAFF_ID='.$_SESSION[STAFF_ID];
                     $_openSIS['User'] = DBGet(DBQuery($sql));
 		}
 		elseif($_SESSION['STUDENT_ID'])
 		{
-			$sql = 'SELECT USERNAME,CONCAT(s.FIRST_NAME,\' \',s.LAST_NAME) AS NAME,\'student\' AS PROFILE,\'3\' AS PROFILE_ID,CONCAT(\',\',se.SCHOOL_ID,\',\') AS SCHOOLS,se.SYEAR,se.SCHOOL_ID FROM students s,student_enrollment se,login_authentication la WHERE la.USER_ID=s.STUDENT_ID AND la.PROFILE_ID = 3 AND s.STUDENT_ID='.$_SESSION[STUDENT_ID].' AND se.SYEAR=\''.$_SESSION[UserSyear].'\'  AND (se.END_DATE IS NULL OR se.END_DATE=\'0000-00-00\' OR se.END_DATE>=\''.date('Y-m-d').'\' ) AND se.STUDENT_ID=s.STUDENT_ID ORDER BY se.END_DATE DESC LIMIT 1';
+			$sql = 'SELECT USERNAME,CONCAT(s.FIRST_NAME,\' \',s.LAST_NAME) AS NAME,\'student\' AS PROFILE,\'3\' AS PROFILE_ID,CONCAT(\',\',se.COLLEGE_ID,\',\') AS COLLEGES,se.SYEAR,se.COLLEGE_ID FROM students s,student_enrollment se,login_authentication la WHERE la.USER_ID=s.STUDENT_ID AND la.PROFILE_ID = 3 AND s.STUDENT_ID='.$_SESSION[STUDENT_ID].' AND se.SYEAR=\''.$_SESSION[UserSyear].'\'  AND (se.END_DATE IS NULL OR se.END_DATE=\'0000-00-00\' OR se.END_DATE>=\''.date('Y-m-d').'\' ) AND se.STUDENT_ID=s.STUDENT_ID ORDER BY se.END_DATE DESC LIMIT 1';
                         $_openSIS['User'] = DBGet(DBQuery($sql));
                         if(count($_openSIS['User'])==0)
                         {
-                            $sql = 'SELECT USERNAME,CONCAT(s.FIRST_NAME,\' \',s.LAST_NAME) AS NAME,\'student\' AS PROFILE,\'3\' AS PROFILE_ID,CONCAT(\',\',se.SCHOOL_ID,\',\') AS SCHOOLS,se.SYEAR,se.SCHOOL_ID FROM students s,student_enrollment se,login_authentication la WHERE la.USER_ID=s.STUDENT_ID AND la.PROFILE_ID = 3 AND s.STUDENT_ID='.$_SESSION[STUDENT_ID].' AND se.SYEAR=\''.$_SESSION[UserSyear].'\'   AND se.STUDENT_ID=s.STUDENT_ID ORDER BY se.END_DATE DESC LIMIT 1';
+                            $sql = 'SELECT USERNAME,CONCAT(s.FIRST_NAME,\' \',s.LAST_NAME) AS NAME,\'student\' AS PROFILE,\'3\' AS PROFILE_ID,CONCAT(\',\',se.COLLEGE_ID,\',\') AS COLLEGES,se.SYEAR,se.COLLEGE_ID FROM students s,student_enrollment se,login_authentication la WHERE la.USER_ID=s.STUDENT_ID AND la.PROFILE_ID = 3 AND s.STUDENT_ID='.$_SESSION[STUDENT_ID].' AND se.SYEAR=\''.$_SESSION[UserSyear].'\'   AND se.STUDENT_ID=s.STUDENT_ID ORDER BY se.END_DATE DESC LIMIT 1';
                             $_openSIS['User'] = DBGet(DBQuery($sql));
-			$_SESSION['UserCollege'] = $_openSIS['User'][1]['SCHOOL_ID'];
+			$_SESSION['UserCollege'] = $_openSIS['User'][1]['COLLEGE_ID'];
 		}
 		else
                 {
-			$_SESSION['UserCollege'] = $_openSIS['User'][1]['SCHOOL_ID'];
+			$_SESSION['UserCollege'] = $_openSIS['User'][1]['COLLEGE_ID'];
 		}
                 }
 		else
@@ -97,7 +97,7 @@ function Preferences($item,$program='Preferences')
 				'MONTH'=>'M',
 				'DAY'=>'j',
 				'YEAR'=>'Y',
-				'DEFAULT_ALL_SCHOOLS'=>'N',
+				'DEFAULT_ALL_COLLEGES'=>'N',
 				'ASSIGNMENT_SORTING'=>'ASSIGNMENT_ID',
 				'ANOMALOUS_MAX'=>'100'
 				);

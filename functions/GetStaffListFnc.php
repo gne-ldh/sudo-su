@@ -39,11 +39,11 @@ function GetStaffList(& $extra)
                         WHERE
                         st.STUDENT_ID=ssm.STUDENT_ID AND ssm.SYEAR='.UserSyear().'  AND s.PROFILE IS NOT NULL AND s.PROFILE_ID in (SELECT ID FROM user_profiles WHERE PROFILE=\'parent\') AND s.STAFF_ID=la.USER_ID AND la.PROFILE_ID in (SELECT ID FROM user_profiles WHERE PROFILE=\'parent\')';
 		if($_REQUEST['_search_all_colleges']!='Y')
-			$sql .= ' AND ssm.SCHOOL_ID='.UserCollege().' AND s.STAFF_ID IN (SELECT PERSON_ID FROM students_join_people sjp WHERE ssm.STUDENT_ID = sjp.STUDENT_ID
-AND ssm.SCHOOL_ID='.UserCollege().' AND ssm.SYEAR='.UserSyear().' AND (ssm.end_date is NULL or ssm.end_date>="'.DBDate().'")) ';
+			$sql .= ' AND ssm.COLLEGE_ID='.UserCollege().' AND s.STAFF_ID IN (SELECT PERSON_ID FROM students_join_people sjp WHERE ssm.STUDENT_ID = sjp.STUDENT_ID
+AND ssm.COLLEGE_ID='.UserCollege().' AND ssm.SYEAR='.UserSyear().' AND (ssm.end_date is NULL or ssm.end_date>="'.DBDate().'")) ';
                    else
-                       $sql .= ' AND ssm.SCHOOL_ID IN('.  GetUserColleges(UserID(),true).')  AND s.STAFF_ID IN (SELECT PERSON_ID FROM students_join_people sjp WHERE ssm.STUDENT_ID = sjp.STUDENT_ID
-AND ssm.SCHOOL_ID IN ('.  GetUserColleges(UserID(),true).') AND ssm.SYEAR='.UserSyear().' AND (ssm.end_date is NULL or ssm.end_date>="'.DBDate().'"))';
+                       $sql .= ' AND ssm.COLLEGE_ID IN('.  GetUserColleges(UserID(),true).')  AND s.STAFF_ID IN (SELECT PERSON_ID FROM students_join_people sjp WHERE ssm.STUDENT_ID = sjp.STUDENT_ID
+AND ssm.COLLEGE_ID IN ('.  GetUserColleges(UserID(),true).') AND ssm.SYEAR='.UserSyear().' AND (ssm.end_date is NULL or ssm.end_date>="'.DBDate().'"))';
 		if($_REQUEST['_dis_user']!='Y')
 			$sql .= ' AND (s.IS_DISABLE<>\'Y\' OR  s.IS_DISABLE IS NULL)';
 		if($_REQUEST['username'])
@@ -199,7 +199,7 @@ function GetStaffList_Miss_Atn(& $extra)
 
 //echo $sql_st = 'SELECT teacher_id FROM missing_attendance mi where college_id=\''.  UserCollege().'\' AND syear=\''.  UserSyear().'\''.$extra['WHERE2'].' UNION SELECT secondary_teacher_id FROM missing_attendance mi where college_id=\''.  UserCollege().'\' AND syear=\''.  UserSyear().'\''.$extra['WHERE2'];
 
-          $sql_st = 'SELECT cp.teacher_id FROM missing_attendance mi,course_periods cp,colleges s,course_period_var cpv WHERE mi.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.PERIOD_ID=mi.PERIOD_ID AND s.ID=mi.SCHOOL_ID AND mi.SCHOOL_ID=\''.  UserCollege().'\'   AND (mi.SCHOOL_DATE=cpv.COURSE_PERIOD_DATE OR POSITION(IF(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\') LIKE \'Thu\',\'H\',(IF(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\') LIKE \'Sun\',\'U\',SUBSTR(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\'),1,1)))) IN cpv.DAYS)>0)'.$extra['WHERE2'].' UNION select cp.SECONDARY_TEACHER_ID FROM missing_attendance mi,course_periods cp,colleges s,course_period_var cpv WHERE mi.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.PERIOD_ID=mi.PERIOD_ID AND s.ID=mi.SCHOOL_ID AND mi.SCHOOL_ID=\''.  UserCollege().'\' AND (mi.SCHOOL_DATE=cpv.COURSE_PERIOD_DATE OR POSITION(IF(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\') LIKE \'Thu\',\'H\',(IF(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\') LIKE \'Sun\',\'U\',SUBSTR(DATE_FORMAT(mi.SCHOOL_DATE,\'%a\'),1,1)))) IN cpv.DAYS)>0)'.$extra['WHERE2'];             
+          $sql_st = 'SELECT cp.teacher_id FROM missing_attendance mi,course_periods cp,colleges s,course_period_var cpv WHERE mi.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.PERIOD_ID=mi.PERIOD_ID AND s.ID=mi.COLLEGE_ID AND mi.COLLEGE_ID=\''.  UserCollege().'\'   AND (mi.COLLEGE_DATE=cpv.COURSE_PERIOD_DATE OR POSITION(IF(DATE_FORMAT(mi.COLLEGE_DATE,\'%a\') LIKE \'Thu\',\'H\',(IF(DATE_FORMAT(mi.COLLEGE_DATE,\'%a\') LIKE \'Sun\',\'U\',SUBSTR(DATE_FORMAT(mi.COLLEGE_DATE,\'%a\'),1,1)))) IN cpv.DAYS)>0)'.$extra['WHERE2'].' UNION select cp.SECONDARY_TEACHER_ID FROM missing_attendance mi,course_periods cp,colleges s,course_period_var cpv WHERE mi.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.PERIOD_ID=mi.PERIOD_ID AND s.ID=mi.COLLEGE_ID AND mi.COLLEGE_ID=\''.  UserCollege().'\' AND (mi.COLLEGE_DATE=cpv.COURSE_PERIOD_DATE OR POSITION(IF(DATE_FORMAT(mi.COLLEGE_DATE,\'%a\') LIKE \'Thu\',\'H\',(IF(DATE_FORMAT(mi.COLLEGE_DATE,\'%a\') LIKE \'Sun\',\'U\',SUBSTR(DATE_FORMAT(mi.COLLEGE_DATE,\'%a\'),1,1)))) IN cpv.DAYS)>0)'.$extra['WHERE2'];             
 $res_st = DBGet(DBQuery($sql_st));
 //echo count($res_st);
 $a = 0;
@@ -248,8 +248,8 @@ function GetStaffListNoAccess()
                 $sql='SELECT DISTINCT CONCAT(s.LAST_NAME, \' \' ,s.FIRST_NAME) AS FULL_NAME,CONCAT(UPPER(MID(s.PROFILE,1,1)),MID(s.PROFILE,2,LENGTH(s.PROFILE)-1)) AS PROFILE,s.PROFILE_ID,s.IS_DISABLE,
                       s.STAFF_ID FROM people s ,students st,student_enrollment ssm WHERE st.STUDENT_ID=ssm.STUDENT_ID AND
                       ssm.SYEAR='.UserSyear().' AND s.PROFILE IS NOT NULL AND s.PROFILE_ID=4
-                      AND '.($_REQUEST['_search_all_colleges']=='Y'?'ssm.SCHOOL_ID IN (SELECT SCHOOL_ID FROM college_years WHERE SYEAR='.UserSyear().')':'ssm.SCHOOL_ID='.UserCollege()).' 
-                      AND s.STAFF_ID IN (SELECT PERSON_ID FROM students_join_people sjp WHERE ssm.STUDENT_ID = sjp.STUDENT_ID AND ssm.SCHOOL_ID='.($_REQUEST['_search_all_colleges']=='Y'?'ssm.SCHOOL_ID IN (SELECT SCHOOL_ID FROM college_years WHERE SYEAR='.UserSyear().')':'ssm.SCHOOL_ID='.UserCollege()).' 
+                      AND '.($_REQUEST['_search_all_colleges']=='Y'?'ssm.COLLEGE_ID IN (SELECT COLLEGE_ID FROM college_years WHERE SYEAR='.UserSyear().')':'ssm.COLLEGE_ID='.UserCollege()).' 
+                      AND s.STAFF_ID IN (SELECT PERSON_ID FROM students_join_people sjp WHERE ssm.STUDENT_ID = sjp.STUDENT_ID AND ssm.COLLEGE_ID='.($_REQUEST['_search_all_colleges']=='Y'?'ssm.COLLEGE_ID IN (SELECT COLLEGE_ID FROM college_years WHERE SYEAR='.UserSyear().')':'ssm.COLLEGE_ID='.UserCollege()).' 
                       AND ssm.SYEAR='.UserSyear().') AND s.IS_DISABLE IS NULL AND s.PROFILE=\'parent\' AND s.PROFILE_ID=4';
 		if($_REQUEST['last'])
 			$sql .= ' AND UPPER(s.LAST_NAME) LIKE \''.singleQuoteReplace("'","\'",strtoupper($_REQUEST['last'])).'%\' ';

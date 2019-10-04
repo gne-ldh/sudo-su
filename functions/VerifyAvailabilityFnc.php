@@ -471,7 +471,7 @@ function VerifyStudentSchedule($course_RET,$student_id='')
     }
     if(count($course_RET)>0)
     {
-        $schedule_exist = DBGet(DBQuery("SELECT *  FROM `schedule` WHERE `syear` =".$course_RET[1]['SYEAR']." AND `college_id` =".$course_RET[1]['SCHOOL_ID']." AND `student_id` =".$student_id." AND `course_id` =".$course_RET[1]['COURSE_ID']." AND `course_period_id` = ".$course_RET[1]['COURSE_PERIOD_ID'].' AND (END_DATE>="'.date('Y-m-d').'" OR END_DATE IS NULL OR END_DATE="0000-00-00")'));
+        $schedule_exist = DBGet(DBQuery("SELECT *  FROM `schedule` WHERE `syear` =".$course_RET[1]['SYEAR']." AND `college_id` =".$course_RET[1]['COLLEGE_ID']." AND `student_id` =".$student_id." AND `course_id` =".$course_RET[1]['COURSE_ID']." AND `course_period_id` = ".$course_RET[1]['COURSE_PERIOD_ID'].' AND (END_DATE>="'.date('Y-m-d').'" OR END_DATE IS NULL OR END_DATE="0000-00-00")'));
         if(count($schedule_exist)>0)
         {
             return 'Course period already scheduled';

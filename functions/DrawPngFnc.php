@@ -37,7 +37,7 @@ function DrawPNG($src,$extra='')
 function DrawLogo()
 {	                        
     
-                        $sch_img_info= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE SCHOOL_ID='. UserCollege().' AND FILE_INFO=\'schlogo\''));
+                        $sch_img_info= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE COLLEGE_ID='. UserCollege().' AND FILE_INFO=\'schlogo\''));
                         if(!$_REQUEST['new_college'] && count($sch_img_info)>0){
 //                            $image="<img src='data:image/jpeg;base64,".base64_encode($sch_img_info[1]['CONTENT'])."' class=img-responsive />";
 //                        $logo_ret = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE college_id=\''.  UserCollege().'\' AND program=\'CollegeLogo\''));    
@@ -57,7 +57,7 @@ function DrawLogo()
 function DrawLogoReport()
 {	                        
     
-                        $sch_img_info= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE SCHOOL_ID='. UserCollege().' AND FILE_INFO=\'schlogo\''));
+                        $sch_img_info= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE COLLEGE_ID='. UserCollege().' AND FILE_INFO=\'schlogo\''));
                         if(!$_REQUEST['new_college'] && count($sch_img_info)>0){
 //                            $image="<img src='data:image/jpeg;base64,".base64_encode($sch_img_info[1]['CONTENT'])."' class=img-responsive />";
 //                        $logo_ret = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE college_id=\''.  UserCollege().'\' AND program=\'CollegeLogo\''));    

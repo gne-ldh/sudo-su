@@ -30,9 +30,9 @@
 function BlockDelete($item) {
     switch ($item) {
         case 'college':
-            $find_student = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) AS STUDENT_EXIST FROM student_enrollment WHERE SCHOOL_ID=\'' . UserCollege() . '\''));
+            $find_student = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) AS STUDENT_EXIST FROM student_enrollment WHERE COLLEGE_ID=\'' . UserCollege() . '\''));
             $find_student = $find_student[1]['STUDENT_EXIST'];
-            $find_staff = DBGet(DBQuery('SELECT COUNT(STAFF_ID) AS STAFF_EXIST FROM staff WHERE CURRENT_SCHOOL_ID=\'' . UserCollege() . '\''));
+            $find_staff = DBGet(DBQuery('SELECT COUNT(STAFF_ID) AS STAFF_EXIST FROM staff WHERE CURRENT_COLLEGE_ID=\'' . UserCollege() . '\''));
             $find_staff = $find_staff[1]['STAFF_EXIST'];
             if ($find_student > 0 && $find_staff > 0) {
                 PopTable('header', 'Unable to Delete');

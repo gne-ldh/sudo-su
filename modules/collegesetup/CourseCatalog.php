@@ -71,7 +71,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'choose_course') {
 
         $header .= '<TD><b>' . $RET['SHORT_NAME'] . '</b><br>Short Name</TD>';
 
-        $teachers_RET = DBGet(DBQuery("SELECT concat((COALESCE(LAST_NAME,' '), ', ', COALESCE(FIRST_NAME,' '), ' ', COALESCE(MIDDLE_NAME,' '))) as Teacher FROM staff WHERE (SCHOOLS IS NULL OR strpos(SCHOOLS,'," . UserCollege() . ",')>0) AND SYEAR='" . UserSyear() . "' AND PROFILE='teacher' and STAFF_ID='" . $RET['TEACHER_ID'] . "' ORDER BY LAST_NAME,FIRST_NAME"));
+        $teachers_RET = DBGet(DBQuery("SELECT concat((COALESCE(LAST_NAME,' '), ', ', COALESCE(FIRST_NAME,' '), ' ', COALESCE(MIDDLE_NAME,' '))) as Teacher FROM staff WHERE (COLLEGES IS NULL OR strpos(COLLEGES,'," . UserCollege() . ",')>0) AND SYEAR='" . UserSyear() . "' AND PROFILE='teacher' and STAFF_ID='" . $RET['TEACHER_ID'] . "' ORDER BY LAST_NAME,FIRST_NAME"));
 
         $header .= '<TD><b>' . $teachers_RET[1]['TEACHER'] . '</b><br>Teacher</TD>';
         $header .= '<TD><b>' . $RET['ROOM'] . '</b><br>Location</TD>';
@@ -81,7 +81,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'choose_course') {
         $header .= '<TD><b>' . $RET['DAYS'] . '</b><br>Days</td>';
         $header .= '</TR><TR>';
         $mp = $RET['MARKING_PERIOD_ID'];
-        $mp_RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,'2' AS TABLE,SORT_ORDER FROM college_quarters WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' and marking_period_id='" . $mp . "' UNION SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,'1' AS TABLE,SORT_ORDER FROM college_semesters WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' and marking_period_id='" . $mp . "' UNION SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,'0' AS TABLE,SORT_ORDER FROM college_years WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' and marking_period_id='" . $mp . "' ORDER BY 3,4"));
+        $mp_RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,'2' AS TABLE,SORT_ORDER FROM college_quarters WHERE COLLEGE_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' and marking_period_id='" . $mp . "' UNION SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,'1' AS TABLE,SORT_ORDER FROM college_semesters WHERE COLLEGE_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' and marking_period_id='" . $mp . "' UNION SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,'0' AS TABLE,SORT_ORDER FROM college_years WHERE COLLEGE_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' and marking_period_id='" . $mp . "' ORDER BY 3,4"));
 
 
         $header .= '<TD><b>' . $mp_RET[1]['TITLE'] . '</b><br>Marking Period</TD>';
@@ -90,7 +90,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'choose_course') {
         $header .= '<TD><b>' . gr($RET['GENDER_RESTRICTION']) . '</b><br>Gender Restriction' . '</TD>';
 
         if ($RET['GRADE_SCALE_ID'] != '') {
-            $sql = "SELECT TITLE,ID FROM report_card_grade_scales WHERE SYEAR='" . UserSyear() . "' AND SCHOOL_ID='" . UserCollege() . "' and ID='" . $RET['GRADE_SCALE_ID'] . "'";
+            $sql = "SELECT TITLE,ID FROM report_card_grade_scales WHERE SYEAR='" . UserSyear() . "' AND COLLEGE_ID='" . UserCollege() . "' and ID='" . $RET['GRADE_SCALE_ID'] . "'";
             $options_RET = DBGet(DBQuery($sql));
             $header .= '<TD><b>' . $options_RET[1]['TITLE'] . '</b><br>Grading Scale</TD>';
         } else
@@ -153,7 +153,7 @@ else {
         echo '<div class="row">';
         echo '<div class="col-md-4">';
     }
-    $mp_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,\'2\'  FROM college_quarters WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' UNION SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,\'1\' FROM college_semesters WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' UNION SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,\'0\' FROM college_years WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY 3,4'));
+    $mp_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,\'2\'  FROM college_quarters WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' UNION SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,\'1\' FROM college_semesters WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' UNION SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,\'0\' FROM college_years WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY 3,4'));
     unset($options);
     if (count($mp_RET)) {
         foreach ($mp_RET as $key => $value) {
@@ -180,7 +180,7 @@ else {
         //echo '</TD>';
 
         if ($_REQUEST['marking_period_id'] && $_REQUEST['marking_period_id'] != '') {
-            $sql = 'SELECT subject_id,TITLE FROM course_subjects WHERE SCHOOL_ID=\'' . UserCollege() . '\' and syear=\'' . UserSyear() . '\' ORDER BY TITLE';
+            $sql = 'SELECT subject_id,TITLE FROM course_subjects WHERE COLLEGE_ID=\'' . UserCollege() . '\' and syear=\'' . UserSyear() . '\' ORDER BY TITLE';
             $QI = DBQuery($sql);
             $subjects_RET = DBGet($QI);
 
@@ -206,7 +206,7 @@ else {
                 //For Courses
                 if ($_REQUEST['subject_id'] && $_REQUEST['subject_id'] != '') {
 
-                    $sql = 'SELECT COURSE_ID,TITLE FROM courses WHERE SUBJECT_ID=\'' . $_REQUEST[subject_id] . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY TITLE';
+                    $sql = 'SELECT COURSE_ID,TITLE FROM courses WHERE SUBJECT_ID=\'' . $_REQUEST[subject_id] . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' ORDER BY TITLE';
                     $QI = DBQuery($sql);
                     $courses_RET = DBGet($QI);
 
@@ -260,7 +260,7 @@ function CreateList($dli = '', $pli = '', $sli = '', $cli = '', $mp = '', $mp_na
         $c_ret = DBGet(DBQuery("select title from courses where course_id='" . $cli . "'"));
 
     if ($mp != '') {
-        $sql = 'SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,\'2\'  FROM college_quarters WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' and marking_period_id=\'' . $mp . '\' UNION SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,\'1\' FROM college_semesters WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' and marking_period_id=\'' . $mp . '\' UNION SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,\'0\'  FROM college_years WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' and marking_period_id=\'' . $mp . '\' ORDER BY 3,4';
+        $sql = 'SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,\'2\'  FROM college_quarters WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' and marking_period_id=\'' . $mp . '\' UNION SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,\'1\' FROM college_semesters WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' and marking_period_id=\'' . $mp . '\' UNION SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,\'0\'  FROM college_years WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' and marking_period_id=\'' . $mp . '\' ORDER BY 3,4';
         $mp_ret1 = DBGet(DBQuery($sql));
         $mp_name = $mp_ret1[1]['TITLE'];
     }
@@ -388,7 +388,7 @@ function CreateExcel($dli = '', $pli = '', $sli = '', $cli = '', $mp = '', $mp_n
         $c_ret = DBGet(DBQuery('select title from courses where course_id=\'' . $cli . '\''));
 
     if ($mp != '') {
-        $sql = 'SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,\'2\' AS TABLE,SORT_ORDER FROM college_quarters WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' and marking_period_id=\'' . $mp . '\' UNION SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,\'1\' AS TABLE,SORT_ORDER FROM college_semesters WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' and marking_period_id=\'' . $mp . '\' UNION SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,\'0\' AS TABLE,SORT_ORDER FROM college_years WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' and marking_period_id=\'' . $mp . '\' ORDER BY 3,4';
+        $sql = 'SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,\'2\' AS TABLE,SORT_ORDER FROM college_quarters WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' and marking_period_id=\'' . $mp . '\' UNION SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,\'1\' AS TABLE,SORT_ORDER FROM college_semesters WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' and marking_period_id=\'' . $mp . '\' UNION SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,\'0\' AS TABLE,SORT_ORDER FROM college_years WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' and marking_period_id=\'' . $mp . '\' ORDER BY 3,4';
 
         $mp_ret1 = DBGet(DBQuery($sql));
         $mp_name = $mp_ret1[1]['TITLE'];

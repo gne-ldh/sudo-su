@@ -36,20 +36,20 @@ if($_REQUEST['fields']['TITLE'] || $_REQUEST['fields']['FIRST_NAME'] || $_REQUES
     {
     if(isset($extra['user_profile']) &&  ($extra['user_profile']=='parent'))
     {
-        $extra['SELECT'] .= ',s.TITLE,s.FIRST_NAME,s.LAST_NAME,s.MIDDLE_NAME,s.birthdate,s.primary_language_id,s.second_language_id,s.third_language_id,la.USERNAME,la.LAST_LOGIN,s.EMAIL,s.IS_DISABLE,s.CURRENT_SCHOOL_ID,ssr.SCHOOL_ID as SCHOOLS ';
+        $extra['SELECT'] .= ',s.TITLE,s.FIRST_NAME,s.LAST_NAME,s.MIDDLE_NAME,s.birthdate,s.primary_language_id,s.second_language_id,s.third_language_id,la.USERNAME,la.LAST_LOGIN,s.EMAIL,s.IS_DISABLE,s.CURRENT_COLLEGE_ID,ssr.COLLEGE_ID as COLLEGES ';
     }
     else {
-         $extra['SELECT'] .= ',s.TITLE,s.FIRST_NAME,s.LAST_NAME,s.MIDDLE_NAME,s.GENDER,s.birthdate,s.primary_language_id,s.second_language_id,s.third_language_id,la.USERNAME,la.LAST_LOGIN,s.EMAIL,s.PHONE,s.IS_DISABLE,s.CURRENT_SCHOOL_ID,ssr.SCHOOL_ID as SCHOOLS ';
+         $extra['SELECT'] .= ',s.TITLE,s.FIRST_NAME,s.LAST_NAME,s.MIDDLE_NAME,s.GENDER,s.birthdate,s.primary_language_id,s.second_language_id,s.third_language_id,la.USERNAME,la.LAST_LOGIN,s.EMAIL,s.PHONE,s.IS_DISABLE,s.CURRENT_COLLEGE_ID,ssr.COLLEGE_ID as COLLEGES ';
     }
     }
     else
     {
         if(isset($extra['user_profile']) &&  ($extra['user_profile']=='parent'))
         {
-        $extra['SELECT'] .= ',s.TITLE,s.FIRST_NAME,s.LAST_NAME,s.MIDDLE_NAME,la.USERNAME,la.LAST_LOGIN,s.EMAIL,s.IS_DISABLE,s.HOME_PHONE,s.WORK_PHONE,s.CELL_PHONE,s.PROFILE,s.CURRENT_SCHOOL_ID,ssm.SCHOOL_ID as SCHOOLS ';
+        $extra['SELECT'] .= ',s.TITLE,s.FIRST_NAME,s.LAST_NAME,s.MIDDLE_NAME,la.USERNAME,la.LAST_LOGIN,s.EMAIL,s.IS_DISABLE,s.HOME_PHONE,s.WORK_PHONE,s.CELL_PHONE,s.PROFILE,s.CURRENT_COLLEGE_ID,ssm.COLLEGE_ID as COLLEGES ';
         }
         else {
-         $extra['SELECT'] .= ',s.TITLE,s.FIRST_NAME,s.LAST_NAME,s.MIDDLE_NAME,s.GENDER,la.USERNAME,la.LAST_LOGIN,s.EMAIL,s.PHONE,s.IS_DISABLE,s.CURRENT_SCHOOL_ID,ssm.SCHOOL_ID as SCHOOLS ';
+         $extra['SELECT'] .= ',s.TITLE,s.FIRST_NAME,s.LAST_NAME,s.MIDDLE_NAME,s.GENDER,la.USERNAME,la.LAST_LOGIN,s.EMAIL,s.PHONE,s.IS_DISABLE,s.CURRENT_COLLEGE_ID,ssm.COLLEGE_ID as COLLEGES ';
         }
     }
          
@@ -171,7 +171,7 @@ if($_REQUEST['fields']['CATEGORY'] || $_REQUEST['fields']['JOB_TITLE'] || $_REQU
 
 
 if(!$extra['functions'])
-	$extra['functions'] = array('LAST_LOGIN'=>'ProperDate','SCHOOLS'=>'Tot_College');
+	$extra['functions'] = array('LAST_LOGIN'=>'ProperDate','COLLEGES'=>'Tot_College');
 
 if($_REQUEST['search_modfunc']=='list')
 {
@@ -179,7 +179,7 @@ if($_REQUEST['search_modfunc']=='list')
 	if(!$fields_list)
 	{
                 if($_REQUEST['modname']=='users/UserAdvancedReportStaff.php'){
-		$fields_list = array('FULL_NAME'=>'Last, First','FIRST_NAME'=>'First','TITLE'=>'Title','LAST_NAME'=>'Last','MIDDLE_NAME'=>'Middle','GENDER'=>'Gender','BIRTHDATE'=>'Date of birth','Ethnicity'=>'Ethnicity','PRIMARY_LANGUAGE_ID'=>'Primary Language','SECOND_LANGUAGE_ID'=>'Second Language','THIRD_LANGUAGE_ID'=>'Third Language','STAFF_ADDRESS1_PRIMARY'=>'Street Address 1','STAFF_ADDRESS2_PRIMARY'=>'Street Address 2','STAFF_CITY_PRIMARY'=>'City','STAFF_STATE_PRIMARY'=>'State','STAFF_ZIP_PRIMARY'=>'Zip/Postal Code','STAFF_ADDRESS1_MAIL'=>'Mailing Street Address 1','STAFF_ADDRESS2_MAIL'=>'Mailing Street Address 2','STAFF_CITY_MAIL'=>'Mailing City','STAFF_STATE_MAIL'=>'Mailing State','STAFF_ZIP_MAIL'=>'Mailing Zip/Postal Code','STAFF_HOME_PHONE'=>'Home Phone','STAFF_MOBILE_PHONE'=>'Mobile Phone','STAFF_WORK_PHONE'=>'Work Phone','STAFF_WORK_EMAIL'=>'Work Email','STAFF_PERSONAL_EMAIL'=>'Personal Email','STAFF_EMERGENCY_FIRST_NAME'=>'Emergency Contact First Name','STAFF_EMERGENCY_LAST_NAME'=>'Emergency Contact Last Name','STAFF_EMERGENCY_RELATIONSHIP'=>'Emergency Contact Relationship','STAFF_EMERGENCY_HOME_PHONE'=>'Emergency Contact Home Phone','STAFF_EMERGENCY_MOBILE_PHONE'=>'Emergency Contact Mobile Phone','STAFF_EMERGENCY_WORK_PHONE'=>'Emergency Contact Work Phone','STAFF_EMERGENCY_EMAIL'=>'Emergency Contact Email','CATEGORY'=>'Staff Category','JOB_TITLE'=>'Job Title','JOINING_DATE'=>'Joining Date','END_DATE'=>'End Date','STAFF_ID'=>'Staff Id','ROLLOVER_ID'=>'Last Year Id','SCHOOLS'=>'Colleges','USERNAME'=>'Username','IS_DISABLE'=>'Disable','EMAIL'=>'Email ID','PHONE'=>'Phone','LAST_LOGIN'=>'Last Login','PROFILE'=>'User Profile');
+		$fields_list = array('FULL_NAME'=>'Last, First','FIRST_NAME'=>'First','TITLE'=>'Title','LAST_NAME'=>'Last','MIDDLE_NAME'=>'Middle','GENDER'=>'Gender','BIRTHDATE'=>'Date of birth','Ethnicity'=>'Ethnicity','PRIMARY_LANGUAGE_ID'=>'Primary Language','SECOND_LANGUAGE_ID'=>'Second Language','THIRD_LANGUAGE_ID'=>'Third Language','STAFF_ADDRESS1_PRIMARY'=>'Street Address 1','STAFF_ADDRESS2_PRIMARY'=>'Street Address 2','STAFF_CITY_PRIMARY'=>'City','STAFF_STATE_PRIMARY'=>'State','STAFF_ZIP_PRIMARY'=>'Zip/Postal Code','STAFF_ADDRESS1_MAIL'=>'Mailing Street Address 1','STAFF_ADDRESS2_MAIL'=>'Mailing Street Address 2','STAFF_CITY_MAIL'=>'Mailing City','STAFF_STATE_MAIL'=>'Mailing State','STAFF_ZIP_MAIL'=>'Mailing Zip/Postal Code','STAFF_HOME_PHONE'=>'Home Phone','STAFF_MOBILE_PHONE'=>'Mobile Phone','STAFF_WORK_PHONE'=>'Work Phone','STAFF_WORK_EMAIL'=>'Work Email','STAFF_PERSONAL_EMAIL'=>'Personal Email','STAFF_EMERGENCY_FIRST_NAME'=>'Emergency Contact First Name','STAFF_EMERGENCY_LAST_NAME'=>'Emergency Contact Last Name','STAFF_EMERGENCY_RELATIONSHIP'=>'Emergency Contact Relationship','STAFF_EMERGENCY_HOME_PHONE'=>'Emergency Contact Home Phone','STAFF_EMERGENCY_MOBILE_PHONE'=>'Emergency Contact Mobile Phone','STAFF_EMERGENCY_WORK_PHONE'=>'Emergency Contact Work Phone','STAFF_EMERGENCY_EMAIL'=>'Emergency Contact Email','CATEGORY'=>'Staff Category','JOB_TITLE'=>'Job Title','JOINING_DATE'=>'Joining Date','END_DATE'=>'End Date','STAFF_ID'=>'Staff Id','ROLLOVER_ID'=>'Last Year Id','COLLEGES'=>'Colleges','USERNAME'=>'Username','IS_DISABLE'=>'Disable','EMAIL'=>'Email ID','PHONE'=>'Phone','LAST_LOGIN'=>'Last Login','PROFILE'=>'User Profile');
                 if($extra['field_names'])
                 {
                     $fields_list += $extra['field_names'];
@@ -187,7 +187,7 @@ if($_REQUEST['search_modfunc']=='list')
                 }
 			
                 }else{
-                    $fields_list = array('FULL_NAME'=>'Last, First','FIRST_NAME'=>'First','TITLE'=>'Title','LAST_NAME'=>'Last','MIDDLE_NAME'=>'Middle','STREET_ADDRESS_1'=>'Street Address 1','STREET_ADDRESS_2'=>'Street Address 2','CITY'=>'City','STATE'=>'State','ZIPCODE'=>'Zip/Postal Code','HOME_PHONE'=>'Home Phone','CELL_PHONE'=>'Mobile Phone','WORK_PHONE'=>'Work Phone','SCHOOLS'=>'Colleges','USERNAME'=>'Username','IS_DISABLE'=>'Disable','EMAIL'=>'Email ID','LAST_LOGIN'=>'Last Login','PROFILE'=>'User Profile');
+                    $fields_list = array('FULL_NAME'=>'Last, First','FIRST_NAME'=>'First','TITLE'=>'Title','LAST_NAME'=>'Last','MIDDLE_NAME'=>'Middle','STREET_ADDRESS_1'=>'Street Address 1','STREET_ADDRESS_2'=>'Street Address 2','CITY'=>'City','STATE'=>'State','ZIPCODE'=>'Zip/Postal Code','HOME_PHONE'=>'Home Phone','CELL_PHONE'=>'Mobile Phone','WORK_PHONE'=>'Work Phone','COLLEGES'=>'Colleges','USERNAME'=>'Username','IS_DISABLE'=>'Disable','EMAIL'=>'Email ID','LAST_LOGIN'=>'Last Login','PROFILE'=>'User Profile');
                 if($extra['field_names'])
                 {
                     $fields_list += $extra['field_names'];
@@ -242,9 +242,9 @@ if($_REQUEST['search_modfunc']=='list')
                             $field='HOME_PHONE';
                             $columns[$field]='Phone';
                         }
-                        elseif(strtoupper($field)=='SCHOOLS')
+                        elseif(strtoupper($field)=='COLLEGES')
                         {
-                            $field='SCHOOLS';
+                            $field='COLLEGES';
                             $columns[$field]='Colleges';
                         }
                         else
@@ -342,13 +342,13 @@ else
 	{
            if($_REQUEST['modname']=='users/UserAdvancedReportStaff.php'){
 		if(AllowUse('users/User.php&category_id=1'))
-			$fields_list['General'] = array('FULL_NAME'=>'Last, First','FIRST_NAME'=>'First','TITLE'=>'Title','LAST_NAME'=>'Last','MIDDLE_NAME'=>'Middle','GENDER'=>'Gender','BIRTHDATE'=>'Date of Birth','Ethnicity'=>'Ethnicity','PRIMARY_LANGUAGE_ID'=>'Primary Language','SECOND_LANGUAGE_ID'=>'Second Language','THIRD_LANGUAGE_ID'=>'Third Language','STAFF_ADDRESS1_PRIMARY'=>'Street Address 1','STAFF_ADDRESS2_PRIMARY'=>'Street Address 2','STAFF_CITY_PRIMARY'=>'City','STAFF_STATE_PRIMARY'=>'State','STAFF_ZIP_PRIMARY'=>'Zip/Postal Code','STAFF_ADDRESS1_MAIL'=>'Mailing Street Address 1','STAFF_ADDRESS2_MAIL'=>'Mailing Street Address 2','STAFF_CITY_MAIL'=>'Mailing City','STAFF_STATE_MAIL'=>'Mailing State','STAFF_ZIP_MAIL'=>'Mailing Zip/Postal Code','STAFF_HOME_PHONE'=>'Home Phone','STAFF_MOBILE_PHONE'=>'Mobile Phone','STAFF_WORK_PHONE'=>'Work Phone','STAFF_WORK_EMAIL'=>'Work Email','STAFF_PERSONAL_EMAIL'=>'Personal Email','STAFF_EMERGENCY_FIRST_NAME'=>'Emergency Contact First Name','STAFF_EMERGENCY_LAST_NAME'=>'Emergency Contact Last Name','STAFF_EMERGENCY_RELATIONSHIP'=>'Emergency Contact Relationship','STAFF_EMERGENCY_HOME_PHONE'=>'Emergency Contact Home Phone','STAFF_EMERGENCY_MOBILE_PHONE'=>'Emergency Contact Mobile Phone','STAFF_EMERGENCY_WORK_PHONE'=>'Emergency Contact Work Phone','STAFF_EMERGENCY_EMAIL'=>'Emergency Contact Email','CATEGORY'=>'Staff Category','JOB_TITLE'=>'Job Title','JOINING_DATE'=>'Joining Date','END_DATE'=>'End Date','STAFF_ID'=>'Staff Id','ROLLOVER_ID'=>'Last Year Id','SCHOOLS'=>'Colleges','USERNAME'=>'Username','IS_DISABLE'=>'Disable','EMAIL'=>'Email ID','PHONE'=>'Phone','LAST_LOGIN'=>'Last Login','PROFILE'=>'User Profile');
+			$fields_list['General'] = array('FULL_NAME'=>'Last, First','FIRST_NAME'=>'First','TITLE'=>'Title','LAST_NAME'=>'Last','MIDDLE_NAME'=>'Middle','GENDER'=>'Gender','BIRTHDATE'=>'Date of Birth','Ethnicity'=>'Ethnicity','PRIMARY_LANGUAGE_ID'=>'Primary Language','SECOND_LANGUAGE_ID'=>'Second Language','THIRD_LANGUAGE_ID'=>'Third Language','STAFF_ADDRESS1_PRIMARY'=>'Street Address 1','STAFF_ADDRESS2_PRIMARY'=>'Street Address 2','STAFF_CITY_PRIMARY'=>'City','STAFF_STATE_PRIMARY'=>'State','STAFF_ZIP_PRIMARY'=>'Zip/Postal Code','STAFF_ADDRESS1_MAIL'=>'Mailing Street Address 1','STAFF_ADDRESS2_MAIL'=>'Mailing Street Address 2','STAFF_CITY_MAIL'=>'Mailing City','STAFF_STATE_MAIL'=>'Mailing State','STAFF_ZIP_MAIL'=>'Mailing Zip/Postal Code','STAFF_HOME_PHONE'=>'Home Phone','STAFF_MOBILE_PHONE'=>'Mobile Phone','STAFF_WORK_PHONE'=>'Work Phone','STAFF_WORK_EMAIL'=>'Work Email','STAFF_PERSONAL_EMAIL'=>'Personal Email','STAFF_EMERGENCY_FIRST_NAME'=>'Emergency Contact First Name','STAFF_EMERGENCY_LAST_NAME'=>'Emergency Contact Last Name','STAFF_EMERGENCY_RELATIONSHIP'=>'Emergency Contact Relationship','STAFF_EMERGENCY_HOME_PHONE'=>'Emergency Contact Home Phone','STAFF_EMERGENCY_MOBILE_PHONE'=>'Emergency Contact Mobile Phone','STAFF_EMERGENCY_WORK_PHONE'=>'Emergency Contact Work Phone','STAFF_EMERGENCY_EMAIL'=>'Emergency Contact Email','CATEGORY'=>'Staff Category','JOB_TITLE'=>'Job Title','JOINING_DATE'=>'Joining Date','END_DATE'=>'End Date','STAFF_ID'=>'Staff Id','ROLLOVER_ID'=>'Last Year Id','COLLEGES'=>'Colleges','USERNAME'=>'Username','IS_DISABLE'=>'Disable','EMAIL'=>'Email ID','PHONE'=>'Phone','LAST_LOGIN'=>'Last Login','PROFILE'=>'User Profile');
 //                        $fields_list['Certificate'] = array('STAFF_CERTIFICATION_DATE'=>'Staff Certification Date','STAFF_CERTIFICATION_EXPIRY_DATE'=>'Staff Certification Expiry Date');
 		if($extra['field_names'])
 			$fields_list['General'] += $extra['field_names'];
 //                        $field_list_cert['Certificate'] +=$extra_cert['field_names'];
             }else{
-                	$fields_list['General'] = array('FULL_NAME'=>'Last, First','FIRST_NAME'=>'First','TITLE'=>'Title','LAST_NAME'=>'Last','MIDDLE_NAME'=>'Middle','STREET_ADDRESS_1'=>'Street Address 1','STREET_ADDRESS_2'=>'Street Address 2','CITY'=>'City','STATE'=>'State','ZIPCODE'=>'Zip/Postal Code','HOME_PHONE'=>'Home Phone','CELL_PHONE'=>'Mobile Phone','WORK_PHONE'=>'Work Phone','SCHOOLS'=>'Colleges','USERNAME'=>'Username','IS_DISABLE'=>'Disable','EMAIL'=>'Email ID','LAST_LOGIN'=>'Last Login','PROFILE'=>'User Profile');
+                	$fields_list['General'] = array('FULL_NAME'=>'Last, First','FIRST_NAME'=>'First','TITLE'=>'Title','LAST_NAME'=>'Last','MIDDLE_NAME'=>'Middle','STREET_ADDRESS_1'=>'Street Address 1','STREET_ADDRESS_2'=>'Street Address 2','CITY'=>'City','STATE'=>'State','ZIPCODE'=>'Zip/Postal Code','HOME_PHONE'=>'Home Phone','CELL_PHONE'=>'Mobile Phone','WORK_PHONE'=>'Work Phone','COLLEGES'=>'Colleges','USERNAME'=>'Username','IS_DISABLE'=>'Disable','EMAIL'=>'Email ID','LAST_LOGIN'=>'Last Login','PROFILE'=>'User Profile');
 //                        $fields_list['Certificate'] = array('STAFF_CERTIFICATION_DATE'=>'Staff Certification Date','STAFF_CERTIFICATION_EXPIRY_DATE'=>'Staff Certification Expiry Date');
 		if($extra['field_names'])
 			$fields_list['General'] += $extra['field_names'];

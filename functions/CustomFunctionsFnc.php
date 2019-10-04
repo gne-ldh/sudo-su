@@ -209,9 +209,9 @@ function Prompt_rollover($title = 'Confirm', $question = '', $message = '', $pdf
 
 
 
-        $prev_st_d = DBGet(DBQuery('SELECT END_DATE FROM college_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' '));
+        $prev_st_d = DBGet(DBQuery('SELECT END_DATE FROM college_years WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' '));
         echo '<input type=hidden id=prev_start_date value=' . $prev_st_d[1]['END_DATE'] . ' >';
-        $check_ss = DBGet(DBQuery('SELECT * FROM college_semesters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY MARKING_PERIOD_ID'));
+        $check_ss = DBGet(DBQuery('SELECT * FROM college_semesters WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' ORDER BY MARKING_PERIOD_ID'));
         if (count($check_ss) > 0) {
             $i = 4;
             $j = 4;
@@ -246,7 +246,7 @@ function Prompt_rollover($title = 'Confirm', $question = '', $message = '', $pdf
                 echo '</div>'; //.row
 
 
-                $check_sq = DBGet(DBQuery('SELECT * FROM college_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND SEMESTER_ID=\'' . $ss_d['MARKING_PERIOD_ID'] . '\' '));
+                $check_sq = DBGet(DBQuery('SELECT * FROM college_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND SEMESTER_ID=\'' . $ss_d['MARKING_PERIOD_ID'] . '\' '));
                 if (count($check_sq) > 0) {
                     $q = $j + 1;
                     $q_val = '';
@@ -279,7 +279,7 @@ function Prompt_rollover($title = 'Confirm', $question = '', $message = '', $pdf
                         echo '</div>'; //.col-md-4
                         echo '</div>'; //.row
 
-                        $check_sp = DBGet(DBQuery('SELECT * FROM college_progress_periods WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND QUARTER_ID=\'' . $sq_d['MARKING_PERIOD_ID'] . '\'   '));
+                        $check_sp = DBGet(DBQuery('SELECT * FROM college_progress_periods WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND QUARTER_ID=\'' . $sq_d['MARKING_PERIOD_ID'] . '\'   '));
                         if (count($check_sp) > 0) {
 
                             $p = $q + 1;
@@ -649,7 +649,7 @@ function GetStuListAttn(& $extra) {
                     $sql .= 'CONCAT(s.LAST_NAME,\', \',coalesce(s.COMMON_NAME,s.FIRST_NAME)) AS FULL_NAME,';
                 else
                     $sql .= 'CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME,\' \',COALESCE(s.MIDDLE_NAME,\' \')) AS FULL_NAME,';
-                $sql .= 's.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,ssm.SCHOOL_ID AS LIST_SCHOOL_ID,ssm.GRADE_ID ' . $extra['SELECT'];
+                $sql .= 's.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,ssm.COLLEGE_ID AS LIST_COLLEGE_ID,ssm.GRADE_ID ' . $extra['SELECT'];
                 if ($_REQUEST['include_inactive'] == 'Y')
                     $sql .= ',' . db_case(array('(ssm.SYEAR=\'' . UserSyear() . '\' AND (ssm.START_DATE IS NOT NULL AND (\'' . date('Y-m-d', strtotime($extra['DATE'])) . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL)))', 'true', "'<FONT color=green>Active</FONT>'", "'<FONT color=red>Inactive</FONT>'")) . ' AS ACTIVE ';
             }
@@ -661,12 +661,12 @@ function GetStuListAttn(& $extra) {
                 $sql .= ' AND ssm.SYEAR=\'' . UserSyear() . '\' AND (ssm.START_DATE IS NOT NULL AND (\'' . date('Y-m-d', strtotime($extra['DATE'])) . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL)) ';
 
             if (UserCollege() && $_REQUEST['_search_all_colleges'] != 'Y')
-                $sql .= ' AND ssm.SCHOOL_ID=\'' . UserCollege() . '\'';
+                $sql .= ' AND ssm.COLLEGE_ID=\'' . UserCollege() . '\'';
             else {
 //				
-                $sql .= ' AND ssm.SCHOOL_ID IN (' . GetUserColleges(UserID(), true) . ') ';
-                $extra['columns_after']['LIST_SCHOOL_ID'] = 'College';
-                $functions['LIST_SCHOOL_ID'] = 'GetCollege';
+                $sql .= ' AND ssm.COLLEGE_ID IN (' . GetUserColleges(UserID(), true) . ') ';
+                $extra['columns_after']['LIST_COLLEGE_ID'] = 'College';
+                $functions['LIST_COLLEGE_ID'] = 'GetCollege';
             }
 
             if (!$extra['SELECT_ONLY'] && $_REQUEST['include_inactive'] == 'Y')
@@ -682,14 +682,14 @@ function GetStuListAttn(& $extra) {
                     $sql .= 'CONCAT(s.LAST_NAME,\', \',coalesce(s.COMMON_NAME,s.FIRST_NAME)) AS FULL_NAME,';
                 else
                     $sql .= 'CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME,\' \',COALESCE(s.MIDDLE_NAME,\' \')) AS FULL_NAME,';
-                $sql .= 's.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,ssm.SCHOOL_ID,ssm.GRADE_ID ' . $extra['SELECT'];
+                $sql .= 's.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,ssm.COLLEGE_ID,ssm.GRADE_ID ' . $extra['SELECT'];
                 if ($_REQUEST['include_inactive'] == 'Y') {
                     $sql .= ',' . db_case(array('(ssm.START_DATE IS NOT NULL AND  (\'' . $extra['DATE'] . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL))', 'true', "'<FONT color=green>Active</FONT>'", "'<FONT color=red>Inactive</FONT>'")) . ' AS ACTIVE';
                     $sql .= ',' . db_case(array('(\'' . $extra['DATE'] . '\'>=ss.START_DATE AND (\'' . $extra['DATE'] . '\'<=ss.END_DATE OR ss.END_DATE IS NULL))', 'true', "'<FONT color=green>Active</FONT>'", "'<FONT color=red>Inactive</FONT>'")) . ' AS ACTIVE_SCHEDULE';
                 }
             }
 
-            $sql .= ' FROM students s,course_periods cp,schedule ss,student_enrollment ssm,course_period_var cpv ' . $extra['FROM'] . ' WHERE ssm.STUDENT_ID=s.STUDENT_ID AND cpv.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cpv.ID="' . $extra['ID'] . '" AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.SCHOOL_ID=\'' . UserCollege() . '\' AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND ' . db_case(array(User('STAFF_ID'), 'cp.teacher_id', ' cp.teacher_id=' . User('STAFF_ID'), 'cp.secondary_teacher_id', ' cp.secondary_teacher_id=' . User('STAFF_ID'), 'cp.course_period_id IN(SELECT course_period_id from teacher_reassignment tra WHERE cp.course_period_id=tra.course_period_id AND tra.pre_teacher_id=' . User('STAFF_ID') . ')')) . ' AND cp.COURSE_PERIOD_ID=\'' . (isset($_REQUEST['cp_id_miss_attn']) ? $_REQUEST['cp_id_miss_attn'] : UserCoursePeriod()) . '\' AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID';
+            $sql .= ' FROM students s,course_periods cp,schedule ss,student_enrollment ssm,course_period_var cpv ' . $extra['FROM'] . ' WHERE ssm.STUDENT_ID=s.STUDENT_ID AND cpv.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cpv.ID="' . $extra['ID'] . '" AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.COLLEGE_ID=\'' . UserCollege() . '\' AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND ' . db_case(array(User('STAFF_ID'), 'cp.teacher_id', ' cp.teacher_id=' . User('STAFF_ID'), 'cp.secondary_teacher_id', ' cp.secondary_teacher_id=' . User('STAFF_ID'), 'cp.course_period_id IN(SELECT course_period_id from teacher_reassignment tra WHERE cp.course_period_id=tra.course_period_id AND tra.pre_teacher_id=' . User('STAFF_ID') . ')')) . ' AND cp.COURSE_PERIOD_ID=\'' . (isset($_REQUEST['cp_id_miss_attn']) ? $_REQUEST['cp_id_miss_attn'] : UserCoursePeriod()) . '\' AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID';
             if ($extra['cpvdate'] != '')
                 $sql .= $extra['cpvdate'];
             if ($_REQUEST['include_inactive'] == 'Y') {
@@ -716,10 +716,10 @@ function GetStuListAttn(& $extra) {
                     $sql .= 'CONCAT(s.LAST_NAME,\', \',coalesce(s.COMMON_NAME,s.FIRST_NAME)) AS FULL_NAME,';
                 else
                     $sql .= 'CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME,\' \',COALESCE(s.MIDDLE_NAME,\' \')) AS FULL_NAME,';
-                $sql .= 's.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,ssm.SCHOOL_ID,ssm.GRADE_ID ' . $extra['SELECT'];
+                $sql .= 's.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,ssm.COLLEGE_ID,ssm.GRADE_ID ' . $extra['SELECT'];
             }
             $sql .= ' FROM students s,student_enrollment ssm ' . $extra['FROM'] . '
-					WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.SCHOOL_ID=\'' . UserCollege() . '\' AND (\'' . DBDate() . '\' BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND \'' . DBDate() . '\'>ssm.START_DATE)) AND ssm.STUDENT_ID' . ($extra['ASSOCIATED'] ? ' IN (SELECT STUDENT_ID FROM students_join_users WHERE STAFF_ID=\'' . $extra['ASSOCIATED'] . '\')' : '=\'' . UserStudentID() . '\'');
+					WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.COLLEGE_ID=\'' . UserCollege() . '\' AND (\'' . DBDate() . '\' BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND \'' . DBDate() . '\'>ssm.START_DATE)) AND ssm.STUDENT_ID' . ($extra['ASSOCIATED'] ? ' IN (SELECT STUDENT_ID FROM students_join_users WHERE STAFF_ID=\'' . $extra['ASSOCIATED'] . '\')' : '=\'' . UserStudentID() . '\'');
             break;
         default:
             exit('Error');

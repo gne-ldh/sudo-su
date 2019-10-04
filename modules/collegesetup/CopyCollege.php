@@ -67,11 +67,11 @@ if (clean_param($_REQUEST['copy'], PARAM_ALPHAMOD) == 'done') {
             $copy_syear_RET = DBGet(DBQuery('SELECT MAX(syear) AS SYEAR FROM college_years WHERE college_id=' . UserCollege()));
             $new_sch_syear = $copy_syear_RET[1]['SYEAR'];
             DBQuery('INSERT INTO colleges (ID,SYEAR,TITLE) values(\'' . $id . '\',\'' . $new_sch_syear . '\',\'' . str_replace("'", "''", str_replace("\'", "''", paramlib_validation($col = TITLE, $_REQUEST['title']))) . '\')');
-            DBQuery('INSERT INTO college_years (MARKING_PERIOD_ID,SYEAR,SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,ROLLOVER_ID) SELECT fn_marking_period_seq(),SYEAR,\'' . $id . '\' AS SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,MARKING_PERIOD_ID FROM college_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY MARKING_PERIOD_ID');
-            DBQuery('INSERT INTO program_config(SCHOOL_ID,SYEAR,PROGRAM,TITLE,VALUE) VALUES(\'' . $id . '\',\'' . $new_sch_syear . '\',\'MissingAttendance\',\'LAST_UPDATE\',\'' . date('Y-m-d') . '\')');
-            DBQuery('INSERT INTO program_config(SCHOOL_ID,SYEAR,PROGRAM,TITLE,VALUE) VALUES(\'' . $id . '\',\'' . $new_sch_syear . '\',\'UPDATENOTIFY\',\'display_college\',"Y")');
+            DBQuery('INSERT INTO college_years (MARKING_PERIOD_ID,SYEAR,COLLEGE_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,ROLLOVER_ID) SELECT fn_marking_period_seq(),SYEAR,\'' . $id . '\' AS COLLEGE_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,MARKING_PERIOD_ID FROM college_years WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' ORDER BY MARKING_PERIOD_ID');
+            DBQuery('INSERT INTO program_config(COLLEGE_ID,SYEAR,PROGRAM,TITLE,VALUE) VALUES(\'' . $id . '\',\'' . $new_sch_syear . '\',\'MissingAttendance\',\'LAST_UPDATE\',\'' . date('Y-m-d') . '\')');
+            DBQuery('INSERT INTO program_config(COLLEGE_ID,SYEAR,PROGRAM,TITLE,VALUE) VALUES(\'' . $id . '\',\'' . $new_sch_syear . '\',\'UPDATENOTIFY\',\'display_college\',"Y")');
 
-            $current_start_date = DBGet(DBQuery('SELECT START_DATE FROM staff_college_relationship WHERE STAFF_ID=\'' . User('STAFF_ID') . '\' AND SCHOOL_ID='.UserCollege().' AND syear='.UserSyear().''));
+            $current_start_date = DBGet(DBQuery('SELECT START_DATE FROM staff_college_relationship WHERE STAFF_ID=\'' . User('STAFF_ID') . '\' AND COLLEGE_ID='.UserCollege().' AND syear='.UserSyear().''));
             $temp_start_date='';
             if($current_start_date[1]['START_DATE']!='')
             $temp_start_date=$current_start_date[1]['START_DATE'];
@@ -88,18 +88,18 @@ if (clean_param($_REQUEST['copy'], PARAM_ALPHAMOD) == 'done') {
             }
             if (User('PROFILE_ID') != 0) {
                 $super_id = DBGet(DBQuery('SELECT STAFF_ID FROM staff WHERE PROFILE_ID=0 AND PROFILE=\'admin\''));
-                $current_start_date = DBGet(DBQuery('SELECT START_DATE FROM staff_college_relationship WHERE STAFF_ID=\'' . $super_id[1]['STAFF_ID'] . '\' AND SCHOOL_ID='.$id.' AND syear='.UserSyear().''));
+                $current_start_date = DBGet(DBQuery('SELECT START_DATE FROM staff_college_relationship WHERE STAFF_ID=\'' . $super_id[1]['STAFF_ID'] . '\' AND COLLEGE_ID='.$id.' AND syear='.UserSyear().''));
                 if($current_start_date[1]['START_DATE']!='')
                 $temp_start_date=$current_start_date[1]['START_DATE'];
                 else
                 $temp_start_date=date('Y-m-d');
-                 $staff_exists=DBGet(DBQuery('SELECT * FROM staff_college_relationship WHERE STAFF_ID='.$super_id[1]['STAFF_ID'] . ' AND SCHOOL_ID='. $id . ' AND SYEAR='.UserSyear()));
+                 $staff_exists=DBGet(DBQuery('SELECT * FROM staff_college_relationship WHERE STAFF_ID='.$super_id[1]['STAFF_ID'] . ' AND COLLEGE_ID='. $id . ' AND SYEAR='.UserSyear()));
                     if(count($staff_exists)==0)
                         DBQuery('INSERT INTO  staff_college_relationship(staff_id,college_id,syear,start_date) VALUES (' . $super_id[1]['STAFF_ID'] . ',' . $id . ',' . UserSyear() . ',"'.$temp_start_date.'")');
             }
             foreach ($_REQUEST['tables'] as $table => $value)
                 _rollover($table);
-            DBQuery("UPDATE college_years SET ROLLOVER_ID = NULL WHERE SCHOOL_ID='$id'");
+            DBQuery("UPDATE college_years SET ROLLOVER_ID = NULL WHERE COLLEGE_ID='$id'");
         }
         echo '<FORM action=Modules.php?modname=' . strip_tags(trim($_REQUEST['modname'])) . ' method=POST>';
         //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
@@ -129,33 +129,33 @@ function _rollover($table) {
 
     switch ($table) {
         case 'college_periods':
-            DBQuery('INSERT INTO college_periods (SYEAR,SCHOOL_ID,SORT_ORDER,TITLE,SHORT_NAME,LENGTH,START_TIME,END_TIME,IGNORE_SCHEDULING,ATTENDANCE) SELECT SYEAR,\'' . $id . '\' AS SCHOOL_ID,SORT_ORDER,TITLE,SHORT_NAME,LENGTH,START_TIME,END_TIME,IGNORE_SCHEDULING,ATTENDANCE FROM college_periods WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\'');
+            DBQuery('INSERT INTO college_periods (SYEAR,COLLEGE_ID,SORT_ORDER,TITLE,SHORT_NAME,LENGTH,START_TIME,END_TIME,IGNORE_SCHEDULING,ATTENDANCE) SELECT SYEAR,\'' . $id . '\' AS COLLEGE_ID,SORT_ORDER,TITLE,SHORT_NAME,LENGTH,START_TIME,END_TIME,IGNORE_SCHEDULING,ATTENDANCE FROM college_periods WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\'');
             break;
 
         case 'college_gradelevels':
             $table_properties = db_properties($table);
             $columns = '';
             foreach ($table_properties as $column => $values) {
-                if ($column != 'ID' && $column != 'SCHOOL_ID' && $column != 'NEXT_GRADE_ID')
+                if ($column != 'ID' && $column != 'COLLEGE_ID' && $column != 'NEXT_GRADE_ID')
                     $columns .= ',' . $column;
             }
-            DBQuery('INSERT INTO ' . $table . ' (SCHOOL_ID' . $columns . ') SELECT \'' . $id . '\' AS SCHOOL_ID' . $columns . ' FROM ' . $table . ' WHERE SCHOOL_ID=\'' . UserCollege() . '\'');
-            DBQuery('UPDATE ' . $table . ' t1,' . $table . ' t2 SET t1.NEXT_GRADE_ID= t1.ID+1 WHERE t1.SCHOOL_ID=\'' . $id . '\' AND t1.ID+1=t2.ID');
+            DBQuery('INSERT INTO ' . $table . ' (COLLEGE_ID' . $columns . ') SELECT \'' . $id . '\' AS COLLEGE_ID' . $columns . ' FROM ' . $table . ' WHERE COLLEGE_ID=\'' . UserCollege() . '\'');
+            DBQuery('UPDATE ' . $table . ' t1,' . $table . ' t2 SET t1.NEXT_GRADE_ID= t1.ID+1 WHERE t1.COLLEGE_ID=\'' . $id . '\' AND t1.ID+1=t2.ID');
             break;
 
         case 'college_years':
-            DBQuery('INSERT INTO college_semesters (MARKING_PERIOD_ID,YEAR_ID,SYEAR,SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,ROLLOVER_ID) SELECT fn_marking_period_seq(),(SELECT MARKING_PERIOD_ID FROM college_years y WHERE y.SYEAR=s.SYEAR AND y.ROLLOVER_ID=s.YEAR_ID AND y.SCHOOL_ID=\'' . $id . '\') AS YEAR_ID,SYEAR,\'' . $id . '\' AS SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,MARKING_PERIOD_ID FROM college_semesters s WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY MARKING_PERIOD_ID');
-            DBQuery('INSERT INTO college_quarters (MARKING_PERIOD_ID,SEMESTER_ID,SYEAR,SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,ROLLOVER_ID) SELECT fn_marking_period_seq(),(SELECT MARKING_PERIOD_ID FROM college_semesters s WHERE s.SYEAR=q.SYEAR AND s.ROLLOVER_ID=q.SEMESTER_ID AND s.SCHOOL_ID=\'' . $id . '\') AS SEMESTER_ID,SYEAR,\'' . $id . '\' AS SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,MARKING_PERIOD_ID FROM college_quarters q WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY MARKING_PERIOD_ID');
-            DBQuery('INSERT INTO college_progress_periods (MARKING_PERIOD_ID,QUARTER_ID,SYEAR,SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,ROLLOVER_ID) SELECT fn_marking_period_seq(),(SELECT MARKING_PERIOD_ID FROM college_quarters q WHERE q.SYEAR=p.SYEAR AND q.ROLLOVER_ID=p.QUARTER_ID AND q.SCHOOL_ID=\'' . $id . '\'),SYEAR,\'' . $id . '\' AS SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,MARKING_PERIOD_ID FROM college_progress_periods p WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY MARKING_PERIOD_ID');
+            DBQuery('INSERT INTO college_semesters (MARKING_PERIOD_ID,YEAR_ID,SYEAR,COLLEGE_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,ROLLOVER_ID) SELECT fn_marking_period_seq(),(SELECT MARKING_PERIOD_ID FROM college_years y WHERE y.SYEAR=s.SYEAR AND y.ROLLOVER_ID=s.YEAR_ID AND y.COLLEGE_ID=\'' . $id . '\') AS YEAR_ID,SYEAR,\'' . $id . '\' AS COLLEGE_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,MARKING_PERIOD_ID FROM college_semesters s WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' ORDER BY MARKING_PERIOD_ID');
+            DBQuery('INSERT INTO college_quarters (MARKING_PERIOD_ID,SEMESTER_ID,SYEAR,COLLEGE_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,ROLLOVER_ID) SELECT fn_marking_period_seq(),(SELECT MARKING_PERIOD_ID FROM college_semesters s WHERE s.SYEAR=q.SYEAR AND s.ROLLOVER_ID=q.SEMESTER_ID AND s.COLLEGE_ID=\'' . $id . '\') AS SEMESTER_ID,SYEAR,\'' . $id . '\' AS COLLEGE_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,MARKING_PERIOD_ID FROM college_quarters q WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' ORDER BY MARKING_PERIOD_ID');
+            DBQuery('INSERT INTO college_progress_periods (MARKING_PERIOD_ID,QUARTER_ID,SYEAR,COLLEGE_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,ROLLOVER_ID) SELECT fn_marking_period_seq(),(SELECT MARKING_PERIOD_ID FROM college_quarters q WHERE q.SYEAR=p.SYEAR AND q.ROLLOVER_ID=p.QUARTER_ID AND q.COLLEGE_ID=\'' . $id . '\'),SYEAR,\'' . $id . '\' AS COLLEGE_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,MARKING_PERIOD_ID FROM college_progress_periods p WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' ORDER BY MARKING_PERIOD_ID');
 
-            DBQuery('UPDATE college_semesters SET ROLLOVER_ID = NULL WHERE SCHOOL_ID=\'' . $id . '\'');
-            DBQuery('UPDATE college_quarters SET ROLLOVER_ID = NULL WHERE SCHOOL_ID=\'' . $id . '\'');
-            DBQuery('UPDATE college_progress_periods SET ROLLOVER_ID = NULL WHERE SCHOOL_ID=\'' . $id . '\'');
+            DBQuery('UPDATE college_semesters SET ROLLOVER_ID = NULL WHERE COLLEGE_ID=\'' . $id . '\'');
+            DBQuery('UPDATE college_quarters SET ROLLOVER_ID = NULL WHERE COLLEGE_ID=\'' . $id . '\'');
+            DBQuery('UPDATE college_progress_periods SET ROLLOVER_ID = NULL WHERE COLLEGE_ID=\'' . $id . '\'');
 
             break;
 
         case 'report_card_grades':
-            DBQuery('INSERT INTO report_card_grade_scales (SYEAR,SCHOOL_ID,TITLE,COMMENT,SORT_ORDER,ROLLOVER_ID,GP_SCALE) SELECT SYEAR,\'' . $id . '\',TITLE,COMMENT,SORT_ORDER,ID,GP_SCALE FROM report_card_grade_scales WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\'');
+            DBQuery('INSERT INTO report_card_grade_scales (SYEAR,COLLEGE_ID,TITLE,COMMENT,SORT_ORDER,ROLLOVER_ID,GP_SCALE) SELECT SYEAR,\'' . $id . '\',TITLE,COMMENT,SORT_ORDER,ID,GP_SCALE FROM report_card_grade_scales WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\'');
 
             $qr = DBGet(DBQuery('select * from report_card_grades where college_id=' . UserCollege() . ' and SYEAR= ' . UserSyear() . ''));
             $c = 1;
@@ -164,24 +164,24 @@ function _rollover($table) {
                 $qr1 = DBGet(DBQuery('select id from report_card_grade_scales where title=(select title from report_card_grade_scales where id=' . $qv['GRADE_SCALE_ID'] . ') and college_id=' . $id . ''));
                 $gr_scale_id = $qr1[1]['ID'];
 
-                DBQuery('INSERT INTO report_card_grades (SYEAR,SCHOOL_ID,TITLE,COMMENT,BREAK_OFF,GPA_VALUE,UNWEIGHTED_GP,GRADE_SCALE_ID,SORT_ORDER) SELECT SYEAR,\'' . $id . '\',TITLE,COMMENT,BREAK_OFF,GPA_VALUE,UNWEIGHTED_GP,\'' . $gr_scale_id . '\',SORT_ORDER FROM report_card_grades WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND ID=' . $qv['ID']);
+                DBQuery('INSERT INTO report_card_grades (SYEAR,COLLEGE_ID,TITLE,COMMENT,BREAK_OFF,GPA_VALUE,UNWEIGHTED_GP,GRADE_SCALE_ID,SORT_ORDER) SELECT SYEAR,\'' . $id . '\',TITLE,COMMENT,BREAK_OFF,GPA_VALUE,UNWEIGHTED_GP,\'' . $gr_scale_id . '\',SORT_ORDER FROM report_card_grades WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND ID=' . $qv['ID']);
             }
 
-            DBQuery('UPDATE report_card_grade_scales SET ROLLOVER_ID=NULL WHERE SCHOOL_ID=\'' . $id . '\'');
+            DBQuery('UPDATE report_card_grade_scales SET ROLLOVER_ID=NULL WHERE COLLEGE_ID=\'' . $id . '\'');
 
 
 
             break;
 
         case 'report_card_comments':
-            $qr = DBGet(DBQuery('SELECT COURSE_ID,ID FROM report_card_comments WHERE   SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
+            $qr = DBGet(DBQuery('SELECT COURSE_ID,ID FROM report_card_comments WHERE   SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
 
             foreach ($qr as $qk => $qv) {
 
-                $qr1 = DBGet(DBQuery('select COURSE_ID,ID FROM report_card_comments WHERE   SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
+                $qr1 = DBGet(DBQuery('select COURSE_ID,ID FROM report_card_comments WHERE   SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
                 $course_id = $qr1[$qk]['COURSE_ID'];
                 $id1 = $qr1[$qk]['ID'];
-                DBQuery('INSERT INTO report_card_comments (SYEAR,SCHOOL_ID,TITLE,SORT_ORDER,COURSE_ID) SELECT SYEAR,\'' . $id . '\',TITLE,SORT_ORDER,\'' . $course_id . '\' FROM report_card_comments WHERE ID =\'' . $id1 . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\'');
+                DBQuery('INSERT INTO report_card_comments (SYEAR,COLLEGE_ID,TITLE,SORT_ORDER,COURSE_ID) SELECT SYEAR,\'' . $id . '\',TITLE,SORT_ORDER,\'' . $course_id . '\' FROM report_card_comments WHERE ID =\'' . $id1 . '\' AND SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\'');
             }
             break;
 
@@ -190,50 +190,50 @@ function _rollover($table) {
             $table_properties = db_properties($table);
             $columns = '';
             foreach ($table_properties as $column => $values) {
-                if ($column != 'ID' && $column != 'SYEAR' && $column != 'SCHOOL_ID')
+                if ($column != 'ID' && $column != 'SYEAR' && $column != 'COLLEGE_ID')
                     $columns .= ',' . $column;
             }
-            DBQuery('INSERT INTO ' . $table . ' (SYEAR,SCHOOL_ID' . $columns . ') SELECT SYEAR,\'' . $id . '\' AS SCHOOL_ID' . $columns . ' FROM ' . $table . ' WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\'');
+            DBQuery('INSERT INTO ' . $table . ' (SYEAR,COLLEGE_ID' . $columns . ') SELECT SYEAR,\'' . $id . '\' AS COLLEGE_ID' . $columns . ' FROM ' . $table . ' WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\'');
             break;
             
         case 'rooms':
            $table_properties = db_properties($table);
            $columns = '';
            foreach ($table_properties as $column => $values) {
-               if ($column != 'ROOM_ID' && $column != 'SCHOOL_ID')
+               if ($column != 'ROOM_ID' && $column != 'COLLEGE_ID')
                    $columns .= ',' . $column;
            }
-           DBQuery('INSERT INTO ' . $table . ' (SCHOOL_ID' . $columns . ') SELECT \'' . $id . '\' AS SCHOOL_ID' . $columns . ' FROM ' . $table . ' WHERE SCHOOL_ID=\'' . UserCollege() . '\'');
+           DBQuery('INSERT INTO ' . $table . ' (COLLEGE_ID' . $columns . ') SELECT \'' . $id . '\' AS COLLEGE_ID' . $columns . ' FROM ' . $table . ' WHERE COLLEGE_ID=\'' . UserCollege() . '\'');
            break;   
             
         case 'college_gradelevel_sections':
             $table_properties = db_properties($table);
             $columns = '';
             foreach ($table_properties as $column => $values) {
-                if ($column != 'ID' && $column != 'SCHOOL_ID')
+                if ($column != 'ID' && $column != 'COLLEGE_ID')
                     $columns .= ',' . $column;
             }
-            DBQuery('INSERT INTO ' . $table . ' (SCHOOL_ID' . $columns . ') SELECT \'' . $id . '\' AS SCHOOL_ID' . $columns . ' FROM ' . $table . ' WHERE  SCHOOL_ID=\'' . UserCollege() . '\'');
+            DBQuery('INSERT INTO ' . $table . ' (COLLEGE_ID' . $columns . ') SELECT \'' . $id . '\' AS COLLEGE_ID' . $columns . ' FROM ' . $table . ' WHERE  COLLEGE_ID=\'' . UserCollege() . '\'');
             break;    
         
         case 'course_subjects':
             $table_properties = db_properties($table);
             $columns = '';
             foreach ($table_properties as $column => $values) {
-                if ($column != 'SUBJECT_ID' && $column != 'SYEAR' && $column != 'SCHOOL_ID')
+                if ($column != 'SUBJECT_ID' && $column != 'SYEAR' && $column != 'COLLEGE_ID')
                     $columns .= ',' . $column;
             }
-            DBQuery('INSERT INTO ' . $table . ' (SYEAR,SCHOOL_ID' . $columns . ') SELECT SYEAR,\'' . $id . '\' AS SCHOOL_ID' . $columns . ' FROM ' . $table . ' WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\'');
+            DBQuery('INSERT INTO ' . $table . ' (SYEAR,COLLEGE_ID' . $columns . ') SELECT SYEAR,\'' . $id . '\' AS COLLEGE_ID' . $columns . ' FROM ' . $table . ' WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\'');
             break;  
             
             
          
         case 'college_calendars':
-           $get_all=DBGet(DBQuery('SELECT * FROM college_calendars WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\'')); 
+           $get_all=DBGet(DBQuery('SELECT * FROM college_calendars WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\'')); 
            foreach($get_all as $ga)
            {
            $query_values=$id.','."'".$ga['TITLE']."'".','.$ga['SYEAR'];
-           $query_build='INSERT INTO college_calendars (SCHOOL_ID,TITLE,SYEAR';
+           $query_build='INSERT INTO college_calendars (COLLEGE_ID,TITLE,SYEAR';
            if($ga['DEFAULT_CALENDAR']!='')
            {
                $query_build.=',DEFAULT_CALENDAR';
@@ -248,30 +248,30 @@ function _rollover($table) {
            DBQuery($query_build);
            unset($query_values);
            unset($query_build);
-           $calendar_id=DBGet(DBQuery('SELECT MAX(CALENDAR_ID) as CALENDAR_ID FROM college_calendars WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' .$id.'\''));
+           $calendar_id=DBGet(DBQuery('SELECT MAX(CALENDAR_ID) as CALENDAR_ID FROM college_calendars WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' .$id.'\''));
            
            $table_properties = db_properties('attendance_calendar');
             $columns = '';
             foreach ($table_properties as $column => $values) {
-                if ($column != 'SCHOOL_ID' && $column != 'CALENDAR_ID')
+                if ($column != 'COLLEGE_ID' && $column != 'CALENDAR_ID')
                     $columns .= ',' . $column;
             }
-            DBQuery('INSERT INTO attendance_calendar (CALENDAR_ID,SCHOOL_ID' . $columns . ') SELECT \''.$calendar_id[1]['CALENDAR_ID'].'\' as CALENDAR_ID,\'' . $id . '\' AS SCHOOL_ID' . $columns . ' FROM attendance_calendar WHERE CALENDAR_ID=\''.$ga['CALENDAR_ID'].'\' ');
+            DBQuery('INSERT INTO attendance_calendar (CALENDAR_ID,COLLEGE_ID' . $columns . ') SELECT \''.$calendar_id[1]['CALENDAR_ID'].'\' as CALENDAR_ID,\'' . $id . '\' AS COLLEGE_ID' . $columns . ' FROM attendance_calendar WHERE CALENDAR_ID=\''.$ga['CALENDAR_ID'].'\' ');
            }
            break;
            
            
            case 'courses':
-           $get_ts_grade=DBGet(DBQuery('SELECT * FROM college_gradelevels WHERE SCHOOL_ID=\''.$id.'\' '));
-           $get_cs_grade=DBGet(DBQuery('SELECT * FROM college_gradelevels WHERE  SCHOOL_ID=\''.UserCollege().'\' '));
-           $get_ts_subjects=DBGet(DBQuery('SELECT * FROM course_subjects WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' .$id. '\''));     
-           $get_cs_subjects=DBGet(DBQuery('SELECT * FROM course_subjects WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\'')); 
+           $get_ts_grade=DBGet(DBQuery('SELECT * FROM college_gradelevels WHERE COLLEGE_ID=\''.$id.'\' '));
+           $get_cs_grade=DBGet(DBQuery('SELECT * FROM college_gradelevels WHERE  COLLEGE_ID=\''.UserCollege().'\' '));
+           $get_ts_subjects=DBGet(DBQuery('SELECT * FROM course_subjects WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' .$id. '\''));     
+           $get_cs_subjects=DBGet(DBQuery('SELECT * FROM course_subjects WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\'')); 
            foreach($get_cs_subjects as $gcsi=>$gcsd)
            {
-               $get_course=DBGet(DBQuery('SELECT SYEAR,TITLE,SHORT_NAME,GRADE_LEVEL FROM courses WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND SUBJECT_ID=\''.$gcsd['SUBJECT_ID'].'\''));
+               $get_course=DBGet(DBQuery('SELECT SYEAR,TITLE,SHORT_NAME,GRADE_LEVEL FROM courses WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND SUBJECT_ID=\''.$gcsd['SUBJECT_ID'].'\''));
                foreach($get_course as $gc)
                {
-                   $sql_columns=array('SUBJECT_ID','SCHOOL_ID');
+                   $sql_columns=array('SUBJECT_ID','COLLEGE_ID');
                    $sql_values=array($get_ts_subjects[$gcsi]['SUBJECT_ID'],$id);
                    foreach($gc as $gcc=>$gcd)
                    {

@@ -42,7 +42,7 @@ $sql = 'SELECT
                                 AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID
                                  AND r.ROOM_ID=cpv.ROOM_ID
                                 AND s.COURSE_PERIOD_ID = cp.COURSE_PERIOD_ID
-                                AND s.SCHOOL_ID = sp.SCHOOL_ID AND s.SYEAR = c.SYEAR AND sp.PERIOD_ID = cpv.PERIOD_ID
+                                AND s.COLLEGE_ID = sp.COLLEGE_ID AND s.SYEAR = c.SYEAR AND sp.PERIOD_ID = cpv.PERIOD_ID
                                 AND s.ID=' . $_REQUEST[id] . '  GROUP BY cp.COURSE_PERIOD_ID';
 
         $QI = DBQuery($sql);
@@ -100,8 +100,8 @@ function _makeMPSelect($mp_id, $name = '') {
     global $_openSIS, $THIS_RET, $fy_id;
     if ($mp_id != '') {
         if (!$_openSIS['_makeMPSelect']) {
-            $semesters_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,NULL AS SEMESTER_ID FROM college_semesters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER'));
-            $quarters_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,SEMESTER_ID FROM college_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER'));
+            $semesters_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,NULL AS SEMESTER_ID FROM college_semesters WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER'));
+            $quarters_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,SEMESTER_ID FROM college_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER'));
 
             $_openSIS['_makeMPSelect'][$fy_id][1] = array('MARKING_PERIOD_ID' => "$fy_id", 'TITLE' => 'Full Year', 'SEMESTER_ID' => '');
             foreach ($semesters_RET as $sem)
@@ -109,7 +109,7 @@ function _makeMPSelect($mp_id, $name = '') {
             foreach ($quarters_RET as $qtr)
                 $_openSIS['_makeMPSelect'][$fy_id][] = $qtr;
 
-            $quarters_QI = DBQuery('SELECT MARKING_PERIOD_ID,TITLE,SEMESTER_ID FROM college_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER');
+            $quarters_QI = DBQuery('SELECT MARKING_PERIOD_ID,TITLE,SEMESTER_ID FROM college_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER');
             $quarters_indexed_RET = DBGet($quarters_QI, array(), array('SEMESTER_ID'));
 
             foreach ($semesters_RET as $sem) {
@@ -142,8 +142,8 @@ function _makeMPSelect_red($mp_id, $name = '') {
     global $_openSIS, $THIS_RET, $fy_id;
     if ($mp_id != '') {
         if (!$_openSIS['_makeMPSelect']) {
-            $semesters_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,NULL AS SEMESTER_ID FROM college_semesters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER'));
-            $quarters_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,SEMESTER_ID FROM college_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER'));
+            $semesters_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,NULL AS SEMESTER_ID FROM college_semesters WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER'));
+            $quarters_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,SEMESTER_ID FROM college_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER'));
 
             $_openSIS['_makeMPSelect'][$fy_id][1] = array('MARKING_PERIOD_ID' => "$fy_id", 'TITLE' => 'Full Year', 'SEMESTER_ID' => '');
             foreach ($semesters_RET as $sem)
@@ -151,7 +151,7 @@ function _makeMPSelect_red($mp_id, $name = '') {
             foreach ($quarters_RET as $qtr)
                 $_openSIS['_makeMPSelect'][$fy_id][] = $qtr;
 
-            $quarters_QI = DBQuery('SELECT MARKING_PERIOD_ID,TITLE,SEMESTER_ID FROM college_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER');
+            $quarters_QI = DBQuery('SELECT MARKING_PERIOD_ID,TITLE,SEMESTER_ID FROM college_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER');
             $quarters_indexed_RET = DBGet($quarters_QI, array(), array('SEMESTER_ID'));
 
             foreach ($semesters_RET as $sem) {

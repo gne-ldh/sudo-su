@@ -31,7 +31,7 @@ function _makeNextCollege($value,$column)
 		return 'Retain';
 	elseif($value=='-1')
 		return 'Do not enroll after this college year';
-	elseif($value==$THIS_RET['SCHOOL_ID'])
+	elseif($value==$THIS_RET['COLLEGE_ID'])
 		return 'Next Grade at '.GetCollege($value);
 	else
 		return GetCollege($value);

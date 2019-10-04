@@ -58,9 +58,9 @@ if(($_REQUEST['month_values'] && ($_POST['month_values'] || $_REQUEST['ajax'])) 
 		SaveData($iu_extra,'',$field_names);
 }
 
-$functions = array('START_DATE'=>'_makeStartInput','END_DATE'=>'_makeEndInput','SCHOOL_ID'=>'_makeCollegeInput');
+$functions = array('START_DATE'=>'_makeStartInput','END_DATE'=>'_makeEndInput','COLLEGE_ID'=>'_makeCollegeInput');
 unset($THIS_RET);
-$RET = DBGet(DBQuery('SELECT e.ID,e.ENROLLMENT_CODE,e.START_DATE,e.DROP_CODE,e.END_DATE,e.END_DATE AS END,e.SCHOOL_ID,e.NEXT_SCHOOL,e.CALENDAR_ID FROM student_enrollment e WHERE e.STUDENT_ID=\''.UserStudentID().'\' AND e.SYEAR=\''.UserSyear().'\' ORDER BY e.START_DATE'),$functions);
+$RET = DBGet(DBQuery('SELECT e.ID,e.ENROLLMENT_CODE,e.START_DATE,e.DROP_CODE,e.END_DATE,e.END_DATE AS END,e.COLLEGE_ID,e.NEXT_COLLEGE,e.CALENDAR_ID FROM student_enrollment e WHERE e.STUDENT_ID=\''.UserStudentID().'\' AND e.SYEAR=\''.UserSyear().'\' ORDER BY e.START_DATE'),$functions);
 
 $add = true;
 if(count($RET))
@@ -72,9 +72,9 @@ if(count($RET))
 	}
 }
 if($add)
-	$link['add']['html'] = array('START_DATE'=>_makeStartInput('','START_DATE'),'SCHOOL_ID'=>_makeCollegeInput('','SCHOOL_ID'));
+	$link['add']['html'] = array('START_DATE'=>_makeStartInput('','START_DATE'),'COLLEGE_ID'=>_makeCollegeInput('','COLLEGE_ID'));
 
-$columns = array('START_DATE'=>'Attendance Start Date this College Year','END_DATE'=>'Dropped','SCHOOL_ID'=>'College');
+$columns = array('START_DATE'=>'Attendance Start Date this College Year','END_DATE'=>'Dropped','COLLEGE_ID'=>'College');
 
 $colleges_RET = DBGet(DBQuery('SELECT ID,TITLE FROM colleges WHERE ID!=\''.UserCollege().'\''));
 $next_college_options = array(UserCollege()=>'Next grade at current college','0'=>'Retain','-1'=>'Do not enroll after this college year');
@@ -84,7 +84,7 @@ if(count($colleges_RET))
 		$next_college_options[$college['ID']] = $college['TITLE'];
 }
 
-$calendars_RET = DBGet(DBQuery('SELECT CALENDAR_ID,DEFAULT_CALENDAR,TITLE FROM college_calendars WHERE SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserCollege().'\' ORDER BY DEFAULT_CALENDAR ASC'));
+$calendars_RET = DBGet(DBQuery('SELECT CALENDAR_ID,DEFAULT_CALENDAR,TITLE FROM college_calendars WHERE SYEAR=\''.UserSyear().'\' AND COLLEGE_ID=\''.UserCollege().'\' ORDER BY DEFAULT_CALENDAR ASC'));
 if(count($calendars_RET))
 {
 	foreach($calendars_RET as $calendar)
@@ -99,7 +99,7 @@ if($_REQUEST['student_id']!='new')
 
 	ListOutput($RET,$columns,'Enrollment Record','Enrollment Records',$link);
 	if($id!='new')
-		$next_college = $RET[count($RET)]['NEXT_SCHOOL'];
+		$next_college = $RET[count($RET)]['NEXT_COLLEGE'];
 	if($id!='new')
 		$calendar = $RET[count($RET)]['CALENDAR_ID'];
 	$div = true;
@@ -112,6 +112,6 @@ else
 	$calendar = $calendars_RET[1]['CALENDAR_ID'];
 	$div = false;
 }
-echo '<CENTER><TABLE><TR><TD>'.SelectInput($calendar,"values[student_enrollment][$id][CALENDAR_ID]",(!$calendar||!$div?'<FONT color=red>':'').'Calendar'.(!$calendar||!$div?'</FONT>':''),$calendar_options,false,'',$div).'</TD><TD width=30></TD><TD>'.SelectInput($next_college,"values[student_enrollment][$id][NEXT_SCHOOL]",(!$next_college||!$div?'<FONT color=red>':'').'Rolling / Retention Options'.(!$next_college||!$div?'</FONT>':''),$next_college_options,false,'',$div).'</TD></TR></TABLE></CENTER>';
+echo '<CENTER><TABLE><TR><TD>'.SelectInput($calendar,"values[student_enrollment][$id][CALENDAR_ID]",(!$calendar||!$div?'<FONT color=red>':'').'Calendar'.(!$calendar||!$div?'</FONT>':''),$calendar_options,false,'',$div).'</TD><TD width=30></TD><TD>'.SelectInput($next_college,"values[student_enrollment][$id][NEXT_COLLEGE]",(!$next_college||!$div?'<FONT color=red>':'').'Rolling / Retention Options'.(!$next_college||!$div?'</FONT>':''),$next_college_options,false,'',$div).'</TD></TR></TABLE></CENTER>';
  
 ?>

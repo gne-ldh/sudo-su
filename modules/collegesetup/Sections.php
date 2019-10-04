@@ -35,7 +35,7 @@ if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUE
         {
             if($vd['NAME']!='')
             {
-                $check_name=DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM college_gradelevel_sections WHERE NAME=\''.str_replace("'","''",$vd['NAME']).'\' AND SCHOOL_ID='.UserCollege()));
+                $check_name=DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM college_gradelevel_sections WHERE NAME=\''.str_replace("'","''",$vd['NAME']).'\' AND COLLEGE_ID='.UserCollege()));
                 if($check_name[1]['REC_EX']>0)
                 {
                     $err_msg='Section already exists.';
@@ -44,7 +44,7 @@ if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUE
             }
 //            if($vd['SORT_ORDER']!='')
 //            {
-//                $check_sort=DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM college_gradelevel_sections WHERE SORT_ORDER=\''.$vd['SORT_ORDER'].'\' AND SCHOOL_ID='.UserCollege()));
+//                $check_sort=DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM college_gradelevel_sections WHERE SORT_ORDER=\''.$vd['SORT_ORDER'].'\' AND COLLEGE_ID='.UserCollege()));
 //                if($check_sort[1]['REC_EX']>0)
 //                {
 //                $err_msg='Sort order already exists.';
@@ -54,9 +54,9 @@ if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUE
                 
                 
             if($vd['NAME']!='' && $vd['SORT_ORDER']!='')
-            DBQuery('INSERT INTO college_gradelevel_sections (SCHOOL_ID,NAME,SORT_ORDER) VALUES ('.UserCollege().',\''.str_replace("'","''",$vd['NAME']).'\',\''.$vd['SORT_ORDER'].'\')');
+            DBQuery('INSERT INTO college_gradelevel_sections (COLLEGE_ID,NAME,SORT_ORDER) VALUES ('.UserCollege().',\''.str_replace("'","''",$vd['NAME']).'\',\''.$vd['SORT_ORDER'].'\')');
             elseif($vd['NAME']!='' && $vd['SORT_ORDER']=='')
-            DBQuery('INSERT INTO college_gradelevel_sections (SCHOOL_ID,NAME) VALUES ('.UserCollege().',\''.str_replace("'","''",$vd['NAME']).'\')');    
+            DBQuery('INSERT INTO college_gradelevel_sections (COLLEGE_ID,NAME) VALUES ('.UserCollege().',\''.str_replace("'","''",$vd['NAME']).'\')');    
                 
             
         }
@@ -65,7 +65,7 @@ if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUE
             $go=1;
             if($vd['NAME']!='')
             {
-                $check_name=DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM college_gradelevel_sections WHERE NAME=\''.str_replace("'","''",$vd['NAME']).'\' AND SCHOOL_ID='.UserCollege().' AND ID!='.$vi));
+                $check_name=DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM college_gradelevel_sections WHERE NAME=\''.str_replace("'","''",$vd['NAME']).'\' AND COLLEGE_ID='.UserCollege().' AND ID!='.$vi));
                 if($check_name[1]['REC_EX']>0)
                 {
                     $err_msg='Section already exists.';
@@ -77,7 +77,7 @@ if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUE
             }
 //            if($vd['SORT_ORDER']!='')
 //            {
-//                $check_sort=DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM college_gradelevel_sections WHERE SORT_ORDER=\''.$vd['SORT_ORDER'].'\' AND SCHOOL_ID='.UserCollege().' AND ID!='.$vi));
+//                $check_sort=DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM college_gradelevel_sections WHERE SORT_ORDER=\''.$vd['SORT_ORDER'].'\' AND COLLEGE_ID='.UserCollege().' AND ID!='.$vi));
 //                if($check_sort[1]['REC_EX']>0)
 //                {
 //                $err_msg='Sort order already exists.';
@@ -124,7 +124,7 @@ if(clean_param($_REQUEST['modfunc'],PARAM_ALPHAMOD)=='remove')
 
 if($_REQUEST['modfunc']!='remove')
 {
-	$sql = 'SELECT * FROM college_gradelevel_sections WHERE SCHOOL_ID=\''.UserCollege().'\' ORDER BY SORT_ORDER';
+	$sql = 'SELECT * FROM college_gradelevel_sections WHERE COLLEGE_ID=\''.UserCollege().'\' ORDER BY SORT_ORDER';
 	$sec_RET = DBGet(DBQuery($sql),array('NAME'=>'makeTextInput','SORT_ORDER'=>'makeTextInput'));
 	
 	$columns = array('NAME'=>'Section','SORT_ORDER'=>'Sort Order');

@@ -43,7 +43,7 @@ include 'Warehouse.php';
                                 AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID
                                  AND r.ROOM_ID=cpv.ROOM_ID
                                 AND s.COURSE_PERIOD_ID = cp.COURSE_PERIOD_ID
-                                AND s.SCHOOL_ID = sp.SCHOOL_ID AND s.SYEAR = c.SYEAR AND sp.PERIOD_ID = cpv.PERIOD_ID
+                                AND s.COLLEGE_ID = sp.COLLEGE_ID AND s.SYEAR = c.SYEAR AND sp.PERIOD_ID = cpv.PERIOD_ID
                                 AND s.ID=' . $_REQUEST[id] . '  GROUP BY cp.COURSE_PERIOD_ID';
 
         $QI = DBQuery($sql);

@@ -29,7 +29,7 @@
 include('../../RedirectModulesInc.php');
 echo '<div id="calculating" style="display: none; padding-top:20px; padding-bottom:15px;"><img src="assets/missing_attn_loader.gif" /><br/><br/><br/><span style="color:#c90000;"><span style=" font-size:15px; font-weight:bold;">Please wait.</span><br /><span style=" font-size:12px;">Calculating GPA . Do not click anywhere.</span></span></div>
 <div id="resp" style="font-size:14px"></div>';
-$QI = DBQuery("SELECT PERIOD_ID,TITLE FROM college_periods WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER ");
+$QI = DBQuery("SELECT PERIOD_ID,TITLE FROM college_periods WHERE COLLEGE_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER ");
 $RET = DBGet($QI);
 
 $SCALE_RET = DBGet(DBQuery('SELECT * from colleges where ID = \'' . UserCollege() . '\''));

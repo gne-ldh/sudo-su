@@ -40,7 +40,7 @@ else
     $end_date = DBDate('mysql');
 ####################
 if (isset($_REQUEST['student_id'])) {
-    $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,SCHOOL_ID FROM students,student_enrollment WHERE students.STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND student_enrollment.STUDENT_ID = students.STUDENT_ID '));
+    $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,COLLEGE_ID FROM students,student_enrollment WHERE students.STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND student_enrollment.STUDENT_ID = students.STUDENT_ID '));
     $count_student_RET = DBGet(DBQuery("SELECT COUNT(*) AS NUM FROM students"));
     if ($count_student_RET[1]['NUM'] > 1) {
         DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=' . $_REQUEST['modname'] . '&ajax=true&bottom_back=true&return_session=true&&day_start=' . $_REQUEST[day_start] . '&&month_start=' . $_REQUEST[month_start] . '&&year_start=' . $_REQUEST[year_start] . '&&period_id=' . $_REQUEST[period_id] . '&&myclasses=' . $_REQUEST[myclasses] . '&&chk=1 target=body><i class="icon-square-left"></i> Back to Student List</A></span><div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div></div>');
@@ -52,11 +52,11 @@ if (isset($_REQUEST['student_id'])) {
 if ($_REQUEST['search_modfunc'] || $_REQUEST['student_id'] || UserStudentID() || User('PROFILE') == 'parent' || User('PROFILE') == 'student') {
     if (!UserStudentID() && !$_REQUEST['student_id']) {
         if ($_REQUEST['myclasses'] == '')
-            $periods_RET = DBGet(DBQuery('SELECT sp.PERIOD_ID,sp.TITLE FROM college_periods sp,course_periods cp,course_period_var cpv WHERE cpv.PERIOD_ID=sp.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.DOES_ATTENDANCE=\'Y\' AND sp.SYEAR=\'' . UserSyear() . '\' AND sp.SCHOOL_ID=\'' . UserCollege() . '\'  GROUP BY cpv.PERIOD_ID ORDER BY  sp.SORT_ORDER'));
+            $periods_RET = DBGet(DBQuery('SELECT sp.PERIOD_ID,sp.TITLE FROM college_periods sp,course_periods cp,course_period_var cpv WHERE cpv.PERIOD_ID=sp.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.DOES_ATTENDANCE=\'Y\' AND sp.SYEAR=\'' . UserSyear() . '\' AND sp.COLLEGE_ID=\'' . UserCollege() . '\'  GROUP BY cpv.PERIOD_ID ORDER BY  sp.SORT_ORDER'));
         elseif ($_REQUEST['myclasses'] == 'my_classes')
-            $periods_RET = DBGet(DBQuery('SELECT sp.PERIOD_ID,sp.TITLE FROM college_periods sp,course_periods cp,course_period_var cpv WHERE cpv.PERIOD_ID=sp.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND (cp.TEACHER_ID=' . User('STAFF_ID') . ' OR cp.SECONDARY_TEACHER_ID=' . User('STAFF_ID') . ') AND cpv.DOES_ATTENDANCE=\'Y\' AND sp.SYEAR=\'' . UserSyear() . '\' AND sp.SCHOOL_ID=\'' . UserCollege() . '\' GROUP BY cpv.PERIOD_ID ORDER BY sp.SORT_ORDER'));
+            $periods_RET = DBGet(DBQuery('SELECT sp.PERIOD_ID,sp.TITLE FROM college_periods sp,course_periods cp,course_period_var cpv WHERE cpv.PERIOD_ID=sp.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND (cp.TEACHER_ID=' . User('STAFF_ID') . ' OR cp.SECONDARY_TEACHER_ID=' . User('STAFF_ID') . ') AND cpv.DOES_ATTENDANCE=\'Y\' AND sp.SYEAR=\'' . UserSyear() . '\' AND sp.COLLEGE_ID=\'' . UserCollege() . '\' GROUP BY cpv.PERIOD_ID ORDER BY sp.SORT_ORDER'));
         else
-            $periods_RET = DBGet(DBQuery('SELECT sp.PERIOD_ID,sp.TITLE FROM college_periods sp,course_periods cp,course_period_var cpv WHERE cpv.PERIOD_ID=sp.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.DOES_ATTENDANCE=\'Y\' AND cp.COURSE_PERIOD_ID=' . UserCoursePeriod() . ' AND sp.SYEAR=\'' . UserSyear() . '\' AND sp.SCHOOL_ID=\'' . UserCollege() . '\'  GROUP BY cpv.PERIOD_ID ORDER BY sp.SORT_ORDER'));
+            $periods_RET = DBGet(DBQuery('SELECT sp.PERIOD_ID,sp.TITLE FROM college_periods sp,course_periods cp,course_period_var cpv WHERE cpv.PERIOD_ID=sp.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.DOES_ATTENDANCE=\'Y\' AND cp.COURSE_PERIOD_ID=' . UserCoursePeriod() . ' AND sp.SYEAR=\'' . UserSyear() . '\' AND sp.COLLEGE_ID=\'' . UserCollege() . '\'  GROUP BY cpv.PERIOD_ID ORDER BY sp.SORT_ORDER'));
         $period_select = "<SELECT class=\"form-control\" name=period_id onchange='this.form.submit();'><OPTION value=\"\">Daily</OPTION>";
         if (count($periods_RET)) {
             foreach ($periods_RET as $period)
@@ -85,19 +85,19 @@ if ($_REQUEST['period_id']) {
     $extra['SELECT'] .= ',(SELECT count(*) FROM attendance_period ap,attendance_codes ac
                         WHERE ac.ID=ap.ATTENDANCE_CODE AND (ac.STATE_CODE=\'A\' OR ac.STATE_CODE=\'H\') AND ap.STUDENT_ID=ssm.STUDENT_ID
                         AND ap.PERIOD_ID=\'' . $_REQUEST[period_id] . '\'
-                        AND ap.SCHOOL_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\') AS STATE_ABS';
-    $codes_RET = DBGet(DBQuery('SELECT ID,TITLE FROM attendance_codes WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND TABLE_NAME=\'0\' AND (DEFAULT_CODE!=\'Y\' OR DEFAULT_CODE IS NULL)'));
+                        AND ap.COLLEGE_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\') AS STATE_ABS';
+    $codes_RET = DBGet(DBQuery('SELECT ID,TITLE FROM attendance_codes WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND TABLE_NAME=\'0\' AND (DEFAULT_CODE!=\'Y\' OR DEFAULT_CODE IS NULL)'));
     if (count($codes_RET) > 1) {
         foreach ($codes_RET as $code) {
             if ($_REQUEST['myclasses'] != '') {
                 $extra['SELECT'] .= ',(SELECT count(*) FROM attendance_period ap,attendance_codes ac,course_periods cp
                         WHERE ac.ID=ap.ATTENDANCE_CODE AND ac.ID=\'' . $code[ID] . '\' AND ap.PERIOD_ID=\'' . $_REQUEST[period_id] . '\' AND ap.STUDENT_ID=ssm.STUDENT_ID
                         AND ap.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND ' . (($_REQUEST['myclasses'] == 'my_classes') ? '(cp.TEACHER_ID=\'' . User('STAFF_ID') . '\' OR cp.SECONDARY_TEACHER_ID=\'' . User('STAFF_ID') . '\')' : 'cp.COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\'') . '
-                        AND ap.SCHOOL_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\') AS ABS_' . $code[ID];
+                        AND ap.COLLEGE_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\') AS ABS_' . $code[ID];
             } else {
                 $extra['SELECT'] .= ',(SELECT count(*) FROM attendance_period ap,attendance_codes ac
                         WHERE ac.ID=ap.ATTENDANCE_CODE AND ac.ID=\'' . $code[ID] . '\' AND ap.PERIOD_ID=\'' . $_REQUEST[period_id] . '\' AND ap.STUDENT_ID=ssm.STUDENT_ID
-                        AND ap.SCHOOL_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\') AS ABS_' . $code[ID];
+                        AND ap.COLLEGE_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\') AS ABS_' . $code[ID];
             }
 
             $extra['columns_after']["ABS_" . $code[ID] . ""] = $code['TITLE'];
@@ -107,19 +107,19 @@ if ($_REQUEST['period_id']) {
     $extra['SELECT'] .= ',(SELECT count(*) FROM attendance_period ap,attendance_codes ac
                         WHERE ac.ID=ap.ATTENDANCE_CODE AND (ac.STATE_CODE=\'A\' OR ac.STATE_CODE=\'H\') AND ap.STUDENT_ID=ssm.STUDENT_ID
                         AND ap.PERIOD_ID=\'' . $_REQUEST[period_id] . '\'
-                        AND ap.SCHOOL_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\') AS STATE_ABS';
-    $codes_RET = DBGet(DBQuery('SELECT ID,TITLE FROM attendance_codes WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND TABLE_NAME=\'0\' AND (DEFAULT_CODE!=\'Y\' OR DEFAULT_CODE IS NULL)'));
+                        AND ap.COLLEGE_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\') AS STATE_ABS';
+    $codes_RET = DBGet(DBQuery('SELECT ID,TITLE FROM attendance_codes WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND TABLE_NAME=\'0\' AND (DEFAULT_CODE!=\'Y\' OR DEFAULT_CODE IS NULL)'));
     if (count($codes_RET) > 1) {
         foreach ($codes_RET as $code) {
             if ($_REQUEST['myclasses'] != '') {
                 $extra['SELECT'] .= ',(SELECT count(*) FROM attendance_period ap,attendance_codes ac,course_periods cp
                         WHERE ac.ID=ap.ATTENDANCE_CODE AND ac.ID=\'' . $code[ID] . '\' AND ap.STUDENT_ID=ssm.STUDENT_ID
                         AND ap.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND ' . (($_REQUEST['myclasses'] == 'my_classes') ? '(cp.TEACHER_ID=\'' . User('STAFF_ID') . '\' OR cp.SECONDARY_TEACHER_ID=\'' . User('STAFF_ID') . '\')' : 'cp.COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\'') . '
-                        AND ap.SCHOOL_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\') AS ABS_' . $code[ID] . '';
+                        AND ap.COLLEGE_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\') AS ABS_' . $code[ID] . '';
             } else {
                 $extra['SELECT'] .= ',(SELECT count(*) FROM attendance_period ap,attendance_codes ac
                         WHERE ac.ID=ap.ATTENDANCE_CODE AND ac.ID=\'' . $code[ID] . '\' AND ap.STUDENT_ID=ssm.STUDENT_ID
-                        AND ap.SCHOOL_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\') AS ABS_' . $code[ID] . '';
+                        AND ap.COLLEGE_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\') AS ABS_' . $code[ID] . '';
             }
 
             $extra['columns_after']["ABS_" . $code[ID] . ""] = $code['TITLE'];
@@ -167,7 +167,7 @@ echo '<div class="modal-body">';
 echo '<div id="conf_div" class="text-center"></div>';
 echo '<div class="row" id="resp_table">';
 echo '<div class="col-md-4">';
-$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE COLLEGE_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
@@ -194,14 +194,14 @@ if (UserStudentID()) {
     $PHP_tmp_SELF = PreparePHP_SELF();
     $i = 0;
     if ($_REQUEST['myclasses'] != '') {
-        $absences_RET = DBGet(DBQuery('SELECT ap.STUDENT_ID,ap.PERIOD_ID,ap.SCHOOL_DATE,ac.SHORT_NAME,ad.STATE_VALUE,ad.COMMENT AS OFFICE_COMMENT,ap.COMMENT AS TEACHER_COMMENT,ac.STATE_CODE FROM attendance_period ap,attendance_day ad,attendance_codes ac,course_periods cp WHERE ap.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND ' . (($_REQUEST['myclasses'] == 'my_classes') ? '(cp.TEACHER_ID=\'' . User('STAFF_ID') . '\' OR cp.SECONDARY_TEACHER_ID=\'' . User('STAFF_ID') . '\')' : 'cp.COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\'') . ' AND ap.STUDENT_ID=ad.STUDENT_ID AND ap.SCHOOL_DATE=ad.SCHOOL_DATE AND ap.ATTENDANCE_CODE=ac.ID  AND ap.STUDENT_ID=\'' . UserStudentID() . '\' AND ap.SCHOOL_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\''), array(), array('SCHOOL_DATE', 'PERIOD_ID'));
+        $absences_RET = DBGet(DBQuery('SELECT ap.STUDENT_ID,ap.PERIOD_ID,ap.COLLEGE_DATE,ac.SHORT_NAME,ad.STATE_VALUE,ad.COMMENT AS OFFICE_COMMENT,ap.COMMENT AS TEACHER_COMMENT,ac.STATE_CODE FROM attendance_period ap,attendance_day ad,attendance_codes ac,course_periods cp WHERE ap.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND ' . (($_REQUEST['myclasses'] == 'my_classes') ? '(cp.TEACHER_ID=\'' . User('STAFF_ID') . '\' OR cp.SECONDARY_TEACHER_ID=\'' . User('STAFF_ID') . '\')' : 'cp.COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\'') . ' AND ap.STUDENT_ID=ad.STUDENT_ID AND ap.COLLEGE_DATE=ad.COLLEGE_DATE AND ap.ATTENDANCE_CODE=ac.ID  AND ap.STUDENT_ID=\'' . UserStudentID() . '\' AND ap.COLLEGE_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\''), array(), array('COLLEGE_DATE', 'PERIOD_ID'));
     } else {
-        $absences_RET = DBGet(DBQuery('SELECT ap.STUDENT_ID,ap.PERIOD_ID,ap.SCHOOL_DATE,ac.SHORT_NAME,ad.STATE_VALUE,ad.COMMENT AS OFFICE_COMMENT,ap.COMMENT AS TEACHER_COMMENT,ac.STATE_CODE FROM attendance_period ap,attendance_day ad,attendance_codes ac WHERE ap.STUDENT_ID=ad.STUDENT_ID AND ap.SCHOOL_DATE=ad.SCHOOL_DATE AND ap.ATTENDANCE_CODE=ac.ID  AND ap.STUDENT_ID=\'' . UserStudentID() . '\' AND ap.SCHOOL_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\''), array(), array('SCHOOL_DATE', 'PERIOD_ID'));
+        $absences_RET = DBGet(DBQuery('SELECT ap.STUDENT_ID,ap.PERIOD_ID,ap.COLLEGE_DATE,ac.SHORT_NAME,ad.STATE_VALUE,ad.COMMENT AS OFFICE_COMMENT,ap.COMMENT AS TEACHER_COMMENT,ac.STATE_CODE FROM attendance_period ap,attendance_day ad,attendance_codes ac WHERE ap.STUDENT_ID=ad.STUDENT_ID AND ap.COLLEGE_DATE=ad.COLLEGE_DATE AND ap.ATTENDANCE_CODE=ac.ID  AND ap.STUDENT_ID=\'' . UserStudentID() . '\' AND ap.COLLEGE_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\''), array(), array('COLLEGE_DATE', 'PERIOD_ID'));
     }
     foreach ($absences_RET as $college_date => $absences) {
 
         $i++;
-        $days_RET[$i]['SCHOOL_DATE'] = ProperDate($college_date);
+        $days_RET[$i]['COLLEGE_DATE'] = ProperDate($college_date);
         $days_RET[$i]['DAILY'] = _makeStateValue($absences[key($absences)][1]['STATE_VALUE']);
         $days_RET[$i]['OFFICE_COMMENT'] = $absences[key($absences)][1]['OFFICE_COMMENT'];
         $days_RET[$i]['TEACHER_COMMENT'] = $absences[key($absences)][1]['TEACHER_COMMENT'];
@@ -210,11 +210,11 @@ if (UserStudentID()) {
         }
     }
     if ($_REQUEST['myclasses'] != '') {
-        $periods_RET = DBGet(DBQuery('SELECT sp.PERIOD_ID,sp.SHORT_NAME FROM college_periods sp,schedule s,course_periods cp,course_period_var cpv WHERE sp.SCHOOL_ID=\'' . UserCollege() . '\' AND sp.SYEAR=\'' . UserSyear() . '\' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND s.STUDENT_ID=\'' . UserStudentID() . '\' AND ' . (($_REQUEST['myclasses'] == 'my_classes') ? '(cp.TEACHER_ID=\'' . User('STAFF_ID') . '\' OR cp.SECONDARY_TEACHER_ID=\'' . User('STAFF_ID') . '\')' : 'cp.COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\'') . ' AND cp.COURSE_PERIOD_ID=s.COURSE_PERIOD_ID AND cpv.PERIOD_ID=sp.PERIOD_ID AND cpv.DOES_ATTENDANCE=\'Y\' ORDER BY sp.SORT_ORDER'));
+        $periods_RET = DBGet(DBQuery('SELECT sp.PERIOD_ID,sp.SHORT_NAME FROM college_periods sp,schedule s,course_periods cp,course_period_var cpv WHERE sp.COLLEGE_ID=\'' . UserCollege() . '\' AND sp.SYEAR=\'' . UserSyear() . '\' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND s.STUDENT_ID=\'' . UserStudentID() . '\' AND ' . (($_REQUEST['myclasses'] == 'my_classes') ? '(cp.TEACHER_ID=\'' . User('STAFF_ID') . '\' OR cp.SECONDARY_TEACHER_ID=\'' . User('STAFF_ID') . '\')' : 'cp.COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\'') . ' AND cp.COURSE_PERIOD_ID=s.COURSE_PERIOD_ID AND cpv.PERIOD_ID=sp.PERIOD_ID AND cpv.DOES_ATTENDANCE=\'Y\' ORDER BY sp.SORT_ORDER'));
     } else {
-        $periods_RET = DBGet(DBQuery('SELECT sp.PERIOD_ID,sp.SHORT_NAME FROM college_periods sp,schedule s,course_periods cp,course_period_var cpv WHERE sp.SCHOOL_ID=\'' . UserCollege() . '\' AND sp.SYEAR=\'' . UserSyear() . '\' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND s.STUDENT_ID=\'' . UserStudentID() . '\' AND cp.COURSE_PERIOD_ID=s.COURSE_PERIOD_ID AND cpv.PERIOD_ID=sp.PERIOD_ID AND cpv.DOES_ATTENDANCE=\'Y\' ORDER BY sp.SORT_ORDER'));
+        $periods_RET = DBGet(DBQuery('SELECT sp.PERIOD_ID,sp.SHORT_NAME FROM college_periods sp,schedule s,course_periods cp,course_period_var cpv WHERE sp.COLLEGE_ID=\'' . UserCollege() . '\' AND sp.SYEAR=\'' . UserSyear() . '\' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND s.STUDENT_ID=\'' . UserStudentID() . '\' AND cp.COURSE_PERIOD_ID=s.COURSE_PERIOD_ID AND cpv.PERIOD_ID=sp.PERIOD_ID AND cpv.DOES_ATTENDANCE=\'Y\' ORDER BY sp.SORT_ORDER'));
     }
-    $columns['SCHOOL_DATE'] = 'Date';
+    $columns['COLLEGE_DATE'] = 'Date';
     $columns['DAILY'] = 'Present';
     $columns['OFFICE_COMMENT'] = 'Admin & Office Comment';
     $columns['TEACHER_COMMENT'] = 'Teacher Comment';

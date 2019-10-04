@@ -40,9 +40,9 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
         }
     }
     if (count($_REQUEST['values']) && count($_REQUEST['student'])) {
-        if ($_REQUEST['values']['NEXT_SCHOOL'] != '') {
-            $next_college = $_REQUEST['values']['NEXT_SCHOOL'];
-            unset($_REQUEST['values']['NEXT_SCHOOL']);
+        if ($_REQUEST['values']['NEXT_COLLEGE'] != '') {
+            $next_college = $_REQUEST['values']['NEXT_COLLEGE'];
+            unset($_REQUEST['values']['NEXT_COLLEGE']);
         }
         if ($_REQUEST['values']['SECTION_ID'] != '') {
             $sec_id = $_REQUEST['values']['SECTION_ID'];
@@ -111,7 +111,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
         $fields = explode(',', $fields);
         $values = explode(',', $values);
         $medical_student_id = explode(',', $students);
-        $check_student_avail = DBGet(DBQuery('SELECT student_id from medical_info where SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserCollege()));
+        $check_student_avail = DBGet(DBQuery('SELECT student_id from medical_info where SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege()));
 
         foreach ($check_student_avail as $stu_key => $stu_id) {
             foreach ($stu_id as $stu_id_k => $stu_id_v)
@@ -143,7 +143,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
                             DBQuery('UPDATE medical_info SET ' . $fields[3] . '=\'' . $values[3] . '\' WHERE STUDENT_ID =' . $stu_id);
                     }
                     else {
-                        DBQuery('INSERT INTO medical_info (STUDENT_ID,SYEAR,SCHOOL_ID) VALUES (' . $stu_id . ',' . UserSyear() . ',' . UserCollege() . ')');
+                        DBQuery('INSERT INTO medical_info (STUDENT_ID,SYEAR,COLLEGE_ID) VALUES (' . $stu_id . ',' . UserSyear() . ',' . UserCollege() . ')');
 
                         if ($values[1] . trim() != '')
                             DBQuery('UPDATE medical_info SET ' . $fields[1] . '=\'' . $values[1] . '\' WHERE STUDENT_ID =' . $stu_id);
@@ -161,7 +161,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
         if ($sec_id != '')
             DBQuery('UPDATE student_enrollment SET SECTION_ID=' . $sec_id . ' WHERE SYEAR=' . UserSyear() . ' AND STUDENT_ID IN (' . substr($students, 1) . ') ');
         if ($next_college != '')
-            DBQuery('UPDATE student_enrollment SET NEXT_SCHOOL=' . $next_college . ' WHERE SYEAR=' . UserSyear() . ' AND STUDENT_ID IN (' . substr($students, 1) . ') ');
+            DBQuery('UPDATE student_enrollment SET NEXT_COLLEGE=' . $next_college . ' WHERE SYEAR=' . UserSyear() . ' AND STUDENT_ID IN (' . substr($students, 1) . ') ');
         if ($calendar)
             DBQuery('UPDATE student_enrollment SET CALENDAR_ID=' . $calendar . ' WHERE SYEAR=' . UserSyear() . ' AND STUDENT_ID IN (' . substr($students, 1) . ') ');
         if ($grade)
@@ -243,7 +243,7 @@ if (!$_REQUEST['modfunc']) {
 ////        
 ////        
 ////        $college_id = UserCollege();
-////        $sql = 'SELECT * FROM college_gradelevel_sections WHERE SCHOOL_ID=\''.$college_id.'\' ORDER BY SORT_ORDER';
+////        $sql = 'SELECT * FROM college_gradelevel_sections WHERE COLLEGE_ID=\''.$college_id.'\' ORDER BY SORT_ORDER';
 ////        $QI = DBQuery($sql);
 ////        $sec_RET = DBGet($QI);
 ////        unset($options);
@@ -320,7 +320,7 @@ if (!$_REQUEST['modfunc']) {
                     array_push($fields, '<div class="form-group">' . _makeTextInput($v_g) . '</div>');
             }
             $college_id = UserCollege();
-            $sql = 'SELECT * FROM college_gradelevel_sections WHERE SCHOOL_ID=\'' . $college_id . '\' ORDER BY SORT_ORDER';
+            $sql = 'SELECT * FROM college_gradelevel_sections WHERE COLLEGE_ID=\'' . $college_id . '\' ORDER BY SORT_ORDER';
             $QI = DBQuery($sql);
             $sec_RET = DBGet($QI);
             unset($options);
@@ -334,7 +334,7 @@ if (!$_REQUEST['modfunc']) {
 //        echo'</div>'; 
 
 
-            $grade_level_RET = DBGet(DBQuery('SELECT * FROM college_gradelevels WHERE SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER ASC'));
+            $grade_level_RET = DBGet(DBQuery('SELECT * FROM college_gradelevels WHERE COLLEGE_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER ASC'));
             $options = array();
             if (count($grade_level_RET)) {
                 foreach ($grade_level_RET as $grade)
@@ -372,9 +372,9 @@ if (!$_REQUEST['modfunc']) {
                 foreach ($colleges_RET as $college)
                     $options[$college['ID']] = $college['TITLE'];
             }
-            array_push($fields, '<div class="form-group"><label class="control-label text-right col-lg-4" for="CUSTOM_' . $field['ID'].'">Rolling Retention / Options</label><div class="col-lg-8">' . _makeSelectInput('NEXT_SCHOOL', $options) . '</div></div>');
+            array_push($fields, '<div class="form-group"><label class="control-label text-right col-lg-4" for="CUSTOM_' . $field['ID'].'">Rolling Retention / Options</label><div class="col-lg-8">' . _makeSelectInput('NEXT_COLLEGE', $options) . '</div></div>');
 
-            $calendars_RET = DBGet(DBQuery('SELECT CALENDAR_ID,DEFAULT_CALENDAR,TITLE FROM college_calendars WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY DEFAULT_CALENDAR ASC'));
+            $calendars_RET = DBGet(DBQuery('SELECT CALENDAR_ID,DEFAULT_CALENDAR,TITLE FROM college_calendars WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' ORDER BY DEFAULT_CALENDAR ASC'));
             $options = array();
             if (count($calendars_RET)) {
                 foreach ($calendars_RET as $calendar)
@@ -481,9 +481,9 @@ if (!$_REQUEST['modfunc']) {
                 foreach ($colleges_RET as $college)
                     $options[$college['ID']] = $college['TITLE'];
             }
-            array_push($fields, '<div class="form-group"><label class="control-label text-right col-lg-4" for="CUSTOM_' . $field['ID'].'">Rolling Retention / Options</label><div class="col-lg-8">' . _makeSelectInput('NEXT_SCHOOL', $options) . '</div></div>');
+            array_push($fields, '<div class="form-group"><label class="control-label text-right col-lg-4" for="CUSTOM_' . $field['ID'].'">Rolling Retention / Options</label><div class="col-lg-8">' . _makeSelectInput('NEXT_COLLEGE', $options) . '</div></div>');
 
-            $calendars_RET = DBGet(DBQuery('SELECT CALENDAR_ID,DEFAULT_CALENDAR,TITLE FROM college_calendars WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY DEFAULT_CALENDAR ASC'));
+            $calendars_RET = DBGet(DBQuery('SELECT CALENDAR_ID,DEFAULT_CALENDAR,TITLE FROM college_calendars WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' ORDER BY DEFAULT_CALENDAR ASC'));
             $options = array();
             if (count($calendars_RET)) {
                 foreach ($calendars_RET as $calendar)
@@ -498,7 +498,7 @@ if (!$_REQUEST['modfunc']) {
 //        
 
             $college_id = UserCollege();
-            $sql = 'SELECT * FROM college_gradelevel_sections WHERE SCHOOL_ID=\'' . $college_id . '\' ORDER BY SORT_ORDER';
+            $sql = 'SELECT * FROM college_gradelevel_sections WHERE COLLEGE_ID=\'' . $college_id . '\' ORDER BY SORT_ORDER';
             $QI = DBQuery($sql);
             $sec_RET = DBGet($QI);
             unset($options);
@@ -512,7 +512,7 @@ if (!$_REQUEST['modfunc']) {
 //        echo'</div>'; 
 
 
-            $grade_level_RET = DBGet(DBQuery('SELECT * FROM college_gradelevels WHERE SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER ASC'));
+            $grade_level_RET = DBGet(DBQuery('SELECT * FROM college_gradelevels WHERE COLLEGE_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER ASC'));
             $options = array();
             if (count($grade_level_RET)) {
                 foreach ($grade_level_RET as $grade)
@@ -608,7 +608,7 @@ if (!$_REQUEST['modfunc']) {
 
     echo '<div class="row" id="resp_table">';
     echo '<div class="col-md-4">';
-    $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+    $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE COLLEGE_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
     $QI = DBQuery($sql);
     $subjects_RET = DBGet($QI);
 
