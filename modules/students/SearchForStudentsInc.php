@@ -67,7 +67,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
 
             echo '<div class="row">';
             echo '<div class="col-md-12">';
-            PopTable('header', 'Find a Student');
+            PopTable('header', 'Admissions');
             unset($_SESSION['students_order']);
             // echo 'test';
             // echo  encode_url("Modules.php?="); 
