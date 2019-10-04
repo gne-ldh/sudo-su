@@ -32,15 +32,15 @@ if ($_REQUEST['modfunc'] == 'currenc') {
     if ($_REQUEST['values']['CURRENCY']) {
         $currency_info = DBGet(DBQuery('SELECT * FROM program_config WHERE PROGRAM=\'Currency\' AND VALUE =\'' . $_REQUEST['values']['CURRENCY'] . '\''));
         if (count($currency_info[1])) {
-            $currency_info_exist = DBGet(DBQuery('SELECT * FROM program_config WHERE PROGRAM=\'Currency\' AND SYEAR =\'' . UserSyear() . '\' AND SCHOOL_ID =\'' . UserCollege() . '\''));
+            $currency_info_exist = DBGet(DBQuery('SELECT * FROM program_config WHERE PROGRAM=\'Currency\' AND SYEAR =\'' . UserSyear() . '\' AND COLLEGE_ID =\'' . UserCollege() . '\''));
             if (count($currency_info_exist[1])) {
 
-                $currency_info_upd = DBQuery('UPDATE program_config SET TITLE=\'' . $currency_info[1]['TITLE'] . '\',VALUE=\'' . $_REQUEST['values']['CURRENCY'] . '\' WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND PROGRAM=\'Currency\'');
+                $currency_info_upd = DBQuery('UPDATE program_config SET TITLE=\'' . $currency_info[1]['TITLE'] . '\',VALUE=\'' . $_REQUEST['values']['CURRENCY'] . '\' WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND PROGRAM=\'Currency\'');
                 unset($_SESSION['_REQUEST_vars']['modfunc']);
                 unset($_REQUEST['modfunc']);
             } else {
 
-                $currency_info_ins = DBQuery('INSERT INTO program_config (SYEAR,SCHOOL_ID,PROGRAM,TITLE,VALUE)VALUES (\'' . UserSyear() . '\',\'' . UserCollege() . '\',\'' . $currency_info[1]['PROGRAM'] . '\',\'' . $currency_info[1]['TITLE'] . '\',\'' . $_REQUEST['values']['CURRENCY'] . '\')');
+                $currency_info_ins = DBQuery('INSERT INTO program_config (SYEAR,COLLEGE_ID,PROGRAM,TITLE,VALUE)VALUES (\'' . UserSyear() . '\',\'' . UserCollege() . '\',\'' . $currency_info[1]['PROGRAM'] . '\',\'' . $currency_info[1]['TITLE'] . '\',\'' . $_REQUEST['values']['CURRENCY'] . '\')');
                 unset($_SESSION['_REQUEST_vars']['modfunc']);
                 unset($_REQUEST['modfunc']);
             }
@@ -48,7 +48,7 @@ if ($_REQUEST['modfunc'] == 'currenc') {
     }
 }
 unset($_REQUEST['modfunc']);
-$currency_info_exist = DBGet(DBQuery('SELECT * FROM program_config WHERE PROGRAM=\'Currency\' AND SYEAR =\'' . UserSyear() . '\' AND SCHOOL_ID =\'' . UserCollege() . '\''));
+$currency_info_exist = DBGet(DBQuery('SELECT * FROM program_config WHERE PROGRAM=\'Currency\' AND SYEAR =\'' . UserSyear() . '\' AND COLLEGE_ID =\'' . UserCollege() . '\''));
 $val = $currency_info_exist[1]['VALUE'];
 
 $values = DBGet(DBQuery('SELECT  VALUE AS ID,TITLE FROM program_config WHERE PROGRAM=\'Currency\' '));

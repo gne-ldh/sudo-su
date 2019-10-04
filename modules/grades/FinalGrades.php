@@ -72,13 +72,13 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
 
         // GET THE COMMENTS
         if ($_REQUEST['elements']['comments'] == 'Y')
-            $comments_RET = DBGet(DBQuery('SELECT ID,TITLE,SORT_ORDER FROM report_card_comments WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\''), array(), array('ID'));
+            $comments_RET = DBGet(DBQuery('SELECT ID,TITLE,SORT_ORDER FROM report_card_comments WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\''), array(), array('ID'));
 
         if ($_REQUEST['elements']['mp_tardies'] == 'Y' || $_REQUEST['elements']['ytd_tardies'] == 'Y') {
             // GET THE ATTENDANCE
             unset($extra);
             $extra['WHERE'] = ' AND s.STUDENT_ID IN (' . $st_list . ')';
-            $extra['SELECT_ONLY'] .= 'ap.SCHOOL_DATE,ap.COURSE_PERIOD_ID,ac.ID AS ATTENDANCE_CODE,ap.MARKING_PERIOD_ID,ssm.STUDENT_ID';
+            $extra['SELECT_ONLY'] .= 'ap.COLLEGE_DATE,ap.COURSE_PERIOD_ID,ac.ID AS ATTENDANCE_CODE,ap.MARKING_PERIOD_ID,ssm.STUDENT_ID';
             $extra['FROM'] .= ',attendance_codes ac,attendance_period ap';
             $extra['WHERE'] .= ' AND ac.ID=ap.ATTENDANCE_CODE AND (ac.DEFAULT_CODE!=\'Y\' OR ac.DEFAULT_CODE IS NULL) AND ac.SYEAR=ssm.SYEAR AND ap.STUDENT_ID=ssm.STUDENT_ID';
             $extra['group'][] = 'STUDENT_ID';
@@ -117,9 +117,9 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
             // GET THE DAILY ATTENDANCE
             unset($extra);
             $extra['WHERE'] = ' AND s.STUDENT_ID IN (' . $st_list . ')';
-            $extra['SELECT_ONLY'] .= 'ad.SCHOOL_DATE,ad.MARKING_PERIOD_ID,ad.STATE_VALUE,ssm.STUDENT_ID';
+            $extra['SELECT_ONLY'] .= 'ad.COLLEGE_DATE,ad.MARKING_PERIOD_ID,ad.STATE_VALUE,ssm.STUDENT_ID';
             $extra['FROM'] .= ',attendance_day ad';
-            $extra['WHERE'] .= ' AND ad.STUDENT_ID=ssm.STUDENT_ID AND ad.SYEAR=ssm.SYEAR AND (ad.STATE_VALUE=\'0.0\' OR ad.STATE_VALUE=\'.5\') AND ad.SCHOOL_DATE<=\'' . GetMP($last_mp, 'END_DATE') . '\'';
+            $extra['WHERE'] .= ' AND ad.STUDENT_ID=ssm.STUDENT_ID AND ad.SYEAR=ssm.SYEAR AND (ad.STATE_VALUE=\'0.0\' OR ad.STATE_VALUE=\'.5\') AND ad.COLLEGE_DATE<=\'' . GetMP($last_mp, 'END_DATE') . '\'';
             $extra['group'][] = 'STUDENT_ID';
             $extra['group'][] = 'MARKING_PERIOD_ID';
 
@@ -261,7 +261,7 @@ if (!$_REQUEST['modfunc']) {
     echo '<div id="conf_div" class="text-center"></div>';
     echo '<div class="row" id="resp_table">';
     echo '<div class="col-md-4">';
-    $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+    $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE COLLEGE_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
     $QI = DBQuery($sql);
     $subjects_RET = DBGet($QI);
 
@@ -293,7 +293,7 @@ if (!$_REQUEST['modfunc']) {
 
         echo "<FORM action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=save&include_inactive=" . strip_tags(trim($_REQUEST[include_inactive])) . " method=POST>";
 
-        $attendance_codes = DBGet(DBQuery('SELECT SHORT_NAME,ID FROM attendance_codes WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND (DEFAULT_CODE!=\'Y\' OR DEFAULT_CODE IS NULL) AND TABLE_NAME=\'0\''));
+        $attendance_codes = DBGet(DBQuery('SELECT SHORT_NAME,ID FROM attendance_codes WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND (DEFAULT_CODE!=\'Y\' OR DEFAULT_CODE IS NULL) AND TABLE_NAME=\'0\''));
         //PopTable_wo_header('header');
         $extra['extra_header_left'] = '<h5 class="text-primary no-margin-top">Include on Grade List:</h5>';
         $extra['extra_header_left'] .= '<div class="row">';
@@ -314,17 +314,17 @@ if (!$_REQUEST['modfunc']) {
         $extra['extra_header_left'] .= '</div>';
 
 
-        $mps_RET = DBGet(DBQuery('SELECT SEMESTER_ID,MARKING_PERIOD_ID,SHORT_NAME FROM college_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER'), array(), array('SEMESTER_ID'));
+        $mps_RET = DBGet(DBQuery('SELECT SEMESTER_ID,MARKING_PERIOD_ID,SHORT_NAME FROM college_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER'), array(), array('SEMESTER_ID'));
 
         $MP_TYPE = 'QTR';
         if (!$mps_RET) {
             $MP_TYPE = 'SEM';
-            $mps_RET = DBGet(DBQuery('SELECT YEAR_ID,MARKING_PERIOD_ID,SHORT_NAME FROM college_semesters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER'), array(), array('YEAR_ID'));
+            $mps_RET = DBGet(DBQuery('SELECT YEAR_ID,MARKING_PERIOD_ID,SHORT_NAME FROM college_semesters WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER'), array(), array('YEAR_ID'));
         }
 
         if (!$mps_RET) {
             $MP_TYPE = 'FY';
-            $mps_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,SHORT_NAME FROM college_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER'), array(), array('MARKING_PERIOD_ID'));
+            $mps_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,SHORT_NAME FROM college_years WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER'), array(), array('MARKING_PERIOD_ID'));
         }
 
         $extra['extra_header_left'] .= '<h5 class="text-primary">Marking Periods</h5>';

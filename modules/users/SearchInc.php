@@ -76,7 +76,7 @@ if (User('PROFILE') == 'admin') {
             echo $extra['search'];
 
         if (User('PROFILE') == 'admin')
-            echo '<label class="checkbox-inline"><INPUT type=checkbox name=_search_all_colleges value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '>Search All Colleges</label>';
+            echo '<label class="checkbox-inline"><INPUT type=checkbox name=_search_all_colleges value=Y' . (Preferences('DEFAULT_ALL_COLLEGES') == 'Y' ? ' CHECKED' : '') . '>Search All Colleges</label>';
         echo '<label class="checkbox-inline"><INPUT type=checkbox name=_dis_user value=Y>Include Disabled User</label>';
         echo '</div>'; //.col-md-12
         echo '</div>'; //.row

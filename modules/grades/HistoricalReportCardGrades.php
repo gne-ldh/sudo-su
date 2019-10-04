@@ -31,9 +31,9 @@ include 'modules/grades/DeletePromptX.fnc.php';
 DrawBC("Gradebook > " . ProgramTitle());
 Search('student_id');
 
-$_REQUEST['SCHOOL_NAME'] = str_replace("'", "\'", $_REQUEST['SCHOOL_NAME']);
+$_REQUEST['COLLEGE_NAME'] = str_replace("'", "\'", $_REQUEST['COLLEGE_NAME']);
 if (isset($_REQUEST['student_id'])) {
-    $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,SCHOOL_ID FROM students,student_enrollment WHERE students.STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND student_enrollment.STUDENT_ID = students.STUDENT_ID '));
+    $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,COLLEGE_ID FROM students,student_enrollment WHERE students.STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND student_enrollment.STUDENT_ID = students.STUDENT_ID '));
 
     $count_student_RET = DBGet(DBQuery('SELECT COUNT(*) AS NUM FROM students'));
     echo '<div class="panel panel-default">';
@@ -75,7 +75,7 @@ if (UserStudentID()) {
             // ------------------------- End --------------------------- //
             $mp_id = $_REQUEST['new_sms'];
         }
-        if (($_REQUEST['SMS_GRADE_LEVEL'] || $_REQUEST['SCHOOL_NAME'] ) && $mp_id) {
+        if (($_REQUEST['SMS_GRADE_LEVEL'] || $_REQUEST['COLLEGE_NAME'] ) && $mp_id) {
 
             if ($_REQUEST['SMS_GRADE_LEVEL']) {
                 $updategl = DBQuery('UPDATE student_gpa_calculated SET grade_level_short = \'' . trim($_REQUEST['SMS_GRADE_LEVEL']) . '\'
@@ -83,12 +83,12 @@ if (UserStudentID()) {
             }
             $res = DBGet(DBQuery('SELECT count(*) as TOT  FROM history_college WHERE student_id=' . UserStudentID() . ' AND marking_period_id=' . $mp_id . ''));
             $rows = $res[1]['TOT'];
-            if ($rows != 0 && $_REQUEST['SCHOOL_NAME']) {
-                $updatestats = 'UPDATE history_college SET college_name=\'' . trim($_REQUEST['SCHOOL_NAME']) . '\'
+            if ($rows != 0 && $_REQUEST['COLLEGE_NAME']) {
+                $updatestats = 'UPDATE history_college SET college_name=\'' . trim($_REQUEST['COLLEGE_NAME']) . '\'
                                      WHERE marking_period_id = ' . $mp_id . ' AND student_id = ' . UserStudentID() . '';
             } elseif ($rows == 0) {
                 $updatestats = 'INSERT INTO history_college  (student_id, marking_period_id,college_name) VALUES
-                        (' . UserStudentID() . ',' . $mp_id . ',\'' . trim($_REQUEST['SCHOOL_NAME']) . '\')';
+                        (' . UserStudentID() . ',' . $mp_id . ',\'' . trim($_REQUEST['COLLEGE_NAME']) . '\')';
             }
 
             DBQuery($updatestats);
@@ -155,7 +155,7 @@ if (UserStudentID()) {
             }
             else {
                 $sql = 'INSERT INTO student_report_card_grades ';
-                $fields = 'SCHOOL_ID, SYEAR, STUDENT_ID, MARKING_PERIOD_ID, ';
+                $fields = 'COLLEGE_ID, SYEAR, STUDENT_ID, MARKING_PERIOD_ID, ';
                 $values = UserCollege() . ', ' . UserSyear() . ', ' . $student_id . ', ' . $mp_id . ', ';
 
                 $go = false;
@@ -316,7 +316,7 @@ if (UserStudentID()) {
         }
 
         if ($mp_id)
-            $historycollege = DBGet(DBQuery('SELECT SCHOOL_NAME  from history_college where STUDENT_ID = ' . $student_id . ' and marking_period_id=' . $mp_id . ' '));
+            $historycollege = DBGet(DBQuery('SELECT COLLEGE_NAME  from history_college where STUDENT_ID = ' . $student_id . ' and marking_period_id=' . $mp_id . ' '));
 
         $mpselect = "<FORM class=\"form-horizontal\" action=Modules.php?modname=$_REQUEST[modname]&tab_id=" . $_REQUEST['tab_id'] . " method=POST id=F2 name=F2>";
         $mpselect .= "<SELECT class=\"form-control\" name=mp_id onchange='this.form.submit();'>";
@@ -357,7 +357,7 @@ if (UserStudentID()) {
 
         if ($mp_id == "0") {
             $syear = UserSyear();
-            $sql = 'SELECT MARKING_PERIOD_ID, SYEAR, TITLE, POST_END_DATE FROM marking_periods WHERE SCHOOL_ID = \'' . UserCollege() .
+            $sql = 'SELECT MARKING_PERIOD_ID, SYEAR, TITLE, POST_END_DATE FROM marking_periods WHERE COLLEGE_ID = \'' . UserCollege() .
                     '\' ORDER BY POST_END_DATE';
             $MPRET = DBGet(DBQuery($sql));
             if ($MPRET) {
@@ -368,7 +368,7 @@ if (UserStudentID()) {
 
                 echo '<div class="form-group">';
                 echo '<div class="col-md-4"><label class="control-label">New Marking Period</label>' . SelectInput(null, 'new_sms', '', $mpoptions, false, $extra) . '</div>';
-                echo '<div class="col-md-4"><label class="control-label">College Name</label>' . TextInput($historycollege[1]['college_name'], "SCHOOL_NAME", "", 'size=35  class=form-control ') . '</div>';
+                echo '<div class="col-md-4"><label class="control-label">College Name</label>' . TextInput($historycollege[1]['college_name'], "COLLEGE_NAME", "", 'size=35  class=form-control ') . '</div>';
                 echo '<div class="col-md-4"><label class="control-label">Grade Level</label>' . $sms_grade_level . '</div>';
                 echo '</div>';
             }
@@ -377,8 +377,8 @@ if (UserStudentID()) {
 
             $selectedmp = $mp_id;
 
-            if ($historycollege[1]['SCHOOL_NAME'])
-                $college_name = $historycollege[1]['SCHOOL_NAME'];
+            if ($historycollege[1]['COLLEGE_NAME'])
+                $college_name = $historycollege[1]['COLLEGE_NAME'];
             else {
                 $get_collegeid = DBGet(DBQuery("SELECT college_id FROM  marking_periods  WHERE marking_period_id = $selectedmp"));
                 if ($get_collegeid[1]['college_id']) {
@@ -389,7 +389,7 @@ if (UserStudentID()) {
             echo '<div class="form-group clearfix">';
             echo '<div class="col-md-4"><label class="control-label">Grade Level:</label>' . $sms_grade_level . '</div>';
             echo '<div class="col-md-4"><label class="control-label">Select Marking Period:</label>' . $mpselect . '</div>';
-            echo '<div class="col-md-4"><label class="control-label">College Name:</label>' . TextInput($college_name, "SCHOOL_NAME", "", 'size=35  class=form-control') . '</div>';
+            echo '<div class="col-md-4"><label class="control-label">College Name:</label>' . TextInput($college_name, "COLLEGE_NAME", "", 'size=35  class=form-control') . '</div>';
             echo '</div>';
             
             $sql = 'SELECT ID,COURSE_CODE,COURSE_TITLE,GRADE_PERCENT,GRADE_LETTER,

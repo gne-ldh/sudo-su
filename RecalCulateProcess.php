@@ -33,7 +33,7 @@ include 'Data.php';
     DBQuery('DELETE FROM student_report_card_grades WHERE SYEAR=\''.UserSyear().'\'  AND COURSE_PERIOD_ID IS NOT NULL AND STUDENT_ID IN (\''.$_REQUEST['students'].'\') AND MARKING_PERIOD_ID=\''.$_REQUEST['mp'].'\'');
     DBQuery('INSERT INTO `student_report_card_grades`(`syear`, `college_id`, `student_id`, `course_period_id`, `report_card_grade_id`, `report_card_comment_id`, `comment`, `grade_percent`, `marking_period_id`, `grade_letter`, `weighted_gp`, `unweighted_gp`, `gp_scale`,`gpa_cal`, `credit_attempted`, `credit_earned`, `credit_category`,`course_code`, `course_title`, `id`) SELECT `syear`, `college_id`, `student_id`, `course_period_id`, `report_card_grade_id`, `report_card_comment_id`, `comment`, `grade_percent`, `marking_period_id`, `grade_letter`, `weighted_gp`, `unweighted_gp`, `gp_scale`,`gpa_cal`, `credit_attempted`, `credit_earned`, `credit_category`, `course_code`,`course_title`, `id` FROM TEMP_SRCG ');
     DBQuery('DROP TABLE TEMP_SRCG');
-	$students_RET = DBGet(DBQuery('SELECT STUDENT_ID,MARKING_PERIOD_ID FROM student_report_card_grades WHERE SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserCollege().'\' AND COURSE_PERIOD_ID IS NULL GROUP BY MARKING_PERIOD_ID'));
+	$students_RET = DBGet(DBQuery('SELECT STUDENT_ID,MARKING_PERIOD_ID FROM student_report_card_grades WHERE SYEAR=\''.UserSyear().'\' AND COLLEGE_ID=\''.UserCollege().'\' AND COURSE_PERIOD_ID IS NULL GROUP BY MARKING_PERIOD_ID'));
         foreach($students_RET as $stu_key=>$stu_val)
         {
     $res=  DBGet(DBQuery( 'SELECT

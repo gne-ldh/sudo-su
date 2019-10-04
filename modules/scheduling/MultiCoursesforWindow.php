@@ -36,7 +36,7 @@ if($_REQUEST['ses'])
 // if only one subject, select it automatically -- works for Course Setup and Choose a Course
 if($_REQUEST['modfunc']!='delete' && !$_REQUEST['subject_id'])
 {
-	$subjects_RET = DBGet(DBQuery('SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\''));
+	$subjects_RET = DBGet(DBQuery('SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE COLLEGE_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\''));
 	if(count($subjects_RET)==1)
 		$_REQUEST['subject_id'] = $subjects_RET[1]['SUBJECT_ID'];
 }
@@ -49,9 +49,9 @@ if($_REQUEST['course_modfunc']=='search')
 	PopTable('footer');
 	if($_REQUEST['search_term'])
 	{
-		$subjects_RET = DBGet(DBQuery('SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE (UPPER(TITLE) LIKE \''.'%'.strtoupper($_REQUEST['search_term']).'%' .'\' OR UPPER(SHORT_NAME) = \''.strtoupper($_REQUEST['search_term']).'\') AND SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserCollege().'\''));
-		$courses_RET = DBGet(DBQuery('SELECT SUBJECT_ID,COURSE_ID,TITLE FROM courses WHERE (UPPER(TITLE) LIKE \''.'%'.strtoupper($_REQUEST['search_term']).'%'.'\' OR UPPER(SHORT_NAME) = \''.strtoupper($_REQUEST['search_term']).'\') AND SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserCollege().'\''));
-		$periods_RET = DBGet(DBQuery('SELECT c.SUBJECT_ID,cp.COURSE_ID,cp.COURSE_PERIOD_ID,cp.TITLE FROM course_periods cp,courses c WHERE cp.COURSE_ID=c.COURSE_ID AND (UPPER(cp.TITLE) LIKE \''.'%'.strtoupper($_REQUEST['search_term']).'%'.'\' OR UPPER(cp.SHORT_NAME) = \''.strtoupper($_REQUEST['search_term']).'\') AND cp.SYEAR=\''.UserSyear().'\' AND cp.SCHOOL_ID=\''.UserCollege().'\''));
+		$subjects_RET = DBGet(DBQuery('SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE (UPPER(TITLE) LIKE \''.'%'.strtoupper($_REQUEST['search_term']).'%' .'\' OR UPPER(SHORT_NAME) = \''.strtoupper($_REQUEST['search_term']).'\') AND SYEAR=\''.UserSyear().'\' AND COLLEGE_ID=\''.UserCollege().'\''));
+		$courses_RET = DBGet(DBQuery('SELECT SUBJECT_ID,COURSE_ID,TITLE FROM courses WHERE (UPPER(TITLE) LIKE \''.'%'.strtoupper($_REQUEST['search_term']).'%'.'\' OR UPPER(SHORT_NAME) = \''.strtoupper($_REQUEST['search_term']).'\') AND SYEAR=\''.UserSyear().'\' AND COLLEGE_ID=\''.UserCollege().'\''));
+		$periods_RET = DBGet(DBQuery('SELECT c.SUBJECT_ID,cp.COURSE_ID,cp.COURSE_PERIOD_ID,cp.TITLE FROM course_periods cp,courses c WHERE cp.COURSE_ID=c.COURSE_ID AND (UPPER(cp.TITLE) LIKE \''.'%'.strtoupper($_REQUEST['search_term']).'%'.'\' OR UPPER(cp.SHORT_NAME) = \''.strtoupper($_REQUEST['search_term']).'\') AND cp.SYEAR=\''.UserSyear().'\' AND cp.COLLEGE_ID=\''.UserCollege().'\''));
 
 		echo '<TABLE><TR><TD valign=top>';
 		$link['TITLE']['link'] = "ForWindow.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]";
@@ -162,7 +162,7 @@ if((!$_REQUEST['modfunc'] || $_REQUEST['modfunc']=='choose_course') && !$_REQUES
 	DrawHeaderHome('Courses',"<A HREF=ForWindow.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&course_modfunc=search>Search</A>");
 
 	echo '<TABLE><TR>';
-	$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
+	$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE COLLEGE_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
 	$QI = DBQuery($sql);
 	$subjects_RET = DBGet($QI);
 	if(count($subjects_RET))

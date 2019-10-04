@@ -89,7 +89,7 @@ if ($_REQUEST['values'] && ($_POST['values'] || $_REQUEST['ajax'])) {
             }
             $sql = substr($sql, 0, -1) . ' WHERE ID=\'' . $id . '\'';
 
-            $check_rec = DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM eligibility_activities WHERE UPPER(TITLE)=\'' . $title . '\' AND ID!=\'' . $id . '\' AND SYEAR=\'' . UserSyear() . '\'  AND SCHOOL_ID=\'' . UserCollege() . '\''));
+            $check_rec = DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM eligibility_activities WHERE UPPER(TITLE)=\'' . $title . '\' AND ID!=\'' . $id . '\' AND SYEAR=\'' . UserSyear() . '\'  AND COLLEGE_ID=\'' . UserCollege() . '\''));
 
 
 
@@ -112,7 +112,7 @@ if ($_REQUEST['values'] && ($_POST['values'] || $_REQUEST['ajax'])) {
             $cnt = 0;
             $sql = 'INSERT INTO eligibility_activities ';
 
-            $fields = 'SCHOOL_ID,SYEAR,';
+            $fields = 'COLLEGE_ID,SYEAR,';
             $values = '\'' . UserCollege() . '\',\'' . UserSyear() . '\',';
 
             $go = 0;
@@ -153,7 +153,7 @@ if ($_REQUEST['values'] && ($_POST['values'] || $_REQUEST['ajax'])) {
             $sql .= '(' . substr($fields, 0, -1) . ') values(' . substr($values, 0, -1) . ')';
 
             if ($go) {
-                $check_rec = DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM eligibility_activities WHERE UPPER(TITLE)=\'' . $title . '\' AND SYEAR=\'' . UserSyear() . '\'  AND SCHOOL_ID=\'' . UserCollege() . '\''));
+                $check_rec = DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM eligibility_activities WHERE UPPER(TITLE)=\'' . $title . '\' AND SYEAR=\'' . UserSyear() . '\'  AND COLLEGE_ID=\'' . UserCollege() . '\''));
                 if ($s_date == '' || $e_date == '' && $title != '') {
                     $err = '<div class="alert bg-danger alert-styled-left">Start date or End date cannot be blank.</div>';
                     $cnt = 1;
@@ -195,7 +195,7 @@ if (optional_param('modfunc', '', PARAM_NOTAGS) == 'remove') {
 }
 
 if ($_REQUEST['modfunc'] != 'remove') {
-    $sql = 'SELECT ID,TITLE,START_DATE,END_DATE FROM eligibility_activities WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY TITLE';
+    $sql = 'SELECT ID,TITLE,START_DATE,END_DATE FROM eligibility_activities WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' ORDER BY TITLE';
     $QI = DBQuery($sql);
     $activities_RET = DBGet($QI, array('TITLE' => 'makeTextInput'));
     $last_id = 0;

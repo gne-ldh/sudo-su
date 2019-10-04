@@ -90,27 +90,27 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
                             $sql = substr($sql, 0, -1) . ' WHERE ID=\'' . $id . '\'';
 
                         if ($_REQUEST['tab_id'] != 'new') {
-                            $validate_title = DBGet(DBQuery('SELECT COUNT(1) as TITLE_EX FROM report_card_grades WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserCollege() . ' AND UPPER(TITLE)=\'' . strtoupper($title) . '\' AND ID!=\'' . $id . '\' and grade_scale_id =' . $_REQUEST['tab_id']));
+                            $validate_title = DBGet(DBQuery('SELECT COUNT(1) as TITLE_EX FROM report_card_grades WHERE SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege() . ' AND UPPER(TITLE)=\'' . strtoupper($title) . '\' AND ID!=\'' . $id . '\' and grade_scale_id =' . $_REQUEST['tab_id']));
                             $match = DBGet(DBQuery('select TITLE from report_card_grades WHERE ID=\'' . $id . '\' '));
                             $match = $match[1]['TITLE'];
                             if (trim($match) == trim($title)) {
                                 $flag = 0;
                             }
                             if (isset($break) && $break != '') {
-                                $validate_break = DBGet(DBQuery('SELECT COUNT(*) as NO FROM report_card_grades WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserCollege() . ' AND GRADE_SCALE_ID=' . $_REQUEST['tab_id'] . ' AND break_off=\'' . $break . '\' AND ID!=' . $id));
+                                $validate_break = DBGet(DBQuery('SELECT COUNT(*) as NO FROM report_card_grades WHERE SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege() . ' AND GRADE_SCALE_ID=' . $_REQUEST['tab_id'] . ' AND break_off=\'' . $break . '\' AND ID!=' . $id));
 
                                 $v_break = $validate_break[1]['NO'];
                             }
                         } else {
 
-                            $validate_title = DBGet(DBQuery('SELECT COUNT(1) as TITLE_EX FROM report_card_grade_scales WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserCollege() . ' AND UPPER(TITLE)=\'' . strtoupper($title) . '\' AND ID!=\'' . $id . '\''));
+                            $validate_title = DBGet(DBQuery('SELECT COUNT(1) as TITLE_EX FROM report_card_grade_scales WHERE SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege() . ' AND UPPER(TITLE)=\'' . strtoupper($title) . '\' AND ID!=\'' . $id . '\''));
                             $match = DBGet(DBQuery('select TITLE from report_card_grade_scales WHERE ID=\'' . $id . '\''));
                             $match = $match[1]['TITLE'];
                             if (trim($match) == trim($title)) {
                                 $flag = 0;
                             }
 
-                            $validate_break = DBGet(DBQuery('SELECT COUNT(*) as NO FROM report_card_grades WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserCollege() . ' AND GRADE_SCALE_ID=\'' . $_REQUEST['tab_id'] . '\' AND break_off=\'' . $break . '\' AND ID!=' . $id));
+                            $validate_break = DBGet(DBQuery('SELECT COUNT(*) as NO FROM report_card_grades WHERE SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege() . ' AND GRADE_SCALE_ID=\'' . $_REQUEST['tab_id'] . '\' AND break_off=\'' . $break . '\' AND ID!=' . $id));
                             $v_break = $validate_break[1]['NO'];
                         }
                         if ($validate_title[1]['TITLE_EX'] != 0 && $flag != 0) {
@@ -129,11 +129,11 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
                         if (clean_param(trim($_REQUEST['values']['new']['TITLE']), PARAM_NOTAGS) != '') {
                             if ($_REQUEST['tab_id'] != 'new') {
                                 $sql = 'INSERT INTO report_card_grades ';
-                                $fields = 'SCHOOL_ID,SYEAR,GRADE_SCALE_ID,';
+                                $fields = 'COLLEGE_ID,SYEAR,GRADE_SCALE_ID,';
                                 $values = '\'' . UserCollege() . '\',\'' . UserSyear() . '\',\'' . $_REQUEST['tab_id'] . '\',';
                             } else {
                                 $sql = 'INSERT INTO report_card_grade_scales ';
-                                $fields = 'SCHOOL_ID,SYEAR,';
+                                $fields = 'COLLEGE_ID,SYEAR,';
                                 $values = '\'' . UserCollege() . '\',\'' . UserSyear() . '\',';
                             }
                             $columns['UNWEIGHTED_GP'] = isset($columns['UNWEIGHTED_GP']) && trim($columns['UNWEIGHTED_GP']) != '' ? $columns['UNWEIGHTED_GP'] : $columns['GPA_VALUE'];
@@ -172,14 +172,14 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
                             if ($go) {
 
                                 if ($_REQUEST['tab_id'] != 'new') {
-                                    $validate_title = DBGet(DBQuery('SELECT COUNT(1) as TITLE_EX FROM report_card_grades WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserCollege() . ' AND TITLE=\'' . $title . '\' AND GRADE_SCALE_ID=\'' . $_REQUEST['tab_id'] . '\' '));
+                                    $validate_title = DBGet(DBQuery('SELECT COUNT(1) as TITLE_EX FROM report_card_grades WHERE SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege() . ' AND TITLE=\'' . $title . '\' AND GRADE_SCALE_ID=\'' . $_REQUEST['tab_id'] . '\' '));
 
-                                    $validate_break = DBGet(DBQuery('SELECT COUNT(*) as NO FROM report_card_grades WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserCollege() . ' AND break_off=\'' . $break . '\' AND GRADE_SCALE_ID=\'' . $_REQUEST['tab_id'] . '\' '));
+                                    $validate_break = DBGet(DBQuery('SELECT COUNT(*) as NO FROM report_card_grades WHERE SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege() . ' AND break_off=\'' . $break . '\' AND GRADE_SCALE_ID=\'' . $_REQUEST['tab_id'] . '\' '));
 
                                     $v_break = $validate_break[1]['NO'];
                                 } else {
-                                    $validate_title = DBGet(DBQuery('SELECT COUNT(1) as TITLE_EX FROM report_card_grade_scales WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserCollege() . ' AND TITLE=\'' . $title . '\' '));
-                                    $validate_break = DBGet(DBQuery('SELECT COUNT(*) as NO FROM report_card_grades WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserCollege() . ' AND break_off=\'' . $break . '\' AND GRADE_SCALE_ID=\'' . $_REQUEST['tab_id'] . '\' '));
+                                    $validate_title = DBGet(DBQuery('SELECT COUNT(1) as TITLE_EX FROM report_card_grade_scales WHERE SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege() . ' AND TITLE=\'' . $title . '\' '));
+                                    $validate_break = DBGet(DBQuery('SELECT COUNT(*) as NO FROM report_card_grades WHERE SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege() . ' AND break_off=\'' . $break . '\' AND GRADE_SCALE_ID=\'' . $_REQUEST['tab_id'] . '\' '));
 
                                     $v_break = $validate_break[1]['NO'];
                                 }
@@ -236,7 +236,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'remove') {
 
 if (!$_REQUEST['modfunc']) {
     if (User('PROFILE') == 'admin') {
-        $grade_scales_RET = DBGet(DBQuery('SELECT ID,TITLE FROM report_card_grade_scales WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY SORT_ORDER'), array(), array('ID'));
+        $grade_scales_RET = DBGet(DBQuery('SELECT ID,TITLE FROM report_card_grade_scales WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY SORT_ORDER'), array(), array('ID'));
 
         if (!$_REQUEST['tab_id'])
             if (count($grade_scales_RET))
@@ -296,7 +296,7 @@ if (!$_REQUEST['modfunc']) {
     }
     else {
         //BJJ modifications to $functions array and $LO_columns array to handle scale value GP_SCALE
-        $sql = 'SELECT * FROM report_card_grade_scales WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY SORT_ORDER';
+        $sql = 'SELECT * FROM report_card_grade_scales WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY SORT_ORDER';
         $functions = array('TITLE' => 'makeTextInput', 'GP_SCALE' => 'makeTextInput', 'COMMENT' => 'makeTextInput', 'GPA_CAL' => 'makeCheckInput', 'SORT_ORDER' => 'makeTextInput');
         $LO_columns = array('TITLE' => 'Gradescale', 'GP_SCALE' => 'Scale Value', 'COMMENT' => 'Comment', 'GPA_CAL' => 'Calculate GPA', 'SORT_ORDER' => 'Sort Order');
 

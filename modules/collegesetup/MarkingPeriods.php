@@ -31,7 +31,7 @@
 include('../../RedirectModulesInc.php');
 DrawBC("College Setup > ".ProgramTitle());
 
-if(!$_REQUEST['marking_period_id'] && count($fy_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM college_years WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\' ORDER BY SORT_ORDER')))==1 && !$_REQUEST['ajax'])
+if(!$_REQUEST['marking_period_id'] && count($fy_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM college_years WHERE COLLEGE_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\' ORDER BY SORT_ORDER')))==1 && !$_REQUEST['ajax'])
 {
 	$_REQUEST['marking_period_id'] = $fy_RET[1]['MARKING_PERIOD_ID'];
 	$_REQUEST['mp_term'] = 'FY';
@@ -108,11 +108,11 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                     {
                         $chk_tbl='college_semesters';
                         $nm="semester";
-                        $date_sql='SELECT MIN(START_DATE) AS START_DATE,MAX(END_DATE) AS END_DATE FROM '.$chk_tbl.' WHERE YEAR_ID = '.$_REQUEST['marking_period_id'].' AND SCHOOL_ID =\''.  UserCollege().'\' AND SYEAR = \''.  UserSyear().'\'';
+                        $date_sql='SELECT MIN(START_DATE) AS START_DATE,MAX(END_DATE) AS END_DATE FROM '.$chk_tbl.' WHERE YEAR_ID = '.$_REQUEST['marking_period_id'].' AND COLLEGE_ID =\''.  UserCollege().'\' AND SYEAR = \''.  UserSyear().'\'';
                         $dates=  DBGet(DBQuery($date_sql));
                         $dates=$dates[1];
                         $value= date('Y-m-d',strtotime($columns['START_DATE']));
-                        $prev_fy_sql='SELECT END_DATE FROM college_years WHERE SCHOOL_ID =\''.  UserCollege().'\' AND SYEAR < \''.UserSyear().'\'';
+                        $prev_fy_sql='SELECT END_DATE FROM college_years WHERE COLLEGE_ID =\''.  UserCollege().'\' AND SYEAR < \''.UserSyear().'\'';
                         $prev_fy_dates=DBGet(DBQuery($prev_fy_sql));
                         $prev_fy_dates=$prev_fy_dates[1];
                     }
@@ -120,7 +120,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                     {
                         $chk_tbl='college_years';
                         $nm="full year";
-                        $date_sql='SELECT START_DATE,END_DATE FROM '.$chk_tbl.' WHERE MARKING_PERIOD_ID = '.$_REQUEST[year_id].' AND SCHOOL_ID =\''.  UserCollege().'\' AND SYEAR = \''.  UserSyear().'\'';
+                        $date_sql='SELECT START_DATE,END_DATE FROM '.$chk_tbl.' WHERE MARKING_PERIOD_ID = '.$_REQUEST[year_id].' AND COLLEGE_ID =\''.  UserCollege().'\' AND SYEAR = \''.  UserSyear().'\'';
                         $dates=  DBGet(DBQuery($date_sql));
                         $dates=$dates[1];
                     }
@@ -128,7 +128,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                     {
                         $chk_tbl='college_semesters';
                         $nm="semester";
-                        $date_sql='SELECT START_DATE,END_DATE FROM '.$chk_tbl.' WHERE MARKING_PERIOD_ID = '.$_REQUEST[semester_id].' AND SCHOOL_ID =\''.  UserCollege().'\' AND SYEAR = \''.  UserSyear().'\'';
+                        $date_sql='SELECT START_DATE,END_DATE FROM '.$chk_tbl.' WHERE MARKING_PERIOD_ID = '.$_REQUEST[semester_id].' AND COLLEGE_ID =\''.  UserCollege().'\' AND SYEAR = \''.  UserSyear().'\'';
                         $dates=  DBGet(DBQuery($date_sql));
                         $dates=$dates[1];
                     }
@@ -136,7 +136,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                     {
                         $chk_tbl='college_quarters';
                         $nm="quarter";
-                        $date_sql='SELECT START_DATE,END_DATE FROM '.$chk_tbl.' WHERE MARKING_PERIOD_ID = '.$_REQUEST[quarter_id].' AND SCHOOL_ID =\''.  UserCollege().'\' AND SYEAR = \''.  UserSyear().'\'';
+                        $date_sql='SELECT START_DATE,END_DATE FROM '.$chk_tbl.' WHERE MARKING_PERIOD_ID = '.$_REQUEST[quarter_id].' AND COLLEGE_ID =\''.  UserCollege().'\' AND SYEAR = \''.  UserSyear().'\'';
                         $dates=  DBGet(DBQuery($date_sql));
                         $dates=$dates[1];
                     }
@@ -297,7 +297,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                             }
                                                           if($column=='TITLE' && $columns['TITLE']!='')
                                         {
-                                           $TITLE_COUNT =  DBGet(DBQuery('SELECT * FROM marking_periods WHERE upper(TITLE)=\''.strtoupper(singleQuoteReplace('','',$value)).'\' AND SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'AND MARKING_PERIOD_ID NOT IN(\''.$_REQUEST['marking_period_id'].'\')'));
+                                           $TITLE_COUNT =  DBGet(DBQuery('SELECT * FROM marking_periods WHERE upper(TITLE)=\''.strtoupper(singleQuoteReplace('','',$value)).'\' AND COLLEGE_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'AND MARKING_PERIOD_ID NOT IN(\''.$_REQUEST['marking_period_id'].'\')'));
                                
                                             if(count($TITLE_COUNT)>0)
                                             {
@@ -348,10 +348,10 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                         }
                                                                         else
                                                                         {
-                                                                            $cal_sql='SELECT CALENDAR_ID FROM college_calendars WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
+                                                                            $cal_sql='SELECT CALENDAR_ID FROM college_calendars WHERE COLLEGE_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
                                                                             $calender=  DBGet(DBQuery($cal_sql));
                                                                             $calender=$calender[1];
-                                                                            $attendance_calendar=DBGet(DBQuery('SELECT MIN(SCHOOL_DATE) as START_DATE,MAX(SCHOOL_DATE) as END_DATE FROM attendance_calendar WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\''));
+                                                                            $attendance_calendar=DBGet(DBQuery('SELECT MIN(COLLEGE_DATE) as START_DATE,MAX(COLLEGE_DATE) as END_DATE FROM attendance_calendar WHERE COLLEGE_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\''));
                                                           
                                                                             $calender=$calender[1];
 
@@ -364,7 +364,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                             }
                                                                             else
                                                                             {  
-                                                                                $stu_sql='SELECT COUNT(s.STUDENT_ID) AS TOTAL_REC FROM student_enrollment se,students s WHERE se.SCHOOL_ID=\''.UserCollege().'\' AND se.SYEAR=\''.UserSyear().'\' AND se.END_DATE IS NULL AND s.IS_DISABLE IS NULL';
+                                                                                $stu_sql='SELECT COUNT(s.STUDENT_ID) AS TOTAL_REC FROM student_enrollment se,students s WHERE se.COLLEGE_ID=\''.UserCollege().'\' AND se.SYEAR=\''.UserSyear().'\' AND se.END_DATE IS NULL AND s.IS_DISABLE IS NULL';
                                                                                 $students=  DBGet(DBQuery($stu_sql));
                                                                                 $students=$students[1]['TOTAL_REC'];
                                                                                 if($students>0 && $syear!=UserSyear())
@@ -374,7 +374,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                                 }
                                                                                 else
                                                                                 {
-                                                                                    $stf_sql='SELECT ssr.STAFF_ID FROM staff s,staff_college_relationship ssr WHERE s.PROFILE_ID =\'2\' AND ssr.SCHOOL_ID=\''.UserCollege().'\' AND ssr.SYEAR=\''.UserSyear().'\'';
+                                                                                    $stf_sql='SELECT ssr.STAFF_ID FROM staff s,staff_college_relationship ssr WHERE s.PROFILE_ID =\'2\' AND ssr.COLLEGE_ID=\''.UserCollege().'\' AND ssr.SYEAR=\''.UserSyear().'\'';
                                                                                     $staffs=  DBGet(DBQuery($stf_sql));
                                                                                     $staffs=$staffs[1];
 
@@ -385,7 +385,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                                     }
                                                                                     else
                                                                                     {
-                                                                                        $subj_sql='SELECT SUBJECT_ID FROM course_subjects WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
+                                                                                        $subj_sql='SELECT SUBJECT_ID FROM course_subjects WHERE COLLEGE_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
                                                                                         $subjects=  DBGet(DBQuery($subj_sql));
                                                                                         $subjects=$subjects[1];
 
@@ -396,7 +396,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                                         }
                                                                                         else
                                                                                         {
-                                                                                            $att_codes_sql='SELECT ID FROM attendance_codes WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
+                                                                                            $att_codes_sql='SELECT ID FROM attendance_codes WHERE COLLEGE_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
                                                                                             $att_codes=  DBGet(DBQuery($att_codes_sql));
                                                                                             $att_codes=$att_codes[1];
 
@@ -407,7 +407,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                                             }
                                                                                             else
                                                                                             {
-                                                                                                $sp_sql='SELECT PERIOD_ID FROM college_periods WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
+                                                                                                $sp_sql='SELECT PERIOD_ID FROM college_periods WHERE COLLEGE_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
                                                                                                 $sp=  DBGet(DBQuery($sp_sql));
                                                                                                 $sp=$sp[1];
                                                                                                 
@@ -418,7 +418,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                                                 }
                                                                                                 else
                                                                                                 {
-                                                                                                    $fy_sql='SELECT SYEAR FROM college_years WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.$syear.'\'';
+                                                                                                    $fy_sql='SELECT SYEAR FROM college_years WHERE COLLEGE_ID=\''.UserCollege().'\' AND SYEAR=\''.$syear.'\'';
                                                                                                     $fy=  DBGet(DBQuery($fy_sql));
                                                                                                     $fy=$fy[1];
                                                                                                     if(count($fy)>0 && $syear!=UserSyear())
@@ -437,13 +437,13 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                                                             $sql .= $column.'=\''.singleQuoteReplace('','',trim(date('Y-m-d',strtotime($value)))).'\',';
                                                                                                             $go = true;
 
-                                                                                                            $fy_sql='UPDATE college_years SET SYEAR=\''.$syear.'\' WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
+                                                                                                            $fy_sql='UPDATE college_years SET SYEAR=\''.$syear.'\' WHERE COLLEGE_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
                                                                                                             DBQuery($fy_sql);
-                                                                                                            $sem_sql='UPDATE  college_semesters SET SYEAR=\''.$syear.'\' WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
+                                                                                                            $sem_sql='UPDATE  college_semesters SET SYEAR=\''.$syear.'\' WHERE COLLEGE_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
                                                                                                             DBQuery($sem_sql);
-                                                                                                            $qtr_sql='UPDATE  college_quarters SET SYEAR=\''.$syear.'\' WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
+                                                                                                            $qtr_sql='UPDATE  college_quarters SET SYEAR=\''.$syear.'\' WHERE COLLEGE_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
                                                                                                             DBQuery($qtr_sql);
-                                                                                                            $progp_sql='UPDATE college_progress_periods SET SYEAR=\''.$syear.'\' WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
+                                                                                                            $progp_sql='UPDATE college_progress_periods SET SYEAR=\''.$syear.'\' WHERE COLLEGE_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
                                                                                                             DBQuery($progp_sql);
                                                                                                         }
                                                                                                     }
@@ -470,9 +470,9 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                     }
                                                                     else
                                                                     {
-                                                                        $cal_sql='SELECT CALENDAR_ID FROM college_calendars WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
+                                                                        $cal_sql='SELECT CALENDAR_ID FROM college_calendars WHERE COLLEGE_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
                                                                         $calender=  DBGet(DBQuery($cal_sql));
-                                                                        $attendance_calendar=DBGet(DBQuery('SELECT MIN(SCHOOL_DATE) as START_DATE,MAX(SCHOOL_DATE) as END_DATE FROM attendance_calendar WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\''));
+                                                                        $attendance_calendar=DBGet(DBQuery('SELECT MIN(COLLEGE_DATE) as START_DATE,MAX(COLLEGE_DATE) as END_DATE FROM attendance_calendar WHERE COLLEGE_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\''));
 //                                                                        
                                                                         $calender=$calender[1];
                                                                       
@@ -484,7 +484,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                         }
                                                                         else
                                                                         {
-                                                                            $stu_sql='SELECT s.STUDENT_ID FROM student_enrollment se,students s WHERE se.SCHOOL_ID=\''.UserCollege().'\' AND se.SYEAR=\''.UserSyear().'\' AND se.END_DATE IS NULL AND s.IS_DISABLE IS NULL';
+                                                                            $stu_sql='SELECT s.STUDENT_ID FROM student_enrollment se,students s WHERE se.COLLEGE_ID=\''.UserCollege().'\' AND se.SYEAR=\''.UserSyear().'\' AND se.END_DATE IS NULL AND s.IS_DISABLE IS NULL';
                                                                             $students=  DBGet(DBQuery($stu_sql));
                                                                             $students=$students[1];
 
@@ -495,7 +495,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                             }
                                                                             else
                                                                             {
-                                                                                $stf_sql='SELECT ssr.STAFF_ID FROM staff s,staff_college_relationship ssr WHERE s.PROFILE_ID in (\'0\',\'1\',\'2\') AND ssr.SCHOOL_ID=\''.UserCollege().'\' AND ssr.SYEAR=\''.UserSyear().'\'';
+                                                                                $stf_sql='SELECT ssr.STAFF_ID FROM staff s,staff_college_relationship ssr WHERE s.PROFILE_ID in (\'0\',\'1\',\'2\') AND ssr.COLLEGE_ID=\''.UserCollege().'\' AND ssr.SYEAR=\''.UserSyear().'\'';
                                                                                 $staffs=  DBGet(DBQuery($stf_sql));
                                                                                 $staffs=$staffs[1];
 
@@ -506,7 +506,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                                 }
                                                                                 else
                                                                                 {
-                                                                                   $subj_sql='SELECT SUBJECT_ID FROM course_subjects WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
+                                                                                   $subj_sql='SELECT SUBJECT_ID FROM course_subjects WHERE COLLEGE_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
                                                                                     $subjects=  DBGet(DBQuery($subj_sql));
                                                                                     $subjects=$subjects[1];
 
@@ -517,7 +517,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                                     }
                                                                                     else
                                                                                     {  
-                                                                                        $att_codes_sql='SELECT ID FROM attendance_codes WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
+                                                                                        $att_codes_sql='SELECT ID FROM attendance_codes WHERE COLLEGE_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
                                                                                         $att_codes=  DBGet(DBQuery($att_codes_sql));
                                                                                         $att_codes=$att_codes[1];
 
@@ -528,7 +528,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                                         }
                                                                                         else
                                                                                         {
-                                                                                            $sp_sql='SELECT PERIOD_ID FROM college_periods WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
+                                                                                            $sp_sql='SELECT PERIOD_ID FROM college_periods WHERE COLLEGE_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
                                                                                             $sp=  DBGet(DBQuery($sp_sql));
                                                                                             $sp=$sp[1];
 
@@ -539,7 +539,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                                             }
                                                                                             else
                                                                                             {
-                                                                                                $fy_sql='SELECT SYEAR FROM college_years WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.$syear.'\'';
+                                                                                                $fy_sql='SELECT SYEAR FROM college_years WHERE COLLEGE_ID=\''.UserCollege().'\' AND SYEAR=\''.$syear.'\'';
                                                                                                 $fy=  DBGet(DBQuery($fy_sql));
                                                                                                 $fy=$fy[1];
                                                                                                 if(count($fy)>0 && $syear!=UserSyear())
@@ -558,13 +558,13 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                                                         $sql .= $column.'=\''.singleQuoteReplace('','',trim(date('Y-m-d',strtotime($value)))).'\',';
                                                                                                         $go = true;
 
-                                                                                                        $fy_sql='UPDATE college_years SET SYEAR=\''.$syear.'\' WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
+                                                                                                        $fy_sql='UPDATE college_years SET SYEAR=\''.$syear.'\' WHERE COLLEGE_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
                                                                                                         DBQuery($fy_sql);
-                                                                                                        $sem_sql='UPDATE  college_semesters SET SYEAR=\''.$syear.'\' WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
+                                                                                                        $sem_sql='UPDATE  college_semesters SET SYEAR=\''.$syear.'\' WHERE COLLEGE_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
                                                                                                         DBQuery($sem_sql);
-                                                                                                        $qtr_sql='UPDATE  college_quarters SET SYEAR=\''.$syear.'\' WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
+                                                                                                        $qtr_sql='UPDATE  college_quarters SET SYEAR=\''.$syear.'\' WHERE COLLEGE_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
                                                                                                         DBQuery($qtr_sql);
-                                                                                                        $progp_sql='UPDATE college_progress_periods SET SYEAR=\''.$syear.'\' WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
+                                                                                                        $progp_sql='UPDATE college_progress_periods SET SYEAR=\''.$syear.'\' WHERE COLLEGE_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
                                                                                                         DBQuery($progp_sql);
                                                                                                     }
                                                                                                 }
@@ -620,10 +620,10 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                     if(strtotime($dates['END_DATE'])<=strtotime($columns['END_DATE']))
                                                                     {
                                                                        
-                                                                            $cal_sql='SELECT CALENDAR_ID FROM college_calendars WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
+                                                                            $cal_sql='SELECT CALENDAR_ID FROM college_calendars WHERE COLLEGE_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
                                                                             $calender=  DBGet(DBQuery($cal_sql));
                                                                             $calender=$calender[1];
-                                                                            $attendance_calendar=DBGet(DBQuery('SELECT MIN(SCHOOL_DATE) as START_DATE,MAX(SCHOOL_DATE) as END_DATE FROM attendance_calendar WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\''));
+                                                                            $attendance_calendar=DBGet(DBQuery('SELECT MIN(COLLEGE_DATE) as START_DATE,MAX(COLLEGE_DATE) as END_DATE FROM attendance_calendar WHERE COLLEGE_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\''));
 //                                                                 
                                                                             ;
 //                                                                         $vdate = explode("-", $columns['END_DATE']);                                                                            $calender=$calender[1];
@@ -656,10 +656,10 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                 {   
                                                                     if($value!='')
                                                                         {
-                                                                            $cal_sql='SELECT CALENDAR_ID FROM college_calendars WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
+                                                                            $cal_sql='SELECT CALENDAR_ID FROM college_calendars WHERE COLLEGE_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'';
                                                                             $calender=  DBGet(DBQuery($cal_sql));
                                                                             $calender=$calender[1];
-                                                                            $attendance_calendar=DBGet(DBQuery('SELECT MIN(SCHOOL_DATE) as START_DATE,MAX(SCHOOL_DATE) as END_DATE FROM attendance_calendar WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\''));
+                                                                            $attendance_calendar=DBGet(DBQuery('SELECT MIN(COLLEGE_DATE) as START_DATE,MAX(COLLEGE_DATE) as END_DATE FROM attendance_calendar WHERE COLLEGE_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\''));
 //                                                                       
                                                                             $calender=$calender[1];
 
@@ -788,7 +788,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                             
               
 				$sql = 'INSERT INTO '.$table.' ';
-				$fields = 'MARKING_PERIOD_ID,SYEAR,SCHOOL_ID,';
+				$fields = 'MARKING_PERIOD_ID,SYEAR,COLLEGE_ID,';
 				$values = '\''.$id_RET[1]['ID'].'\',\''.UserSyear().'\',\''.UserCollege().'\',';
 	
 				$_REQUEST['marking_period_id'] = $id_RET[1]['ID'];
@@ -824,7 +824,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
 					{
                                          if($column=='TITLE' && $columns['TITLE']!='')
                                         {
-                                            $TITLE_COUNT =  DBGet(DBQuery('SELECT * FROM marking_periods WHERE upper(TITLE)=\''.strtoupper(singleQuoteReplace('','',$value)).'\' AND SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\''));
+                                            $TITLE_COUNT =  DBGet(DBQuery('SELECT * FROM marking_periods WHERE upper(TITLE)=\''.strtoupper(singleQuoteReplace('','',$value)).'\' AND COLLEGE_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\''));
                                             if(count($TITLE_COUNT)>0)
                                             {
                                                 $err_msg='Title alreday exsits';
@@ -914,14 +914,14 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
 				.(($columns['END_DATE'])?' OR \''.$columns['END_DATE'].'\' BETWEEN START_DATE AND END_DATE':'')
 				.(($columns['START_DATE'] && $columns['END_DATE'])?' OR START_DATE BETWEEN \''.$columns['START_DATE'].'\' AND \''.$columns['END_DATE'].'\'
 				OR END_DATE BETWEEN \''.$columns['START_DATE'].'\' AND \''.$columns['END_DATE'].'\'':'')
-				.') AND SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\''.(($id!='new')?' AND SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\' AND MARKING_PERIOD_ID!=\''.$id.'\'':'')
+				.') AND COLLEGE_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\''.(($id!='new')?' AND COLLEGE_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\' AND MARKING_PERIOD_ID!=\''.$id.'\'':'')
 			));
 			$posting_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM '.$table.' WHERE (true=false'
 				.(($columns['POST_START_DATE'])?' OR \''.$columns['POST_START_DATE'].'\' BETWEEN POST_START_DATE AND POST_END_DATE':'')
 				.(($columns['POST_END_DATE'])?' OR \''.$columns['POST_END_DATE'].'\' BETWEEN POST_START_DATE AND POST_END_DATE':'')
 				.(($columns['POST_START_DATE'] && $columns['POST_END_DATE'])?' OR POST_START_DATE BETWEEN \''.$columns['POST_START_DATE'].'\' AND \''.$columns['POST_END_DATE'].'\'
 				OR POST_END_DATE BETWEEN \''.$columns['POST_START_DATE'].'\' AND \''.$columns['POST_END_DATE'].'\'':'')
-				.') AND SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\''.(($id!='new')?' AND MARKING_PERIOD_ID!=\''.$id.'\'':'')
+				.') AND COLLEGE_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\''.(($id!='new')?' AND MARKING_PERIOD_ID!=\''.$id.'\'':'')
 			));
 	
 			if($go)
@@ -1202,7 +1202,7 @@ if(!$_REQUEST['modfunc'])
     echo '<div class="row">';
 
     // FY
-    $sql = 'SELECT MARKING_PERIOD_ID,TITLE FROM college_years WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY SORT_ORDER';
+    $sql = 'SELECT MARKING_PERIOD_ID,TITLE FROM college_years WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY SORT_ORDER';
     $QI = DBQuery($sql);
     $fy_RET = DBGet($QI);
 
@@ -1233,7 +1233,7 @@ if(!$_REQUEST['modfunc'])
 
     // SEMESTERS
     if (($_REQUEST['mp_term'] == 'FY' && $_REQUEST['marking_period_id'] != 'new') || $_REQUEST['mp_term'] == 'SEM' || $_REQUEST['mp_term'] == 'QTR' || $_REQUEST['mp_term'] == 'PRO') {
-        $sql = 'SELECT MARKING_PERIOD_ID,TITLE FROM college_semesters WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' AND YEAR_ID=\'' . $_REQUEST['year_id'] . '\' ORDER BY SORT_ORDER';
+        $sql = 'SELECT MARKING_PERIOD_ID,TITLE FROM college_semesters WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' AND YEAR_ID=\'' . $_REQUEST['year_id'] . '\' ORDER BY SORT_ORDER';
         $QI = DBQuery($sql);
         $sem_RET = DBGet($QI);
 
@@ -1254,10 +1254,10 @@ if(!$_REQUEST['modfunc'])
         $columns = array('TITLE' => 'Semester');
         $link = array();
 
-        $sem_edate = DBGet(DBQuery('SELECT MAX(END_DATE) AS END_DATE,MIN(START_DATE) as START_DATE FROM college_semesters WHERE SCHOOL_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear()));
+        $sem_edate = DBGet(DBQuery('SELECT MAX(END_DATE) AS END_DATE,MIN(START_DATE) as START_DATE FROM college_semesters WHERE COLLEGE_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear()));
         $sem_sdate = $sem_edate[1]['START_DATE'];
         $sem_edate = $sem_edate[1]['END_DATE'];
-        $fy_edate = DBGet(DBQuery('SELECT END_DATE,START_DATE FROM college_years WHERE SCHOOL_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear()));
+        $fy_edate = DBGet(DBQuery('SELECT END_DATE,START_DATE FROM college_years WHERE COLLEGE_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear()));
         $fy_sdate = $fy_edate[1]['START_DATE'];
         $fy_edate = $fy_edate[1]['END_DATE'];
 
@@ -1275,7 +1275,7 @@ if(!$_REQUEST['modfunc'])
 
         // QUARTERS
         if (($_REQUEST['mp_term'] == 'SEM' && $_REQUEST['marking_period_id'] != 'new') || $_REQUEST['mp_term'] == 'QTR' || $_REQUEST['mp_term'] == 'PRO') {
-            $sql = 'SELECT MARKING_PERIOD_ID,TITLE FROM college_quarters WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' AND SEMESTER_ID=\'' . $_REQUEST['semester_id'] . '\' ORDER BY SORT_ORDER';
+            $sql = 'SELECT MARKING_PERIOD_ID,TITLE FROM college_quarters WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' AND SEMESTER_ID=\'' . $_REQUEST['semester_id'] . '\' ORDER BY SORT_ORDER';
             $QI = DBQuery($sql);
             $qtr_RET = DBGet($QI);
 
@@ -1313,7 +1313,7 @@ if(!$_REQUEST['modfunc'])
 
             // PROGRESS PERIODS
             if (($_REQUEST['mp_term'] == 'QTR' && $_REQUEST['marking_period_id'] != 'new') || $_REQUEST['mp_term'] == 'PRO') {
-                $sql = 'SELECT MARKING_PERIOD_ID,TITLE FROM college_progress_periods WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' AND QUARTER_ID=\'' . $_REQUEST['quarter_id'] . '\' ORDER BY SORT_ORDER';
+                $sql = 'SELECT MARKING_PERIOD_ID,TITLE FROM college_progress_periods WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' AND QUARTER_ID=\'' . $_REQUEST['quarter_id'] . '\' ORDER BY SORT_ORDER';
                 $QI = DBQuery($sql);
                 $pro_RET = DBGet($QI);
 

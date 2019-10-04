@@ -104,7 +104,7 @@ function AllowEdit($modname=false)
                         return true;
                     elseif($modname=='grades/InputFinalGrades.php')
                     {
-                        $grade_post_date= DBGet(DBQuery('SELECT POST_START_DATE, POST_END_DATE FROM marking_periods WHERE SCHOOL_ID='. UserCollege().' AND SYEAR='. UserSyear().' AND MARKING_PERIOD_ID='. UserMP()));
+                        $grade_post_date= DBGet(DBQuery('SELECT POST_START_DATE, POST_END_DATE FROM marking_periods WHERE COLLEGE_ID='. UserCollege().' AND SYEAR='. UserSyear().' AND MARKING_PERIOD_ID='. UserMP()));
                         if($grade_post_date[1]['POST_START_DATE']!='' && $grade_post_date[1]['POST_END_DATE']!='')
                         {
                             if(date('Y-m-d') >= $grade_post_date[1]['POST_START_DATE'] && date('Y-m-d') <= $grade_post_date[1]['POST_END_DATE'])

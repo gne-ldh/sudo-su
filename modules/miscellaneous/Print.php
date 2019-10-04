@@ -49,22 +49,22 @@ if($_REQUEST['fields']['PARENTS'])
 		$extra['students_join_address'] .= ' AND EXISTS (SELECT \'\' FROM students_join_people sjp WHERE sjp.STUDENT_ID=a.STUDENT_ID AND LOWER(sjp.REALTIONSHIP) LIKE \''.strtolower($_REQUEST['relation']).'%\') ';
 	}
 }
-$extra['SELECT'] .= ',ssm.NEXT_SCHOOL,ssm.CALENDAR_ID,ssm.SYEAR,s.*';
+$extra['SELECT'] .= ',ssm.NEXT_COLLEGE,ssm.CALENDAR_ID,ssm.SYEAR,s.*';
 if($_REQUEST['fields']['FIRST_INIT'])
 	$extra['SELECT'] .= ',substr(s.FIRST_NAME,1,1) AS FIRST_INIT';
 
 if(!$extra['functions'])
-	$extra['functions'] = array('NEXT_SCHOOL'=>'_makeNextCollege','CALENDAR_ID'=>'_makeCalendar','SCHOOL_ID'=>'GetCollege','PARENTS'=>'makeParents');
+	$extra['functions'] = array('NEXT_COLLEGE'=>'_makeNextCollege','CALENDAR_ID'=>'_makeCalendar','COLLEGE_ID'=>'GetCollege','PARENTS'=>'makeParents');
 
 if($_REQUEST['search_modfunc']=='list')
 {
 	if(!$fields_list)
 	{
-		$fields_list = array('FULL_NAME'=>(Preferences('NAME')=='Common'?'Last, Common':'Last, First M'),'FIRST_NAME'=>'First','FIRST_INIT'=>'First Initial','LAST_NAME'=>'Last','MIDDLE_NAME'=>'Middle','NAME_SUFFIX'=>'Suffix','STUDENT_ID'=>'Student ID','GRADE_ID'=>'Grade','SCHOOL_ID'=>'College','NEXT_SCHOOL'=>'Rolling / Retention Options','CALENDAR_ID'=>'Calendar','USERNAME'=>'Username','PASSWORD'=>'Password','ADDRESS'=>'Address','CITY'=>'City','STATE'=>'State','ZIPCODE'=>'Zip Code','PHONE'=>'Home Phone','MAIL_ADDRESS'=>'Mailing Address','MAIL_CITY'=>'Mailing City','MAIL_STATE'=>'Mailing State','MAIL_ZIPCODE'=>'Mailing Zipcode','PARENTS'=>'Contacts');
+		$fields_list = array('FULL_NAME'=>(Preferences('NAME')=='Common'?'Last, Common':'Last, First M'),'FIRST_NAME'=>'First','FIRST_INIT'=>'First Initial','LAST_NAME'=>'Last','MIDDLE_NAME'=>'Middle','NAME_SUFFIX'=>'Suffix','STUDENT_ID'=>'Student ID','GRADE_ID'=>'Grade','COLLEGE_ID'=>'College','NEXT_COLLEGE'=>'Rolling / Retention Options','CALENDAR_ID'=>'Calendar','USERNAME'=>'Username','PASSWORD'=>'Password','ADDRESS'=>'Address','CITY'=>'City','STATE'=>'State','ZIPCODE'=>'Zip Code','PHONE'=>'Home Phone','MAIL_ADDRESS'=>'Mailing Address','MAIL_CITY'=>'Mailing City','MAIL_STATE'=>'Mailing State','MAIL_ZIPCODE'=>'Mailing Zipcode','PARENTS'=>'Contacts');
 		if($extra['field_names'])
 			$fields_list += $extra['field_names'];
 
-		$periods_RET = DBGet(DBQuery('SELECT TITLE,PERIOD_ID FROM college_periods WHERE SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserCollege().'\' ORDER BY SORT_ORDER'));
+		$periods_RET = DBGet(DBQuery('SELECT TITLE,PERIOD_ID FROM college_periods WHERE SYEAR=\''.UserSyear().'\' AND COLLEGE_ID=\''.UserCollege().'\' ORDER BY SORT_ORDER'));
 		foreach($periods_RET as $period)
 			$fields_list['PERIOD_'.$period['PERIOD_ID']] = $period['TITLE'].' Teacher - Room';
 	}
@@ -115,7 +115,7 @@ else
 	if(!$fields_list)
 	{
 		if(AllowUse('students/Student.php&category_id=1'))
-			$fields_list['General'] = array('FULL_NAME'=>(Preferences('NAME')=='Common'?'Last, Common':'Last, First M'),'FIRST_NAME'=>'First','FIRST_INIT'=>'First Initial','LAST_NAME'=>'Last','MIDDLE_NAME'=>'Middle','NAME_SUFFIX'=>'Suffix','STUDENT_ID'=>'Student ID','GRADE_ID'=>'Grade','SCHOOL_ID'=>'College','NEXT_SCHOOL'=>'Rolling / Retention Options','CALENDAR_ID'=>'Calendar','USERNAME'=>'Username','PASSWORD'=>'Password');
+			$fields_list['General'] = array('FULL_NAME'=>(Preferences('NAME')=='Common'?'Last, Common':'Last, First M'),'FIRST_NAME'=>'First','FIRST_INIT'=>'First Initial','LAST_NAME'=>'Last','MIDDLE_NAME'=>'Middle','NAME_SUFFIX'=>'Suffix','STUDENT_ID'=>'Student ID','GRADE_ID'=>'Grade','COLLEGE_ID'=>'College','NEXT_COLLEGE'=>'Rolling / Retention Options','CALENDAR_ID'=>'Calendar','USERNAME'=>'Username','PASSWORD'=>'Password');
 		if(AllowUse('students/Student.php&category_id=3'))
 		{
 			$fields_list['Address'] = array('ADDRESS'=>'Address','CITY'=>'City','STATE'=>'State','ZIPCODE'=>'Zip Code','PHONE'=>'Home Phone','MAIL_ADDRESS'=>'Mailing Address','MAIL_CITY'=>'Mailing City','MAIL_STATE'=>'Mailing State','MAIL_ZIPCODE'=>'Mailing Zipcode','PARENTS'=>'Contacts');
@@ -137,7 +137,7 @@ else
 		}
 	}
 
-	$periods_RET = DBGet(DBQuery('SELECT TITLE,PERIOD_ID FROM college_periods WHERE SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserCollege().'\' ORDER BY SORT_ORDER'));
+	$periods_RET = DBGet(DBQuery('SELECT TITLE,PERIOD_ID FROM college_periods WHERE SYEAR=\''.UserSyear().'\' AND COLLEGE_ID=\''.UserCollege().'\' ORDER BY SORT_ORDER'));
 	foreach($periods_RET as $period)
 		$fields_list['Schedule']['PERIOD_'.$period['PERIOD_ID']] = $period['TITLE'].' Teacher - Room';
 

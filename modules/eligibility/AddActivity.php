@@ -77,7 +77,7 @@ if ($_REQUEST['search_modfunc'] == 'list') {
     echo '<div class="col-md-12">';
     echo '<div class="form-group"><label class="control-label col-md-1">Activity</label>';
     echo '<div class="col-md-3">';
-    $activities_RET = DBGet(DBQuery('SELECT ID,TITLE FROM eligibility_activities WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' order by TITLE'));
+    $activities_RET = DBGet(DBQuery('SELECT ID,TITLE FROM eligibility_activities WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' order by TITLE'));
     echo '<SELECT name=activity_id class=form-control><OPTION value="">N/A</OPTION>';
     if (count($activities_RET)) {
         foreach ($activities_RET as $activity)
@@ -123,7 +123,7 @@ echo '<div id="modal_default" class="modal fade">
 echo '<center><div id="conf_div"></div></center>';
 echo'<table id="resp_table"><tr><td valign="top">';
 echo '<div>';
-$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE COLLEGE_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 

@@ -43,7 +43,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'edit') {
 //    }
 //    unset($_REQUEST['modfunc']);
 
-    $sch_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE SCHOOL_ID=' . UserCollege() . ' AND FILE_INFO=\'schlogo\''));
+    $sch_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE COLLEGE_ID=' . UserCollege() . ' AND FILE_INFO=\'schlogo\''));
     if (count($sch_img_info) > 0) {
         echo '<div class="text-center m-b-20"><div align=center class="image-holder inline-block"><IMG SRC="data:image/jpeg;base64,' . base64_encode($sch_img_info[1]['CONTENT']) . '" style="max-width: 300px" class=pic></div></div></div>';
     }
@@ -92,7 +92,7 @@ if (UserCollege()) {
 //	$upload->target_path=$target_path;
 //
 //	$upload->destination_path=$destination_path;
-        $sch_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE SCHOOL_ID=' . UserCollege() . ' AND FILE_INFO=\'schlogo\''));
+        $sch_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE COLLEGE_ID=' . UserCollege() . ' AND FILE_INFO=\'schlogo\''));
         if (count($sch_img_info) > 0)
             $upload->deleteOldImage($sch_img_info[1]['ID']);
         $upload->setFileExtension();
@@ -128,13 +128,13 @@ if (UserCollege()) {
 
 //            move_uploaded_file($_FILES["file"]["tmp_name"], $upload->target_path);
 //            if ($_SESSION['logo_path']) {
-//                $upload_edit_sql = DBQuery("UPDATE program_config SET VALUE='$upload->target_path' WHERE SCHOOL_ID='" . UserCollege() . "' AND PROGRAM='CollegeLogo' AND TITLE='PATH'");
+//                $upload_edit_sql = DBQuery("UPDATE program_config SET VALUE='$upload->target_path' WHERE COLLEGE_ID='" . UserCollege() . "' AND PROGRAM='CollegeLogo' AND TITLE='PATH'");
 //                if ($_SESSION['logo_path'] != $upload->target_path)
 //                    unlink($_SESSION['logo_path']);
 //                unset($_SESSION['logo_path']);
 //            }
 //            else {
-//                $upload_sql = DBQuery('INSERT INTO program_config (SCHOOL_ID,PROGRAM ,TITLE,VALUE) VALUES(\'' . UserCollege() . '\',\'CollegeLogo\',\'PATH\',\'' . $upload->target_path . '\')');
+//                $upload_sql = DBQuery('INSERT INTO program_config (COLLEGE_ID,PROGRAM ,TITLE,VALUE) VALUES(\'' . UserCollege() . '\',\'CollegeLogo\',\'PATH\',\'' . $upload->target_path . '\')');
 //            }
 //            @fopen($upload->target_path, 'r');
 //            echo '<div align=center><IMG SRC="' . $upload->target_path . '" height=100 width=100 class=pic></div><div class=break></div>';
@@ -153,8 +153,8 @@ if (UserCollege()) {
                 $fileName = addslashes($fileName);
             }
 
-            DBQuery('INSERT INTO user_file_upload (USER_ID,PROFILE_ID,SCHOOL_ID,SYEAR,NAME, SIZE, TYPE, CONTENT,FILE_INFO) VALUES (' . UserID() . ',' . UserProfileID() . ',' . UserCollege() . ',' . UserSyear() . ',\'' . $fileName . '\', \'' . $fileSize . '\', \'' . $fileType . '\', \'' . $content . '\',\'schlogo\')');
-            $sch_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE SCHOOL_ID=' . UserCollege() . ' AND FILE_INFO=\'schlogo\''));
+            DBQuery('INSERT INTO user_file_upload (USER_ID,PROFILE_ID,COLLEGE_ID,SYEAR,NAME, SIZE, TYPE, CONTENT,FILE_INFO) VALUES (' . UserID() . ',' . UserProfileID() . ',' . UserCollege() . ',' . UserSyear() . ',\'' . $fileName . '\', \'' . $fileSize . '\', \'' . $fileType . '\', \'' . $content . '\',\'schlogo\')');
+            $sch_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE COLLEGE_ID=' . UserCollege() . ' AND FILE_INFO=\'schlogo\''));
 
             echo '<div align=center><IMG SRC="data:image/jpeg;base64,' . base64_encode($sch_img_info[1]['CONTENT']) . '" height=100 width=100 class=pic></div><div class=break></div>';
 //fclose($upload->target_path);

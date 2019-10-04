@@ -157,14 +157,14 @@ if (!$_REQUEST['modfunc']) {
     $table = 'student_medical_visits';
 
     $functions = array('TIME_IN' => '_makeComments', 'TIME_OUT' => '_makeComments', 'REASON' => '_makeComments', 'RESULT' => '_makeComments', 'COMMENTS' => '_makeLongComments');
-    $med_RET = DBGet(DBQuery('SELECT ID,SCHOOL_DATE,TIME_IN,TIME_OUT,REASON,RESULT,COMMENTS FROM student_medical_visits WHERE STUDENT_ID=\'' . UserStudentID() . '\' ORDER BY SCHOOL_DATE'), $functions);
-    $columns = array('SCHOOL_DATE' => 'Date', 'TIME_IN' => 'Time In', 'TIME_OUT' => 'Time Out', 'REASON' => 'Reason', 'RESULT' => 'Result', 'COMMENTS' => 'Comments');
+    $med_RET = DBGet(DBQuery('SELECT ID,COLLEGE_DATE,TIME_IN,TIME_OUT,REASON,RESULT,COMMENTS FROM student_medical_visits WHERE STUDENT_ID=\'' . UserStudentID() . '\' ORDER BY COLLEGE_DATE'), $functions);
+    $columns = array('COLLEGE_DATE' => 'Date', 'TIME_IN' => 'Time In', 'TIME_OUT' => 'Time Out', 'REASON' => 'Reason', 'RESULT' => 'Result', 'COMMENTS' => 'Comments');
     foreach ($med_RET as $mi => $md) {
         $counter_for_date = $counter_for_date + 1;
-        $med_RET[$mi]['SCHOOL_DATE'] = _makeDate($md['SCHOOL_DATE'], 'SCHOOL_DATE', $counter_for_date, array('ID' => $md['ID'], 'TABLE' => 'student_medical_visits'));
+        $med_RET[$mi]['COLLEGE_DATE'] = _makeDate($md['COLLEGE_DATE'], 'COLLEGE_DATE', $counter_for_date, array('ID' => $md['ID'], 'TABLE' => 'student_medical_visits'));
     }
     $counter_for_date = $counter_for_date + 1;
-    $link['add']['html'] = array('SCHOOL_DATE' => _makeDate('', 'SCHOOL_DATE', $counter_for_date), 'TIME_IN' => _makeComments('', 'TIME_IN'), 'TIME_OUT' => _makeComments('', 'TIME_OUT'), 'REASON' => _makeComments('', 'REASON'), 'RESULT' => _makeComments('', 'RESULT'), 'COMMENTS' => _makeLongComments('', 'COMMENTS'));
+    $link['add']['html'] = array('COLLEGE_DATE' => _makeDate('', 'COLLEGE_DATE', $counter_for_date), 'TIME_IN' => _makeComments('', 'TIME_IN'), 'TIME_OUT' => _makeComments('', 'TIME_OUT'), 'REASON' => _makeComments('', 'REASON'), 'RESULT' => _makeComments('', 'RESULT'), 'COMMENTS' => _makeLongComments('', 'COMMENTS'));
     $link['remove']['link'] = "Modules.php?modname=$_REQUEST[modname]&include=$_REQUEST[include]&modfunc=delete&table=student_medical_visits&title=" . urlencode('visit');
     $link['remove']['variables'] = array('id' => 'ID');
     

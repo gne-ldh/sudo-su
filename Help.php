@@ -45,7 +45,7 @@ elseif(User('PROFILE')=='student')
 	$_openSIS['User'][1]['PROFILE'] = 'parent';
 	$student = true;
 }
-// SCHOOL SETUP ---
+// COLLEGE SETUP ---
 if(User('PROFILE')=='admin')
 {
             $help['College_Setup/PortalNotes.php'] = '<p><strong>Portal Notes</strong></p><p>This page allows you to add Notes to the system. Notes help to keep users of the system informed about any new developments in the College. You can choose the time period for which the specific note will be visible to users. You can also specify which users can view the same. <p>To modify a note, click on any of the note\'s information, change the value, and click the "Save" button.</p><p>To delete an note, click the delete icon (-) next to the note you want to delete.  You will be asked to confirm the deletion.</p>';

@@ -38,7 +38,7 @@ $pros = GetChildrenMP('PRO', UserMP());
 // if the UserMP has been changed, the REQUESTed MP may not work
 if (!$_REQUEST['mp'] || strpos($str = "'" . UserMP() . "','" . $sem . "','" . $fy . "'," . $pros, "'" . ltrim($_REQUEST['mp'], 'E') . "'") === false)
     $_REQUEST['mp'] = UserMP();
-$QI = DBQuery('SELECT PERIOD_ID,TITLE FROM college_periods WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY SORT_ORDER ');
+$QI = DBQuery('SELECT PERIOD_ID,TITLE FROM college_periods WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY SORT_ORDER ');
 $period_RET = DBGet($QI);
 $period_select = "<SELECT class=\"form-control\" name=period onChange='this.form.submit();'><OPTION value=''>All</OPTION>";
 foreach ($period_RET as $period)
@@ -87,7 +87,7 @@ $sql = 'SELECT DISTINCT s.STAFF_ID,CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME) AS FU
 			
 WHERE sp.PERIOD_ID = cpv.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.GRADE_SCALE_ID IS NOT NULL AND cp.TEACHER_ID=s.STAFF_ID 
 
-AND cp.MARKING_PERIOD_ID IN (' . GetAllMP($mp_type, $cur_mp) . ') AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.SCHOOL_ID=\'' . UserCollege() . '\' AND s.PROFILE=\'teacher\'
+AND cp.MARKING_PERIOD_ID IN (' . GetAllMP($mp_type, $cur_mp) . ') AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.COLLEGE_ID=\'' . UserCollege() . '\' AND s.PROFILE=\'teacher\'
 			' . (($_REQUEST['period']) ? ' AND cpv.PERIOD_ID=\'' . $_REQUEST[period] . '\'' : '') . '
 			
 		';
@@ -96,7 +96,7 @@ $sql_gradecompleted = 'SELECT DISTINCT s.STAFF_ID,cp.COURSE_PERIOD_ID,cpv.PERIOD
 
 WHERE sp.PERIOD_ID = cpv.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.GRADE_SCALE_ID IS NOT NULL AND cp.TEACHER_ID=s.STAFF_ID  
 
-AND cp.MARKING_PERIOD_ID IN (' . GetAllMP($mp_type, $cur_mp) . ') AND cp.SYEAR=' . UserSyear() . ' AND cp.SCHOOL_ID=' . UserCollege() . ' AND s.PROFILE=\'teacher\'
+AND cp.MARKING_PERIOD_ID IN (' . GetAllMP($mp_type, $cur_mp) . ') AND cp.SYEAR=' . UserSyear() . ' AND cp.COLLEGE_ID=' . UserCollege() . ' AND s.PROFILE=\'teacher\'
 			' . (($_REQUEST['period']) ? " AND cpv.PERIOD_ID='$_REQUEST[period]'" : '') . '
 AND EXISTS (SELECT \'\' FROM grades_completed ac WHERE ac.STAFF_ID=cp.TEACHER_ID AND ac.MARKING_PERIOD_ID=\'' . $_REQUEST[mp] . '\' AND ac.PERIOD_ID=sp.PERIOD_ID)			
 		';

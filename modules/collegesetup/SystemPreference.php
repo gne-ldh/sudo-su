@@ -71,7 +71,7 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'SystemPreference'
                 $value = NULL;
             $sql .= $column . '=\'' . str_replace("\'", "''", $value) . '\',';
         }
-        $sql = substr($sql, 0, -1) . ' WHERE SCHOOL_ID=\'' . UserCollege() . '\'';
+        $sql = substr($sql, 0, -1) . ' WHERE COLLEGE_ID=\'' . UserCollege() . '\'';
         DBQuery($sql);
     }
     elseif ((clean_param($_REQUEST['action'], PARAM_ALPHAMOD) == 'insert') && (clean_param($_REQUEST['button'], PARAM_ALPHAMOD) == 'Save') && clean_param($_REQUEST['values'], PARAM_NOTAGS) && $_POST['values'] && User('PROFILE') == 'admin') {
@@ -85,7 +85,7 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'SystemPreference'
         DBQuery($sql);
     }
 
-    $sys_pref = DBGet(DBQuery('SELECT * FROM system_preference WHERE SCHOOL_ID=' . UserCollege()));
+    $sys_pref = DBGet(DBQuery('SELECT * FROM system_preference WHERE COLLEGE_ID=' . UserCollege()));
     $sys_pref = $sys_pref[1];
 
 
@@ -284,9 +284,9 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'SystemPreference'
         if (isset($_REQUEST['display_notify'])) {
             $notify_RET = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE college_id=\'' . UserCollege() . '\' AND program=\'UPDATENOTIFY\' AND title=\'display\' LIMIT 0, 1'));
             if (count($notify_RET) == 0) {
-                DBQuery('INSERT INTO program_config (SYEAR,SCHOOL_ID,PROGRAM,TITLE,VALUE) VALUES(\'' . UserSyear() . '\',\'' . UserCollege() . '\',\'UPDATENOTIFY\',\'display\',\'Y\')');
+                DBQuery('INSERT INTO program_config (SYEAR,COLLEGE_ID,PROGRAM,TITLE,VALUE) VALUES(\'' . UserSyear() . '\',\'' . UserCollege() . '\',\'UPDATENOTIFY\',\'display\',\'Y\')');
             } else {
-                DBQuery('UPDATE program_config SET VALUE=\'' . $_REQUEST['display_notify'] . '\' WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND PROGRAM=\'UPDATENOTIFY\' AND TITLE=\'display\'');
+                DBQuery('UPDATE program_config SET VALUE=\'' . $_REQUEST['display_notify'] . '\' WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND PROGRAM=\'UPDATENOTIFY\' AND TITLE=\'display\'');
             }
             unset($_REQUEST['display_notify']);
             unset($_SESSION['_REQUEST_vars']['display_notify']);
@@ -294,9 +294,9 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'SystemPreference'
         if (isset($_REQUEST['display_college_notify'])) {
             $notify_RET = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE college_id=\'' . UserCollege() . '\' AND program=\'UPDATENOTIFY\' AND title=\'display_college\' LIMIT 0, 1'));
             if (count($notify_RET) == 0) {
-                DBQuery('INSERT INTO program_config (SYEAR,SCHOOL_ID,PROGRAM,TITLE,VALUE) VALUES(\'' . UserSyear() . '\',\'' . UserCollege() . '\',\'UPDATENOTIFY\',\'display_college\',\'Y\')');
+                DBQuery('INSERT INTO program_config (SYEAR,COLLEGE_ID,PROGRAM,TITLE,VALUE) VALUES(\'' . UserSyear() . '\',\'' . UserCollege() . '\',\'UPDATENOTIFY\',\'display_college\',\'Y\')');
             } else {
-                DBQuery('UPDATE program_config SET VALUE=\'' . $_REQUEST['display_college_notify'] . '\' WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND PROGRAM=\'UPDATENOTIFY\' AND TITLE=\'display_college\'');
+                DBQuery('UPDATE program_config SET VALUE=\'' . $_REQUEST['display_college_notify'] . '\' WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND PROGRAM=\'UPDATENOTIFY\' AND TITLE=\'display_college\'');
             }
             unset($_REQUEST['display_notify']);
             unset($_SESSION['_REQUEST_vars']['display_notify']);

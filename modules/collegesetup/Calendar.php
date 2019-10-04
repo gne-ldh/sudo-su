@@ -38,7 +38,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'print') {
     echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
     echo "<tr><td  style=\"font-size:15px; font-weight:bold; padding-top:10px;\">" . GetCollege(UserCollege()) . "<div style=\"font-size:12px;\">List of Events</div></td><td align=right style=\"padding-top:10px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=2 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
     echo "<div class=print_wrapper>";
-    ListOutputFloat($_SESSION['events_RET'], array('SCHOOL_DATE' => 'Date', 'TITLE' => 'Event', 'DESCRIPTION' => 'Description'), 'Event', 'Events', '', '', array('search' => false, 'count' => false));
+    ListOutputFloat($_SESSION['events_RET'], array('COLLEGE_DATE' => 'Date', 'TITLE' => 'Event', 'DESCRIPTION' => 'Description'), 'Event', 'Events', '', '', array('search' => false, 'count' => false));
     echo "</div>";
 }
 if (!$_REQUEST['month'])
@@ -53,10 +53,10 @@ if (User('PROFILE') != 'student')
     DrawBC("College Setup > " . ProgramTitle());
 else
     DrawBC("College Info > " . ProgramTitle());
-$cal_found_qr = DBGet(DBQuery('SELECT count(*) as TOT from college_calendars WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\''));
+$cal_found_qr = DBGet(DBQuery('SELECT count(*) as TOT from college_calendars WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\''));
 //if ((clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'create' || !$_REQUEST['calendar_id']) && $_REQUEST['modfunc']!='detail' && USER('PROFILE')=='admin') 
 if ((clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'create' || $cal_found_qr[1]['TOT'] == 0) && User('PROFILE') == 'admin') {
-    $fy_RET = DBGet(DBQuery('SELECT START_DATE,END_DATE FROM college_years WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\''));
+    $fy_RET = DBGet(DBQuery('SELECT START_DATE,END_DATE FROM college_years WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\''));
     $fy_RET = $fy_RET[1];
     if ($_REQUEST['month__min'] == '')
         echo '<div class="alert alert-danger no-border">No Calendars were found.</div>';
@@ -122,7 +122,7 @@ if ((clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'create' || $cal_found
 
         $col = Calender_Title;
         $cal_title = singleQuoteReplace("'", "''", $_REQUEST['title']);
-        $dup_cal_title = DBGet(DBQuery('SELECT count(*) AS NO FROM college_calendars WHERE TITLE=\'' . $cal_title . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\''));
+        $dup_cal_title = DBGet(DBQuery('SELECT count(*) AS NO FROM college_calendars WHERE TITLE=\'' . $cal_title . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\''));
 
         $fetch_calendar_id = DBGet(DBQuery('SHOW TABLE STATUS LIKE \'college_calendars\''));
 
@@ -131,7 +131,7 @@ if ((clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'create' || $cal_found
         if ($dup_cal_title[1]['NO'] == 0) {
             for ($i = $begin; $i <= $end; $i+=86400) {
                 if ($_REQUEST['weekdays'][$weekday] == 'Y') {
-                    $sql = 'INSERT INTO attendance_calendar (SYEAR,SCHOOL_ID,SCHOOL_DATE,MINUTES,CALENDAR_ID) values(\'' . UserSyear() . '\',\'' . UserCollege() . '\',\'' . date('Y-m-d', $i) . '\',\'999\',\'' . $calendar_id . '\')';
+                    $sql = 'INSERT INTO attendance_calendar (SYEAR,COLLEGE_ID,COLLEGE_DATE,MINUTES,CALENDAR_ID) values(\'' . UserSyear() . '\',\'' . UserCollege() . '\',\'' . date('Y-m-d', $i) . '\',\'999\',\'' . $calendar_id . '\')';
 
                     DBQuery($sql);
                 }
@@ -141,9 +141,9 @@ if ((clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'create' || $cal_found
             }
         }
         if ($_REQUEST['default'] && $dup_cal_title[1]['NO'] == 0)
-            DBQuery('Update college_calendars SET DEFAULT_CALENDAR=NULL WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\'');
+            DBQuery('Update college_calendars SET DEFAULT_CALENDAR=NULL WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\'');
         if ($dup_cal_title[1]['NO'] == 0)
-            DBQuery('INSERT INTO college_calendars (SYEAR,SCHOOL_ID,TITLE,DEFAULT_CALENDAR,DAYS) values(\'' . UserSyear() . '\',\'' . UserCollege() . '\',\'' . $cal_title . '\',\'' . $_REQUEST['default'] . '\',\'' . conv_day($_REQUEST['weekdays']) . '\')');
+            DBQuery('INSERT INTO college_calendars (SYEAR,COLLEGE_ID,TITLE,DEFAULT_CALENDAR,DAYS) values(\'' . UserSyear() . '\',\'' . UserCollege() . '\',\'' . $cal_title . '\',\'' . $_REQUEST['default'] . '\',\'' . conv_day($_REQUEST['weekdays']) . '\')');
         if (count($_REQUEST['profiles'])) {
             $profile_sql = 'INSERT INTO calendar_events_visibility(calendar_id,profile_id,profile) VALUES';
             foreach ($_REQUEST['profiles'] as $key => $profile) {
@@ -187,11 +187,11 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'delete_calendar') {
         if (DeletePromptCommon('calendar')) {
             DBQuery('DELETE FROM attendance_calendar WHERE CALENDAR_ID=' . $cal_title . '');
             DBQuery('DELETE FROM college_calendars WHERE CALENDAR_ID=' . $cal_title . '');
-            $default_RET = DBGet(DBQuery('SELECT CALENDAR_ID FROM college_calendars WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND DEFAULT_CALENDAR=\'Y\''));
+            $default_RET = DBGet(DBQuery('SELECT CALENDAR_ID FROM college_calendars WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND DEFAULT_CALENDAR=\'Y\''));
             if (count($default_RET))
                 $_REQUEST['calendar_id'] = $default_RET[1]['CALENDAR_ID'];
             else {
-                $calendars_RET = DBGet(DBQuery('SELECT CALENDAR_ID FROM college_calendars WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
+                $calendars_RET = DBGet(DBQuery('SELECT CALENDAR_ID FROM college_calendars WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
                 if (count($calendars_RET))
                     $_REQUEST['calendar_id'] = $calendars_RET[1]['CALENDAR_ID'];
                 else
@@ -211,7 +211,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'edit_calendar') {
     $cal_id = paramlib_validation($colmn, $_REQUEST['calendar_id']);
     $acs_RET = DBGet(DBQuery('SELECT TITLE, DEFAULT_CALENDAR FROM college_calendars WHERE CALENDAR_ID=\'' . $cal_id . '\''));
     $acs_RET = $acs_RET[1];
-    $ac_RET = DBGet(DBQuery('SELECT MIN(SCHOOL_DATE) AS START_DATE,MAX(SCHOOL_DATE) AS END_DATE FROM attendance_calendar WHERE CALENDAR_ID=\'' . $cal_id . '\''));
+    $ac_RET = DBGet(DBQuery('SELECT MIN(COLLEGE_DATE) AS START_DATE,MAX(COLLEGE_DATE) AS END_DATE FROM attendance_calendar WHERE CALENDAR_ID=\'' . $cal_id . '\''));
     $ac_RET = $ac_RET[1];
 
     $day_RET = DBGet(DBQuery('SELECT days FROM college_calendars WHERE CALENDAR_ID=\'' . $cal_id . '\''));
@@ -271,10 +271,10 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'edit_calendar') {
         $col = Calender_Title;
         $cal_title = singleQuoteReplace("'", "''", $_REQUEST['title']);
 
-        $dup_cal_title = DBGet(DBQuery('SELECT count(*) AS NO FROM college_calendars WHERE TITLE=\'' . $cal_title . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' AND CALENDAR_ID NOT IN(' . $cal_id . ')'));
+        $dup_cal_title = DBGet(DBQuery('SELECT count(*) AS NO FROM college_calendars WHERE TITLE=\'' . $cal_title . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' AND CALENDAR_ID NOT IN(' . $cal_id . ')'));
 
         if (isset($_REQUEST['default']) && $dup_cal_title[1]['NO'] == 0)
-            DBQuery('UPDATE college_calendars SET DEFAULT_CALENDAR = NULL WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\'');
+            DBQuery('UPDATE college_calendars SET DEFAULT_CALENDAR = NULL WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\'');
         if ($dup_cal_title[1]['NO'] == 0) {
             DBQuery('UPDATE college_calendars SET TITLE = \'' . $cal_title . '\', DEFAULT_CALENDAR = \'' . $_REQUEST['default'] . '\' WHERE CALENDAR_ID=\'' . $cal_id . '\'');
             DBQuery('DELETE FROM calendar_events_visibility WHERE calendar_id=\'' . $cal_id . '\'');
@@ -282,14 +282,14 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'edit_calendar') {
         $end_date_cal=$_REQUEST['year__max'].'-'.$_REQUEST['month__max'].'-'.$_REQUEST['day__max'];
         $start_date_cal=$_REQUEST['year__min'].'-'.$_REQUEST['month__min'].'-'.$_REQUEST['day__min'];
         
-        $min_date=DBGet(DBquery('SELECT MIN(SCHOOL_DATE) as SCHOOL_DATE FROM attendance_calendar WHERE CALENDAR_ID='.$cal_id));
-        $max_date=DBGet(DBquery('SELECT MAX(SCHOOL_DATE) as SCHOOL_DATE FROM attendance_calendar WHERE CALENDAR_ID='.$cal_id));
+        $min_date=DBGet(DBquery('SELECT MIN(COLLEGE_DATE) as COLLEGE_DATE FROM attendance_calendar WHERE CALENDAR_ID='.$cal_id));
+        $max_date=DBGet(DBquery('SELECT MAX(COLLEGE_DATE) as COLLEGE_DATE FROM attendance_calendar WHERE CALENDAR_ID='.$cal_id));
         $cal_days=DBGet(DBquery('SELECT DAYS FROM college_calendars WHERE CALENDAR_ID='.$cal_id));
         $days_conv=array('Mon'=>'M','Tue'=>'T','Wed'=>'W','Thu'=>'H','Fri'=>'F','Sat'=>'S','Sun'=>'U');
-        if(strtotime($start_date_cal)<strtotime($min_date[1]['SCHOOL_DATE']) && $start_date_cal!='' && $min_date[1]['SCHOOL_DATE']!='')
+        if(strtotime($start_date_cal)<strtotime($min_date[1]['COLLEGE_DATE']) && $start_date_cal!='' && $min_date[1]['COLLEGE_DATE']!='')
         {
         $date1_ts = strtotime($start_date_cal);
-        $date2_ts = strtotime($min_date[1]['SCHOOL_DATE']);
+        $date2_ts = strtotime($min_date[1]['COLLEGE_DATE']);
         $diff = $date2_ts - $date1_ts;
         for($d=0;$d<round($diff / 86400);$d++)
         {
@@ -297,22 +297,22 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'edit_calendar') {
             if(strpos($cal_days[1]['DAYS'],$days_conv[date('D',$mk_date)])!==false)
             {
                 $ins_date=date('Y-m-d',$mk_date);
-                DBQuery('INSERT INTO attendance_calendar (SYEAR,SCHOOL_ID,SCHOOL_DATE,MINUTES,CALENDAR_ID) VALUES (\''.UserSyear().'\',\''.UserCollege().'\',\''.$ins_date.'\',999,\''.$cal_id.'\')');
+                DBQuery('INSERT INTO attendance_calendar (SYEAR,COLLEGE_ID,COLLEGE_DATE,MINUTES,CALENDAR_ID) VALUES (\''.UserSyear().'\',\''.UserCollege().'\',\''.$ins_date.'\',999,\''.$cal_id.'\')');
             }
         }
         }
-        if(strtotime($end_date_cal)>strtotime($max_date[1]['SCHOOL_DATE']))
+        if(strtotime($end_date_cal)>strtotime($max_date[1]['COLLEGE_DATE']))
         {
         $date2_ts = strtotime($end_date_cal);
-        $date1_ts = strtotime($max_date[1]['SCHOOL_DATE']);
+        $date1_ts = strtotime($max_date[1]['COLLEGE_DATE']);
         $diff = $date2_ts - $date1_ts;
         for($d=1;$d<=round($diff / 86400);$d++)
         {
-            $mk_date=strtotime($max_date[1]['SCHOOL_DATE'])+(86400*$d);
+            $mk_date=strtotime($max_date[1]['COLLEGE_DATE'])+(86400*$d);
             if(strpos($cal_days[1]['DAYS'],$days_conv[date('D',$mk_date)])!==false)
             {
                 $ins_date=date('Y-m-d',$mk_date);
-                DBQuery('INSERT INTO attendance_calendar (SYEAR,SCHOOL_ID,SCHOOL_DATE,MINUTES,CALENDAR_ID) VALUES (\''.UserSyear().'\',\''.UserCollege().'\',\''.$ins_date.'\',999,\''.$cal_id.'\')');
+                DBQuery('INSERT INTO attendance_calendar (SYEAR,COLLEGE_ID,COLLEGE_DATE,MINUTES,CALENDAR_ID) VALUES (\''.UserSyear().'\',\''.UserCollege().'\',\''.$ins_date.'\',999,\''.$cal_id.'\')');
             }
         }    
         }
@@ -349,22 +349,22 @@ if (User('PROFILE') != 'admin') {
         if ($course_RET[1]['CALENDAR_ID'])
             $_REQUEST['calendar_id'] = $course_RET[1]['CALENDAR_ID'];
         else {
-            $default_RET = DBGet(DBQuery('SELECT CALENDAR_ID FROM college_calendars WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND DEFAULT_CALENDAR=\'Y\''));
+            $default_RET = DBGet(DBQuery('SELECT CALENDAR_ID FROM college_calendars WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND DEFAULT_CALENDAR=\'Y\''));
 
             if (!empty($default_RET))
                 $_REQUEST['calendar_id'] = $default_RET[1]['CALENDAR_ID'];
             else {
-                $qr = DBGet(DBQuery('SELECT CALENDAR_ID FROM college_calendars WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\'ORDER BY CALENDAR_ID LIMIT 0,1'));
+                $qr = DBGet(DBQuery('SELECT CALENDAR_ID FROM college_calendars WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\'ORDER BY CALENDAR_ID LIMIT 0,1'));
                 $_REQUEST['calendar_id'] = $qr[1]['CALENDAR_ID'];
             }
         }
     }
 } elseif (!$_REQUEST['calendar_id']) {
-    $default_RET = DBGet(DBQuery('SELECT CALENDAR_ID FROM college_calendars WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND DEFAULT_CALENDAR=\'Y\''));
+    $default_RET = DBGet(DBQuery('SELECT CALENDAR_ID FROM college_calendars WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND DEFAULT_CALENDAR=\'Y\''));
     if (count($default_RET))
         $_REQUEST['calendar_id'] = $default_RET[1]['CALENDAR_ID'];
     else {
-        $calendars_RET = DBGet(DBQuery('SELECT CALENDAR_ID FROM college_calendars WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
+        $calendars_RET = DBGet(DBQuery('SELECT CALENDAR_ID FROM college_calendars WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
         if (count($calendars_RET))
             $_REQUEST['calendar_id'] = $calendars_RET[1]['CALENDAR_ID'];
         else
@@ -375,9 +375,9 @@ unset($_SESSION['_REQUEST_vars']['calendar_id']);
 
 if ($_REQUEST['modfunc'] == 'detail') {
     if ($_REQUEST['month_values'] && $_REQUEST['day_values'] && $_REQUEST['year_values']) {
-        $_REQUEST['values']['SCHOOL_DATE'] = $_REQUEST['day_values']['SCHOOL_DATE'] . '-' . $_REQUEST['month_values']['SCHOOL_DATE'] . '-' . $_REQUEST['year_values']['SCHOOL_DATE'];
-        if (!VerifyDate($_REQUEST['values']['SCHOOL_DATE']))
-            unset($_REQUEST['values']['SCHOOL_DATE']);
+        $_REQUEST['values']['COLLEGE_DATE'] = $_REQUEST['day_values']['COLLEGE_DATE'] . '-' . $_REQUEST['month_values']['COLLEGE_DATE'] . '-' . $_REQUEST['year_values']['COLLEGE_DATE'];
+        if (!VerifyDate($_REQUEST['values']['COLLEGE_DATE']))
+            unset($_REQUEST['values']['COLLEGE_DATE']);
     }
 
     if ($_POST['button'] == 'Save' && AllowEdit()) {
@@ -388,7 +388,7 @@ if ($_REQUEST['modfunc'] == 'detail') {
 
                 foreach ($_REQUEST['values'] as $column => $value) {
                     $value = paramlib_validation($column, $value);
-                    if ($column == "SCHOOL_DATE") {
+                    if ($column == "COLLEGE_DATE") {
                         $value = date('Y-m-d', strtotime($value));
                     }
                     if (stripos($_SERVER['SERVER_SOFTWARE'], 'linux')) {
@@ -422,22 +422,22 @@ if ($_REQUEST['modfunc'] == 'detail') {
                     DBQuery($sql);
             }
             else {
-                if (!$_REQUEST['values']['SCHOOL_DATE'])
-                    $_REQUEST['values']['SCHOOL_DATE'] = $_REQUEST['dd'];
+                if (!$_REQUEST['values']['COLLEGE_DATE'])
+                    $_REQUEST['values']['COLLEGE_DATE'] = $_REQUEST['dd'];
 
                 $sql = 'INSERT INTO calendar_events ';
                 if ($_REQUEST['new'] == 'Y')
                     $cal_id = '0';
                 else
                     $cal_id = $_REQUEST['calendar_id'];
-                $fields = 'SYEAR,SCHOOL_ID,CALENDAR_ID,';
+                $fields = 'SYEAR,COLLEGE_ID,CALENDAR_ID,';
                 $values = '\'' . UserSyear() . '\',\'' . UserCollege() . '\',\'' . $cal_id . '\',';
 
                 foreach ($_REQUEST['values'] as $column => $value) {
                     if (trim($value)) {
                         $value = paramlib_validation($column, $value);
                         $fields .= $column . ',';
-                        if ($column == "SCHOOL_DATE")
+                        if ($column == "COLLEGE_DATE")
                             $values .= '\'' . date('Y-m-d', strtotime($value)) . '\',';
                         else {
                             if (stripos($_SERVER['SERVER_SOFTWARE'], 'linux')) {
@@ -484,18 +484,18 @@ if ($_REQUEST['modfunc'] == 'detail') {
     } else {
         if ($_REQUEST['event_id']) {
             if ($_REQUEST['event_id'] != 'new') {
-                $RET = DBGet(DBQuery("SELECT TITLE,DESCRIPTION,SCHOOL_DATE,CALENDAR_ID FROM calendar_events WHERE ID='$_REQUEST[event_id]'"));
+                $RET = DBGet(DBQuery("SELECT TITLE,DESCRIPTION,COLLEGE_DATE,CALENDAR_ID FROM calendar_events WHERE ID='$_REQUEST[event_id]'"));
                 $title = $RET[1]['TITLE'];
                 $calendar_id = $RET[1]['CALENDAR_ID'];
             } else {
                 $title = 'New Event';
-                $RET[1]['SCHOOL_DATE'] = date('Y-m-d', strtotime($_REQUEST['college_date']));
+                $RET[1]['COLLEGE_DATE'] = date('Y-m-d', strtotime($_REQUEST['college_date']));
                 $RET[1]['CALENDAR_ID'] = '';
                 $calendar_id = $_REQUEST['calendar_id'];
             }
             echo "<FORM name=popform class=\"form-horizontal\" id=popform action=ForWindow.php?modname=$_REQUEST[modname]&dd=$_REQUEST[college_date]&modfunc=detail&event_id=$_REQUEST[event_id]&calendar_id=$calendar_id&month=$_REQUEST[month]&year=$_REQUEST[year] METHOD=POST>";
         } else {
-            $RET = DBGet(DBQuery('SELECT TITLE,STAFF_ID,DATE_FORMAT(DUE_DATE,\'%d-%b-%y\') AS SCHOOL_DATE,ASSIGNED_DATE,DUE_DATE,DESCRIPTION FROM gradebook_assignments WHERE ASSIGNMENT_ID=\'' . $_REQUEST[assignment_id] . '\''));
+            $RET = DBGet(DBQuery('SELECT TITLE,STAFF_ID,DATE_FORMAT(DUE_DATE,\'%d-%b-%y\') AS COLLEGE_DATE,ASSIGNED_DATE,DUE_DATE,DESCRIPTION FROM gradebook_assignments WHERE ASSIGNMENT_ID=\'' . $_REQUEST[assignment_id] . '\''));
             $title = $RET[1]['TITLE'];
             $RET[1]['STAFF_ID'] = GetTeacher($RET[1]['STAFF_ID']);
         }
@@ -503,7 +503,7 @@ if ($_REQUEST['modfunc'] == 'detail') {
         PopTable('header', $title);
         echo '<div id=err_message ></div><br/>';
 
-        echo '<div class="form-group"><label class="control-label text-right col-md-4">Date</label><div class="col-md-8">' . date("Y/M/d", strtotime($RET[1]['SCHOOL_DATE'])) . '</div></div>';
+        echo '<div class="form-group"><label class="control-label text-right col-md-4">Date</label><div class="col-md-8">' . date("Y/M/d", strtotime($RET[1]['COLLEGE_DATE'])) . '</div></div>';
 
         if ($RET[1]['TITLE'] == '') {
             echo '<div class="form-group">' . (User('PROFILE') == 'admin' ? TextInput($RET[1]['TITLE'], 'values[TITLE]', 'Title', 'id=title') : $RET[1]['TITLE']) . '</div>';
@@ -557,7 +557,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'list_events') {
         while (!VerifyDate($start_date = $_REQUEST['day_start'] . '-' . $_REQUEST['month_start'] . '-' . $_REQUEST['year_start']))
             $_REQUEST['day_start'] --;
     } else {
-        $min_date = DBGet(DBQuery('SELECT min(SCHOOL_DATE) AS MIN_DATE FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
+        $min_date = DBGet(DBQuery('SELECT min(COLLEGE_DATE) AS MIN_DATE FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
         if ($min_date[1]['MIN_DATE'])
             $start_date = $min_date[1]['MIN_DATE'];
         else
@@ -598,7 +598,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'list_events') {
         while (!VerifyDate($end_date = $_REQUEST['day_end'] . '-' . $_REQUEST['month_end'] . '-' . $_REQUEST['year_end']))
             $_REQUEST['day_end'] --;
     } else {
-        $max_date = DBGet(DBQuery('SELECT max(SCHOOL_DATE) AS MAX_DATE FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
+        $max_date = DBGet(DBQuery('SELECT max(COLLEGE_DATE) AS MAX_DATE FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
         if ($max_date[1]['MAX_DATE'])
             $end_date = $max_date[1]['MAX_DATE'];
         else
@@ -643,13 +643,13 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'list_events') {
     echo '<FORM action=Modules.php?modname=' . $_REQUEST['modname'] . '&modfunc=' . $_REQUEST['modfunc'] . '&month=' . $_REQUEST['month'] . '&year=' . $_REQUEST['year'] . ' METHOD=POST>';
 
     if ($end_date <= $start_date) {
-        $min_date = DBGet(DBQuery('SELECT min(SCHOOL_DATE) AS MIN_DATE FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
+        $min_date = DBGet(DBQuery('SELECT min(COLLEGE_DATE) AS MIN_DATE FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
         if ($min_date[1]['MIN_DATE'])
             $start_date = $min_date[1]['MIN_DATE'];
         else
             $start_date = '01-' . strtoupper(date('M-y'));
 
-        $max_date = DBGet(DBQuery('SELECT max(SCHOOL_DATE) AS MAX_DATE FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
+        $max_date = DBGet(DBQuery('SELECT max(COLLEGE_DATE) AS MAX_DATE FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
         if ($max_date[1]['MAX_DATE'])
             $end_date = $max_date[1]['MAX_DATE'];
         else
@@ -675,13 +675,13 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'list_events') {
 
 
 
-    $functions = array('SCHOOL_DATE' => 'ProperDate');         // <A HREF=Modules.php?modname='.$_REQUEST["modname"].'&month='.$_REQUEST["month"].'&year='.$_REQUEST["year"].'>
-    $events_RET = DBGet(DBQuery('SELECT ID,SCHOOL_DATE,TITLE,DESCRIPTION FROM calendar_events WHERE SCHOOL_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\' AND SYEAR=\'' . UserSyear() . '\'  AND (calendar_id=\'' . $_REQUEST['calendar_id'] . '\' OR calendar_id=\'0\') ORDER BY SCHOOL_DATE'), $functions);
+    $functions = array('COLLEGE_DATE' => 'ProperDate');         // <A HREF=Modules.php?modname='.$_REQUEST["modname"].'&month='.$_REQUEST["month"].'&year='.$_REQUEST["year"].'>
+    $events_RET = DBGet(DBQuery('SELECT ID,COLLEGE_DATE,TITLE,DESCRIPTION FROM calendar_events WHERE COLLEGE_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\' AND SYEAR=\'' . UserSyear() . '\'  AND (calendar_id=\'' . $_REQUEST['calendar_id'] . '\' OR calendar_id=\'0\') ORDER BY COLLEGE_DATE'), $functions);
     $_SESSION['events_RET'] = $events_RET;
 
 
     echo '<div id="students" class="panel panel-default">';
-    ListOutput($events_RET, array('SCHOOL_DATE' => 'Date', 'TITLE' => 'Event', 'DESCRIPTION' => 'Description'), 'Event', 'Events');
+    ListOutput($events_RET, array('COLLEGE_DATE' => 'Date', 'TITLE' => 'Event', 'DESCRIPTION' => 'Description'), 'Event', 'Events');
     echo '</div></FORM>';
 }
 
@@ -695,20 +695,20 @@ if (!$_REQUEST['modfunc']) {
     while (!checkdate($_REQUEST['month'], $last, $_REQUEST['year']))
         $last--;
 
-    $calendar_RET = DBGet(DBQuery('SELECT DATE_FORMAT(SCHOOL_DATE,\'%d-%b-%y\') as SCHOOL_DATE,MINUTES,BLOCK FROM attendance_calendar WHERE SCHOOL_DATE BETWEEN \'' . date('Y-m-d', $time) . '\' AND \'' . date('Y-m-d', mktime(0, 0, 0, $_REQUEST['month'], $last, $_REQUEST['year'])) . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND CALENDAR_ID=\'' . $_REQUEST['calendar_id'] . '\''), array(), array('SCHOOL_DATE'));
+    $calendar_RET = DBGet(DBQuery('SELECT DATE_FORMAT(COLLEGE_DATE,\'%d-%b-%y\') as COLLEGE_DATE,MINUTES,BLOCK FROM attendance_calendar WHERE COLLEGE_DATE BETWEEN \'' . date('Y-m-d', $time) . '\' AND \'' . date('Y-m-d', mktime(0, 0, 0, $_REQUEST['month'], $last, $_REQUEST['year'])) . '\' AND SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND CALENDAR_ID=\'' . $_REQUEST['calendar_id'] . '\''), array(), array('COLLEGE_DATE'));
     if ($_REQUEST['minutes']) {
         foreach ($_REQUEST['minutes'] as $date => $minutes) {
             if ($calendar_RET[$date]) {
                 if ($minutes != '0' && $minutes != '')
-                    DBQuery('UPDATE attendance_calendar SET MINUTES=\'' . $minutes . '\' WHERE SCHOOL_DATE=\'' . $date . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND CALENDAR_ID=\'' . $_REQUEST['calendar_id'] . '\'');
+                    DBQuery('UPDATE attendance_calendar SET MINUTES=\'' . $minutes . '\' WHERE COLLEGE_DATE=\'' . $date . '\' AND SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND CALENDAR_ID=\'' . $_REQUEST['calendar_id'] . '\'');
                 else {
-                    DBQuery('DELETE FROM attendance_calendar WHERE SCHOOL_DATE=\'' . $date . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND CALENDAR_ID=\'' . $_REQUEST['calendar_id'] . '\'');
+                    DBQuery('DELETE FROM attendance_calendar WHERE COLLEGE_DATE=\'' . $date . '\' AND SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND CALENDAR_ID=\'' . $_REQUEST['calendar_id'] . '\'');
                 }
             } elseif ($minutes != '0' && $minutes != '') {
-                DBQuery('INSERT INTO attendance_calendar (SYEAR,SCHOOL_ID,SCHOOL_DATE,CALENDAR_ID,MINUTES) values(\'' . UserSyear() . '\',\'' . UserCollege() . '\',\'' . $date . '\',\'' . $_REQUEST['calendar_id'] . '\',\'' . $minutes . '\')');
+                DBQuery('INSERT INTO attendance_calendar (SYEAR,COLLEGE_ID,COLLEGE_DATE,CALENDAR_ID,MINUTES) values(\'' . UserSyear() . '\',\'' . UserCollege() . '\',\'' . $date . '\',\'' . $_REQUEST['calendar_id'] . '\',\'' . $minutes . '\')');
             }
         }
-        $calendar_RET = DBGet(DBQuery('SELECT DATE_FORMAT(SCHOOL_DATE,\'%d-%b-%y\') as SCHOOL_DATE,MINUTES,BLOCK FROM attendance_calendar WHERE SCHOOL_DATE BETWEEN \'' . date('Y-m-d', $time) . '\' AND \'' . date('Y-m-d', mktime(0, 0, 0, $_REQUEST['month'], $last, $_REQUEST['year'])) . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND CALENDAR_ID=\'' . $_REQUEST['calendar_id'] . '\''), array(), array('SCHOOL_DATE'));
+        $calendar_RET = DBGet(DBQuery('SELECT DATE_FORMAT(COLLEGE_DATE,\'%d-%b-%y\') as COLLEGE_DATE,MINUTES,BLOCK FROM attendance_calendar WHERE COLLEGE_DATE BETWEEN \'' . date('Y-m-d', $time) . '\' AND \'' . date('Y-m-d', mktime(0, 0, 0, $_REQUEST['month'], $last, $_REQUEST['year'])) . '\' AND SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND CALENDAR_ID=\'' . $_REQUEST['calendar_id'] . '\''), array(), array('COLLEGE_DATE'));
         unset($_REQUEST['minutes']);
         unset($_SESSION['_REQUEST_vars']['minutes']);
     }
@@ -717,53 +717,53 @@ if (!$_REQUEST['modfunc']) {
         foreach ($_REQUEST['all_day'] as $date => $yes) {
             if ($yes == 'Y') {
                 if ($calendar_RET[$date])
-                    DBQuery('UPDATE attendance_calendar SET MINUTES=\'999\' WHERE SCHOOL_DATE=\'' . $date . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND CALENDAR_ID=\'' . $_REQUEST['calendar_id'] . '\'');
+                    DBQuery('UPDATE attendance_calendar SET MINUTES=\'999\' WHERE COLLEGE_DATE=\'' . $date . '\' AND SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND CALENDAR_ID=\'' . $_REQUEST['calendar_id'] . '\'');
                 else {
-                    DBQuery('INSERT INTO attendance_calendar (SYEAR,SCHOOL_ID,SCHOOL_DATE,CALENDAR_ID,MINUTES) values(\'' . UserSyear() . '\',\'' . UserCollege() . '\',\'' . $date . '\',\'' . $_REQUEST['calendar_id'] . '\',\'999\')');
+                    DBQuery('INSERT INTO attendance_calendar (SYEAR,COLLEGE_ID,COLLEGE_DATE,CALENDAR_ID,MINUTES) values(\'' . UserSyear() . '\',\'' . UserCollege() . '\',\'' . $date . '\',\'' . $_REQUEST['calendar_id'] . '\',\'999\')');
                 }
             } else {
-                $per_id = DBGet(DBQuery('SELECT PERIOD_ID FROM college_periods WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\''));
+                $per_id = DBGet(DBQuery('SELECT PERIOD_ID FROM college_periods WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\''));
                 foreach ($per_id as $key => $value) {
                     $period.=$value['PERIOD_ID'] . ',';
                 }
                 $period = substr($period, 0, -1);
 
                 if ($period != '')
-                    $get_date = DBGet(DBQuery('SELECT COUNT(ap.SCHOOL_DATE) AS SCHOOL_DATE FROM attendance_period ap,course_periods cp,college_calendars ac WHERE ap.SCHOOL_DATE=\'' . $date . '\' AND ap.PERIOD_ID IN(' . $period . ') AND ap.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cp.CALENDAR_ID=ac.CALENDAR_ID AND ac.SCHOOL_ID=cp.SCHOOL_ID AND cp.SCHOOL_ID=\'' . UserCollege() . '\' AND ac.CALENDAR_ID=\'' . $_REQUEST['calendar_id'] . '\' '));
+                    $get_date = DBGet(DBQuery('SELECT COUNT(ap.COLLEGE_DATE) AS COLLEGE_DATE FROM attendance_period ap,course_periods cp,college_calendars ac WHERE ap.COLLEGE_DATE=\'' . $date . '\' AND ap.PERIOD_ID IN(' . $period . ') AND ap.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cp.CALENDAR_ID=ac.CALENDAR_ID AND ac.COLLEGE_ID=cp.COLLEGE_ID AND cp.COLLEGE_ID=\'' . UserCollege() . '\' AND ac.CALENDAR_ID=\'' . $_REQUEST['calendar_id'] . '\' '));
                 else
-                    $get_date = DBGet(DBQuery('SELECT COUNT(ap.SCHOOL_DATE) AS SCHOOL_DATE FROM attendance_period ap,course_periods cp,college_calendars ac WHERE ap.SCHOOL_DATE=\'' . $date . '\'  AND ap.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cp.CALENDAR_ID=ac.CALENDAR_ID  AND ac.SCHOOL_ID=cp.SCHOOL_ID AND cp.SCHOOL_ID=\'' . UserCollege() . '\' AND ac.CALENDAR_ID=\'' . $_REQUEST['calendar_id'] . '\'  '));
+                    $get_date = DBGet(DBQuery('SELECT COUNT(ap.COLLEGE_DATE) AS COLLEGE_DATE FROM attendance_period ap,course_periods cp,college_calendars ac WHERE ap.COLLEGE_DATE=\'' . $date . '\'  AND ap.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cp.CALENDAR_ID=ac.CALENDAR_ID  AND ac.COLLEGE_ID=cp.COLLEGE_ID AND cp.COLLEGE_ID=\'' . UserCollege() . '\' AND ac.CALENDAR_ID=\'' . $_REQUEST['calendar_id'] . '\'  '));
                 if ($_REQUEST['show_all'][$date] == 'Y') {
-                    if ($get_date[1]['SCHOOL_DATE'] == 0)
-                        DBQuery('DELETE FROM attendance_calendar WHERE SCHOOL_DATE=\'' . $date . '\' AND SYEAR=\'' . UserSyear() . '\'');
+                    if ($get_date[1]['COLLEGE_DATE'] == 0)
+                        DBQuery('DELETE FROM attendance_calendar WHERE COLLEGE_DATE=\'' . $date . '\' AND SYEAR=\'' . UserSyear() . '\'');
                     else
                         echo '<font color=red><b>Selected Day has association</b></font>';
                 }
                 else {
-                    if ($get_date[1]['SCHOOL_DATE'] == 0)
-                        DBQuery('DELETE FROM attendance_calendar WHERE SCHOOL_DATE=\'' . $date . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND CALENDAR_ID=\'' . $_REQUEST['calendar_id'] . '\'');
+                    if ($get_date[1]['COLLEGE_DATE'] == 0)
+                        DBQuery('DELETE FROM attendance_calendar WHERE COLLEGE_DATE=\'' . $date . '\' AND SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND CALENDAR_ID=\'' . $_REQUEST['calendar_id'] . '\'');
                     else
                         echo '<font color=red><b>Selected Day has association</b></font>';
                 }
             }
         }
-        $calendar_RET = DBGet(DBQuery('SELECT DATE_FORMAT(SCHOOL_DATE,\'%d-%b-%y\') as SCHOOL_DATE,MINUTES,BLOCK FROM attendance_calendar WHERE SCHOOL_DATE BETWEEN \'' . date('Y-m-d', $time) . '\' AND \'' . date('Y-m-d', mktime(0, 0, 0, $_REQUEST['month'], $last, $_REQUEST['year'])) . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND CALENDAR_ID=\'' . $_REQUEST['calendar_id'] . '\''), array(), array('SCHOOL_DATE'));
+        $calendar_RET = DBGet(DBQuery('SELECT DATE_FORMAT(COLLEGE_DATE,\'%d-%b-%y\') as COLLEGE_DATE,MINUTES,BLOCK FROM attendance_calendar WHERE COLLEGE_DATE BETWEEN \'' . date('Y-m-d', $time) . '\' AND \'' . date('Y-m-d', mktime(0, 0, 0, $_REQUEST['month'], $last, $_REQUEST['year'])) . '\' AND SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND CALENDAR_ID=\'' . $_REQUEST['calendar_id'] . '\''), array(), array('COLLEGE_DATE'));
         unset($_REQUEST['all_day']);
         unset($_SESSION['_REQUEST_vars']['all_day']);
     }
     if ($_REQUEST['blocks']) {
         foreach ($_REQUEST['blocks'] as $date => $block) {
             if ($calendar_RET[$date]) {
-                DBQuery('UPDATE attendance_calendar SET BLOCK=\'' . $block . '\' WHERE SCHOOL_DATE=\'' . $date . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND CALENDAR_ID=\'' . $_REQUEST['calendar_id'] . '\'');
+                DBQuery('UPDATE attendance_calendar SET BLOCK=\'' . $block . '\' WHERE COLLEGE_DATE=\'' . $date . '\' AND SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND CALENDAR_ID=\'' . $_REQUEST['calendar_id'] . '\'');
             }
         }
-        $calendar_RET = DBGet(DBQuery('SELECT DATE_FORMAT(SCHOOL_DATE,\'%d-%b-%y\') as SCHOOL_DATE,MINUTES,BLOCK FROM attendance_calendar WHERE SCHOOL_DATE BETWEEN \'' . date('Y-m-d', $time) . '\' AND \'' . date('Y-m-d', mktime(0, 0, 0, $_REQUEST['month'], $last, $_REQUEST['year'])) . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND CALENDAR_ID=\'' . $_REQUEST['calendar_id'] . '\''), array(), array('SCHOOL_DATE'));
+        $calendar_RET = DBGet(DBQuery('SELECT DATE_FORMAT(COLLEGE_DATE,\'%d-%b-%y\') as COLLEGE_DATE,MINUTES,BLOCK FROM attendance_calendar WHERE COLLEGE_DATE BETWEEN \'' . date('Y-m-d', $time) . '\' AND \'' . date('Y-m-d', mktime(0, 0, 0, $_REQUEST['month'], $last, $_REQUEST['year'])) . '\' AND SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND CALENDAR_ID=\'' . $_REQUEST['calendar_id'] . '\''), array(), array('COLLEGE_DATE'));
         unset($_REQUEST['blocks']);
         unset($_SESSION['_REQUEST_vars']['blocks']);
     }
 
     echo "<FORM action=Modules.php?modname=$_REQUEST[modname] METHOD=POST>";
     $link = '';
-    $title_RET = DBGet(DBQuery('SELECT CALENDAR_ID,TITLE FROM college_calendars WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY DEFAULT_CALENDAR ASC'));
+    $title_RET = DBGet(DBQuery('SELECT CALENDAR_ID,TITLE FROM college_calendars WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY DEFAULT_CALENDAR ASC'));
     foreach ($title_RET as $title) {
         $options[$title['CALENDAR_ID']] = $title['TITLE'];
     }
@@ -790,7 +790,7 @@ if (!$_REQUEST['modfunc']) {
         if (User('PROFILE_ID') != '') {
             $get_perm = DBGet(DBQuery('SELECT COUNT(1) as ACC FROM profile_exceptions WHERE modname=\'collegesetup/Calendar.php \' AND CAN_USE=\'Y\' AND PROFILE_ID=\'' . User('PROFILE_ID') . '\' '));
             if ($get_perm[1]['ACC'] > 0) {
-                $title_RET_mod = DBGet(DBQuery('SELECT CALENDAR_ID,TITLE FROM college_calendars WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY DEFAULT_CALENDAR ASC'));
+                $title_RET_mod = DBGet(DBQuery('SELECT CALENDAR_ID,TITLE FROM college_calendars WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY DEFAULT_CALENDAR ASC'));
                 foreach ($title_RET_mod as $title) {
                     $options_mod[$title['CALENDAR_ID']] = $title['TITLE'];
                 }
@@ -831,13 +831,13 @@ if (!$_REQUEST['modfunc']) {
         echo '<div class="panel-heading">';
         DrawHeaderHome($link);
         echo '</div>'; //.panel-heading
-//echo 'SELECT ce.ID,DATE_FORMAT(ce.SCHOOL_DATE,\'%d-%b-%y\') AS SCHOOL_DATE,ce.TITLE FROM calendar_events ce,calendar_events_visibility cev WHERE ce.SCHOOL_DATE BETWEEN \'' . date('Y-m-d', $time) . '\' AND \'' . date('Y-m-d', mktime(0, 0, 0, $_REQUEST['month'], $last, $_REQUEST['year'])) . '\' AND SYEAR=\'' . UserSyear() . '\' AND ce.calendar_id=\'' . $_REQUEST['calendar_id'] . '\'  AND ce.CALENDAR_ID=cev.CALENDAR_ID AND cev.PROFILE_ID=' . User('PROFILE_ID') . ' UNION SELECT ID,DATE_FORMAT(SCHOOL_DATE,\'%d-%b-%y\') AS SCHOOL_DATE,TITLE FROM calendar_events WHERE SCHOOL_DATE BETWEEN \'' . date('Y-m-d', $time) . '\' AND \'' . date('Y-m-d', mktime(0, 0, 0, $_REQUEST['month'], $last, $_REQUEST['year'])) . '\' AND SYEAR=\'' . UserSyear() . '\' AND CALENDAR_ID=0';
-        $events_RET = DBGet(DBQuery('SELECT ce.ID,DATE_FORMAT(ce.SCHOOL_DATE,\'%d-%b-%y\') AS SCHOOL_DATE,ce.TITLE FROM calendar_events ce,calendar_events_visibility cev WHERE ce.SCHOOL_DATE BETWEEN \'' . date('Y-m-d', $time) . '\' AND \'' . date('Y-m-d', mktime(0, 0, 0, $_REQUEST['month'], $last, $_REQUEST['year'])) . '\' AND SYEAR=\'' . UserSyear() . '\' AND ce.calendar_id=\'' . $_REQUEST['calendar_id'] . '\'  AND ce.CALENDAR_ID=cev.CALENDAR_ID AND cev.PROFILE_ID=' . User('PROFILE_ID') . ' UNION SELECT ID,DATE_FORMAT(SCHOOL_DATE,\'%d-%b-%y\') AS SCHOOL_DATE,TITLE FROM calendar_events WHERE SCHOOL_DATE BETWEEN \'' . date('Y-m-d', $time) . '\' AND \'' . date('Y-m-d', mktime(0, 0, 0, $_REQUEST['month'], $last, $_REQUEST['year'])) . '\' AND SYEAR=\'' . UserSyear() . '\' AND CALENDAR_ID=0'), array(), array('SCHOOL_DATE'));
+//echo 'SELECT ce.ID,DATE_FORMAT(ce.COLLEGE_DATE,\'%d-%b-%y\') AS COLLEGE_DATE,ce.TITLE FROM calendar_events ce,calendar_events_visibility cev WHERE ce.COLLEGE_DATE BETWEEN \'' . date('Y-m-d', $time) . '\' AND \'' . date('Y-m-d', mktime(0, 0, 0, $_REQUEST['month'], $last, $_REQUEST['year'])) . '\' AND SYEAR=\'' . UserSyear() . '\' AND ce.calendar_id=\'' . $_REQUEST['calendar_id'] . '\'  AND ce.CALENDAR_ID=cev.CALENDAR_ID AND cev.PROFILE_ID=' . User('PROFILE_ID') . ' UNION SELECT ID,DATE_FORMAT(COLLEGE_DATE,\'%d-%b-%y\') AS COLLEGE_DATE,TITLE FROM calendar_events WHERE COLLEGE_DATE BETWEEN \'' . date('Y-m-d', $time) . '\' AND \'' . date('Y-m-d', mktime(0, 0, 0, $_REQUEST['month'], $last, $_REQUEST['year'])) . '\' AND SYEAR=\'' . UserSyear() . '\' AND CALENDAR_ID=0';
+        $events_RET = DBGet(DBQuery('SELECT ce.ID,DATE_FORMAT(ce.COLLEGE_DATE,\'%d-%b-%y\') AS COLLEGE_DATE,ce.TITLE FROM calendar_events ce,calendar_events_visibility cev WHERE ce.COLLEGE_DATE BETWEEN \'' . date('Y-m-d', $time) . '\' AND \'' . date('Y-m-d', mktime(0, 0, 0, $_REQUEST['month'], $last, $_REQUEST['year'])) . '\' AND SYEAR=\'' . UserSyear() . '\' AND ce.calendar_id=\'' . $_REQUEST['calendar_id'] . '\'  AND ce.CALENDAR_ID=cev.CALENDAR_ID AND cev.PROFILE_ID=' . User('PROFILE_ID') . ' UNION SELECT ID,DATE_FORMAT(COLLEGE_DATE,\'%d-%b-%y\') AS COLLEGE_DATE,TITLE FROM calendar_events WHERE COLLEGE_DATE BETWEEN \'' . date('Y-m-d', $time) . '\' AND \'' . date('Y-m-d', mktime(0, 0, 0, $_REQUEST['month'], $last, $_REQUEST['year'])) . '\' AND SYEAR=\'' . UserSyear() . '\' AND CALENDAR_ID=0'), array(), array('COLLEGE_DATE'));
 
         if (User('PROFILE') == 'parent' || User('PROFILE') == 'student')
-            $assignments_RET = DBGet(DBQuery('SELECT ASSIGNMENT_ID AS ID,DATE_FORMAT(a.DUE_DATE,\'%d-%b-%y\') AS SCHOOL_DATE,a.TITLE,\'Y\' AS ASSIGNED FROM gradebook_assignments a,schedule s WHERE (a.COURSE_PERIOD_ID=s.COURSE_PERIOD_ID OR a.COURSE_ID=s.COURSE_ID) AND s.STUDENT_ID=\'' . UserStudentID() . '\' AND s.DROPPED!=\'Y\' AND (CURRENT_DATE>=a.ASSIGNED_DATE OR CURRENT_DATE<=a.ASSIGNED_DATE) AND (a.DUE_DATE IS NULL OR CURRENT_DATE<=a.DUE_DATE) '), array(), array('SCHOOL_DATE'));
+            $assignments_RET = DBGet(DBQuery('SELECT ASSIGNMENT_ID AS ID,DATE_FORMAT(a.DUE_DATE,\'%d-%b-%y\') AS COLLEGE_DATE,a.TITLE,\'Y\' AS ASSIGNED FROM gradebook_assignments a,schedule s WHERE (a.COURSE_PERIOD_ID=s.COURSE_PERIOD_ID OR a.COURSE_ID=s.COURSE_ID) AND s.STUDENT_ID=\'' . UserStudentID() . '\' AND s.DROPPED!=\'Y\' AND (CURRENT_DATE>=a.ASSIGNED_DATE OR CURRENT_DATE<=a.ASSIGNED_DATE) AND (a.DUE_DATE IS NULL OR CURRENT_DATE<=a.DUE_DATE) '), array(), array('COLLEGE_DATE'));
         elseif (User('PROFILE') == 'teacher')
-            $assignments_RET = DBGet(DBQuery('SELECT ASSIGNMENT_ID AS ID,DATE_FORMAT(a.DUE_DATE,\'%d-%b-%y\') AS SCHOOL_DATE,a.TITLE,CASE WHEN a.ASSIGNED_DATE<=CURRENT_DATE OR a.ASSIGNED_DATE IS NULL THEN \'Y\' ELSE NULL END AS ASSIGNED FROM gradebook_assignments a WHERE a.STAFF_ID=\'' . User('STAFF_ID') . '\' AND a.DUE_DATE BETWEEN \'' . date('Y-m-d', $time) . '\' AND \'' . date('Y-m-d', mktime(0, 0, 0, $_REQUEST['month'], $last, $_REQUEST['year'])) . '\''), array(), array('SCHOOL_DATE'));
+            $assignments_RET = DBGet(DBQuery('SELECT ASSIGNMENT_ID AS ID,DATE_FORMAT(a.DUE_DATE,\'%d-%b-%y\') AS COLLEGE_DATE,a.TITLE,CASE WHEN a.ASSIGNED_DATE<=CURRENT_DATE OR a.ASSIGNED_DATE IS NULL THEN \'Y\' ELSE NULL END AS ASSIGNED FROM gradebook_assignments a WHERE a.STAFF_ID=\'' . User('STAFF_ID') . '\' AND a.DUE_DATE BETWEEN \'' . date('Y-m-d', $time) . '\' AND \'' . date('Y-m-d', mktime(0, 0, 0, $_REQUEST['month'], $last, $_REQUEST['year'])) . '\''), array(), array('COLLEGE_DATE'));
 
         $skip = date("w", $time);
         echo '<div class="table-responsive">';
@@ -849,7 +849,7 @@ if (!$_REQUEST['modfunc']) {
             echo "<td colspan=" . $skip . "></td>";
             $return_counter = $skip;
         }
-        $blocks_RET = DBGet(DBQuery('SELECT DISTINCT BLOCK FROM college_periods WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND BLOCK IS NOT NULL ORDER BY BLOCK'));
+        $blocks_RET = DBGet(DBQuery('SELECT DISTINCT BLOCK FROM college_periods WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND BLOCK IS NOT NULL ORDER BY BLOCK'));
         for ($i = 1; $i <= $last; $i++) {
             $day_time = mktime(0, 0, 0, $_REQUEST['month'], $i, $_REQUEST['year']);
             $date = date('d-M-y', $day_time);

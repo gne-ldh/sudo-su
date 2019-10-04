@@ -1356,7 +1356,7 @@ function paramlib_validation($feild,$value)
       $val=clean_param($value,PARAM_INT);
    }
 
-    elseif($feild==SCHOOLS)
+    elseif($feild==COLLEGES)
    {
       $val=clean_param($value,PARAM_SEQUENCE);
    }

@@ -36,7 +36,7 @@ $course_period_id = UserCoursePeriod();
 $course_id = DBGet(DBQuery('SELECT COURSE_ID FROM course_periods WHERE COURSE_PERIOD_ID=\''.$course_period_id.'\''));
 $course_id = $course_id[1]['COURSE_ID'];
 $max_allowed = Preferences('ANOMALOUS_MAX','Gradebook')/100;
-$full_year_mp=DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM college_years WHERE SCHOOL_ID='.UserCollege().' AND SYEAR='.UserSyear()));
+$full_year_mp=DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM college_years WHERE COLLEGE_ID='.UserCollege().' AND SYEAR='.UserSyear()));
 $full_year_mp=$full_year_mp[1]['MARKING_PERIOD_ID'];
 $extra['SELECT'] = ',ga.ASSIGNMENT_ID,gt.TITLE AS TYPE_TITLE,ga.TITLE,ga.POINTS AS TOTAL_POINTS,\'\' AS LETTER_GRADE';
 $extra['SELECT'] .= ',(SELECT POINTS FROM gradebook_grades WHERE STUDENT_ID=s.STUDENT_ID AND ASSIGNMENT_ID=ga.ASSIGNMENT_ID) AS POINTS';

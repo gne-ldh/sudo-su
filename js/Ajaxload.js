@@ -1365,7 +1365,7 @@ function pass_val_error(err)
 //-------------------------------------------------- historical grade college name pickup --------------------------------------//
 function pick_collegename(data) {
 
-    document.getElementById('SCHOOL_NAME').value = data;
+    document.getElementById('COLLEGE_NAME').value = data;
 }
 
 // ------------------------------------------------------ Student ------------------------------------------------------------------------------ //
@@ -1373,7 +1373,7 @@ function pick_collegename(data) {
 // ------------------------------------------------------ Student ID------------------------------------------------------------------------------ //
 
 function GetCollege(i) {
-    var obj = document.getElementById('SCHOOL_NAME');
+    var obj = document.getElementById('COLLEGE_NAME');
     obj.innerHTML = '';
 
     ajax_call('GetCollege.php?u=' + i, pick_collegename);

@@ -35,13 +35,13 @@ include('../../RedirectModulesInc.php');
                                         course_periods cp LEFT OUTER JOIN schedule s ON 
                                         (s.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND s.STUDENT_ID='".UserStudentID()."')
                                         WHERE 
-                                        r.SYEAR='".UserSyear()."' AND r.SCHOOL_ID='".UserCollege()."'
+                                        r.SYEAR='".UserSyear()."' AND r.COLLEGE_ID='".UserCollege()."'
                                         AND r.COURSE_ID=cp.COURSE_ID AND c.COURSE_ID=cp.COURSE_ID
                                         AND r.STUDENT_ID='".UserStudentID()."'
                                         AND sp.PERIOD_ID=cp.PERIOD_ID
                                         ORDER BY ".db_case(array('s.STUDENT_ID',"''","NULL",'sp.SORT_ORDER'))."
 				"),array(),array('CRS','PERIOD_ID'));
-	$periods_RET = DBGet(DBQuery("SELECT PERIOD_ID,SHORT_NAME FROM college_periods WHERE SYEAR='".UserSyear()."' AND SCHOOL_ID='".UserCollege()."' ORDER BY SORT_ORDER"));
+	$periods_RET = DBGet(DBQuery("SELECT PERIOD_ID,SHORT_NAME FROM college_periods WHERE SYEAR='".UserSyear()."' AND COLLEGE_ID='".UserCollege()."' ORDER BY SORT_ORDER"));
 	echo '<CENTER><TABLE style="border: 1px solid;">';
 	echo '<TR><TD></TD>';
 	foreach($periods_RET as $period)
