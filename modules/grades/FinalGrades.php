@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -53,7 +53,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
         if ($_REQUEST['elements']['comments'] == 'Y')
             $extra['SELECT'] .= ',sg1.MARKING_PERIOD_ID AS COMMENTS_RET';
         $extra['FROM'] .= ',student_report_card_grades sg1 LEFT OUTER JOIN report_card_grades rpg ON (rpg.ID=sg1.REPORT_CARD_GRADE_ID),
-                                    course_periods rc_cp,course_period_var cpv,courses c,school_periods sp';
+                                    course_periods rc_cp,course_period_var cpv,courses c,college_periods sp';
         $extra['WHERE'] .= ' AND sg1.MARKING_PERIOD_ID IN (' . $mp_list . ')
                              AND rc_cp.COURSE_PERIOD_ID=sg1.COURSE_PERIOD_ID AND cpv.COURSE_PERIOD_ID=rc_cp.COURSE_PERIOD_ID AND c.COURSE_ID = rc_cp.COURSE_ID AND sg1.STUDENT_ID=ssm.STUDENT_ID AND sp.PERIOD_ID=cpv.PERIOD_ID';
         if(User('PROFILE')=='teacher')
@@ -72,7 +72,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
 
         // GET THE COMMENTS
         if ($_REQUEST['elements']['comments'] == 'Y')
-            $comments_RET = DBGet(DBQuery('SELECT ID,TITLE,SORT_ORDER FROM report_card_comments WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\''), array(), array('ID'));
+            $comments_RET = DBGet(DBQuery('SELECT ID,TITLE,SORT_ORDER FROM report_card_comments WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\''), array(), array('ID'));
 
         if ($_REQUEST['elements']['mp_tardies'] == 'Y' || $_REQUEST['elements']['ytd_tardies'] == 'Y') {
             // GET THE ATTENDANCE
@@ -261,7 +261,7 @@ if (!$_REQUEST['modfunc']) {
     echo '<div id="conf_div" class="text-center"></div>';
     echo '<div class="row" id="resp_table">';
     echo '<div class="col-md-4">';
-    $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+    $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
     $QI = DBQuery($sql);
     $subjects_RET = DBGet($QI);
 
@@ -293,7 +293,7 @@ if (!$_REQUEST['modfunc']) {
 
         echo "<FORM action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=save&include_inactive=" . strip_tags(trim($_REQUEST[include_inactive])) . " method=POST>";
 
-        $attendance_codes = DBGet(DBQuery('SELECT SHORT_NAME,ID FROM attendance_codes WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND (DEFAULT_CODE!=\'Y\' OR DEFAULT_CODE IS NULL) AND TABLE_NAME=\'0\''));
+        $attendance_codes = DBGet(DBQuery('SELECT SHORT_NAME,ID FROM attendance_codes WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND (DEFAULT_CODE!=\'Y\' OR DEFAULT_CODE IS NULL) AND TABLE_NAME=\'0\''));
         //PopTable_wo_header('header');
         $extra['extra_header_left'] = '<h5 class="text-primary no-margin-top">Include on Grade List:</h5>';
         $extra['extra_header_left'] .= '<div class="row">';
@@ -314,17 +314,17 @@ if (!$_REQUEST['modfunc']) {
         $extra['extra_header_left'] .= '</div>';
 
 
-        $mps_RET = DBGet(DBQuery('SELECT SEMESTER_ID,MARKING_PERIOD_ID,SHORT_NAME FROM school_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'), array(), array('SEMESTER_ID'));
+        $mps_RET = DBGet(DBQuery('SELECT SEMESTER_ID,MARKING_PERIOD_ID,SHORT_NAME FROM college_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER'), array(), array('SEMESTER_ID'));
 
         $MP_TYPE = 'QTR';
         if (!$mps_RET) {
             $MP_TYPE = 'SEM';
-            $mps_RET = DBGet(DBQuery('SELECT YEAR_ID,MARKING_PERIOD_ID,SHORT_NAME FROM school_semesters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'), array(), array('YEAR_ID'));
+            $mps_RET = DBGet(DBQuery('SELECT YEAR_ID,MARKING_PERIOD_ID,SHORT_NAME FROM college_semesters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER'), array(), array('YEAR_ID'));
         }
 
         if (!$mps_RET) {
             $MP_TYPE = 'FY';
-            $mps_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,SHORT_NAME FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'), array(), array('MARKING_PERIOD_ID'));
+            $mps_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,SHORT_NAME FROM college_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER'), array(), array('MARKING_PERIOD_ID'));
         }
 
         $extra['extra_header_left'] .= '<h5 class="text-primary">Marking Periods</h5>';

@@ -269,7 +269,7 @@ function db_show_error($sql, $failnote, $additional = '') {
 
     die();
 }
-function GetMP($mp='',$column='TITLE',$syear,$school)
+function GetMP($mp='',$column='TITLE',$syear,$college)
 {	global $_openSIS;
 	// mab - need to translate marking_period_id to title to be useful as a function call from dbget
 	// also, it doesn't make sense to ask for same thing you give
@@ -279,10 +279,10 @@ function GetMP($mp='',$column='TITLE',$syear,$school)
 	if(!$_openSIS['GetMP'])
 	{
            
-		$_openSIS['GetMP'] = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,POST_START_DATE,POST_END_DATE,\'school_quarters\' AS `TABLE`,\'SEMESTER_ID\' AS `PA_ID`,SORT_ORDER,SHORT_NAME,START_DATE,END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS FROM school_quarters         WHERE SYEAR=\''.$syear.'\' AND SCHOOL_ID=\''.$school.'\'
-					UNION      SELECT MARKING_PERIOD_ID,TITLE,POST_START_DATE,POST_END_DATE,\'school_semesters\' AS `TABLE`,\'YEAR_ID\' AS `PA_ID`,SORT_ORDER,SHORT_NAME,START_DATE,END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS FROM school_semesters        WHERE SYEAR=\''.$syear.'\' AND SCHOOL_ID=\''.$school.'\'
-					UNION      SELECT MARKING_PERIOD_ID,TITLE,POST_START_DATE,POST_END_DATE,\'school_years\' AS `TABLE`, \'-1\' AS `PA_ID`,SORT_ORDER,SHORT_NAME,START_DATE,END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS FROM school_years            WHERE SYEAR=\''.$syear.'\' AND SCHOOL_ID=\''.$school.'\'
-					UNION      SELECT MARKING_PERIOD_ID,TITLE,POST_START_DATE,POST_END_DATE,\'school_progress_periods\' AS `TABLE`, \'-1\' AS `PA_ID`,SORT_ORDER,SHORT_NAME,START_DATE,END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS FROM school_progress_periods WHERE SYEAR=\''.$syear.'\' AND SCHOOL_ID=\''.$school.'\''),array(),array('MARKING_PERIOD_ID'));
+		$_openSIS['GetMP'] = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,POST_START_DATE,POST_END_DATE,\'college_quarters\' AS `TABLE`,\'SEMESTER_ID\' AS `PA_ID`,SORT_ORDER,SHORT_NAME,START_DATE,END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS FROM college_quarters         WHERE SYEAR=\''.$syear.'\' AND SCHOOL_ID=\''.$college.'\'
+					UNION      SELECT MARKING_PERIOD_ID,TITLE,POST_START_DATE,POST_END_DATE,\'college_semesters\' AS `TABLE`,\'YEAR_ID\' AS `PA_ID`,SORT_ORDER,SHORT_NAME,START_DATE,END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS FROM college_semesters        WHERE SYEAR=\''.$syear.'\' AND SCHOOL_ID=\''.$college.'\'
+					UNION      SELECT MARKING_PERIOD_ID,TITLE,POST_START_DATE,POST_END_DATE,\'college_years\' AS `TABLE`, \'-1\' AS `PA_ID`,SORT_ORDER,SHORT_NAME,START_DATE,END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS FROM college_years            WHERE SYEAR=\''.$syear.'\' AND SCHOOL_ID=\''.$college.'\'
+					UNION      SELECT MARKING_PERIOD_ID,TITLE,POST_START_DATE,POST_END_DATE,\'college_progress_periods\' AS `TABLE`, \'-1\' AS `PA_ID`,SORT_ORDER,SHORT_NAME,START_DATE,END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS FROM college_progress_periods WHERE SYEAR=\''.$syear.'\' AND SCHOOL_ID=\''.$college.'\''),array(),array('MARKING_PERIOD_ID'));
 
         }
         
@@ -349,7 +349,7 @@ $cp=DBGet(DBQuery('SELECT * FROM course_periods WHERE COURSE_PERIOD_ID='.$course
                 }
                 else
                 {
-		$percent = round($percent,2); // school default
+		$percent = round($percent,2); // college default
                 }
 	if($ret=='%')
 		return $percent;
@@ -373,24 +373,24 @@ $validate= DBGet(DBQuery('SELECT * FROM api_info WHERE API_KEY=\''.$api_key.'\' 
 if(count($validate) > 0)
 {
     $syear=$_REQUEST['sch_year'];
-    $all_sch_ids=DBGet(DBQuery('SELECT DISTINCT SCHOOL_ID AS SCHOOL_ID FROM school_years WHERE SYEAR = '.$syear));
-//    $all_sch_ids=DBGet(DBQuery('SELECT DISTINCT SCHOOL_ID AS SCHOOL_ID FROM school_years WHERE SCHOOL_ID=1 AND SYEAR = '.$syear));
+    $all_sch_ids=DBGet(DBQuery('SELECT DISTINCT SCHOOL_ID AS SCHOOL_ID FROM college_years WHERE SYEAR = '.$syear));
+//    $all_sch_ids=DBGet(DBQuery('SELECT DISTINCT SCHOOL_ID AS SCHOOL_ID FROM college_years WHERE SCHOOL_ID=1 AND SYEAR = '.$syear));
     $data=array();
     
     if(count($all_sch_ids)>0)
     {
         
-        $stu_grade=DBGet(DBQuery('SELECT * FROM school_gradelevels'));
+        $stu_grade=DBGet(DBQuery('SELECT * FROM college_gradelevels'));
         $stu_grade_arr=array();
         foreach($stu_grade as $sg)
            $stu_grade_arr[$sg['ID']]=$sg['TITLE']; 
 
-        $stu_sec=DBGet(DBQuery('SELECT * FROM school_gradelevel_sections'));
+        $stu_sec=DBGet(DBQuery('SELECT * FROM college_gradelevel_sections'));
         $stu_sec_arr=array();
         foreach($stu_sec as $sg)
            $stu_sec_arr[$sg['ID']]=$sg['NAME'];
 
-        $stu_cal=DBGet(DBQuery('SELECT * FROM school_calendars WHERE SYEAR='.$syear));
+        $stu_cal=DBGet(DBQuery('SELECT * FROM college_calendars WHERE SYEAR='.$syear));
         $stu_cal_arr=array();
         foreach($stu_cal as $sg)
            $stu_cal_arr[$sg['CALENDAR_ID']]=$sg['TITLE'];
@@ -404,7 +404,7 @@ if(count($validate) > 0)
         
         foreach ($all_sch_ids as $key => $value) {
             
-            $sch_name=DBGet(DBQuery('SELECT TITLE FROM schools WHERE ID='.$value['SCHOOL_ID']));
+            $sch_name=DBGet(DBQuery('SELECT TITLE FROM colleges WHERE ID='.$value['SCHOOL_ID']));
             
             
             $stu_enroll=DBGet(DBQuery('SELECT DISTINCT STUDENT_ID AS STUDENT_ID FROM student_enrollment WHERE SYEAR='.$syear.' AND SCHOOL_ID='.$value['SCHOOL_ID']));

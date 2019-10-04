@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -31,7 +31,7 @@ echo "<div id='mapping'></div>";
 include('../../RedirectModules.php');
 include('Classes/PHPExcel.php');
 echo '<link rel="stylesheet" type="text/css" href="modules/tools/assets/css/tools.css">';
-DrawBC("School Setup > Data Import >" . ProgramTitle());
+DrawBC("College Setup > Data Import >" . ProgramTitle());
 
 if ($_REQUEST['page_display'] && $_REQUEST['action'] != 'process') {
     //echo "<div class=back_preference><a href=Modules.php?modname=$_REQUEST[modname]><strong>&laquo; Back to Data Import Menu</strong></a></div>";
@@ -105,7 +105,7 @@ if (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STUDENT_INFO') {
         /**  Load $inputFileName to a PHPExcel Object  * */
         $objPHPExcel = $objReader->load($inputFileName);
         $total_sheets = $objPHPExcel->getSheetCount(); // here 4  
-        $allSheetName = $objPHPExcel->getSheetNames(); // array ([0]=>'student',[1]=>'teacher',[2]=>'school',[3]=>'college')  
+        $allSheetName = $objPHPExcel->getSheetNames(); // array ([0]=>'student',[1]=>'teacher',[2]=>'college',[3]=>'college')  
         $objWorksheet = $objPHPExcel->setActiveSheetIndex(0); // first sheet  
         $highestRow = $objWorksheet->getHighestRow(); // here 5  
         $highestColumn = $objWorksheet->getHighestColumn(); // here 'E'  
@@ -359,7 +359,7 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
         /**  Load $inputFileName to a PHPExcel Object  * */
         $objPHPExcel = $objReader->load($inputFileName);
         $total_sheets = $objPHPExcel->getSheetCount(); // here 4  
-        $allSheetName = $objPHPExcel->getSheetNames(); // array ([0]=>'student',[1]=>'teacher',[2]=>'school',[3]=>'college')  
+        $allSheetName = $objPHPExcel->getSheetNames(); // array ([0]=>'student',[1]=>'teacher',[2]=>'college',[3]=>'college')  
         $objWorksheet = $objPHPExcel->setActiveSheetIndex(0); // first sheet  
         $highestRow = $objWorksheet->getHighestRow(); // here 5  
         $highestColumn = $objWorksheet->getHighestColumn(); // here 'E'  
@@ -566,7 +566,7 @@ elseif (clean_param($_REQUEST['page_display'], PARAM_ALPHAMOD) == 'STAFF_INFO') 
 //                /**  Load $inputFileName to a PHPExcel Object  **/  
 //                $objPHPExcel = $objReader->load($inputFileName);  
 //                $total_sheets=$objPHPExcel->getSheetCount(); // here 4  
-//                $allSheetName=$objPHPExcel->getSheetNames(); // array ([0]=>'student',[1]=>'teacher',[2]=>'school',[3]=>'college')  
+//                $allSheetName=$objPHPExcel->getSheetNames(); // array ([0]=>'student',[1]=>'teacher',[2]=>'college',[3]=>'college')  
 //                $objWorksheet = $objPHPExcel->setActiveSheetIndex(0); // first sheet  
 //                $highestRow = $objWorksheet->getHighestRow(); // here 5  
 //                $highestColumn = $objWorksheet->getHighestColumn(); // here 'E'  

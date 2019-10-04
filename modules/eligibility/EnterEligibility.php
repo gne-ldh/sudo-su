@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -28,7 +28,7 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 echo '<div class="panel-body">';
-$start_end_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_config WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND PROGRAM=\'eligibility\''));
+$start_end_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_config WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND PROGRAM=\'eligibility\''));
 if (count($start_end_RET)) {
     foreach ($start_end_RET as $value) {
         if ($value['TITLE'] == 'START_DAY')
@@ -95,9 +95,9 @@ if (optional_param('modfunc', '', PARAM_NOTAGS) == 'gradebook') {
     $course_id = DBGet(DBQuery('SELECT COURSE_ID FROM course_periods WHERE COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\''));
     $course_id = $course_id[1]['COURSE_ID'];
 
-    $grades_RET = DBGet(DBQuery('SELECT ID,TITLE,GPA_VALUE,UNWEIGHTED_GP FROM report_card_grades WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\''), array(), array('ID'));
+    $grades_RET = DBGet(DBQuery('SELECT ID,TITLE,GPA_VALUE,UNWEIGHTED_GP FROM report_card_grades WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\''), array(), array('ID'));
 
-    $has_quarters = DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM school_quarters WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool()));
+    $has_quarters = DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM college_quarters WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserCollege()));
     if ($programconfig[User('STAFF_ID')]['WEIGHT'] == 'Y')
         $points_RET = DBGet(DBQuery('SELECT DISTINCT s.STUDENT_ID,gt.ASSIGNMENT_TYPE_ID,     gt.ASSIGNMENT_TYPE_ID,sum(' . db_case(array('gg.POINTS', "'-1'", "'0'", 'gg.POINTS')) . ') AS PARTIAL_POINTS,sum(' . db_case(array('gg.POINTS', "'-1'", "'0'", 'ga.POINTS')) . ') AS PARTIAL_TOTAL,    gt.FINAL_GRADE_PERCENT FROM students s JOIN schedule ss ON (ss.STUDENT_ID=s.STUDENT_ID AND ss.COURSE_PERIOD_ID=\'' . $course_period_id . '\') JOIN gradebook_assignments ga ON ((ga.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID OR ga.COURSE_ID=\'' . $course_id . '\' AND ga.STAFF_ID=\'' . User('STAFF_ID') . '\') AND ga.MARKING_PERIOD_ID' . ($programconfig[User('STAFF_ID')]['ELIGIBILITY_CUMULITIVE'] == 'Y' && $has_quarters[1]['REC_EX'] > 0 ? ' IN (' . GetChildrenMP('SEM', UserMP()) . ')' : '=\'' . UserMP() . '\'') . ') LEFT OUTER JOIN gradebook_grades gg ON (gg.STUDENT_ID=s.STUDENT_ID AND gg.ASSIGNMENT_ID=ga.ASSIGNMENT_ID AND gg.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID),gradebook_assignment_types gt WHERE gt.ASSIGNMENT_TYPE_ID=ga.ASSIGNMENT_TYPE_ID AND gt.COURSE_ID=\'' . $course_id . '\' AND ((ga.ASSIGNED_DATE IS NULL OR CURRENT_DATE>=ga.ASSIGNED_DATE) AND (ga.DUE_DATE IS NULL OR CURRENT_DATE>=ga.DUE_DATE) OR gg.POINTS IS NOT NULL) GROUP BY s.STUDENT_ID,ss.START_DATE,gt.ASSIGNMENT_TYPE_ID,gt.FINAL_GRADE_PERCENT'), array(), array('STUDENT_ID'));
     else

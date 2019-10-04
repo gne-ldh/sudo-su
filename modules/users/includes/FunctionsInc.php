@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -122,7 +122,7 @@ function _makeAutoSelectInput($column, $name = '', $request = 'staff') {
 
     if ($field['TYPE'] == 'autos') {
         // add values found in current and previous year
-        $options_RET = DBGet(DBQuery('SELECT DISTINCT s.CUSTOM_' . $field[ID] . ',upper(s.CUSTOM_' . $field[ID] . ') AS KEEY FROM staff s,staff_school_relationship ssr WHERE s.STAFF_ID=ssr.STAFF_ID AND (ssr.SYEAR=\'' . UserSyear() . '\' OR ssr.SYEAR=\'' . (UserSyear() - 1) . '\') AND s.CUSTOM_' . $field[ID] . ' IS NOT NULL ORDER BY KEEY'));
+        $options_RET = DBGet(DBQuery('SELECT DISTINCT s.CUSTOM_' . $field[ID] . ',upper(s.CUSTOM_' . $field[ID] . ') AS KEEY FROM staff s,staff_college_relationship ssr WHERE s.STAFF_ID=ssr.STAFF_ID AND (ssr.SYEAR=\'' . UserSyear() . '\' OR ssr.SYEAR=\'' . (UserSyear() - 1) . '\') AND s.CUSTOM_' . $field[ID] . ' IS NOT NULL ORDER BY KEEY'));
         if (count($options_RET)) {
             foreach ($options_RET as $option)
                 if ($option['CUSTOM_' . $field['ID']] != '' && !$options[$option['CUSTOM_' . $field['ID']]])
@@ -169,7 +169,7 @@ function _makeAutoSelectInputParent($column, $name, $request = 'staff') {
 
     if ($field['TYPE'] == 'autos') {
         // add values found in current and previous year
-        $options_RET = DBGet(DBQuery('SELECT DISTINCT s.CUSTOM_' . $field[ID] . ',upper(s.CUSTOM_' . $field[ID] . ') AS KEEY FROM people s,staff_school_relationship ssr WHERE s.STAFF_ID=ssr.STAFF_ID AND (ssr.SYEAR=\'' . UserSyear() . '\' OR ssr.SYEAR=\'' . (UserSyear() - 1) . '\') AND s.CUSTOM_' . $field[ID] . ' IS NOT NULL ORDER BY KEEY'));
+        $options_RET = DBGet(DBQuery('SELECT DISTINCT s.CUSTOM_' . $field[ID] . ',upper(s.CUSTOM_' . $field[ID] . ') AS KEEY FROM people s,staff_college_relationship ssr WHERE s.STAFF_ID=ssr.STAFF_ID AND (ssr.SYEAR=\'' . UserSyear() . '\' OR ssr.SYEAR=\'' . (UserSyear() - 1) . '\') AND s.CUSTOM_' . $field[ID] . ' IS NOT NULL ORDER BY KEEY'));
         if (count($options_RET)) {
             foreach ($options_RET as $option)
                 if ($option['CUSTOM_' . $field['ID']] != '' && !$options[$option['CUSTOM_' . $field['ID']]])

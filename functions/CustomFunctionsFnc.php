@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -136,14 +136,14 @@ function Prompt_Calender($title = 'Confirm', $question = '', $message = '', $pdf
     if (!$_REQUEST['delete_ok'] && !$_REQUEST['delete_cancel']) {
         PopTable('header', $title);
          $req_mod_name = strip_tags(trim($_REQUEST[modname]));
-        echo "<h4>$question</h4><FORM name=prompt_form class=\"form-horizontal no-margin\" id=prompt_form action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST>$message<hr class=\"no-margin\"/><div class=\"text-right p-t-15\"><INPUT type=submit class=\"btn btn-primary\" value=OK onclick='formcheck_school_setup_calender();'> &nbsp; <INPUT type=button class=\"btn btn-white\" name=delete_cancel value=Cancel onclick='load_link(\"Modules.php?modname=$req_mod_name\");'></div></FORM>";
+        echo "<h4>$question</h4><FORM name=prompt_form class=\"form-horizontal no-margin\" id=prompt_form action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST>$message<hr class=\"no-margin\"/><div class=\"text-right p-t-15\"><INPUT type=submit class=\"btn btn-primary\" value=OK onclick='formcheck_college_setup_calender();'> &nbsp; <INPUT type=button class=\"btn btn-white\" name=delete_cancel value=Cancel onclick='load_link(\"Modules.php?modname=$req_mod_name\");'></div></FORM>";
         PopTable('footer');
         return false;
     } else
         return true;
 }
 
-function Prompt_Copy_School($title = 'Confirm', $question = '', $message = '', $pdf = '') {
+function Prompt_Copy_College($title = 'Confirm', $question = '', $message = '', $pdf = '') {
     $tmp_REQUEST = $_REQUEST;
     unset($tmp_REQUEST['delete_ok']);
     if ($pdf == true)
@@ -154,7 +154,7 @@ function Prompt_Copy_School($title = 'Confirm', $question = '', $message = '', $
     if (!$_REQUEST['delete_ok'] && !$_REQUEST['delete_cancel']) {
         echo '<BR>';
         PopTable('header', $title);
-        echo "<h2 class=\"no-margin-top\">$question</h2><FORM class=no-margin name=prompt_form id=prompt_form action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST>$message<hr class=\"no-margin-top\"><div class=\"text-right\"><INPUT type=submit class=\"btn btn-primary\" value=OK onclick='formcheck_school_setup_copyschool();'>&nbsp;<INPUT type=button class=\"btn btn-default\" name=delete_cancel value=Cancel onclick='load_link(\"Modules.php?modname=schoolsetup/Calendar.php\");'></div></FORM>";
+        echo "<h2 class=\"no-margin-top\">$question</h2><FORM class=no-margin name=prompt_form id=prompt_form action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST>$message<hr class=\"no-margin-top\"><div class=\"text-right\"><INPUT type=submit class=\"btn btn-primary\" value=OK onclick='formcheck_college_setup_copycollege();'>&nbsp;<INPUT type=button class=\"btn btn-default\" name=delete_cancel value=Cancel onclick='load_link(\"Modules.php?modname=collegesetup/Calendar.php\");'></div></FORM>";
         PopTable('footer');
         return false;
     } else
@@ -175,7 +175,7 @@ function Prompt_rollover($title = 'Confirm', $question = '', $message = '', $pdf
         PopTable('header', $title);
 
         echo '<h4 class="text-center">' . $question . '</h4>';
-        echo '<p class="text-center"><span class="text-danger"><i class="icon-alert"></i> Caution : </span> Rollover is an irreversible process.  If you are sure you want to proceed, type in the <BR>effective  roll over date below. You can use the next school year’s attendance start date.</p>';
+        echo '<p class="text-center"><span class="text-danger"><i class="icon-alert"></i> Caution : </span> Rollover is an irreversible process.  If you are sure you want to proceed, type in the <BR>effective  roll over date below. You can use the next college year’s attendance start date.</p>';
         echo '<hr/>';
         echo '<div class="row">';
         echo '<div class="col-md-6">';
@@ -191,17 +191,17 @@ function Prompt_rollover($title = 'Confirm', $question = '', $message = '', $pdf
         echo '<input type=hidden id=check_click value=1>';
 
         echo '<div class="row">';
-        echo '<div class="col-md-12"><h5 class="text-primary">Enter next school year’s begin and end dates</h5></div>';
+        echo '<div class="col-md-12"><h5 class="text-primary">Enter next college year’s begin and end dates</h5></div>';
 
         echo '<div class="col-md-6">';
-        echo '<div class="form-group"><label class="col-md-4 control-label text-right">School Begin Date</label>';
-        echo '<div class="col-md-8">' . DateInputAY('', 'roll_school_start_date', '2') . '</div>'; //.col-md-8
+        echo '<div class="form-group"><label class="col-md-4 control-label text-right">College Begin Date</label>';
+        echo '<div class="col-md-8">' . DateInputAY('', 'roll_college_start_date', '2') . '</div>'; //.col-md-8
         echo '</div>'; //.form-group
         echo '</div>'; //.col-md-4
 
         echo '<div class="col-md-6">';
-        echo '<div class="form-group"><label class="col-md-4 control-label text-right">School End Date</label>';
-        echo '<div class="col-md-8">' . DateInputAY('', 'roll_school_end_date', '3') . '</div>'; //.col-md-8
+        echo '<div class="form-group"><label class="col-md-4 control-label text-right">College End Date</label>';
+        echo '<div class="col-md-8">' . DateInputAY('', 'roll_college_end_date', '3') . '</div>'; //.col-md-8
         echo '</div>'; //.form-group
         echo '</div>'; //.col-md-4
 
@@ -209,9 +209,9 @@ function Prompt_rollover($title = 'Confirm', $question = '', $message = '', $pdf
 
 
 
-        $prev_st_d = DBGet(DBQuery('SELECT END_DATE FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' '));
+        $prev_st_d = DBGet(DBQuery('SELECT END_DATE FROM college_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' '));
         echo '<input type=hidden id=prev_start_date value=' . $prev_st_d[1]['END_DATE'] . ' >';
-        $check_ss = DBGet(DBQuery('SELECT * FROM school_semesters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY MARKING_PERIOD_ID'));
+        $check_ss = DBGet(DBQuery('SELECT * FROM college_semesters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY MARKING_PERIOD_ID'));
         if (count($check_ss) > 0) {
             $i = 4;
             $j = 4;
@@ -246,7 +246,7 @@ function Prompt_rollover($title = 'Confirm', $question = '', $message = '', $pdf
                 echo '</div>'; //.row
 
 
-                $check_sq = DBGet(DBQuery('SELECT * FROM school_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND SEMESTER_ID=\'' . $ss_d['MARKING_PERIOD_ID'] . '\' '));
+                $check_sq = DBGet(DBQuery('SELECT * FROM college_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND SEMESTER_ID=\'' . $ss_d['MARKING_PERIOD_ID'] . '\' '));
                 if (count($check_sq) > 0) {
                     $q = $j + 1;
                     $q_val = '';
@@ -279,7 +279,7 @@ function Prompt_rollover($title = 'Confirm', $question = '', $message = '', $pdf
                         echo '</div>'; //.col-md-4
                         echo '</div>'; //.row
 
-                        $check_sp = DBGet(DBQuery('SELECT * FROM school_progress_periods WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND QUARTER_ID=\'' . $sq_d['MARKING_PERIOD_ID'] . '\'   '));
+                        $check_sp = DBGet(DBQuery('SELECT * FROM college_progress_periods WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND QUARTER_ID=\'' . $sq_d['MARKING_PERIOD_ID'] . '\'   '));
                         if (count($check_sp) > 0) {
 
                             $p = $q + 1;
@@ -344,7 +344,7 @@ function Prompt_rollover($title = 'Confirm', $question = '', $message = '', $pdf
             echo '<input type=hidden name=total_prg value=' . $prog . '>';
         }
 
-        echo '<p class="text-danger"><i class="fa fa-info-circle"></i> The following items will be rolled over to the next school year.  Uncheck the item(s) you do not want to be rolled over. Some items are mandatory and cannot be unchecked.</p>';
+        echo '<p class="text-danger"><i class="fa fa-info-circle"></i> The following items will be rolled over to the next college year.  Uncheck the item(s) you do not want to be rolled over. Some items are mandatory and cannot be unchecked.</p>';
         
         echo $message;
 
@@ -660,13 +660,13 @@ function GetStuListAttn(& $extra) {
             else
                 $sql .= ' AND ssm.SYEAR=\'' . UserSyear() . '\' AND (ssm.START_DATE IS NOT NULL AND (\'' . date('Y-m-d', strtotime($extra['DATE'])) . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL)) ';
 
-            if (UserSchool() && $_REQUEST['_search_all_schools'] != 'Y')
-                $sql .= ' AND ssm.SCHOOL_ID=\'' . UserSchool() . '\'';
+            if (UserCollege() && $_REQUEST['_search_all_colleges'] != 'Y')
+                $sql .= ' AND ssm.SCHOOL_ID=\'' . UserCollege() . '\'';
             else {
 //				
-                $sql .= ' AND ssm.SCHOOL_ID IN (' . GetUserSchools(UserID(), true) . ') ';
-                $extra['columns_after']['LIST_SCHOOL_ID'] = 'School';
-                $functions['LIST_SCHOOL_ID'] = 'GetSchool';
+                $sql .= ' AND ssm.SCHOOL_ID IN (' . GetUserColleges(UserID(), true) . ') ';
+                $extra['columns_after']['LIST_SCHOOL_ID'] = 'College';
+                $functions['LIST_SCHOOL_ID'] = 'GetCollege';
             }
 
             if (!$extra['SELECT_ONLY'] && $_REQUEST['include_inactive'] == 'Y')
@@ -689,7 +689,7 @@ function GetStuListAttn(& $extra) {
                 }
             }
 
-            $sql .= ' FROM students s,course_periods cp,schedule ss,student_enrollment ssm,course_period_var cpv ' . $extra['FROM'] . ' WHERE ssm.STUDENT_ID=s.STUDENT_ID AND cpv.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cpv.ID="' . $extra['ID'] . '" AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.SCHOOL_ID=\'' . UserSchool() . '\' AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND ' . db_case(array(User('STAFF_ID'), 'cp.teacher_id', ' cp.teacher_id=' . User('STAFF_ID'), 'cp.secondary_teacher_id', ' cp.secondary_teacher_id=' . User('STAFF_ID'), 'cp.course_period_id IN(SELECT course_period_id from teacher_reassignment tra WHERE cp.course_period_id=tra.course_period_id AND tra.pre_teacher_id=' . User('STAFF_ID') . ')')) . ' AND cp.COURSE_PERIOD_ID=\'' . (isset($_REQUEST['cp_id_miss_attn']) ? $_REQUEST['cp_id_miss_attn'] : UserCoursePeriod()) . '\' AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID';
+            $sql .= ' FROM students s,course_periods cp,schedule ss,student_enrollment ssm,course_period_var cpv ' . $extra['FROM'] . ' WHERE ssm.STUDENT_ID=s.STUDENT_ID AND cpv.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cpv.ID="' . $extra['ID'] . '" AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.SCHOOL_ID=\'' . UserCollege() . '\' AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND ' . db_case(array(User('STAFF_ID'), 'cp.teacher_id', ' cp.teacher_id=' . User('STAFF_ID'), 'cp.secondary_teacher_id', ' cp.secondary_teacher_id=' . User('STAFF_ID'), 'cp.course_period_id IN(SELECT course_period_id from teacher_reassignment tra WHERE cp.course_period_id=tra.course_period_id AND tra.pre_teacher_id=' . User('STAFF_ID') . ')')) . ' AND cp.COURSE_PERIOD_ID=\'' . (isset($_REQUEST['cp_id_miss_attn']) ? $_REQUEST['cp_id_miss_attn'] : UserCoursePeriod()) . '\' AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID';
             if ($extra['cpvdate'] != '')
                 $sql .= $extra['cpvdate'];
             if ($_REQUEST['include_inactive'] == 'Y') {
@@ -701,7 +701,7 @@ function GetStuListAttn(& $extra) {
             }
 
             if (!$extra['SELECT_ONLY'] && $_REQUEST['include_inactive'] == 'Y') {
-                $extra['columns_after']['ACTIVE'] = 'School Status';
+                $extra['columns_after']['ACTIVE'] = 'College Status';
                 $extra['columns_after']['ACTIVE_SCHEDULE'] = 'Course Status';
             }
             break;
@@ -719,7 +719,7 @@ function GetStuListAttn(& $extra) {
                 $sql .= 's.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,ssm.SCHOOL_ID,ssm.GRADE_ID ' . $extra['SELECT'];
             }
             $sql .= ' FROM students s,student_enrollment ssm ' . $extra['FROM'] . '
-					WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.SCHOOL_ID=\'' . UserSchool() . '\' AND (\'' . DBDate() . '\' BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND \'' . DBDate() . '\'>ssm.START_DATE)) AND ssm.STUDENT_ID' . ($extra['ASSOCIATED'] ? ' IN (SELECT STUDENT_ID FROM students_join_users WHERE STAFF_ID=\'' . $extra['ASSOCIATED'] . '\')' : '=\'' . UserStudentID() . '\'');
+					WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.SCHOOL_ID=\'' . UserCollege() . '\' AND (\'' . DBDate() . '\' BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND \'' . DBDate() . '\'>ssm.START_DATE)) AND ssm.STUDENT_ID' . ($extra['ASSOCIATED'] ? ' IN (SELECT STUDENT_ID FROM students_join_users WHERE STAFF_ID=\'' . $extra['ASSOCIATED'] . '\')' : '=\'' . UserStudentID() . '\'');
             break;
         default:
             exit('Error');
@@ -735,7 +735,7 @@ function GetStuListAttn(& $extra) {
 
     if (!$extra['ORDER_BY'] && !$extra['SELECT_ONLY']) {
         if (Preferences('SORT') == 'Grade')
-            $sql .= ' ORDER BY (SELECT SORT_ORDER FROM school_gradelevels WHERE ID=ssm.GRADE_ID),FULL_NAME';
+            $sql .= ' ORDER BY (SELECT SORT_ORDER FROM college_gradelevels WHERE ID=ssm.GRADE_ID),FULL_NAME';
         else
             $sql .= ' ORDER BY FULL_NAME';
         $sql .= $extra['ORDER'];

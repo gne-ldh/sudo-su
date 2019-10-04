@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -249,7 +249,7 @@ function _makeEnrollmentDates($column, $counter = 0, $ret_array = '') {//student
 
         $value = $ret_array[$column];
         if ($column == 'START_DATE' && $value == '') {
-            $value = DBGet(DBQuery('SELECT min(SCHOOL_DATE) AS START_DATE FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
+            $value = DBGet(DBQuery('SELECT min(SCHOOL_DATE) AS START_DATE FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
             $value = $value[1]['START_DATE'];
             if (!$value || DBDate('mysql') > $value)
                 $value = DBDate('mysql');
@@ -260,7 +260,7 @@ function _makeEnrollmentDates($column, $counter = 0, $ret_array = '') {//student
     else {
         if ($column == 'START_DATE') {
 
-            $value = DBGet(DBQuery('SELECT min(SCHOOL_DATE) AS START_DATE,SYEAR FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
+            $value = DBGet(DBQuery('SELECT min(SCHOOL_DATE) AS START_DATE,SYEAR FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
 
             $val_syear = $value[1]['SYEAR'];
             $value = $value[1]['START_DATE'];
@@ -395,7 +395,7 @@ function _makeStartInputDate($value, $column) {//student enrollment info tab
         $id = $THIS_RET['ID'];
     elseif ($_REQUEST['student_id'] == 'new') {
         $id = 'new';
-        $default = DBGet(DBQuery('SELECT min(SCHOOL_DATE) AS START_DATE FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
+        $default = DBGet(DBQuery('SELECT min(SCHOOL_DATE) AS START_DATE FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
         $default = $default[1]['START_DATE'];
         if (!$default || DBDate() > $default)
             $default = DBDate();
@@ -436,7 +436,7 @@ function _makeStartInputDateenrl($value, $column) {//student enrollment tab
         $id = $THIS_RET['ID'];
     elseif ($_REQUEST['student_id'] == 'new') {
         $id = 'new';
-        $default = DBGet(DBQuery('SELECT min(SCHOOL_DATE) AS START_DATE FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
+        $default = DBGet(DBQuery('SELECT min(SCHOOL_DATE) AS START_DATE FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
         $default = $default[1]['START_DATE'];
         if (!$default || DBDate() > $default)
             $default = DBDate();
@@ -535,34 +535,34 @@ function _makeEndInputCode($value, $column) {
     }
 }
 
-function _makeSchoolInput($value, $column) {
-    global $THIS_RET, $schools;
-    $schools = array();
+function _makeCollegeInput($value, $column) {
+    global $THIS_RET, $colleges;
+    $colleges = array();
     if ($THIS_RET['ID'])
         $id = $THIS_RET['ID'];
     else
         $id = 'new';
 
-    if (!$schools)
-        $schools = DBGet(DBQuery('SELECT ID,TITLE FROM schools'), array(), array('ID'));
+    if (!$colleges)
+        $colleges = DBGet(DBQuery('SELECT ID,TITLE FROM colleges'), array(), array('ID'));
 
-    foreach ($schools as $sid => $school)
-        $options[$sid] = $school[1]['TITLE'];
-    // mab - allow school to be editted if illegal value
+    foreach ($colleges as $sid => $college)
+        $options[$sid] = $college[1]['TITLE'];
+    // mab - allow college to be editted if illegal value
     if ($THIS_RET['SCHOOL_ID']) {
-        $name = DBGet(DBQuery('SELECT TITLE FROM schools WHERE ID=\'' . $THIS_RET['SCHOOL_ID'] . '\''));
+        $name = DBGet(DBQuery('SELECT TITLE FROM colleges WHERE ID=\'' . $THIS_RET['SCHOOL_ID'] . '\''));
         return $name[1]['TITLE'] . '<input type=hidden name=enrollment_id value="' . $id . '" />';
     } elseif ($_REQUEST['student_id'] != 'new') {
         if ($id != 'new') {
-            if ($schools[$value]) {
-                $name = DBGet(DBQuery('SELECT TITLE FROM schools WHERE ID=\'' . UserSchool() . '\''));
+            if ($colleges[$value]) {
+                $name = DBGet(DBQuery('SELECT TITLE FROM colleges WHERE ID=\'' . UserCollege() . '\''));
                 return $name[1]['TITLE'] . '<input type=hidden name=enrollment_id value="' . $id . '" />';
             } else
                 return SelectInput($value, 'values[student_enrollment][' . $id . '][SCHOOL_ID]', '', $options);
         } else
-            return SelectInput(UserSchool(), 'values[student_enrollment][' . $id . '][SCHOOL_ID]', '', $options, false, '', false);
+            return SelectInput(UserCollege(), 'values[student_enrollment][' . $id . '][SCHOOL_ID]', '', $options, false, '', false);
     } else
-        return $schools[UserSchool()][1]['TITLE'] . '<input type=hidden name=enrollment_id value="' . $id . '" />';
+        return $colleges[UserCollege()][1]['TITLE'] . '<input type=hidden name=enrollment_id value="' . $id . '" />';
 }
 
 function _makeStartInputCodeenrl($value, $column) {

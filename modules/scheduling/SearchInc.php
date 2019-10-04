@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -61,7 +61,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             echo '<div class="col-lg-12">';
             if (User('PROFILE') == 'admin') {
                 echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=address_group value=Y' . (Preferences('DEFAULT_FAMILIES') == 'Y' ? ' CHECKED' : '') . '>Group by Family</label>';
-                echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=_search_all_schools value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '>Search All Schools</label>';
+                echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=_search_all_colleges value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '>Search All Colleges</label>';
             }
             echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=include_inactive value=Y>Include Inactive Students</label>';
             echo '</div>'; //.col-lg-12
@@ -139,8 +139,8 @@ else {
     $LO_columns = array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'Student ID', 'GRADE_ID' => 'Grade', 'SECTION_ID' => 'Section');
     $name_link['FULL_NAME']['link'] = "Modules.php?modname=$_REQUEST[next_modname]";
     $name_link['FULL_NAME']['variables'] = array('student_id' => 'STUDENT_ID');
-    if ($_REQUEST['_search_all_schools'])
-        $name_link['FULL_NAME']['variables'] += array('school_id' => 'SCHOOL_ID');
+    if ($_REQUEST['_search_all_colleges'])
+        $name_link['FULL_NAME']['variables'] += array('college_id' => 'SCHOOL_ID');
 
     if (is_array($extra['link']))
         $link = $extra['link'] + $name_link;
@@ -205,7 +205,7 @@ else {
         }
         if (!is_array($students_RET[1]['STUDENT_ID'])) {
             $_SESSION['student_id'] = $students_RET[1]['STUDENT_ID'];
-            $_SESSION['UserSchool'] = $students_RET[1]['LIST_SCHOOL_ID'];
+            $_SESSION['UserCollege'] = $students_RET[1]['LIST_SCHOOL_ID'];
             //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             unset($_REQUEST['search_modfunc']);
         }
@@ -225,7 +225,7 @@ else {
 
 function _make_sections($value) {
     if ($value != '') {
-        $get = DBGet(DBQuery('SELECT NAME FROM school_gradelevel_sections WHERE ID=' . $value));
+        $get = DBGet(DBQuery('SELECT NAME FROM college_gradelevel_sections WHERE ID=' . $value));
         return $get[1]['NAME'];
     } else
         return '';

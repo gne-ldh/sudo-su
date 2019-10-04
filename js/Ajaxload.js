@@ -161,10 +161,10 @@ function usercheck_callback_s(data) {
 function usercheck_error(err) {
     alert("Error: " + err);
 }
-function grab_GradeLevel(school_id)
+function grab_GradeLevel(college_id)
 {
 
-    ajax_call('GrabGradeLevel.php?id=' + school_id, grab_GradeLevel_callback, grab_GradeLevel_error);
+    ajax_call('GrabGradeLevel.php?id=' + college_id, grab_GradeLevel_callback, grab_GradeLevel_error);
 }
 
 function Course_Mrinfo(schedule_id)
@@ -511,7 +511,7 @@ function attendance_callback(data)
     var response = data.split('/');
     var obj = document.getElementById('ajax_output');
     obj.style.color = (response[0] == 1) ? '#008800' : '#ff0000';
-    obj.innerHTML = (response[0] == 1 ? '' : 'Turn on attendance for the<br>period in School Setup &gt;&gt; Periods');
+    obj.innerHTML = (response[0] == 1 ? '' : 'Turn on attendance for the<br>period in College Setup &gt;&gt; Periods');
     if (response[0] == 0)
     {
         document.getElementById('get_status').value = response;
@@ -740,28 +740,28 @@ function rollover_callback(roll_data)
         document.getElementById("staff").innerHTML = total_data[0] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
         document.getElementById("staff").setAttribute("class", rollover_class);
         document.getElementById("staff").setAttribute("className", rollover_class);
-        if (document.getElementById("chk_school_periods").value == 'Y')
+        if (document.getElementById("chk_college_periods").value == 'Y')
         {
-            ajax_rollover('school_periods');
+            ajax_rollover('college_periods');
         } else
         {
-            ajax_rollover('school_years');
+            ajax_rollover('college_years');
         }
-    } else if (total_data[0] == 'School Periods')
+    } else if (total_data[0] == 'College Periods')
     {
-        document.getElementById("school_periods").innerHTML = total_data[0] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
-        document.getElementById("school_periods").setAttribute("class", rollover_class);
-        document.getElementById("school_periods").setAttribute("className", rollover_class);
-        ajax_rollover('school_years');
+        document.getElementById("college_periods").innerHTML = total_data[0] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
+        document.getElementById("college_periods").setAttribute("class", rollover_class);
+        document.getElementById("college_periods").setAttribute("className", rollover_class);
+        ajax_rollover('college_years');
     } else if (total_data[0] == 'Marking Periods')
     {
-        document.getElementById("school_years").innerHTML = total_data[0] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
-        document.getElementById("school_years").setAttribute("class", rollover_class);
-        document.getElementById("school_years").setAttribute("className", rollover_class);
+        document.getElementById("college_years").innerHTML = total_data[0] + " " + total_data[1] + " " + total_data[2] + " " + total_data[3];
+        document.getElementById("college_years").setAttribute("class", rollover_class);
+        document.getElementById("college_years").setAttribute("className", rollover_class);
 
-        if (document.getElementById("chk_school_calendars").value == 'Y')
+        if (document.getElementById("chk_college_calendars").value == 'Y')
         {
-            ajax_rollover('school_calendars');
+            ajax_rollover('college_calendars');
         } else if (document.getElementById("chk_report_card_grade_scales").value == 'Y')
         {
             ajax_rollover('report_card_grade_scales');
@@ -1002,12 +1002,12 @@ function formcheck_rollover()
                                 sem_dt = Date.parse(sem_dt);
                                 if (sem_dt < s_start_dt)
                                 {
-                                    document.getElementById("start_date").innerHTML = sem_name + " Cannot Be Before School's Begin Date";
+                                    document.getElementById("start_date").innerHTML = sem_name + " Cannot Be Before College's Begin Date";
                                     return false;
                                 }
                                 if (sem_dt > s_end_dt)
                                 {
-                                    document.getElementById("start_date").innerHTML = sem_name + " Cannot Be Be After School's End Date";
+                                    document.getElementById("start_date").innerHTML = sem_name + " Cannot Be Be After College's End Date";
                                     return false;
                                 } else
                                 {
@@ -1257,7 +1257,7 @@ function validate_rollover(thisFrm, thisElement)
     {
         if (thisElement.checked == true)
         {
-            thisFrm.school_periods.checked = true;
+            thisFrm.college_periods.checked = true;
             thisFrm.attendance_calendars.checked = true;
             thisFrm.course_subjects.checked = true;
             thisFrm.courses.checked = true;
@@ -1270,13 +1270,13 @@ function validate_rollover(thisFrm, thisElement)
     }
     if (thisElement.name == 'report_card_comments' && thisElement.checked == true)
     {
-        thisFrm.school_periods.checked = true;
+        thisFrm.college_periods.checked = true;
         thisFrm.attendance_calendars.checked = true;
         thisFrm.course_subjects.checked = true;
         thisFrm.courses.checked = true;
         thisFrm.course_periods.checked = true;
     }
-    if (thisFrm.course_periods.checked == true && thisElement.checked == false && (thisElement.name == 'school_periods' || thisElement.name == 'attendance_calendars' || thisElement.name == 'course_subjects' || thisElement.name == 'courses'))
+    if (thisFrm.course_periods.checked == true && thisElement.checked == false && (thisElement.name == 'college_periods' || thisElement.name == 'attendance_calendars' || thisElement.name == 'course_subjects' || thisElement.name == 'courses'))
     {
         thisElement.checked = true;
     }
@@ -1362,8 +1362,8 @@ function pass_val_error(err)
 
 
 
-//-------------------------------------------------- historical grade school name pickup --------------------------------------//
-function pick_schoolname(data) {
+//-------------------------------------------------- historical grade college name pickup --------------------------------------//
+function pick_collegename(data) {
 
     document.getElementById('SCHOOL_NAME').value = data;
 }
@@ -1372,11 +1372,11 @@ function pick_schoolname(data) {
 
 // ------------------------------------------------------ Student ID------------------------------------------------------------------------------ //
 
-function GetSchool(i) {
+function GetCollege(i) {
     var obj = document.getElementById('SCHOOL_NAME');
     obj.innerHTML = '';
 
-    ajax_call('GetSchool.php?u=' + i, pick_schoolname);
+    ajax_call('GetCollege.php?u=' + i, pick_collegename);
 }
 function show_cp_meeting_days(sch_type, cp_id)
 {
@@ -1390,7 +1390,7 @@ function show_cp_meeting_days(sch_type, cp_id)
             document.getElementById("save_cp").style.display = "none";
             document.getElementById("save_cps").style.display = "none";
         }
-        ajax_call('modules/schoolsetup/CourseProcess.php?task=md&cal_id=' + cal_id + '&cp_id=' + cp_id + '&sch_type=' + sch_type, meeting_days_callback, meeting_days_error);
+        ajax_call('modules/collegesetup/CourseProcess.php?task=md&cal_id=' + cal_id + '&cp_id=' + cp_id + '&sch_type=' + sch_type, meeting_days_callback, meeting_days_error);
     } else
     {
         document.getElementById('meeting_days').innerHTML = '<font color=red>Please select calendar</font>';
@@ -1410,7 +1410,7 @@ function show_cp_meeting_daysError(sch_type, cp_id, cal_id, room_id, period_id, 
             document.getElementById("save_cp").style.display = "none";
             document.getElementById("save_cps").style.display = "none";
         }
-        ajax_call('modules/schoolsetup/CourseProcess.php?task=md&cal_id=' + cal_id + '&cp_id=' + cp_id + '&sch_type=' + sch_type + '&room_id=' + room_id + '&period_id=' + period_id + '&days=' + days + '&does_attendance=' + does_attendance + '&msg=conflict', meeting_days_callback, meeting_days_error);
+        ajax_call('modules/collegesetup/CourseProcess.php?task=md&cal_id=' + cal_id + '&cp_id=' + cp_id + '&sch_type=' + sch_type + '&room_id=' + room_id + '&period_id=' + period_id + '&days=' + days + '&does_attendance=' + does_attendance + '&msg=conflict', meeting_days_callback, meeting_days_error);
     } else
     {
         document.getElementById('meeting_days').innerHTML = '<font color=red>Please select calendar</font>';
@@ -1486,7 +1486,7 @@ function show_period_time(period_id, day, cp_id, cp_var_id)
     else if (cp_var_id == 'new')
         cp_var_id = 'new';
     if (period_id != '')
-        ajax_call('modules/schoolsetup/CourseProcess.php?task=per_time&period_id=' + period_id + '&day=' + day + '&cp_id=' + cp_id + '&cp_var_id=' + cp_var_id, period_time_callback, period_time_error);
+        ajax_call('modules/collegesetup/CourseProcess.php?task=per_time&period_id=' + period_id + '&day=' + day + '&cp_id=' + cp_id + '&cp_var_id=' + cp_var_id, period_time_callback, period_time_error);
     else
         document.getElementById(day + '_period_time').innerHTML = '';
 }
@@ -2285,7 +2285,7 @@ function CalendarModal(event_id, cal_id, date, year, month, tochar)
 {
 
     $('#modal_default_calendar').modal('show');
-    ajax_call('CalendarModal.php?event_id=' + event_id + '&calendar_id=' + cal_id + '&school_date=' + date + '&month=' + month + '&year=' + year + '&tochar=tochar', CalendarModalCallback, chooseCpModalError);
+    ajax_call('CalendarModal.php?event_id=' + event_id + '&calendar_id=' + cal_id + '&college_date=' + date + '&month=' + month + '&year=' + year + '&tochar=tochar', CalendarModalCallback, chooseCpModalError);
 
 }
 

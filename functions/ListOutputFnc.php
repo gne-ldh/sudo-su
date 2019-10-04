@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -522,11 +522,11 @@ function ListOutputPrint_sch($result, $column_names, $singular = '', $plural = '
                         echo "<div style=\"page-break-after: always;\"></div>";
                         echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
                         if ($_REQUEST['modname'] == 'grades/AdminProgressReports.php' || $_REQUEST['modname'] == 'grades/ProgressReports.php' || $_REQUEST['modname'] == 'users/TeacherPrograms.php?include=grades/ProgressReports.php')
-                            echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">Student Progress Report</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                            echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetCollege(UserCollege()) . "<div style=\"font-size:12px;\">Student Progress Report</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                         else if ($_REQUEST['modname'] == 'grades/ReportCards.php')
-                            echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">Student Report Card</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                            echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetCollege(UserCollege()) . "<div style=\"font-size:12px;\">Student Report Card</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                         else
-                            echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">Add / Drop Report</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                            echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetCollege(UserCollege()) . "<div style=\"font-size:12px;\">Add / Drop Report</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                         echo '<TABLE cellpadding=6 width=100% cellspacing=1 border="1px solid #a9d5e9 " style="border-collapse:collapse" align=center>';
                     }
                     echo "<TR>";
@@ -5089,7 +5089,7 @@ function ListOutputPrint_Report($result, $column_names, $singular = '', $plural 
                         echo '</TABLE>';
                         echo "<div style=\"page-break-after: always;\"></div>";
                         echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-                        echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">" . $_SESSION['_REQUEST_vars'][0] . "</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                        echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetCollege(UserCollege()) . "<div style=\"font-size:12px;\">" . $_SESSION['_REQUEST_vars'][0] . "</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                         echo '<TABLE cellpadding=6 width=100% cellspacing=1 border="1px solid #a9d5e9 " style="border-collapse:collapse" align=center>';
                     }
                     echo "<TR>";
@@ -5787,11 +5787,11 @@ function ListOutputPrint($result, $column_names, $singular = '', $plural = '', $
                         echo "<div style=\"page-break-after: always;\"></div>";
                         echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
                         if ($_REQUEST['modname'] == 'grades/AdminProgressReports.php' || $_REQUEST['modname'] == 'grades/ProgressReports.php' || $_REQUEST['modname'] == 'users/TeacherPrograms.php?include=grades/ProgressReports.php')
-                            echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">Student Progress Report</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                            echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetCollege(UserCollege()) . "<div style=\"font-size:12px;\">Student Progress Report</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                         else if ($_REQUEST['modname'] == 'grades/ReportCards.php')
-                            echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">Student Report Card</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                            echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetCollege(UserCollege()) . "<div style=\"font-size:12px;\">Student Report Card</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                         else
-                            echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">Add / Drop Report</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                            echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetCollege(UserCollege()) . "<div style=\"font-size:12px;\">Add / Drop Report</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                         echo '<TABLE cellpadding=6 width=100% cellspacing=1 border="1px solid #a9d5e9 " style="border-collapse:collapse" align=center>';
                     }
                     echo "<TR>";
@@ -7170,7 +7170,7 @@ function PrintCatalog($result, $column_names, $singular = '', $plural = '', $lin
                         echo '</TABLE>';
                         echo "<div style=\"page-break-after: always;\"></div>";
                         echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-                        echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">Student Advanced Report</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                        echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetCollege(UserCollege()) . "<div style=\"font-size:12px;\">Student Advanced Report</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                         echo '<TABLE cellpadding=6 width=100% cellspacing=1 border="1px solid #a9d5e9 " style="border-collapse:collapse" align=center>';
                     }
                     echo "<TR>";
@@ -11092,7 +11092,7 @@ function ListOutputPrint_Institute_Report($result, $column_names, $singular = ''
                         echo '</TABLE>';
                         echo "<div style=\"page-break-after: always;\"></div>";
                         echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-                        echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">" . $_SESSION['_REQUEST_vars'][0] . "</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                        echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetCollege(UserCollege()) . "<div style=\"font-size:12px;\">" . $_SESSION['_REQUEST_vars'][0] . "</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                         echo '<TABLE cellpadding=6 width=100% cellspacing=1 border="1px solid #a9d5e9 " style="border-collapse:collapse" align=center>';
                     }
                     echo "<TR>";
@@ -15949,7 +15949,7 @@ function ListOutputMessagingGroups($result, $column_names, $singular = '', $plur
     }
 }
 
-//function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '') {
+//function ListOutputStaffPrintCollegeInfo($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '') {
 //    if (!isset($options['save']))
 //        $options['save'] = true;
 //    if (!isset($options['print']))
@@ -16233,7 +16233,7 @@ function ListOutputMessagingGroups($result, $column_names, $singular = '', $plur
 ////                }
 ////                $output .= "\n";
 ////            }
-//            $output = '<table><tr><td>School</td><td>Profile</td><td>Start Date</td><td>End Date</td><td>Status</td></tr>';
+//            $output = '<table><tr><td>College</td><td>Profile</td><td>Start Date</td><td>End Date</td><td>Status</td></tr>';
 //            foreach ($result as $item) {
 //                $output .= '<tr>';
 //                $output .= '<td>' . $item['TITLE'] . '</td>';
@@ -16711,7 +16711,7 @@ function ListOutputMessagingGroups($result, $column_names, $singular = '', $plur
 //        }
 //    }
 //}
-function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '') {
+function ListOutputStaffPrintCollegeInfo($result, $column_names, $singular = '', $plural = '', $link = false, $group = false, $options = false, $ForWindow = '') {
     if (!isset($options['save']))
         $options['save'] = true;
     if (!isset($options['print']))
@@ -16993,7 +16993,7 @@ function ListOutputStaffPrintSchoolInfo($result, $column_names, $singular = '', 
 //                }
 //                $output .= "\n";
 //            }
-            $output = '<table><tr><td>School</td><td>Profile</td><td>Start Date</td><td>End Date</td><td>Status</td></tr>';
+            $output = '<table><tr><td>College</td><td>Profile</td><td>Start Date</td><td>End Date</td><td>Status</td></tr>';
             foreach ($result as $item) {
                 $output .= '<tr>';
                 $output .= '<td>' . $item['TITLE'] . '</td>';

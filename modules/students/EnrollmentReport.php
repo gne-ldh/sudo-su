@@ -1,7 +1,7 @@
 <?php
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -29,7 +29,7 @@ include('../../RedirectModulesInc.php');
 include 'modules/grades/ConfigInc.php';
 if($_REQUEST['modfunc']=='save')
 {
- $cur_session_RET=DBGet(DBQuery('SELECT YEAR(start_date) AS PRE,YEAR(end_date) AS POST FROM school_years WHERE SCHOOL_ID=\''.UserSchool().'\' AND SYEAR=\''.UserSyear().'\''));
+ $cur_session_RET=DBGet(DBQuery('SELECT YEAR(start_date) AS PRE,YEAR(end_date) AS POST FROM college_years WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\''));
  if($cur_session_RET[1]['PRE']==$cur_session_RET[1]['POST'])
  {
     $cur_session=$cur_session_RET[1]['PRE'];
@@ -46,15 +46,15 @@ if($_REQUEST['modfunc']=='save')
                 (SELECT sec.title FROM  student_enrollment_codes sec where ssm.drop_code=sec.id) AS DROP_CODE,ssm.SCHOOL_ID 
                 FROM  students s , student_enrollment ssm
                 WHERE ssm.STUDENT_ID=s.STUDENT_ID AND s.STUDENT_ID IN ('.$st_list.')  
-                ORDER BY FULL_NAME ASC,START_DATE DESC'),array('START_DATE'=>'ProperDate','END_DATE'=>'ProperDate','SCHOOL_ID'=>'GetSchool','GRADE_ID'=>'GetGrade'),array('STUDENT_ID'));
+                ORDER BY FULL_NAME ASC,START_DATE DESC'),array('START_DATE'=>'ProperDate','END_DATE'=>'ProperDate','SCHOOL_ID'=>'GetCollege','GRADE_ID'=>'GetGrade'),array('STUDENT_ID'));
         if(count($RET))
 	{
-            $columns = array('START_DATE'=>'Start Date','ENROLLMENT_CODE'=>'Enrollment Code','END_DATE'=>'Drop Date','DROP_CODE'=>'Drop Code','SCHOOL_ID'=>'School Name');
+            $columns = array('START_DATE'=>'Start Date','ENROLLMENT_CODE'=>'Enrollment Code','END_DATE'=>'Drop Date','DROP_CODE'=>'Drop Code','SCHOOL_ID'=>'College Name');
 		$handle = PDFStart();
 		foreach($RET as $student_id=>$value)
 		{
 			echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-			echo "<tr><td width=105>".DrawLogo()."</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">". GetSchool(UserSchool()).' ('.$cur_session.')'."<div style=\"font-size:12px;\">Student Enrollment Report</div></td><td align=right style=\"padding-top:20px\">". ProperDate(DBDate()) ."<br \>Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+			echo "<tr><td width=105>".DrawLogo()."</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">". GetCollege(UserCollege()).' ('.$cur_session.')'."<div style=\"font-size:12px;\">Student Enrollment Report</div></td><td align=right style=\"padding-top:20px\">". ProperDate(DBDate()) ."<br \>Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
 			echo '<!-- MEDIA SIZE 8.5x11in -->';
 			
 				unset($_openSIS['DrawHeader']);
@@ -78,7 +78,7 @@ if($_REQUEST['modfunc']=='save')
                                 echo '<tr><td>Alternate ID :</td>';
 				echo '<td>'.$enrollment['ALT_ID'].'</td></tr>';
 				echo '<tr><td>Student Grade :</td>';
-                                $grade=DBGet(DBQuery('SELECT GRADE_ID FROM student_enrollment WHERE SYEAR='.UserSyear().' AND SCHOOL_ID='.UserSchool().' AND STUDENT_ID='.$student_id.' AND (END_DATE>=\''.date('Y-m-d').'\' OR END_DATE IS NULL OR END_DATE=\'0000-00-00\')  '),array('GRADE_ID'=>'GetGrade'));
+                                $grade=DBGet(DBQuery('SELECT GRADE_ID FROM student_enrollment WHERE SYEAR='.UserSyear().' AND SCHOOL_ID='.UserCollege().' AND STUDENT_ID='.$student_id.' AND (END_DATE>=\''.date('Y-m-d').'\' OR END_DATE IS NULL OR END_DATE=\'0000-00-00\')  '),array('GRADE_ID'=>'GetGrade'));
 				echo '<td>'.$grade[1]['GRADE_ID'].'</td></tr>';
 				echo '</table>';
                             

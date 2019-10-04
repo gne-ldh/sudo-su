@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -27,7 +27,7 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-$QI = DBQuery("SELECT PERIOD_ID,TITLE FROM school_periods WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER ");
+$QI = DBQuery("SELECT PERIOD_ID,TITLE FROM college_periods WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER ");
 $periods_RET = DBGet($QI);
 
 DrawBC("Scheduling > " . ProgramTitle());
@@ -46,7 +46,7 @@ if ($_REQUEST['search_modfunc'] == 'list') {
     Widgets('course');
     Widgets('request');
     $extra['SELECT'] .= ',sp.PERIOD_ID';
-    $extra['FROM'] .= ',school_periods sp,schedule ss,course_periods cp,course_period_var cpv';
+    $extra['FROM'] .= ',college_periods sp,schedule ss,course_periods cp,course_period_var cpv';
     $extra['WHERE'] .= ' AND (\'' . DBDate() . '\' BETWEEN ss.START_DATE AND ss.END_DATE OR ss.END_DATE IS NULL) AND ss.SCHOOL_ID=ssm.SCHOOL_ID AND ss.MARKING_PERIOD_ID IN (' . $mp . ') AND ss.STUDENT_ID=ssm.STUDENT_ID AND ss.SYEAR=ssm.SYEAR AND ss.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.PERIOD_ID=sp.PERIOD_ID ';
     if (UserStudentID())
         $extra['WHERE'] .= ' AND s.STUDENT_ID=\'' . UserStudentID() . '\' ';

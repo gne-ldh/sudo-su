@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -30,7 +30,7 @@ include('../../RedirectModulesInc.php');
 DrawBC("Attendance > " . ProgramTitle());
 $message = '<div class="form-inline"><div class="col-md-12"><div class="form-group"><label class="control-label">From</label></div><div class="inline-block">' . DateInputAY(DBDate('mysql'), 'min', 1) . '</div><div class="form-group"><label class="control-label">to</label></div><div class="inline-block">' . DateInputAY(DBDate('mysql'), 'max', 2) . '</div></div></div><br/>';
 if (Prompt_Home('Confirm', 'When do you want to recalculate the daily attendance?', $message)) {
-    $current_RET = DBGet(DBQuery('SELECT DISTINCT DATE_FORMAT(SCHOOL_DATE,\'%d-%m-%Y\') as SCHOOL_DATE FROM attendance_calendar WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\''), array(), array('SCHOOL_DATE'));
+    $current_RET = DBGet(DBQuery('SELECT DISTINCT DATE_FORMAT(SCHOOL_DATE,\'%d-%m-%Y\') as SCHOOL_DATE FROM attendance_calendar WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\''), array(), array('SCHOOL_DATE'));
     $extra = array();
     $students_RET = GetStuList($extra);
 //            print_r($current_RET);

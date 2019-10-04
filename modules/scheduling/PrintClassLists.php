@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -41,7 +41,7 @@ if ($_REQUEST['modfunc'] == 'save') {
             }
         }
         // get the fy marking period id, there should be exactly one fy marking period
-        $fy_id = DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
+        $fy_id = DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM college_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
         $fy_id = $fy_id[1]['MARKING_PERIOD_ID'];
 
         $course_periods_RET = DBGet(DBQuery('SELECT cp.TITLE,cp.COURSE_PERIOD_ID,cpv.PERIOD_ID,cp.MARKING_PERIOD_ID,cpv.DAYS,c.TITLE AS COURSE_TITLE,cp.TEACHER_ID,(SELECT CONCAT(Trim(LAST_NAME),\', \',FIRST_NAME) FROM staff WHERE STAFF_ID=cp.TEACHER_ID) AS TEACHER FROM course_periods cp,course_period_var cpv,courses c WHERE c.COURSE_ID=cp.COURSE_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID IN (' . $cp_list . ') GROUP BY cpv.PERIOD_ID,cpv.COURSE_PERIOD_ID ORDER BY TEACHER'));
@@ -53,7 +53,7 @@ if ($_REQUEST['modfunc'] == 'save') {
             unset($_openSIS['DrawHeader']);
 
 
-            $_openSIS['User'] = array(1 => array('STAFF_ID' => $course_period['TEACHER_ID'], 'NAME' => 'name', 'PROFILE' => 'teacher', 'SCHOOLS' => ',' . UserSchool() . ',', 'SYEAR' => UserSyear()));
+            $_openSIS['User'] = array(1 => array('STAFF_ID' => $course_period['TEACHER_ID'], 'NAME' => 'name', 'PROFILE' => 'teacher', 'SCHOOLS' => ',' . UserCollege() . ',', 'SYEAR' => UserSyear()));
             $_SESSION['UserCoursePeriod'] = $course_period['COURSE_PERIOD_ID'];
 
             echo '<table width="100%" bgcolor="#fff" cellpadding="0" cellspacing="0" border="0"><tbody>';
@@ -61,7 +61,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
             echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
             echo "<tr><td width=105>" . DrawLogo() . "</td>";
-            echo "<td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">Teacher Class List</div></td>";
+            echo "<td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetCollege(UserCollege()) . "<div style=\"font-size:12px;\">Teacher Class List</div></td>";
             echo "<td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr>";
             echo "<tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr>";
             echo "</table>";
@@ -105,15 +105,15 @@ if ($_REQUEST['modfunc'] == 'save') {
                 $extra['SELECT'] .= ',substr(s.FIRST_NAME,1,1) AS FIRST_INIT';
 
             if (!$extra['functions'])
-                $extra['functions'] = array('NEXT_SCHOOL' => '_makeNextSchool', 'CALENDAR_ID' => '_makeCalendar', 'SCHOOL_ID' => 'GetSchool', 'PARENTS' => 'makeParents', 'BIRTHDATE' => 'ProperDate', 'SECTION_ID' => '_makeSection');
+                $extra['functions'] = array('NEXT_SCHOOL' => '_makeNextCollege', 'CALENDAR_ID' => '_makeCalendar', 'SCHOOL_ID' => 'GetCollege', 'PARENTS' => 'makeParents', 'BIRTHDATE' => 'ProperDate', 'SECTION_ID' => '_makeSection');
 
             if ($_REQUEST['search_modfunc'] == 'list') {
                 if (!$fields_list) {
-                    $fields_list = array('FULL_NAME' => (Preferences('NAME') == 'Common' ? 'Last, Common' : 'Last, First M'), 'FIRST_NAME' => 'First', 'FIRST_INIT' => 'First Initial', 'LAST_NAME' => 'Last', 'MIDDLE_NAME' => 'Middle', 'NAME_SUFFIX' => 'Suffix', 'STUDENT_ID' => 'Student ID', 'GENDER' => 'Gender', 'GRADE_ID' => 'Grade', 'SECTION_ID' => 'Section', 'SCHOOL_ID' => 'School', 'NEXT_SCHOOL' => 'Rolling / Retention Options', 'CALENDAR_ID' => 'Calendar', 'USERNAME' => 'Username', 'PASSWORD' => 'Password', 'ALT_ID' => 'Alternate ID', 'BIRTHDATE' => 'DOB', 'EMAIL' => 'Email ID', 'ADDRESS' => 'Address', 'CITY' => 'City', 'STATE' => 'State', 'ZIPCODE' => 'Zip Code', 'PHONE' => 'Phone', 'MAIL_ADDRESS' => 'Mailing Address', 'MAIL_CITY' => 'Mailing City', 'MAIL_STATE' => 'Mailing State', 'MAIL_ZIPCODE' => 'Mailing Zipcode', 'PARENTS' => 'Contacts');
+                    $fields_list = array('FULL_NAME' => (Preferences('NAME') == 'Common' ? 'Last, Common' : 'Last, First M'), 'FIRST_NAME' => 'First', 'FIRST_INIT' => 'First Initial', 'LAST_NAME' => 'Last', 'MIDDLE_NAME' => 'Middle', 'NAME_SUFFIX' => 'Suffix', 'STUDENT_ID' => 'Student ID', 'GENDER' => 'Gender', 'GRADE_ID' => 'Grade', 'SECTION_ID' => 'Section', 'SCHOOL_ID' => 'College', 'NEXT_SCHOOL' => 'Rolling / Retention Options', 'CALENDAR_ID' => 'Calendar', 'USERNAME' => 'Username', 'PASSWORD' => 'Password', 'ALT_ID' => 'Alternate ID', 'BIRTHDATE' => 'DOB', 'EMAIL' => 'Email ID', 'ADDRESS' => 'Address', 'CITY' => 'City', 'STATE' => 'State', 'ZIPCODE' => 'Zip Code', 'PHONE' => 'Phone', 'MAIL_ADDRESS' => 'Mailing Address', 'MAIL_CITY' => 'Mailing City', 'MAIL_STATE' => 'Mailing State', 'MAIL_ZIPCODE' => 'Mailing Zipcode', 'PARENTS' => 'Contacts');
                     if ($extra['field_names'])
                         $fields_list += $extra['field_names'];
 
-                    $periods_RET = DBGet(DBQuery('SELECT TITLE,PERIOD_ID FROM school_periods WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'));
+                    $periods_RET = DBGet(DBQuery('SELECT TITLE,PERIOD_ID FROM college_periods WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER'));
 
                     foreach ($periods_RET as $period)
                         $fields_list['PERIOD_' . $period['PERIOD_ID']] = $period['TITLE'] . ' Teacher - Room';
@@ -238,7 +238,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                     }
                     $date = DBDate();
 
-                    $get_schedule = DBGet(DBQuery('SELECT count(ss.student_id) AS TOT FROM students s,course_periods cp,schedule ss ,student_enrollment ssm WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.SCHOOL_ID=' . UserSchool() . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND (ss.END_DATE>=\'' . $date . '\' OR ss.END_DATE IS NULL) AND cp.COURSE_PERIOD_ID IN (' . $cr_pr_id . ') AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND (\'' . $date . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL) AND (\'' . $date . '\'<=ss.END_DATE OR ss.END_DATE IS NULL)'));
+                    $get_schedule = DBGet(DBQuery('SELECT count(ss.student_id) AS TOT FROM students s,course_periods cp,schedule ss ,student_enrollment ssm WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.SCHOOL_ID=' . UserCollege() . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND (ss.END_DATE>=\'' . $date . '\' OR ss.END_DATE IS NULL) AND cp.COURSE_PERIOD_ID IN (' . $cr_pr_id . ') AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND (\'' . $date . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL) AND (\'' . $date . '\'<=ss.END_DATE OR ss.END_DATE IS NULL)'));
 
                     if ($get_schedule[1]['TOT'] > 0 && count($RET) > 0)
                         $table = ListOutputPrintReportMod($RET, $columns);
@@ -283,7 +283,7 @@ if (!$_REQUEST['modfunc']) {
 
         PopTable('header', 'Search');
 
-        $RET = DBGet(DBQuery('SELECT s.STAFF_ID,CONCAT(Trim(s.LAST_NAME),\', \',s.FIRST_NAME) AS FULL_NAME FROM staff s,staff_school_relationship ssr WHERE s.STAFF_ID=ssr.STAFF_ID AND s.PROFILE=\'' . 'teacher' . '\' AND FIND_IN_SET(\'' . UserSchool() . '\', ssr.SCHOOL_ID)>0 AND ssr.SYEAR=\'' . UserSyear() . '\' ORDER BY FULL_NAME'));
+        $RET = DBGet(DBQuery('SELECT s.STAFF_ID,CONCAT(Trim(s.LAST_NAME),\', \',s.FIRST_NAME) AS FULL_NAME FROM staff s,staff_college_relationship ssr WHERE s.STAFF_ID=ssr.STAFF_ID AND s.PROFILE=\'' . 'teacher' . '\' AND FIND_IN_SET(\'' . UserCollege() . '\', ssr.SCHOOL_ID)>0 AND ssr.SYEAR=\'' . UserSyear() . '\' ORDER BY FULL_NAME'));
 
         echo '<div class="row">';
         echo '<div class="col-lg-6">';
@@ -295,7 +295,7 @@ if (!$_REQUEST['modfunc']) {
         echo '</div></div>';
         echo '</div>'; //.col-lg-6
 
-        $RET = DBGet(DBQuery("SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE"));
+        $RET = DBGet(DBQuery("SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE"));
         echo '<div class="col-lg-6">';
         echo '<div class="form-group"><label class="control-label col-lg-4">Subject</label><div class="col-lg-8">';
         echo "<SELECT name=subject_id class=form-control><OPTION value=''>N/A</OPTION>";
@@ -305,7 +305,7 @@ if (!$_REQUEST['modfunc']) {
         echo '</div>'; //.col-lg-6
         echo '</div>'; //.row
 
-        $RET = DBGet(DBQuery("SELECT PERIOD_ID,TITLE FROM school_periods WHERE SYEAR='" . UserSyear() . "' AND SCHOOL_ID='" . UserSchool() . "' ORDER BY SORT_ORDER"));
+        $RET = DBGet(DBQuery("SELECT PERIOD_ID,TITLE FROM college_periods WHERE SYEAR='" . UserSyear() . "' AND SCHOOL_ID='" . UserCollege() . "' ORDER BY SORT_ORDER"));
         echo '<div class="row">';
         echo '<div class="col-lg-6">';
         echo '<div class="form-group"><label class="control-label col-lg-4">Period</label><div class="col-lg-8">';
@@ -350,7 +350,7 @@ echo '<div class="modal-body">';
 echo '<div id="conf_div" class="text-center"></div>';
 echo '<div class="row" id="resp_table">';
 echo '<div class="col-md-4">';
-$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
@@ -396,11 +396,11 @@ function mySearch($extra) {
         if ($_REQUEST['period_id']) {
             $where .= " AND cpv.PERIOD_ID='" . $_REQUEST['period_id'] . "'";
         }
-        $sql = "SELECT cp.COURSE_PERIOD_ID,cp.COURSE_PERIOD_ID as STU_COURSE_PERIOD_ID,cp.TITLE FROM course_periods cp,course_period_var cpv$from WHERE cp.SCHOOL_ID='" . UserSchool() . "' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.SYEAR='" . UserSyear() . "'$where";
+        $sql = "SELECT cp.COURSE_PERIOD_ID,cp.COURSE_PERIOD_ID as STU_COURSE_PERIOD_ID,cp.TITLE FROM course_periods cp,course_period_var cpv$from WHERE cp.SCHOOL_ID='" . UserCollege() . "' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.SYEAR='" . UserSyear() . "'$where";
     } else { // teacher
-        $sql = "SELECT cp.COURSE_PERIOD_ID,cp.COURSE_PERIOD_ID as STU_COURSE_PERIOD_ID,cp.TITLE FROM course_periods cp,course_period_var cpv WHERE cp.SCHOOL_ID='" . UserSchool() . "' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.SYEAR='" . UserSyear() . "' AND cp.TEACHER_ID='" . User('STAFF_ID') . "'";
+        $sql = "SELECT cp.COURSE_PERIOD_ID,cp.COURSE_PERIOD_ID as STU_COURSE_PERIOD_ID,cp.TITLE FROM course_periods cp,course_period_var cpv WHERE cp.SCHOOL_ID='" . UserCollege() . "' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.SYEAR='" . UserSyear() . "' AND cp.TEACHER_ID='" . User('STAFF_ID') . "'";
     }
-    $sql .= ' GROUP BY cp.COURSE_PERIOD_ID ORDER BY (SELECT SORT_ORDER FROM school_periods WHERE PERIOD_ID=cpv.PERIOD_ID)';
+    $sql .= ' GROUP BY cp.COURSE_PERIOD_ID ORDER BY (SELECT SORT_ORDER FROM college_periods WHERE PERIOD_ID=cpv.PERIOD_ID)';
     $schedule_stu = DBGet(DBQuery($sql));
     foreach ($schedule_stu as $val) {
         $arr[] = $val['COURSE_PERIOD_ID'];
@@ -412,7 +412,7 @@ function mySearch($extra) {
     }
     $date = DBDate();
 
-    $stu_schedule_qr = DBGet(DBQuery('SELECT count(ss.student_id) AS TOT FROM students s,course_periods cp,schedule ss ,student_enrollment ssm WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.SCHOOL_ID=' . UserSchool() . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND (ss.END_DATE>=\'' . $date . '\' OR ss.END_DATE IS NULL) AND cp.COURSE_PERIOD_ID IN (' . $cr_pr_id . ') AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND (\'' . $date . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL) AND (\'' . $date . '\'<=ss.END_DATE OR ss.END_DATE IS NULL)'));
+    $stu_schedule_qr = DBGet(DBQuery('SELECT count(ss.student_id) AS TOT FROM students s,course_periods cp,schedule ss ,student_enrollment ssm WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.SCHOOL_ID=' . UserCollege() . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND (ss.END_DATE>=\'' . $date . '\' OR ss.END_DATE IS NULL) AND cp.COURSE_PERIOD_ID IN (' . $cr_pr_id . ') AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND (\'' . $date . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL) AND (\'' . $date . '\'<=ss.END_DATE OR ss.END_DATE IS NULL)'));
      
     if ($stu_schedule_qr[1]['TOT'] > 0) {
         echo '<div class="alert bg-success alert-styled-left">' . ($stu_schedule_qr[1]['TOT'] == 1 ? $stu_schedule_qr[1]['TOT'] . "student is found." : $stu_schedule_qr[1]['TOT'] . " students are found.") . '</div>';
@@ -447,7 +447,7 @@ function GetActualCpName($cp_array) {
 function GetPeriodOcc($cp_id) {
     $period_name = array();
     $days = array('M' => 'Monday', 'T' => 'Tuesday', 'W' => 'Wednesday', 'H' => 'Thursday', 'F' => 'Friday', 'S' => 'Saturday', 'U' => 'Sunday');
-    $get_det = DBGet(DBQuery('SELECT cpv.DAYS,cpv.START_TIME,cpv.END_TIME,sp.TITLE FROM course_period_var cpv,school_periods sp WHERE cpv.PERIOD_ID=sp.PERIOD_ID AND cpv.COURSE_PERIOD_ID=' . $cp_id . ' GROUP BY cpv.DAYS,sp.PERIOD_ID,cpv.COURSE_PERIOD_ID'));
+    $get_det = DBGet(DBQuery('SELECT cpv.DAYS,cpv.START_TIME,cpv.END_TIME,sp.TITLE FROM course_period_var cpv,college_periods sp WHERE cpv.PERIOD_ID=sp.PERIOD_ID AND cpv.COURSE_PERIOD_ID=' . $cp_id . ' GROUP BY cpv.DAYS,sp.PERIOD_ID,cpv.COURSE_PERIOD_ID'));
     foreach ($get_det as $gd) {
         $period_name[] = $days[$gd['DAYS']] . ' - ' . $gd['TITLE'] . ' (' . date("g:i A", strtotime($gd['START_TIME'])) . ' - ' . date("g:i A", strtotime($gd['END_TIME'])) . ')';
     }
@@ -457,13 +457,13 @@ function GetPeriodOcc($cp_id) {
 function _make_no_student($value) {
     $date = DBDate();
 
-    $stu_schedule_qr = DBGet(DBQuery('SELECT count(ss.student_id) AS TOT FROM students s,course_periods cp,schedule ss ,student_enrollment ssm WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.SCHOOL_ID=' . UserSchool() . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND (ss.END_DATE>=\'' . $date . '\' OR ss.END_DATE IS NULL) AND cp.COURSE_PERIOD_ID=\'' . $value . '\' AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND (\'' . $date . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL) AND (\'' . $date . '\'<=ss.END_DATE OR ss.END_DATE IS NULL)'));
+    $stu_schedule_qr = DBGet(DBQuery('SELECT count(ss.student_id) AS TOT FROM students s,course_periods cp,schedule ss ,student_enrollment ssm WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.SCHOOL_ID=' . UserCollege() . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND (ss.END_DATE>=\'' . $date . '\' OR ss.END_DATE IS NULL) AND cp.COURSE_PERIOD_ID=\'' . $value . '\' AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND (\'' . $date . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL) AND (\'' . $date . '\'<=ss.END_DATE OR ss.END_DATE IS NULL)'));
     return $stu_schedule_qr[1]['TOT'];
 }
 
 function _makeSection($value) {
     if ($value != '') {
-        $section = DBGet(DBQuery('SELECT * FROM school_gradelevel_sections WHERE ID=' . $value));
+        $section = DBGet(DBQuery('SELECT * FROM college_gradelevel_sections WHERE ID=' . $value));
         $section = $section[1]['NAME'];
     } else
         $section = '';

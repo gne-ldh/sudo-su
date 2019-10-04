@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -37,7 +37,7 @@ function Currency($num='', $sign='', $red = false) {
         $cr = true;
         $num *= -1;
     }
-    $current_RET = DBGet(DBQuery('SELECT TITLE,VALUE,PROGRAM FROM program_config WHERE PROGRAM=\'Currency\' AND SYEAR =\'' . UserSyear() . '\' AND SCHOOL_ID =\'' . UserSchool() . '\' '));
+    $current_RET = DBGet(DBQuery('SELECT TITLE,VALUE,PROGRAM FROM program_config WHERE PROGRAM=\'Currency\' AND SYEAR =\'' . UserSyear() . '\' AND SCHOOL_ID =\'' . UserCollege() . '\' '));
     $val = $current_RET[1]['VALUE'];
 
     switch ($val) {

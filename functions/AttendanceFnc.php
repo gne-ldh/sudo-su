@@ -1,7 +1,7 @@
 <?php
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -41,8 +41,8 @@ function UpdateAttendanceDaily($student_id,$date='',$comment=false)
             $MP_TYPE='FY';
         }
                 $sql = 'SELECT
-				SUM(IF(cp.HALF_DAY LIKE \'Y\',(SELECT half_day_minute FROM system_preference WHERE school_id='.UserSchool().'),sp.LENGTH)) AS TOTAL
-			FROM schedule s,course_periods cp,course_period_var cpv,school_periods sp,attendance_calendar ac
+				SUM(IF(cp.HALF_DAY LIKE \'Y\',(SELECT half_day_minute FROM system_preference WHERE college_id='.UserCollege().'),sp.LENGTH)) AS TOTAL
+			FROM schedule s,course_periods cp,course_period_var cpv,college_periods sp,attendance_calendar ac
 			WHERE
 				s.COURSE_PERIOD_ID = cp.COURSE_PERIOD_ID AND cpv.DOES_ATTENDANCE=\'Y\'
 				AND ac.SCHOOL_DATE=\''.$date.'\' AND (ac.BLOCK=sp.BLOCK OR sp.BLOCK IS NULL)
@@ -63,15 +63,15 @@ function UpdateAttendanceDaily($student_id,$date='',$comment=false)
         $current_RET = DBGet(DBQuery('SELECT MINUTES_PRESENT,STATE_VALUE,COMMENT FROM attendance_day WHERE STUDENT_ID='.$student_id.' AND SCHOOL_DATE=\''.$date.'\''));
         $total=$current_RET['MINUTES_PRESENT'];
         
-        $sql = 'SELECT SUM(IF(cp.HALF_DAY LIKE \'Y\',(SELECT half_day_minute FROM system_preference WHERE school_id='.UserSchool().'),sp.LENGTH)) AS TOTAL
-			FROM attendance_period ap,school_periods sp,attendance_codes ac,course_periods cp
+        $sql = 'SELECT SUM(IF(cp.HALF_DAY LIKE \'Y\',(SELECT half_day_minute FROM system_preference WHERE college_id='.UserCollege().'),sp.LENGTH)) AS TOTAL
+			FROM attendance_period ap,college_periods sp,attendance_codes ac,course_periods cp
 			WHERE ap.STUDENT_ID=\''.$student_id.'\' AND ap.SCHOOL_DATE=\''.$date.'\' AND ap.PERIOD_ID=sp.PERIOD_ID AND ac.ID = ap.ATTENDANCE_CODE AND ac.STATE_CODE=\'P\'
 			AND sp.SYEAR=\''.UserSyear().'\' AND cp.COURSE_PERIOD_ID=ap.COURSE_PERIOD_ID';
 	$RET = DBGet(DBQuery($sql));
 	$total += $RET[1]['TOTAL'];
 
 	$sql = 'SELECT SUM(sp.LENGTH) AS TOTAL
-			FROM attendance_period ap,school_periods sp,attendance_codes ac
+			FROM attendance_period ap,college_periods sp,attendance_codes ac
 			WHERE ap.STUDENT_ID=\''.$student_id.'\' AND ap.SCHOOL_DATE=\''.$date.'\' AND ap.PERIOD_ID=sp.PERIOD_ID AND ac.ID = ap.ATTENDANCE_CODE AND ac.STATE_CODE=\'H\'
 			AND sp.SYEAR=\''.UserSyear().'\'';
 	$RET = DBGet(DBQuery($sql));
@@ -80,7 +80,7 @@ function UpdateAttendanceDaily($student_id,$date='',$comment=false)
         if(stripos($_SERVER['SERVER_SOFTWARE'], 'linux')){
           $comment=  singleQuoteReplace("'","\'",$comment);
         }
-	$sys_pref = DBGet(DBQuery('SELECT * FROM system_preference WHERE SCHOOL_ID='.UserSchool()));
+	$sys_pref = DBGet(DBQuery('SELECT * FROM system_preference WHERE SCHOOL_ID='.UserCollege()));
 	$fdm = $sys_pref[1]['FULL_DAY_MINUTE'];
 	$hdm = $sys_pref[1]['HALF_DAY_MINUTE'];
 
@@ -100,7 +100,7 @@ function UpdateAttendanceDaily($student_id,$date='',$comment=false)
 		DBQuery('UPDATE attendance_day SET COMMENT=\''.singleQuoteReplace("","",$comment).'\' WHERE STUDENT_ID=\''.$student_id.'\' AND SCHOOL_DATE=\''.$date.'\'');
 	elseif(count($current_RET)==0)
         {
-                $check_assoc=DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM attendance_period ap,course_periods cp WHERE ap.STUDENT_ID='.$student_id.' AND ap.SCHOOL_DATE=\''.$date.'\' AND cp.COURSE_PERIOD_ID=ap.COURSE_PERIOD_ID AND cp.SCHOOL_ID='.UserSchool().' AND cp.SYEAR='.UserSyear()));
+                $check_assoc=DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM attendance_period ap,course_periods cp WHERE ap.STUDENT_ID='.$student_id.' AND ap.SCHOOL_DATE=\''.$date.'\' AND cp.COURSE_PERIOD_ID=ap.COURSE_PERIOD_ID AND cp.SCHOOL_ID='.UserCollege().' AND cp.SYEAR='.UserSyear()));
                 if($check_assoc[1]['REC_EX']>0)
                 DBQuery('INSERT INTO attendance_day (SYEAR,STUDENT_ID,SCHOOL_DATE,MINUTES_PRESENT,STATE_VALUE,MARKING_PERIOD_ID,COMMENT) values(\''.UserSyear().'\',\''.$student_id.'\',\''.$date.'\',\''.$total.'\',\''.$length.'\',\''.$current_mp.'\',\''.singleQuoteReplace("","",$comment).'\')');
         }

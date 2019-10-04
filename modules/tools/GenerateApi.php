@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -65,7 +65,7 @@ function generateAPI()
 function generateSecret() 
 {
    
-    return md5(UserSchool().rand(10,9999).rand(88,88889));
+    return md5(UserCollege().rand(10,9999).rand(88,88889));
     
 }
 

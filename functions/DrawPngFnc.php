@@ -1,7 +1,7 @@
 <?php
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -37,10 +37,10 @@ function DrawPNG($src,$extra='')
 function DrawLogo()
 {	                        
     
-                        $sch_img_info= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE SCHOOL_ID='. UserSchool().' AND FILE_INFO=\'schlogo\''));
-                        if(!$_REQUEST['new_school'] && count($sch_img_info)>0){
+                        $sch_img_info= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE SCHOOL_ID='. UserCollege().' AND FILE_INFO=\'schlogo\''));
+                        if(!$_REQUEST['new_college'] && count($sch_img_info)>0){
 //                            $image="<img src='data:image/jpeg;base64,".base64_encode($sch_img_info[1]['CONTENT'])."' class=img-responsive />";
-//                        $logo_ret = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_id=\''.  UserSchool().'\' AND program=\'SchoolLogo\''));    
+//                        $logo_ret = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE college_id=\''.  UserCollege().'\' AND program=\'CollegeLogo\''));    
 //                        if($logo_ret && file_exists($logo_ret[1]['VALUE'])){
                             $logo=$logo_ret[1]['VALUE'];
                             $size = getimagesize($logo);
@@ -57,10 +57,10 @@ function DrawLogo()
 function DrawLogoReport()
 {	                        
     
-                        $sch_img_info= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE SCHOOL_ID='. UserSchool().' AND FILE_INFO=\'schlogo\''));
-                        if(!$_REQUEST['new_school'] && count($sch_img_info)>0){
+                        $sch_img_info= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE SCHOOL_ID='. UserCollege().' AND FILE_INFO=\'schlogo\''));
+                        if(!$_REQUEST['new_college'] && count($sch_img_info)>0){
 //                            $image="<img src='data:image/jpeg;base64,".base64_encode($sch_img_info[1]['CONTENT'])."' class=img-responsive />";
-//                        $logo_ret = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_id=\''.  UserSchool().'\' AND program=\'SchoolLogo\''));    
+//                        $logo_ret = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE college_id=\''.  UserCollege().'\' AND program=\'CollegeLogo\''));    
 //                        if($logo_ret && file_exists($logo_ret[1]['VALUE'])){
                             $logo=$logo_ret[1]['VALUE'];
                             $size = getimagesize($logo);
@@ -75,7 +75,7 @@ function DrawLogoReport()
 	return $image;
 }
 function DrawLogoParam($param='')
-{	                        $logo_ret = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_id=\''.($param==''?UserSchool():$param).'\' AND program=\'SchoolLogo\''));    
+{	                        $logo_ret = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE college_id=\''.($param==''?UserCollege():$param).'\' AND program=\'CollegeLogo\''));    
                         if($logo_ret && file_exists($logo_ret[1]['VALUE'])){
                             $logo=$logo_ret[1]['VALUE'];
                             $size = getimagesize($logo);

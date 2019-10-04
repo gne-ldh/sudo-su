@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -38,12 +38,12 @@ if ($url === FALSE) {
 }
 
 if (optional_param('dis', '', PARAM_ALPHAEXT) == 'fl_count') {
-    $error[] = "Either your account is inactive or your access permission has been revoked. Please contact the school administration.
+    $error[] = "Either your account is inactive or your access permission has been revoked. Please contact the college administration.
 ";
 }
 
 if (optional_param('dis', '', PARAM_ALPHAEXT) == 'assoc_mis') {
-    $error[] = "No student is associated with the parent. Please contact the school administration.";
+    $error[] = "No student is associated with the parent. Please contact the college administration.";
 }
 
 if (isset($_GET['ins']))
@@ -140,14 +140,14 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
             $login_Check = DBGet(DBQuery("SELECT STAFF_ID FROM staff WHERE STAFF_ID=" . $login_uniform['USER_ID']));
 
             if (count($login_Check) > 0) {
-                $opensis_staff_access = DBGet(DBQuery('SELECT * FROM staff_school_info WHERE STAFF_ID=' . $login_Check[1]['STAFF_ID']));
+                $opensis_staff_access = DBGet(DBQuery('SELECT * FROM staff_college_info WHERE STAFF_ID=' . $login_Check[1]['STAFF_ID']));
 
-                $get_details = DBGet(DBQuery("SELECT SYEAR,SCHOOL_ID FROM `school_years` WHERE SYEAR IN (SELECT MAX(SYEAR) FROM school_years GROUP BY SCHOOL_ID)"));
+                $get_details = DBGet(DBQuery("SELECT SYEAR,SCHOOL_ID FROM `college_years` WHERE SYEAR IN (SELECT MAX(SYEAR) FROM college_years GROUP BY SCHOOL_ID)"));
                 foreach ($get_details as $gd_i => $gd_d) {
-                    $get_stf_d = DBGet(DBQuery('SELECT COUNT(1) as INACTIVE FROM staff_school_relationship WHERE staff_id=\'' . $login_Check[1]['STAFF_ID'] . '\' AND SCHOOL_ID=\'' . $gd_d['SCHOOL_ID'] . '\' AND SYEAR=\'' . $gd_d['SYEAR'] . '\' AND END_DATE<\'' . date('Y-m-d') . '\' AND END_DATE!=\'0000-00-00\' '));
+                    $get_stf_d = DBGet(DBQuery('SELECT COUNT(1) as INACTIVE FROM staff_college_relationship WHERE staff_id=\'' . $login_Check[1]['STAFF_ID'] . '\' AND SCHOOL_ID=\'' . $gd_d['SCHOOL_ID'] . '\' AND SYEAR=\'' . $gd_d['SYEAR'] . '\' AND END_DATE<\'' . date('Y-m-d') . '\' AND END_DATE!=\'0000-00-00\' '));
                     if ($get_stf_d[1]['INACTIVE'] > 0)
                         $get_ac_st++;
-                    $tot_stf_rec = DBGet(DBQuery('SELECT COUNT(1) as TOTAL FROM staff_school_relationship WHERE staff_id=\'' . $login_Check[1]['STAFF_ID'] . '\' AND SCHOOL_ID=\'' . $gd_d['SCHOOL_ID'] . '\' AND SYEAR=\'' . $gd_d['SYEAR'] . '\''));
+                    $tot_stf_rec = DBGet(DBQuery('SELECT COUNT(1) as TOTAL FROM staff_college_relationship WHERE staff_id=\'' . $login_Check[1]['STAFF_ID'] . '\' AND SCHOOL_ID=\'' . $gd_d['SCHOOL_ID'] . '\' AND SYEAR=\'' . $gd_d['SYEAR'] . '\''));
                     if ($tot_stf_rec[1]['TOTAL'] > 0)
                         $get_tot_st++;
                 }
@@ -155,8 +155,8 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
 
             if ($login_Check[1]['STAFF_ID'] != '' && $get_ac_st <= $get_tot_st) {
                 $login_RET = DBGet(DBQuery("SELECT PROFILE,STAFF_ID,CURRENT_SCHOOL_ID,FIRST_NAME,LAST_NAME,s.PROFILE_ID,IS_DISABLE,MAX(ssr.SYEAR) AS SYEAR
-                                            FROM staff s INNER JOIN staff_school_relationship ssr USING(staff_id),school_years sy
-                                            WHERE sy.school_id=s.current_school_id AND sy.syear=ssr.syear AND s.STAFF_ID=" . $login_uniform['USER_ID']));
+                                            FROM staff s INNER JOIN staff_college_relationship ssr USING(staff_id),college_years sy
+                                            WHERE sy.college_id=s.current_college_id AND sy.syear=ssr.syear AND s.STAFF_ID=" . $login_uniform['USER_ID']));
                 if (count($login_RET) > 0) {
                     if ($opensis_staff_access[1]['OPENSIS_ACCESS'] == 'N') {
                         $login_RET[1]['IS_DISABLE'] = 'Y';
@@ -173,8 +173,8 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
             }
             $loged_staff_id = $login_RET[1]['STAFF_ID'];
             if ($usr_prof == 'teacher' && $loged_staff_id != "") {
-                $sql = 'SELECT STAFF_ID FROM staff_school_relationship WHERE STAFF_ID=' . $loged_staff_id . ' AND (END_DATE>=CURDATE() OR END_DATE=\'0000-00-00\') AND SYEAR=\'' . $login_RET[1]['SYEAR'] . '\'';
-                $is_teacher_assoc = DBGet(DBQuery('SELECT STAFF_ID FROM staff_school_relationship WHERE STAFF_ID=' . $loged_staff_id . ' AND (END_DATE>=CURDATE() OR END_DATE=\'0000-00-00\' OR END_DATE IS NULL) AND SYEAR=\'' . $login_RET[1]['SYEAR'] . '\''));
+                $sql = 'SELECT STAFF_ID FROM staff_college_relationship WHERE STAFF_ID=' . $loged_staff_id . ' AND (END_DATE>=CURDATE() OR END_DATE=\'0000-00-00\') AND SYEAR=\'' . $login_RET[1]['SYEAR'] . '\'';
+                $is_teacher_assoc = DBGet(DBQuery('SELECT STAFF_ID FROM staff_college_relationship WHERE STAFF_ID=' . $loged_staff_id . ' AND (END_DATE>=CURDATE() OR END_DATE=\'0000-00-00\' OR END_DATE IS NULL) AND SYEAR=\'' . $login_RET[1]['SYEAR'] . '\''));
                 if (empty($is_teacher_assoc)) {
 
                     header("location:index.php?modfunc=logout&staff=na");
@@ -185,7 +185,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
         if ($usr_prof == 'parent') {
             $login_Check = DBGet(DBQuery("SELECT STAFF_ID FROM people WHERE STAFF_ID=" . $login_uniform['USER_ID']));
             if (count($login_Check) > 0) {
-                $get_details = DBGet(DBQuery("SELECT SYEAR,SCHOOL_ID FROM `school_years` WHERE SYEAR IN (SELECT MAX(SYEAR) FROM school_years GROUP BY SCHOOL_ID)"));
+                $get_details = DBGet(DBQuery("SELECT SYEAR,SCHOOL_ID FROM `college_years` WHERE SYEAR IN (SELECT MAX(SYEAR) FROM college_years GROUP BY SCHOOL_ID)"));
             }
 
             if ($login_Check[1]['STAFF_ID'] != '') {
@@ -193,13 +193,13 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
                 $max_syear = DBGet(DBQuery('SELECT MAX(SYEAR) as SYEAR FROM student_enrollment se,students_join_people sjp WHERE se.STUDENT_ID=sjp.STUDENT_ID AND sjp.PERSON_ID=' . $login_uniform['USER_ID']));
                 $max_syear = $max_syear[1]['SYEAR'];
                 if ($max_syear == '') {
-                    $error[] = "No student is associated with the parent. Please contact the school administration.";
+                    $error[] = "No student is associated with the parent. Please contact the college administration.";
                     session_destroy();
                     header("location:index.php?modfunc=logout&dis=assoc_mis");
                 }
                 $login_RET = DBGet(DBQuery("SELECT PROFILE,STAFF_ID,CURRENT_SCHOOL_ID,FIRST_NAME,LAST_NAME,PROFILE_ID,IS_DISABLE," . $max_syear . " AS SYEAR
-                                    FROM people,school_years sy
-                                    WHERE sy.school_id=people.current_school_id AND sy.syear=" . $max_syear . " AND STAFF_ID=" . $login_uniform['USER_ID']));
+                                    FROM people,college_years sy
+                                    WHERE sy.college_id=people.current_college_id AND sy.syear=" . $max_syear . " AND STAFF_ID=" . $login_uniform['USER_ID']));
                 if (count($login_RET) > 0) {
                     $login_RET[1]['USERNAME'] = $login_uniform['USERNAME'];
                     $login_RET[1]['LAST_LOGIN'] = $login_uniform['LAST_LOGIN'];
@@ -258,9 +258,9 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
                         $usr_prof = $usr_prof[1]['PROFILE'];
                         if ($usr_prof == 'admin' || $usr_prof == 'teacher') {
 
-                            $login_RET = DBGet(DBQuery("SELECT s.PROFILE AS PROFILE,s.STAFF_ID AS STAFF_ID,s.CURRENT_SCHOOL_ID AS CURRENT_SCHOOL_ID,s.FIRST_NAME AS FIRST_NAME,s.LAST_NAME AS LAST_NAME,s.PROFILE_ID AS PROFILE_ID,s.IS_DISABLE AS IS_DISABLE FROM staff s,staff_school_relationship ssr WHERE s.STAFF_ID=ssr.STAFF_ID AND ssr.SYEAR=(SELECT MAX(ssr1.SYEAR) FROM staff_school_relationship ssr1,staff s1 WHERE ssr1.STAFF_ID=s1.STAFF_ID AND s1.STAFF_ID=" . $login_unchk['USER_ID'] . ") AND s.STAFF_ID=" . $login_unchk['USER_ID'])); //pinki             
+                            $login_RET = DBGet(DBQuery("SELECT s.PROFILE AS PROFILE,s.STAFF_ID AS STAFF_ID,s.CURRENT_SCHOOL_ID AS CURRENT_SCHOOL_ID,s.FIRST_NAME AS FIRST_NAME,s.LAST_NAME AS LAST_NAME,s.PROFILE_ID AS PROFILE_ID,s.IS_DISABLE AS IS_DISABLE FROM staff s,staff_college_relationship ssr WHERE s.STAFF_ID=ssr.STAFF_ID AND ssr.SYEAR=(SELECT MAX(ssr1.SYEAR) FROM staff_college_relationship ssr1,staff s1 WHERE ssr1.STAFF_ID=s1.STAFF_ID AND s1.STAFF_ID=" . $login_unchk['USER_ID'] . ") AND s.STAFF_ID=" . $login_unchk['USER_ID'])); //pinki             
                             if (count($login_RET) > 0) {
-                                $opensis_staff_access = DBGet(DBQuery('SELECT * FROM staff_school_info WHERE STAFF_ID=' . $login_RET[1]['STAFF_ID']));
+                                $opensis_staff_access = DBGet(DBQuery('SELECT * FROM staff_college_info WHERE STAFF_ID=' . $login_RET[1]['STAFF_ID']));
                                 if ($opensis_staff_access[1]['OPENSIS_ACCESS'] == 'N') {
                                     $login_RET[1]['IS_DISABLE'] = 'Y';
                                 }
@@ -295,9 +295,9 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
                     $admin_RET = DBGet(DBQuery("SELECT STAFF_ID,la.USERNAME,la.FAILED_LOGIN,la.LAST_LOGIN,la.PROFILE_ID FROM staff s,login_authentication la WHERE PROFILE='$username' AND UPPER(la.PASSWORD)=UPPER('$password') AND s.STAFF_ID=la.USER_ID"));  // Uid and Password Checking
 
                     if ($admin_RET) {
-                        $login_RET = DBGet(DBQuery("SELECT PROFILE,s.STAFF_ID,CURRENT_SCHOOL_ID,FIRST_NAME,LAST_NAME,PROFILE_ID,IS_DISABLE FROM staff s,staff_school_relationship ssr WHERE s.STAFF_ID=ssr.STAFF_ID AND SYEAR=(SELECT MAX(SYEAR) FROM staff_school_relationship WHERE STAFF_ID=" . $admin_RET[1]['STAFF_ID'] . ") AND s.STAFF_ID=" . $admin_RET[1]['STAFF_ID']));
+                        $login_RET = DBGet(DBQuery("SELECT PROFILE,s.STAFF_ID,CURRENT_SCHOOL_ID,FIRST_NAME,LAST_NAME,PROFILE_ID,IS_DISABLE FROM staff s,staff_college_relationship ssr WHERE s.STAFF_ID=ssr.STAFF_ID AND SYEAR=(SELECT MAX(SYEAR) FROM staff_college_relationship WHERE STAFF_ID=" . $admin_RET[1]['STAFF_ID'] . ") AND s.STAFF_ID=" . $admin_RET[1]['STAFF_ID']));
                         if (count($login_RET) > 0) {
-                            $opensis_staff_access = DBGet(DBQuery('SELECT * FROM staff_school_info WHERE STAFF_ID=' . $login_RET[1]['STAFF_ID']));
+                            $opensis_staff_access = DBGet(DBQuery('SELECT * FROM staff_college_info WHERE STAFF_ID=' . $login_RET[1]['STAFF_ID']));
                             if ($opensis_staff_access[1]['OPENSIS_ACCESS'] == 'N') {
                                 $login_RET[1]['IS_DISABLE'] = 'Y';
                             }
@@ -323,9 +323,9 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
         $_SESSION['STAFF_ID'] = $login_RET[1]['STAFF_ID'];
         $_SESSION['LAST_LOGIN'] = $login_RET[1]['LAST_LOGIN'];
 
-        $syear_RET = DBGet(DBQuery("SELECT MAX(SYEAR) AS SYEAR FROM school_years WHERE SCHOOL_ID=" . $login_RET[1]['CURRENT_SCHOOL_ID']));
+        $syear_RET = DBGet(DBQuery("SELECT MAX(SYEAR) AS SYEAR FROM college_years WHERE SCHOOL_ID=" . $login_RET[1]['CURRENT_SCHOOL_ID']));
         $_SESSION['UserSyear'] = $syear_RET[1]['SYEAR'];
-        $_SESSION['UserSchool'] = $login_RET[1]['CURRENT_SCHOOL_ID'];
+        $_SESSION['UserCollege'] = $login_RET[1]['CURRENT_SCHOOL_ID'];
         $_SESSION['PROFILE_ID'] = $login_RET[1]['PROFILE_ID'];
         $_SESSION['FIRST_NAME'] = $login_RET[1]['FIRST_NAME'];
         $_SESSION['LAST_NAME'] = $login_RET[1]['LAST_NAME'];
@@ -381,7 +381,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
         if ($ad_f_cnt && $ad_f_cnt != 0 && $failed_login > $ad_f_cnt && ($profile_id != 1 && $profile_id != 0)) {
             $staff_info = DBGet(DBQuery('SELECT * FROM login_authentication WHERE UPPER(USERNAME)=UPPER(\'' . $username . '\') AND UPPER(PASSWORD)=UPPER(\'' . $password . '\')'));
             if ($staff_info[1]['PROFILE_ID'] == 2 || $staff_info[1]['PROFILE_ID'] == 6)
-                DBQuery("UPDATE staff s,staff_school_relationship ssp SET s.IS_DISABLE='Y' WHERE s.STAFF_ID=ssp.STAFF_ID AND s.STAFF_ID='" . $staff_info[1]['USER_ID'] . "' AND s.PROFILE_ID='" . $staff_info[1]['PROFILE_ID'] . " ' AND ssp.SYEAR='$_SESSION[UserSyear]' AND s.PROFILE_ID NOT IN (0,1)"); //pinki
+                DBQuery("UPDATE staff s,staff_college_relationship ssp SET s.IS_DISABLE='Y' WHERE s.STAFF_ID=ssp.STAFF_ID AND s.STAFF_ID='" . $staff_info[1]['USER_ID'] . "' AND s.PROFILE_ID='" . $staff_info[1]['PROFILE_ID'] . " ' AND ssp.SYEAR='$_SESSION[UserSyear]' AND s.PROFILE_ID NOT IN (0,1)"); //pinki
             if ($staff_info[1]['PROFILE_ID'] == 4)
                 DBQuery("UPDATE people SET IS_DISABLE='Y' WHERE STAFF_ID=" . $staff_info[1]['USER_ID']);
             session_destroy();
@@ -406,7 +406,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
         if ($activity && $activity != 0 && $days > $activity && ($profile_id != 1 && $profile_id != 0) && $last_login) {
 
             if ($profile_id != 4)
-                DBQuery("UPDATE staff s,staff_school_relationship ssp SET s.IS_DISABLE='Y' WHERE s.STAFF_ID=ssp.STAFF_ID AND s.STAFF_ID='" . $_SESSION['STAFF_ID'] . "' AND ssp.SYEAR='$_SESSION[UserSyear]' AND s.PROFILE_ID NOT IN (0,1)"); //pinki		    
+                DBQuery("UPDATE staff s,staff_college_relationship ssp SET s.IS_DISABLE='Y' WHERE s.STAFF_ID=ssp.STAFF_ID AND s.STAFF_ID='" . $_SESSION['STAFF_ID'] . "' AND ssp.SYEAR='$_SESSION[UserSyear]' AND s.PROFILE_ID NOT IN (0,1)"); //pinki		    
             else
                 DBQuery("UPDATE people SET IS_DISABLE='Y' WHERE STAFF_ID=" . $_SESSION['STAFF_ID']);
             session_destroy();
@@ -428,20 +428,20 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
         $ad_f_cnt = $admin_failed_count[1]['FAIL_COUNT'];
         if (isset($login_RET) && count($login_RET) > 0) {
             if ($ad_f_cnt && $ad_f_cnt != 0 && $login_RET[1]['FAILED_LOGIN'] < $ad_f_cnt && $login_RET[1]['PROFILE'] != 'admin')
-                $error[] = "Either your account is inactive or your access permission has been revoked. Please contact the school administration.";
+                $error[] = "Either your account is inactive or your access permission has been revoked. Please contact the college administration.";
             else{
-               $check_acess=DBGet(DBQuery('SELECT OPENSIS_ACCESS FROM staff_school_info WHERE STAFF_ID='.$login_RET[1]['STAFF_ID']));
+               $check_acess=DBGet(DBQuery('SELECT OPENSIS_ACCESS FROM staff_college_info WHERE STAFF_ID='.$login_RET[1]['STAFF_ID']));
                if($check_acess[1]['OPENSIS_ACCESS']=='N')
-               $error[] = "You do not have portal access. Contact the school administration to enable it.";    
+               $error[] = "You do not have portal access. Contact the college administration to enable it.";    
                else    
-               $error[] = "Your account has been disabled. Contact the school administration to enable your account.";
+               $error[] = "Your account has been disabled. Contact the college administration to enable your account.";
             }
         }
         if (isset($student_RET) && count($student_RET) > 0) {
             if ($ad_f_cnt && $ad_f_cnt != 0 && $student_RET[1]['FAILED_LOGIN'] < $ad_f_cnt)
-                $error[] = "Either your account is inactive or your access permission has been revoked. Please contact the school administration.";
+                $error[] = "Either your account is inactive or your access permission has been revoked. Please contact the college administration.";
             else
-                $error[] = "Your account has been disabled. Contact the school administration to enable your account.";
+                $error[] = "Your account has been disabled. Contact the college administration to enable your account.";
         }
     }
     elseif ($student_RET) {
@@ -533,7 +533,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
                 if ($failed_login_stu == $ad_f_cnt)
                     $error[] = " Incorrect username or password. Please try again.";
                 else
-                    $error[] = "Due to excessive incorrect login attempts your account has been disabled. Contact the school administration to enable your account.";
+                    $error[] = "Due to excessive incorrect login attempts your account has been disabled. Contact the college administration to enable your account.";
             } else
                 $error[] = " Incorrect username or password. Please try again.";
 
@@ -551,7 +551,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
     }
 
     if ($_REQUEST[staff] == 'na') {
-        $error[] = "You are not asigned to any school";
+        $error[] = "You are not asigned to any college";
     }
     if (UserSyear() != '') {
         $last_update = DBGet(DBQuery('SELECT value FROM program_config WHERE title=\'LAST_UPDATE\' AND program=\'SeatFill\'  AND SYEAR=' . UserSyear()));
@@ -600,7 +600,7 @@ if (optional_param('modfunc', '', PARAM_ALPHA) == 'create_account') {
     if (!$_REQUEST['staff']['USERNAME'])
         Warehouse('footer_plain');
     else {
-        $note[] = 'Your account has been created.  You will be notified by email when it is verified by school administration and you can log in.';
+        $note[] = 'Your account has been created.  You will be notified by email when it is verified by college administration and you can log in.';
         session_destroy();
     }
 }

@@ -1,7 +1,7 @@
 <?php
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -29,8 +29,8 @@
 include('RedirectRootInc.php');
 include'ConfigInc.php';
 include 'Warehouse.php';
-$school_id=(int)$_GET['id'];
-$res= DBGet(DBQuery('SELECT * FROM school_gradelevels WHERE school_id='.$school_id.''));
+$college_id=(int)$_GET['id'];
+$res= DBGet(DBQuery('SELECT * FROM college_gradelevels WHERE college_id='.$college_id.''));
 $period_select="<OPTION value=''>N/A</OPTION>";
 foreach($res as $r1)
 {

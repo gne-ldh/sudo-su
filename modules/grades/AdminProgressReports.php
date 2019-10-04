@@ -1,7 +1,7 @@
 <?php
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -59,7 +59,7 @@ if($_REQUEST['modfunc']=='save')
                           
 			unset($_openSIS['DrawHeader']);
 			echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-			echo "<tr><td width=105>".DrawLogo()."</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">". GetSchool(UserSchool())."<div style=\"font-size:12px;\">Student Progress Report</div></td><td align=right style=\"padding-top:20px;\">". ProperDate(DBDate()) ."<br/>Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+			echo "<tr><td width=105>".DrawLogo()."</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">". GetCollege(UserCollege())."<div style=\"font-size:12px;\">Student Progress Report</div></td><td align=right style=\"padding-top:20px;\">". ProperDate(DBDate()) ."<br/>Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
 			echo '<table border=0 style=\"font-size:12px;\">';
 			echo "<tr><td>Student Name:</td>";
 			echo "<td>" .$student['FULL_NAME']. "</td></tr>";
@@ -81,18 +81,18 @@ if($_REQUEST['modfunc']=='save')
                         }
                         if($MP_TYPE=="QTR")
                                 {
-                                    $quarter_val=DBGet(DBQuery('SELECT START_DATE, END_DATE FROM school_quarters WHERE MARKING_PERIOD_ID='.UserMP().' '));
+                                    $quarter_val=DBGet(DBQuery('SELECT START_DATE, END_DATE FROM college_quarters WHERE MARKING_PERIOD_ID='.UserMP().' '));
                                     $q=$quarter_val[1];
-                                    $quarter=DBGet(DBQuery('SELECT MARKING_PERIOD_ID  FROM school_quarters WHERE ((\''.$q['START_DATE'].'\'Between START_DATE And END_DATE ) OR(\''.$q['END_DATE'].'\'Between START_DATE And END_DATE ))  AND SCHOOL_ID=999'));
+                                    $quarter=DBGet(DBQuery('SELECT MARKING_PERIOD_ID  FROM college_quarters WHERE ((\''.$q['START_DATE'].'\'Between START_DATE And END_DATE ) OR(\''.$q['END_DATE'].'\'Between START_DATE And END_DATE ))  AND SCHOOL_ID=999'));
                                     $EVAL=$quarter[1];
 
                                 }
                             if($MP_TYPE=="SEM")
                                 {
-                                    $semester_val=DBGet(DBQuery('SELECT START_DATE, END_DATE FROM school_semesters WHERE MARKING_PERIOD_ID='.UserMP().' '));
+                                    $semester_val=DBGet(DBQuery('SELECT START_DATE, END_DATE FROM college_semesters WHERE MARKING_PERIOD_ID='.UserMP().' '));
                                     $q=$semester_val[1];
                                     
-                                    $semester=DBGet(DBQuery('SELECT MARKING_PERIOD_ID  FROM school_semesters WHERE ((\''.$q['START_DATE'].'\'Between START_DATE And END_DATE ) OR(\''.$q['END_DATE'].'\'Between START_DATE And END_DATE )) AND SCHOOL_ID=999'));
+                                    $semester=DBGet(DBQuery('SELECT MARKING_PERIOD_ID  FROM college_semesters WHERE ((\''.$q['START_DATE'].'\'Between START_DATE And END_DATE ) OR(\''.$q['END_DATE'].'\'Between START_DATE And END_DATE )) AND SCHOOL_ID=999'));
                                     $EVAL=$semester[1];
                                    
                                   
@@ -100,9 +100,9 @@ if($_REQUEST['modfunc']=='save')
                                 }
                             if($MP_TYPE=="FY")
                                 {
-                                    $year_val=DBGet(DBQuery('SELECT START_DATE, END_DATE FROM school_years WHERE MARKING_PERIOD_ID='.UserMP().' '));
+                                    $year_val=DBGet(DBQuery('SELECT START_DATE, END_DATE FROM college_years WHERE MARKING_PERIOD_ID='.UserMP().' '));
                                     $q=$year_val[1];
-                                    $year=DBGet(DBQuery('SELECT MARKING_PERIOD_ID  FROM school_years WHERE ((\''.$q['START_DATE'].'\'Between START_DATE And END_DATE ) OR(\''.$q['END_DATE'].'\'Between START_DATE And END_DATE )) AND SCHOOL_ID=999 '));
+                                    $year=DBGet(DBQuery('SELECT MARKING_PERIOD_ID  FROM college_years WHERE ((\''.$q['START_DATE'].'\'Between START_DATE And END_DATE ) OR(\''.$q['END_DATE'].'\'Between START_DATE And END_DATE )) AND SCHOOL_ID=999 '));
                                     $EVAL=$year[1];
 
                                 }
@@ -112,8 +112,8 @@ if($_REQUEST['modfunc']=='save')
 				echo '<tr><TD colspan=2>'.$student['MAILING_LABEL'].'</TD></TR>';
 
 			
-                    $school_years = DBGet(DBQuery('SELECT marking_period_id from  school_years where  syear='.UserSyear().' and school_id='.UserSchool()));
-                                    $fy_mp_id = $school_years[1]['MARKING_PERIOD_ID'];  
+                    $college_years = DBGet(DBQuery('SELECT marking_period_id from  college_years where  syear='.UserSyear().' and college_id='.UserCollege()));
+                                    $fy_mp_id = $college_years[1]['MARKING_PERIOD_ID'];  
                     $courselist_ret = DBGet(DBQuery('SELECT s.TITLE AS COURSE, s.COURSE_ID, cp.COURSE_PERIOD_ID,cp.TEACHER_ID 
                                                     FROM gradebook_grades g, courses s, course_periods cp, gradebook_assignments ga, schedule sc
                                                         WHERE cp.COURSE_PERIOD_ID = ga.COURSE_PERIOD_ID AND sc.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND sc.STUDENT_ID=g.STUDENT_ID 
@@ -155,8 +155,8 @@ if($_REQUEST['modfunc']=='save')
 			if($program_config[$course['TEACHER_ID']][$course_period_id]['WEIGHT']=='Y'){
                                 $course_periods = DBGet(DBQuery('select marking_period_id from course_periods where course_period_id='.$course_period_id));
                                 if($course_periods[1]['MARKING_PERIOD_ID']==NULL){
-                                    $school_years = DBGet(DBQuery('select marking_period_id from  school_years where  syear='.UserSyear().' and school_id='.UserSchool()));
-                                    $fy_mp_id = $school_years[1]['MARKING_PERIOD_ID'];
+                                    $college_years = DBGet(DBQuery('select marking_period_id from  college_years where  syear='.UserSyear().' and college_id='.UserCollege()));
+                                    $fy_mp_id = $college_years[1]['MARKING_PERIOD_ID'];
                                     $sql = 'SELECT '.$course_period_id.' as COURSE_PERIOD_ID,a.TITLE,t.TITLE AS ASSIGN_TYP,a.ASSIGNED_DATE,a.DUE_DATE,      t.ASSIGNMENT_TYPE_ID,     t.FINAL_GRADE_PERCENT,t.FINAL_GRADE_PERCENT as ASSIGN_TYP_WG,t.FINAL_GRADE_PERCENT AS WEIGHT_GRADE  ,g.POINTS,a.POINTS AS TOTAL_POINTS,g.COMMENT,g.POINTS AS LETTER_GRADE,g.POINTS AS LETTERWTD_GRADE,'.$course['TEACHER_ID'].' AS CP_TEACHER_ID,CASE WHEN (a.ASSIGNED_DATE IS NULL OR CURRENT_DATE>=a.ASSIGNED_DATE) AND (a.DUE_DATE IS NULL OR CURRENT_DATE>=a.DUE_DATE) THEN \'Y\' ELSE NULL END AS DUE FROM gradebook_assignment_types t,gradebook_assignments a 
                                         LEFT OUTER JOIN gradebook_grades g ON (a.ASSIGNMENT_ID=g.ASSIGNMENT_ID AND g.STUDENT_ID=\''.$student['STUDENT_ID'].'\' AND g.COURSE_PERIOD_ID=\''.$course_period_id.'\') 
                                              WHERE   a.ASSIGNMENT_TYPE_ID=t.ASSIGNMENT_TYPE_ID AND (a.COURSE_PERIOD_ID=\''.$course_period_id.'\' OR a.COURSE_ID=\''.$course_id.'\' ) AND t.COURSE_ID=\''.$course_id.'\' AND (a.MARKING_PERIOD_ID=\''.UserMP().'\' OR a.MARKING_PERIOD_ID=\''.$fy_mp_id.'\')';
@@ -170,8 +170,8 @@ if($_REQUEST['modfunc']=='save')
                         }else{
                             $course_periods = DBGet(DBQuery('select marking_period_id from course_periods where course_period_id='.$course_period_id));
                                 if($course_periods[1]['MARKING_PERIOD_ID']==NULL){
-                                    $school_years = DBGet(DBQuery('select marking_period_id from  school_years where  syear='.UserSyear().' and school_id='.UserSchool()));
-                                    $fy_mp_id = $school_years[1]['MARKING_PERIOD_ID'];
+                                    $college_years = DBGet(DBQuery('select marking_period_id from  college_years where  syear='.UserSyear().' and college_id='.UserCollege()));
+                                    $fy_mp_id = $college_years[1]['MARKING_PERIOD_ID'];
                                     
                                     $sql = 'SELECT '.$course_period_id.' as COURSE_PERIOD_ID,a.TITLE,t.TITLE AS ASSIGN_TYP,a.ASSIGNED_DATE,a.DUE_DATE,\'-1\' AS ASSIGNMENT_TYPE_ID,\'1\' AS FINAL_GRADE_PERCENT,\'N/A\' as ASSIGN_TYP_WG,\'N/A\' as WEIGHT_GRADE,g.POINTS,a.POINTS AS TOTAL_POINTS,g.COMMENT,g.POINTS AS LETTER_GRADE,g.POINTS AS LETTERWTD_GRADE,'.$course['TEACHER_ID'].' AS CP_TEACHER_ID,CASE WHEN (a.ASSIGNED_DATE IS NULL OR CURRENT_DATE>=a.ASSIGNED_DATE) AND (a.DUE_DATE IS NULL OR CURRENT_DATE>=a.DUE_DATE) THEN \'Y\' ELSE NULL END AS DUE FROM    gradebook_assignment_types t,gradebook_assignments a
                                         LEFT OUTER JOIN gradebook_grades g ON (a.ASSIGNMENT_ID=g.ASSIGNMENT_ID AND g.STUDENT_ID=\''.$student['STUDENT_ID'].'\' AND g.COURSE_PERIOD_ID=\''.$course_period_id.'\')

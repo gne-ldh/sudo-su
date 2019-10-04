@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -115,7 +115,7 @@ echo '<div class="modal-body">';
 echo '<div id="conf_div" class="text-center"></div>';
 echo '<div class="row" id="resp_table">';
 echo '<div class="col-md-4">';
-$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
@@ -155,7 +155,7 @@ $extra['new'] = true;
 
 if (User('PROFILE') == 'parent' || User('PROFILE') == 'student')
     $_REQUEST['search_modfunc'] = 'list';
-$SCHOOL_RET = DBGet(DBQuery('SELECT * from schools where ID = \'' . UserSchool() . '\''));
+$SCHOOL_RET = DBGet(DBQuery('SELECT * from colleges where ID = \'' . UserCollege() . '\''));
 Search('student_id', $extra, 'true');
 
 function _roundGPA($gpa, $column) {

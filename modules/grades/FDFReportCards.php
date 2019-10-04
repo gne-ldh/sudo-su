@@ -1,7 +1,7 @@
 <?php
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -35,7 +35,7 @@ if(count($_REQUEST['mp_arr']))
 }
 
 $extra['search'] = '<TR><TD align=right>Marking Periods</TD><TD><TABLE>';
-$mps_RET = DBGet(DBQuery('SELECT SEMESTER_ID,MARKING_PERIOD_ID,SHORT_NAME FROM school_quarters WHERE SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserSchool().'\' ORDER BY SORT_ORDER'),array(),array('SEMESTER_ID'));
+$mps_RET = DBGet(DBQuery('SELECT SEMESTER_ID,MARKING_PERIOD_ID,SHORT_NAME FROM college_quarters WHERE SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserCollege().'\' ORDER BY SORT_ORDER'),array(),array('SEMESTER_ID'));
 foreach($mps_RET as $sem=>$quarters)
 {
 	$extra['search'] .= '<TR>';
@@ -60,7 +60,7 @@ $extra['SELECT'] .= ',smc.COMMENT AS STUDENT_MP_COMMENT,rpg.TITLE as GRADE_TITLE
                     (SELECT count(*) FROM attendance_period ap,attendance_codes ac 
                     WHERE ac.ID=ap.ATTENDANCE_CODE AND ac.STATE_CODE=\'A\' AND ap.COURSE_PERIOD_ID=sg1.COURSE_PERIOD_ID AND sg1.MARKING_PERIOD_ID=ap.MARKING_PERIOD_ID AND ap.STUDENT_ID=ssm.STUDENT_ID) AS MP_ABSENCES ';
 $extra['FROM'] .= ',student_report_card_grades sg1 LEFT OUTER JOIN report_card_grades rpg ON (rpg.ID=sg1.REPORT_CARD_GRADE_ID) LEFT OUTER JOIN student_mp_comments smc ON (smc.STUDENT_ID=sg1.STUDENT_ID AND smc.MARKING_PERIOD_ID=sg1.MARKING_PERIOD_ID),
-                    courses c,course_periods cp1,school_periods sp';
+                    courses c,course_periods cp1,college_periods sp';
 $extra['WHERE'] .= ' AND sg1.MARKING_PERIOD_ID IN ('.$mp_list.')
                     AND cp1.COURSE_PERIOD_ID=sg1.COURSE_PERIOD_ID AND c.COURSE_ID = cp1.COURSE_ID AND sg1.STUDENT_ID=ssm.STUDENT_ID AND sp.PERIOD_ID=cp1.PERIOD_ID';
 $extra['ORDER'] .= ',sp.SORT_ORDER';
@@ -102,7 +102,7 @@ else
 	Widgets('class_rank');
 	Widgets('letter_grade');
 	$attendance_RET = GetStuList($extra);
-	$attendance_codes = DBGet(DBQuery('SELECT SHORT_NAME FROM attendance_codes WHERE SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserSchool().'\' AND TABLE_NAME=\'0\''));
+	$attendance_codes = DBGet(DBQuery('SELECT SHORT_NAME FROM attendance_codes WHERE SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserCollege().'\' AND TABLE_NAME=\'0\''));
 
 	// GET THE DAILY ATTENDANCE
 	unset($extra);
@@ -123,7 +123,7 @@ else
 		$original_PDF .= fgets($FP,4096);
 	fclose($FP);
 	
-	$comment_codes = DBGet(DBQuery('SELECT TITLE FROM report_card_comments WHERE SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserSchool().'\' ORDER BY TITLE'));
+	$comment_codes = DBGet(DBQuery('SELECT TITLE FROM report_card_comments WHERE SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserCollege().'\' ORDER BY TITLE'));
 	for($i=1;$i<=count($comment_codes);$i++)
 		$original_PDF = str_replace('(default[comment_codes]['.$i.'])','('.$comment_codes[$i]['TITLE'].')',$original_PDF);
 	for($i;$i<=18;$i++)
@@ -226,7 +226,7 @@ else
 			$this_PDF = str_replace('(default[students][GRADE_ID])','('.par_rep("/<!-- [0-9]+ -->/",'',$course_periods[$course_period_id][key($course_periods[$course_period_id])][1]['GRADE_ID']).')',$this_PDF);
 
 			$this_PDF = str_replace('/T(values[students][SCHOOL])',"/T(values[$student_count][students][SCHOOL])",$this_PDF);
-			$this_PDF = str_replace('(default[students][SCHOOL])','('.GetSchool(UserSchool()).')',$this_PDF);
+			$this_PDF = str_replace('(default[students][SCHOOL])','('.GetCollege(UserCollege()).')',$this_PDF);
 
 			$this_PDF = str_replace('/T(values[students][SYEAR])',"/T(values[$student_count][students][SYEAR])",$this_PDF);
 			$this_PDF = str_replace('(default[students][SYEAR])','('.UserSyear().' - '.(UserSyear()+1).')',$this_PDF);
