@@ -39,18 +39,18 @@ if ($_REQUEST['day_end'] && $_REQUEST['month_end'] && $_REQUEST['year_end'])
 else
     $end_date = DBDate('mysql');
 ####################
-if (isset($_REQUEST['student_id'])) {
-    $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,COLLEGE_ID FROM students,student_enrollment WHERE students.COLLEGE_ROLL_NO=\'' . $_REQUEST['student_id'] . '\' AND student_enrollment.COLLEGE_ROLL_NO = students.COLLEGE_ROLL_NO '));
+if (isset($_REQUEST['college_roll_no'])) {
+    $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,COLLEGE_ID FROM students,student_enrollment WHERE students.COLLEGE_ROLL_NO=\'' . $_REQUEST['college_roll_no'] . '\' AND student_enrollment.COLLEGE_ROLL_NO = students.COLLEGE_ROLL_NO '));
     $count_student_RET = DBGet(DBQuery("SELECT COUNT(*) AS NUM FROM students"));
     if ($count_student_RET[1]['NUM'] > 1) {
-        DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=' . $_REQUEST['modname'] . '&ajax=true&bottom_back=true&return_session=true&&day_start=' . $_REQUEST[day_start] . '&&month_start=' . $_REQUEST[month_start] . '&&year_start=' . $_REQUEST[year_start] . '&&period_id=' . $_REQUEST[period_id] . '&&myclasses=' . $_REQUEST[myclasses] . '&&chk=1 target=body><i class="icon-square-left"></i> Back to Student List</A></span><div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div></div>');
+        DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=' . $_REQUEST['modname'] . '&ajax=true&bottom_back=true&return_session=true&&day_start=' . $_REQUEST[day_start] . '&&month_start=' . $_REQUEST[month_start] . '&&year_start=' . $_REQUEST[year_start] . '&&period_id=' . $_REQUEST[period_id] . '&&myclasses=' . $_REQUEST[myclasses] . '&&chk=1 target=body><i class="icon-square-left"></i> Back to Student List</A></span><div class="btn-group heading-btn"><A HREF=Side.php?college_roll_no=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div></div>');
     } else if ($count_student_RET[1]['NUM'] == 1) {
-        DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div>');
+        DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><A HREF=Side.php?college_roll_no=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div>');
     }
 }
 ####################
-if ($_REQUEST['search_modfunc'] || $_REQUEST['student_id'] || UserStudentID() || User('PROFILE') == 'parent' || User('PROFILE') == 'student') {
-    if (!UserStudentID() && !$_REQUEST['student_id']) {
+if ($_REQUEST['search_modfunc'] || $_REQUEST['college_roll_no'] || UserStudentID() || User('PROFILE') == 'parent' || User('PROFILE') == 'student') {
+    if (!UserStudentID() && !$_REQUEST['college_roll_no']) {
         if ($_REQUEST['myclasses'] == '')
             $periods_RET = DBGet(DBQuery('SELECT sp.PERIOD_ID,sp.TITLE FROM college_periods sp,course_periods cp,course_period_var cpv WHERE cpv.PERIOD_ID=sp.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.DOES_ATTENDANCE=\'Y\' AND sp.SYEAR=\'' . UserSyear() . '\' AND sp.COLLEGE_ID=\'' . UserCollege() . '\'  GROUP BY cpv.PERIOD_ID ORDER BY  sp.SORT_ORDER'));
         elseif ($_REQUEST['myclasses'] == 'my_classes')
@@ -127,8 +127,8 @@ if ($_REQUEST['period_id']) {
     }
 }
 $extra['link']['FULL_NAME']['link'] = "Modules.php?modname=$_REQUEST[modname]&day_start=$_REQUEST[day_start]&day_end=$_REQUEST[day_end]&month_start=$_REQUEST[month_start]&month_end=$_REQUEST[month_end]&year_start=$_REQUEST[year_start]&year_end=$_REQUEST[year_end]&period_id=$_REQUEST[period_id]&myclasses=$_REQUEST[myclasses]";
-$extra['link']['FULL_NAME']['variables'] = array('student_id' => 'COLLEGE_ROLL_NO');
-if ((!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) && !$_REQUEST['student_id'])
+$extra['link']['FULL_NAME']['variables'] = array('college_roll_no' => 'COLLEGE_ROLL_NO');
+if ((!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) && !$_REQUEST['college_roll_no'])
     $extra['new'] = true;
 
 
@@ -148,8 +148,8 @@ $extra['search'] .= '</div>';
 $extra['search'] .= '</div>'; //.row
 
 
-if (!$_SESSION['student_id'])
-    Search_absence_summary('student_id', $extra);
+if (!$_SESSION['college_roll_no'])
+    Search_absence_summary('college_roll_no', $extra);
 
 
 /*

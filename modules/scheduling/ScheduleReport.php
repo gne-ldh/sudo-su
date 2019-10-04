@@ -170,7 +170,7 @@ if ($_REQUEST['students']) {
 
     $link = array();
     $link['FULL_NAME']['link'] = "Modules.php?modname=scheduling/Schedule.php";
-    $link['FULL_NAME']['variables'] = array('student_id' => 'COLLEGE_ROLL_NO');
+    $link['FULL_NAME']['variables'] = array('college_roll_no' => 'COLLEGE_ROLL_NO');
     ListOutput($RET, array('FULL_NAME' => 'Student', 'GRADE_ID' => 'Grade', 'BIRTHDATE' => 'Birthdate'), 'Student', 'Students', $link, array(), $LO_options);
     echo '</div>'; //.panel
     echo '</div>'; //.col-md-6

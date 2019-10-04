@@ -37,7 +37,7 @@
 	query result.
 
 	Furthermore, the third parameter can be used to change the array index to a column in the
-	result.  For instance, if you selected student_id from students, and chose to index by student_id,
+	result.  For instance, if you selected college_roll_no from students, and chose to index by college_roll_no,
 	you would get a result similar to this :
 	$array[1031806][1] = array('COLLEGE_ROLL_NO'=>'1031806');
 

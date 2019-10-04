@@ -30,7 +30,7 @@ DrawHeader(ProgramTitle());
 Widgets('request');
 if(!UserStudentID())
 	echo '<BR>';
-Search('student_id',$extra);
+Search('college_roll_no',$extra);
 if(!$_REQUEST['modfunc'] && UserStudentID())
 	$_REQUEST['modfunc'] = 'choose';
 if($_REQUEST['modfunc']=='verify')
@@ -52,7 +52,7 @@ if($_REQUEST['modfunc']=='verify')
 		}
 	}
 	echo ErrorMessage($error,'Error');
-	$_SCHEDULER['student_id'] = UserStudentID();
+	$_SCHEDULER['college_roll_no'] = UserStudentID();
 	$_SCHEDULER['dont_run'] = true;
 	include('modules/scheduling/Scheduler.php');
 	$_REQUEST['modfunc'] = 'choose';

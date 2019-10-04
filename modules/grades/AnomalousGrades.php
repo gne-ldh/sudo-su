@@ -48,7 +48,7 @@ $extra['functions'] = array('POINTS'=>'_makePoints');
 $students_RET = GetStuList($extra);
 
 if(AllowUse('grades/Grades.php'))
-	$link = array('FULL_NAME'=>array('link'=>"Modules.php?modname=grades/Grades.php&include_ianctive=$_REQUEST[include_inactive]&assignment_id=all",'variables'=>array('student_id'=>'COLLEGE_ROLL_NO')),'TITLE'=>array('link'=>"Modules.php?modname=grades/Grades.php&include_inactive=$_REQUEST[include_inactive]",'variables'=>array('assignment_id'=>'ASSIGNMENT_ID','student_id'=>'COLLEGE_ROLL_NO')));
+	$link = array('FULL_NAME'=>array('link'=>"Modules.php?modname=grades/Grades.php&include_ianctive=$_REQUEST[include_inactive]&assignment_id=all",'variables'=>array('college_roll_no'=>'COLLEGE_ROLL_NO')),'TITLE'=>array('link'=>"Modules.php?modname=grades/Grades.php&include_inactive=$_REQUEST[include_inactive]",'variables'=>array('assignment_id'=>'ASSIGNMENT_ID','college_roll_no'=>'COLLEGE_ROLL_NO')));
 $columns = array('FULL_NAME'=>'Name','COLLEGE_ROLL_NO'=>'College Roll No','POINTS'=>'Problem','TYPE_TITLE'=>'Category','TITLE'=>'Assignment','COMMENT'=>'Comment');
 ListOutput($students_RET,$columns,'Anomalous Grade','Anomalous grades',$link,array(),array('center'=>false,'save'=>false,'search'=>false));
 

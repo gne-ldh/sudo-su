@@ -153,11 +153,11 @@ $extra['WHERE'].=' AND la.USER_ID=s.COLLEGE_ROLL_NO AND la.profile_id=3  ';
 
             foreach ($RET as $stu_key => $stu_val) {
 
-               $add_reslt = "SELECT CONCAT(sa.STREET_ADDRESS_1,' ,',sa.STREET_ADDRESS_2)  as ADDRESS ,sa.CITY,sa.STATE,sa.ZIPCODE,COALESCE((SELECT STREET_ADDRESS_1 FROM student_address WHERE student_id=" . $stu_val['COLLEGE_ROLL_NO'] . " AND TYPE='MAIL' limit 0,1),sa.STREET_ADDRESS_1) AS 
+               $add_reslt = "SELECT CONCAT(sa.STREET_ADDRESS_1,' ,',sa.STREET_ADDRESS_2)  as ADDRESS ,sa.CITY,sa.STATE,sa.ZIPCODE,COALESCE((SELECT STREET_ADDRESS_1 FROM student_address WHERE college_roll_no=" . $stu_val['COLLEGE_ROLL_NO'] . " AND TYPE='MAIL' limit 0,1),sa.STREET_ADDRESS_1) AS 
 
-                            MAIL_ADDRESS,COALESCE((SELECT CITY FROM student_address WHERE student_id=" . $stu_val['COLLEGE_ROLL_NO'] . " AND TYPE='MAIL' limit 0,1),sa.CITY) AS MAIL_CITY,COALESCE((SELECT STATE FROM student_address WHERE student_id=" . $stu_val['COLLEGE_ROLL_NO'] . " AND TYPE='MAIL' limit 0,1),sa.STATE) AS MAIL_STATE,
+                            MAIL_ADDRESS,COALESCE((SELECT CITY FROM student_address WHERE college_roll_no=" . $stu_val['COLLEGE_ROLL_NO'] . " AND TYPE='MAIL' limit 0,1),sa.CITY) AS MAIL_CITY,COALESCE((SELECT STATE FROM student_address WHERE college_roll_no=" . $stu_val['COLLEGE_ROLL_NO'] . " AND TYPE='MAIL' limit 0,1),sa.STATE) AS MAIL_STATE,
 
-                            COALESCE((SELECT ZIPCODE FROM student_address WHERE student_id=" . $stu_val['COLLEGE_ROLL_NO'] . " AND TYPE='MAIL' limit 0,1),sa.ZIPCODE) AS MAIL_ZIPCODE  from student_address sa   WHERE  sa.TYPE='HOME ADDRESS' AND sa.COLLEGE_ROLL_NO=" . $stu_val['COLLEGE_ROLL_NO'];
+                            COALESCE((SELECT ZIPCODE FROM student_address WHERE college_roll_no=" . $stu_val['COLLEGE_ROLL_NO'] . " AND TYPE='MAIL' limit 0,1),sa.ZIPCODE) AS MAIL_ZIPCODE  from student_address sa   WHERE  sa.TYPE='HOME ADDRESS' AND sa.COLLEGE_ROLL_NO=" . $stu_val['COLLEGE_ROLL_NO'];
                
                 $res = DBGet(DBQuery($add_reslt));
 

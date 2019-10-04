@@ -107,7 +107,7 @@ if ((!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) && $_REQUEST['
     DrawBC("Attendance > " . ProgramTitle());
 
     $extra['new'] = true;
-    Search('student_id', $extra);
+    Search('college_roll_no', $extra);
 } elseif ($_REQUEST['delete'] != 'true') {
     $RET = GetStuList($extra);
 

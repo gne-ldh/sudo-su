@@ -42,12 +42,12 @@ $extra['plural'] = 'Requests';
 if (!$extra['link']['FULL_NAME']) {
     $extra['link']['FULL_NAME']['link'] = 'Modules.php?modname=scheduling/Requests.php';
 
-    $extra['link']['FULL_NAME']['variables']['student_id'] = 'COLLEGE_ROLL_NO';
+    $extra['link']['FULL_NAME']['variables']['college_roll_no'] = 'COLLEGE_ROLL_NO';
 }
 $extra['new'] = true;
 $extra['Redirect'] = false;
 
-Search('student_id', $extra);
+Search('college_roll_no', $extra);
 
 function _makeTeacher($value, $column) {
     global $THIS_RET;

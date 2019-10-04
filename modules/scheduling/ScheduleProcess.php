@@ -30,7 +30,7 @@ include('../../Warehouse.php');
 DBQuery("CREATE TABLE IF NOT EXISTS temp_schedule AS SELECT * FROM schedule WHERE 0");
 $course_period_id=$_REQUEST['cp_id'];
 $insert=$_REQUEST['insert'];
-$student_start_date=DBGet(DBQuery('SELECT START_DATE FROM student_enrollment WHERE student_id='.UserStudentID().' AND COLLEGE_ID='.  UserCollege().' AND SYEAR='.UserSyear()));
+$student_start_date=DBGet(DBQuery('SELECT START_DATE FROM student_enrollment WHERE college_roll_no='.UserStudentID().' AND COLLEGE_ID='.  UserCollege().' AND SYEAR='.UserSyear()));
 $student_start_date=$student_start_date[1]['START_DATE'];
 $get_cp_date=DBGet(DBQuery('SELECT BEGIN_DATE FROM course_periods WHERE course_period_id='.$course_period_id));
 if(strtotime($date)<strtotime($get_cp_date[1]['BEGIN_DATE']))

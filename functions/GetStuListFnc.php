@@ -60,7 +60,7 @@ function GetStuList(& $extra) {
         if (!count($view_fields_RET) && !isset($view_address_RET) && !isset($view_other_RET['CONTACT_INFO'])) {
             $extra['columns_after'] = array('PHONE' => 'Phone', 'GENDER' => 'Gender', 'ETHNICITY' => 'Ethnicity', 'ADDRESS' => 'Mailing Address', 'CITY' => 'City', 'STATE' => 'State', 'ZIPCODE' => 'Zipcode') + $extra['columns_after'];
 
-            $select = ',s.PHONE,s.GENDER,s.ETHNICITY,COALESCE((SELECT STREET_ADDRESS_1 FROM student_address WHERE student_id=ssm.COLLEGE_ROLL_NO AND TYPE="Mail"),sa.STREET_ADDRESS_1) AS ADDRESS,COALESCE((SELECT CITY FROM student_address WHERE student_id=ssm.COLLEGE_ROLL_NO AND TYPE="Mail"),sa.CITY) AS CITY,COALESCE((SELECT STATE FROM student_address WHERE student_id=ssm.COLLEGE_ROLL_NO AND TYPE="Mail"),sa.STATE) AS STATE,COALESCE((SELECT ZIPCODE FROM student_address WHERE student_id=ssm.COLLEGE_ROLL_NO AND TYPE="Mail"),sa.ZIPCODE) AS ZIPCODE ';
+            $select = ',s.PHONE,s.GENDER,s.ETHNICITY,COALESCE((SELECT STREET_ADDRESS_1 FROM student_address WHERE college_roll_no=ssm.COLLEGE_ROLL_NO AND TYPE="Mail"),sa.STREET_ADDRESS_1) AS ADDRESS,COALESCE((SELECT CITY FROM student_address WHERE college_roll_no=ssm.COLLEGE_ROLL_NO AND TYPE="Mail"),sa.CITY) AS CITY,COALESCE((SELECT STATE FROM student_address WHERE college_roll_no=ssm.COLLEGE_ROLL_NO AND TYPE="Mail"),sa.STATE) AS STATE,COALESCE((SELECT ZIPCODE FROM student_address WHERE college_roll_no=ssm.COLLEGE_ROLL_NO AND TYPE="Mail"),sa.ZIPCODE) AS ZIPCODE ';
 
             $extra['FROM'] = ' LEFT OUTER JOIN student_address sa ON (ssm.COLLEGE_ROLL_NO=sa.COLLEGE_ROLL_NO AND sa.TYPE=\'Home Address\' ) ' . $extra['FROM'];
             $functions['CONTACT_INFO'] = 'makeContactInfo';
@@ -254,7 +254,7 @@ switch (User('PROFILE')) {
             if(stripos($extra['FROM'], "student_enrollment ssm") === false)
                 $sql .=',student_enrollment ssm ';
             if($_REQUEST['modname'] =='scheduling/PrintSchedules.php' && $_REQUEST['search_modfunc'] =='list')
-                $sql .=$extra['FROM'] .',schedule sr '. ' WHERE sr.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND s.student_id=ssm.student_id';          
+                $sql .=$extra['FROM'] .',schedule sr '. ' WHERE sr.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND s.college_roll_no=ssm.college_roll_no';          
             else
             $sql.=$extra['FROM'] . ' WHERE ssm.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO  ';
 //            if($_REQUEST['modname'] =='scheduling/PrintSchedules.php' && $_REQUEST['search_modfunc'] =='list')
@@ -593,7 +593,7 @@ else
     return $return;
 }
 
-function makeContactInfo($student_id, $column) {
+function makeContactInfo($college_roll_no, $column) {
     global $THIS_RET, $contacts_RET;
 
     if (count($contacts_RET[$THIS_RET['COLLEGE_ROLL_NO']])) {
@@ -631,10 +631,10 @@ function makePhone($phone, $column = '') {
     return $return;
 }
 
-function makeParents($student_id, $column = '') {
+function makeParents($college_roll_no, $column = '') {
     global $THIS_RET, $view_other_RET, $_openSIS;
 
-    if ($THIS_RET['PARENTS'] == $student_id) {
+    if ($THIS_RET['PARENTS'] == $college_roll_no) {
         if (!$THIS_RET['ADDRESS_ID'])
             $THIS_RET['ADDRESS_ID'] = 0;
 
@@ -647,7 +647,7 @@ function makeParents($student_id, $column = '') {
         else
             $constraint = 'AND p.CUSTODY=\'Y\'';
 
-        $people_RET = DBGet(DBQuery('SELECT p.STAFF_ID as PERSON_ID,p.FIRST_NAME,p.LAST_NAME,sa.ID AS ADDRESS_ID,p.CUSTODY,sjp.IS_EMERGENCY as EMERGENCY FROM students_join_people sjp,people p,student_address sa WHERE sjp.PERSON_ID=p.STAFF_ID AND sjp.COLLEGE_ROLL_NO=\'' . $student_id . '\' AND p.STAFF_ID=sa.PEOPLE_ID AND sa.COLLEGE_ROLL_NO=sjp.COLLEGE_ROLL_NO ' . $constraint . ' ORDER BY p.LAST_NAME,p.FIRST_NAME'));
+        $people_RET = DBGet(DBQuery('SELECT p.STAFF_ID as PERSON_ID,p.FIRST_NAME,p.LAST_NAME,sa.ID AS ADDRESS_ID,p.CUSTODY,sjp.IS_EMERGENCY as EMERGENCY FROM students_join_people sjp,people p,student_address sa WHERE sjp.PERSON_ID=p.STAFF_ID AND sjp.COLLEGE_ROLL_NO=\'' . $college_roll_no . '\' AND p.STAFF_ID=sa.PEOPLE_ID AND sa.COLLEGE_ROLL_NO=sjp.COLLEGE_ROLL_NO ' . $constraint . ' ORDER BY p.LAST_NAME,p.FIRST_NAME'));
         if (count($people_RET)) {
             foreach ($people_RET as $person) {
 
@@ -759,7 +759,7 @@ function appendSQL($sql, & $extra) {
             
                                           
     if ($_REQUEST['username']) {
-        $sql .= ' AND LOWER(la.username) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['username']))) . '%\' and la.user_id=s.student_id ';
+        $sql .= ' AND LOWER(la.username) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['username']))) . '%\' and la.user_id=s.college_roll_no ';
         }
             //////////////extra field table end2////////////////////
     if ($_REQUEST['goal_description']) {
@@ -1643,7 +1643,7 @@ function appendSQL_Absence_Summary($sql, & $extra) {
 function _make_Parents($value, $column) {
     global $THIS_RET;
 
-    $sql = 'SELECT DISTINCT person_id AS STAFF_ID, CONCAT( people.LAST_NAME, \' \', people.FIRST_NAME ) AS PARENT FROM students_join_people sju, people, staff_college_relationship ssr WHERE people.staff_id = sju.person_id and sju.student_id=\'' . $value . '\' AND ssr.syear=\'' . UserSyear() . '\'';
+    $sql = 'SELECT DISTINCT person_id AS STAFF_ID, CONCAT( people.LAST_NAME, \' \', people.FIRST_NAME ) AS PARENT FROM students_join_people sju, people, staff_college_relationship ssr WHERE people.staff_id = sju.person_id and sju.college_roll_no=\'' . $value . '\' AND ssr.syear=\'' . UserSyear() . '\'';
     $parents_RET = DBGet(DBQuery($sql));
     foreach ($parents_RET AS $parent) {
         $parents .=$parent['PARENT'] . ',';

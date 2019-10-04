@@ -51,7 +51,7 @@ if($_REQUEST['modfunc']=='save')
 	{
             $columns = array('START_DATE'=>'Start Date','ENROLLMENT_CODE'=>'Enrollment Code','END_DATE'=>'Drop Date','DROP_CODE'=>'Drop Code','COLLEGE_ID'=>'College Name');
 		$handle = PDFStart();
-		foreach($RET as $student_id=>$value)
+		foreach($RET as $college_roll_no=>$value)
 		{
 			echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
 			echo "<tr><td width=105>".DrawLogo()."</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">". GetCollege(UserCollege()).' ('.$cur_session.')'."<div style=\"font-size:12px;\">Student Enrollment Report</div></td><td align=right style=\"padding-top:20px\">". ProperDate(DBDate()) ."<br \>Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
@@ -74,11 +74,11 @@ if($_REQUEST['modfunc']=='save')
 				echo '<tr><td>Student Name :</td>';
 				echo '<td>'.$enrollment['FULL_NAME'].'</td></tr>';
 				echo '<tr><td>College Roll No :</td>';
-				echo '<td>'.$student_id.'</td></tr>';
+				echo '<td>'.$college_roll_no.'</td></tr>';
                                 echo '<tr><td>Alternate ID :</td>';
 				echo '<td>'.$enrollment['ALT_ID'].'</td></tr>';
 				echo '<tr><td>Student Grade :</td>';
-                                $grade=DBGet(DBQuery('SELECT GRADE_ID FROM student_enrollment WHERE SYEAR='.UserSyear().' AND COLLEGE_ID='.UserCollege().' AND COLLEGE_ROLL_NO='.$student_id.' AND (END_DATE>=\''.date('Y-m-d').'\' OR END_DATE IS NULL OR END_DATE=\'0000-00-00\')  '),array('GRADE_ID'=>'GetGrade'));
+                                $grade=DBGet(DBQuery('SELECT GRADE_ID FROM student_enrollment WHERE SYEAR='.UserSyear().' AND COLLEGE_ID='.UserCollege().' AND COLLEGE_ROLL_NO='.$college_roll_no.' AND (END_DATE>=\''.date('Y-m-d').'\' OR END_DATE IS NULL OR END_DATE=\'0000-00-00\')  '),array('GRADE_ID'=>'GetGrade'));
 				echo '<td>'.$grade[1]['GRADE_ID'].'</td></tr>';
 				echo '</table>';
                             
@@ -112,7 +112,7 @@ if(!$_REQUEST['modfunc'])
 	$extra['new'] = true;
 	
 
-	Search('student_id',$extra,'true');
+	Search('college_roll_no',$extra,'true');
 	if($_REQUEST['search_modfunc']=='list')
 	{
 		if($_SESSION['count_stu']!=0)

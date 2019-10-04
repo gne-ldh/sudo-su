@@ -104,7 +104,7 @@ if (optional_param('modfunc', '', PARAM_NOTAGS) == 'gradebook') {
         $points_RET = DBGet(DBQuery('SELECT s.COLLEGE_ROLL_NO,\'' . '-1' . '\' AS ASSIGNMENT_TYPE_ID,sum(' . db_case(array('gg.POINTS', "'-1'", "'0'", 'gg.POINTS')) . ') AS PARTIAL_POINTS,sum(' . db_case(array('gg.POINTS', "'-1'", "'0'", 'ga.POINTS')) . ') AS PARTIAL_TOTAL,\'' . '1' . '\' AS FINAL_GRADE_PERCENT FROM students s JOIN schedule ss ON (ss.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ss.COURSE_PERIOD_ID=\'' . $course_period_id . '\') JOIN gradebook_assignments ga ON ((ga.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID OR ga.COURSE_ID=\'' . $course_id . '\' AND ga.STAFF_ID=\'' . User('STAFF_ID') . '\') AND ga.MARKING_PERIOD_ID' . ($programconfig[User('STAFF_ID')]['ELIGIBILITY_CUMULITIVE'] == 'Y' && $has_quarters[1]['REC_EX'] > 0 ? ' IN (' . GetChildrenMP('SEM', UserMP()) . ')' : '=\'' . UserMP() . '\'') . ') LEFT OUTER JOIN gradebook_grades gg ON (gg.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND gg.ASSIGNMENT_ID=ga.ASSIGNMENT_ID AND gg.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID) WHERE ((ga.ASSIGNED_DATE IS NULL OR CURRENT_DATE>=ga.ASSIGNED_DATE) AND (ga.DUE_DATE IS NULL OR CURRENT_DATE>=ga.DUE_DATE) OR gg.POINTS IS NOT NULL) GROUP BY s.COLLEGE_ROLL_NO,ss.START_DATE'), array(), array('COLLEGE_ROLL_NO'));
 
     if (count($points_RET)) {
-        foreach ($points_RET as $student_id => $student) {
+        foreach ($points_RET as $college_roll_no => $student) {
             $total = $total_percent = 0;
             foreach ($student as $partial_points)
                 if ($partial_points['PARTIAL_TOTAL'] != 0) {
@@ -132,10 +132,10 @@ if (optional_param('modfunc', '', PARAM_NOTAGS) == 'gradebook') {
                     $code = 'PASSING';
             }
 
-            if ($current_RET[$student_id])
-                $sql = 'UPDATE eligibility SET ELIGIBILITY_CODE=\'' . $code . '\' WHERE COLLEGE_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\' AND COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\' AND COLLEGE_ROLL_NO=\'' . $student_id . '\'';
+            if ($current_RET[$college_roll_no])
+                $sql = 'UPDATE eligibility SET ELIGIBILITY_CODE=\'' . $code . '\' WHERE COLLEGE_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\' AND COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\' AND COLLEGE_ROLL_NO=\'' . $college_roll_no . '\'';
             else
-                $sql = 'INSERT INTO eligibility (COLLEGE_ROLL_NO,COLLEGE_DATE,SYEAR,PERIOD_ID,COURSE_PERIOD_ID,ELIGIBILITY_CODE) values(\'' . $student_id . '\',\'' . DBDate() . '\',\'' . UserSyear() . '\',\'' . UserPeriod() . '\',\'' . $course_period_id . '\',\'' . $code . '\')';
+                $sql = 'INSERT INTO eligibility (COLLEGE_ROLL_NO,COLLEGE_DATE,SYEAR,PERIOD_ID,COURSE_PERIOD_ID,ELIGIBILITY_CODE) values(\'' . $college_roll_no . '\',\'' . DBDate() . '\',\'' . UserSyear() . '\',\'' . UserPeriod() . '\',\'' . $course_period_id . '\',\'' . $code . '\')';
             DBQuery($sql);
         }
         $current_RET = DBGet(DBQuery('SELECT ELIGIBILITY_CODE,COLLEGE_ROLL_NO FROM eligibility WHERE COLLEGE_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\' AND COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\''), array(), array('COLLEGE_ROLL_NO'));
@@ -145,12 +145,12 @@ if (optional_param('modfunc', '', PARAM_NOTAGS) == 'gradebook') {
 if ($_REQUEST['values'] && ($_POST['values'] || $_REQUEST['ajax'])) {
 
     $course_period_id = UserCoursePeriod();
-    foreach ($_REQUEST['values'] as $student_id => $value) {
+    foreach ($_REQUEST['values'] as $college_roll_no => $value) {
 
-        if ($current_RET[$student_id])
-            $sql = 'UPDATE eligibility SET ELIGIBILITY_CODE=\'' . $value . '\' WHERE COLLEGE_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\' AND PERIOD_ID=\'' . UserPeriod() . '\' AND COLLEGE_ROLL_NO=\'' . $student_id . '\'';
+        if ($current_RET[$college_roll_no])
+            $sql = 'UPDATE eligibility SET ELIGIBILITY_CODE=\'' . $value . '\' WHERE COLLEGE_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\' AND PERIOD_ID=\'' . UserPeriod() . '\' AND COLLEGE_ROLL_NO=\'' . $college_roll_no . '\'';
         else
-            $sql = 'INSERT INTO eligibility (COLLEGE_ROLL_NO,COLLEGE_DATE,SYEAR,PERIOD_ID,COURSE_PERIOD_ID,ELIGIBILITY_CODE) values(\'' . $student_id . '\',\'' . DBDate() . '\',\'' . UserSyear() . '\',\'' . UserPeriod() . '\',\'' . $course_period_id . '\',\'' . $value . '\')';
+            $sql = 'INSERT INTO eligibility (COLLEGE_ROLL_NO,COLLEGE_DATE,SYEAR,PERIOD_ID,COURSE_PERIOD_ID,ELIGIBILITY_CODE) values(\'' . $college_roll_no . '\',\'' . DBDate() . '\',\'' . UserSyear() . '\',\'' . UserPeriod() . '\',\'' . $course_period_id . '\',\'' . $value . '\')';
 
         DBQuery($sql);
     }

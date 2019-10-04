@@ -156,7 +156,7 @@ $extra['new'] = true;
 if (User('PROFILE') == 'parent' || User('PROFILE') == 'student')
     $_REQUEST['search_modfunc'] = 'list';
 $COLLEGE_RET = DBGet(DBQuery('SELECT * from colleges where ID = \'' . UserCollege() . '\''));
-Search('student_id', $extra, 'true');
+Search('college_roll_no', $extra, 'true');
 
 function _roundGPA($gpa, $column) {
     GLOBAL $COLLEGE_RET;

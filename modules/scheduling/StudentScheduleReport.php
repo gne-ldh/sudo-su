@@ -79,7 +79,7 @@ if ($_REQUEST['modfunc'] == 'save') {
         if (count($RET_stu)) {
             $handle = PDFStart();
 
-            foreach ($RET_stu as $student_id => $courses) {
+            foreach ($RET_stu as $college_roll_no => $courses) {
                 echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
                 echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetCollege(UserCollege()) . "<div style=\"font-size:12px;\">Student Daily Schedule</div></td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\"> Schedule for: " . $row_mp_detail[1]['TITLE'] . " : " . cov_date($row_mp_detail[1]['START_DATE']) . " - " . cov_date($row_mp_detail[1]['END_DATE']) . "</td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=4 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
 
@@ -87,7 +87,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                 # --------------------------------------- Start Change ------------------------------------------- #
 
 
-                $st_data = DBGet(DBQuery("SELECT * FROM students WHERE student_id = " . $courses[1]['COLLEGE_ROLL_NO']));
+                $st_data = DBGet(DBQuery("SELECT * FROM students WHERE college_roll_no = " . $courses[1]['COLLEGE_ROLL_NO']));
 
                 unset($_openSIS['DrawHeader']);
                 echo '<br>';
@@ -102,7 +102,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                 echo '</table>';
 
                 $sch_exist = DBGet(DBQuery("SELECT COUNT(s.id) AS SCH_COUNT FROM schedule s WHERE s.syear=" . UserSyear() . "
-					AND s.student_id='" . $courses[1]['COLLEGE_ROLL_NO'] . "'
+					AND s.college_roll_no='" . $courses[1]['COLLEGE_ROLL_NO'] . "'
 					AND s.college_id=" . UserCollege() . "
 					AND $mp_string )"));
 
@@ -128,7 +128,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 			FROM college_periods sp, course_periods cp, schedule s, marking_periods mp,course_period_var cpv,rooms r
 			WHERE cp.syear=\'' . UserSyear() . '\'
 			AND s.syear=\'' . UserSyear() . '\'
-			AND s.student_id=\'' . $courses[1]['COLLEGE_ROLL_NO'] . '\'
+			AND s.college_roll_no=\'' . $courses[1]['COLLEGE_ROLL_NO'] . '\'
 			AND s.course_period_id=cp.course_period_id
 			AND sp.period_id=cpv.period_id
                         AND cp.course_period_id=cpv.course_period_id
@@ -159,7 +159,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 			FROM college_periods sp, course_periods cp, schedule s, marking_periods mp,course_period_var cpv,rooms r
 			WHERE cp.syear=\'' . UserSyear() . '\'
 			AND s.syear=\'' . UserSyear() . '\'
-			AND s.student_id=\'' . $courses[1]['COLLEGE_ROLL_NO'] . '\'
+			AND s.college_roll_no=\'' . $courses[1]['COLLEGE_ROLL_NO'] . '\'
 			AND s.course_period_id=cp.course_period_id
 			AND sp.period_id=cpv.period_id
                         AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID
@@ -284,10 +284,10 @@ if (!$_REQUEST['modfunc']) {
     $mp_string.=' or s.marking_period_id is null';
     $mp_d = implode(',', $mp_d);
     if (count($RET_show)) {
-        foreach ($RET_show as $student_id => $courses) {
+        foreach ($RET_show as $college_roll_no => $courses) {
             if (count($RET_show[$stu_id]) > 0)
                 $sch_exist = DBGet(DBQuery('SELECT COUNT(s.id) AS SCH_COUNT FROM schedule s WHERE s.syear=\'' . UserSyear() . '\'
-					AND s.student_id=\'' . $courses[1]['COLLEGE_ROLL_NO'] . '\'
+					AND s.college_roll_no=\'' . $courses[1]['COLLEGE_ROLL_NO'] . '\'
 					AND s.college_id=\'' . UserCollege() . '\'
 					AND ' . $mp_string . ' )'));
             $sch_exist_yn = $sch_exist[1]['SCH_COUNT'];
@@ -313,7 +313,7 @@ if (!$_REQUEST['modfunc']) {
 			FROM college_periods sp, course_periods cp, schedule s, marking_periods mp,course_period_var cpv,rooms r
 			WHERE cp.syear=\'' . UserSyear() . '\'
 			AND s.syear=\'' . UserSyear() . '\'
-			AND s.student_id=\'' . $courses[1]['COLLEGE_ROLL_NO'] . '\'
+			AND s.college_roll_no=\'' . $courses[1]['COLLEGE_ROLL_NO'] . '\'
 			AND s.course_period_id=cp.course_period_id
 			AND sp.period_id=cpv.period_id
                         AND cp.course_period_id=cpv.course_period_id
@@ -340,7 +340,7 @@ if (!$_REQUEST['modfunc']) {
 			FROM college_periods sp, course_periods cp, schedule s, marking_periods mp,course_period_var cpv,rooms r
 			WHERE cp.syear=\'' . UserSyear() . '\'
 			AND s.syear=\'' . UserSyear() . '\'
-			AND s.student_id=\'' . $courses[1]['COLLEGE_ROLL_NO'] . '\'
+			AND s.college_roll_no=\'' . $courses[1]['COLLEGE_ROLL_NO'] . '\'
 			AND s.course_period_id=cp.course_period_id
 			AND sp.period_id=cpv.period_id
                         AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID

@@ -41,7 +41,7 @@ DrawBC("Attendance > ".ProgramTitle());
 
 if($_REQUEST['attendance'] && ($_POST['attendance'] || $_REQUEST['ajax']) && AllowEdit())
 {
-	foreach($_REQUEST['attendance'] as $student_id=>$values)
+	foreach($_REQUEST['attendance'] as $college_roll_no=>$values)
 	{
 		foreach($values as $college_date=>$columns)
 		{
@@ -50,21 +50,21 @@ if($_REQUEST['attendance'] && ($_POST['attendance'] || $_REQUEST['ajax']) && All
 			foreach($columns as $column=>$value)
 				$sql .= $column.'=\''.str_replace("\'","''",$value).'\',';
 
-			$sql = substr($sql,0,-1) . ' WHERE COLLEGE_DATE=\''.$college_date.'\' AND PERIOD_ID=\''.$_REQUEST['period_id'].'\' AND COLLEGE_ROLL_NO=\''.$student_id.'\'';
+			$sql = substr($sql,0,-1) . ' WHERE COLLEGE_DATE=\''.$college_date.'\' AND PERIOD_ID=\''.$_REQUEST['period_id'].'\' AND COLLEGE_ROLL_NO=\''.$college_roll_no.'\'';
 			DBQuery($sql);
-			UpdateAttendanceDaily($student_id,$college_date);
+			UpdateAttendanceDaily($college_roll_no,$college_date);
 		}
 	}
 	$current_RET = DBGet(DBQuery('SELECT ATTENDANCE_TEACHER_CODE,ATTENDANCE_CODE,ATTENDANCE_REASON,COLLEGE_ROLL_NO,ADMIN,COURSE_PERIOD_ID FROM attendance_period WHERE COLLEGE_DATE=\''.$date.'\''),array(),array('COLLEGE_ROLL_NO','COURSE_PERIOD_ID'));
 	unset($_REQUEST['attendance']);
 }
 
-if($_REQUEST['search_modfunc'] || $_REQUEST['student_id'] || UserStudentID() || User('PROFILE')=='parent' || User('PROFILE')=='student')
+if($_REQUEST['search_modfunc'] || $_REQUEST['college_roll_no'] || UserStudentID() || User('PROFILE')=='parent' || User('PROFILE')=='student')
 {
 	$PHP_tmp_SELF = PreparePHP_SELF();
 	$extraM .= "";
 	$period_select = "<SELECT name=period_id onchange='this.form.submit();'><OPTION value=\"\">Daily</OPTION>";
-	if(!UserStudentID() && !$_REQUEST['student_id'])
+	if(!UserStudentID() && !$_REQUEST['college_roll_no'])
 	{
 		$periods_RET = DBGet(DBQuery('SELECT PERIOD_ID,TITLE FROM college_periods WHERE SYEAR=\''.UserSyear().'\' AND COLLEGE_ID=\''.UserCollege().'\' ORDER BY SORT_ORDER'));
 		if(count($periods_RET)>1)
@@ -95,10 +95,10 @@ if($_REQUEST['search_modfunc'] || $_REQUEST['student_id'] || UserStudentID() || 
 
 $cal_RET = DBGet(DBQuery('SELECT DISTINCT COLLEGE_DATE,CONCAT(\'_\',DATE_FORMAT(COLLEGE_DATE,\'%y%b%d\')) AS SHORT_DATE FROM attendance_calendar WHERE COLLEGE_ID=\''.UserCollege().'\' AND COLLEGE_DATE BETWEEN \''.date('Y-m-d',strtotime($start_date)).'\' AND \''.date('Y-m-d',strtotime($end_date)).'\' ORDER BY COLLEGE_DATE'));
 
-if(UserStudentID() || $_REQUEST['student_id'] || User('PROFILE')=='parent')
+if(UserStudentID() || $_REQUEST['college_roll_no'] || User('PROFILE')=='parent')
 {
 	// JUST TO SET USERSTUDENTID()
-	Search('student_id');
+	Search('college_roll_no');
 	if($_REQUEST['period_id'])
 	{
 		$sql = 'SELECT
@@ -173,7 +173,7 @@ else
 			$extra['columns_after']['_'.str_replace('-','',$value['COLLEGE_DATE'])] = ShortDate($value['COLLEGE_DATE']);
 			$extra['functions']['_'.str_replace('-','',$value['COLLEGE_DATE'])] = '_makeColor';
 			$extra['link']['FULL_NAME']['link'] = "Modules.php?modname=$_REQUEST[next_modname]&day_start=$_REQUEST[day_start]&day_end=$_REQUEST[day_end]&month_start=$_REQUEST[month_start]&month_end=$_REQUEST[month_end]&year_start=$_REQUEST[year_start]&year_end=$_REQUEST[year_end]&period_id=$_REQUEST[period_id]";
-			$extra['link']['FULL_NAME']['variables'] = array('student_id'=>'COLLEGE_ROLL_NO');
+			$extra['link']['FULL_NAME']['variables'] = array('college_roll_no'=>'COLLEGE_ROLL_NO');
 			
 		}
 	}
@@ -183,7 +183,7 @@ else
 
 	$extra['new'] = true;
 	
-	Search('student_id',$extra);
+	Search('college_roll_no',$extra);
 	
 	echo '</FORM>';
 }
@@ -230,7 +230,7 @@ function _makePeriodColor($name,$state_code,$default_code)
 		return false;
 }
 
-function makeCodePulldown($value,$student_id,$date)
+function makeCodePulldown($value,$college_roll_no,$date)
 {	global $THIS_RET,$attendance_codes,$_openSIS;
 
 	$date = substr($date,1,4).'-'.substr($date,5,2).'-'.substr($date,7);
@@ -241,6 +241,6 @@ function makeCodePulldown($value,$student_id,$date)
 			$_openSIS['code_options'][$id] = $code[1]['SHORT_NAME'];
 	}
 
-	return SelectInput($value,'attendance['.$student_id.']['.$date.'][ATTENDANCE_CODE]','',$_openSIS['code_options']);
+	return SelectInput($value,'attendance['.$college_roll_no.']['.$date.'][ATTENDANCE_CODE]','',$_openSIS['code_options']);
 }
 ?>

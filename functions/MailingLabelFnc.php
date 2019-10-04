@@ -27,8 +27,8 @@
 #***************************************************************************************
 function MailingLabel($address_id)
 {	global $THIS_RET,$_openSIS;
-	$student_id = $THIS_RET['COLLEGE_ROLL_NO'];
-	if($address_id && !$_openSIS['MailingLabel'][$address_id][$student_id])
+	$college_roll_no = $THIS_RET['COLLEGE_ROLL_NO'];
+	if($address_id && !$_openSIS['MailingLabel'][$address_id][$college_roll_no])
 	{
 
             
@@ -39,7 +39,7 @@ function MailingLabel($address_id)
                     coalesce((SELECT ZIPCODE FROM student_address WHERE COLLEGE_ROLL_NO=sa.COLLEGE_ROLL_NO AND TYPE =\'MAIL\'),sa.ZIPCODE) AS ZIPCODE,
                     s.PHONE,p.LAST_NAME,p.FIRST_NAME,p.MIDDLE_NAME
                     FROM student_address sa,people p,students s
-                    WHERE p.STAFF_ID=sa.PEOPLE_ID AND s.COLLEGE_ROLL_NO=sa.COLLEGE_ROLL_NO AND sa.COLLEGE_ROLL_NO=\''.$student_id.'\' AND p.CUSTODY=\'Y\'';
+                    WHERE p.STAFF_ID=sa.PEOPLE_ID AND s.COLLEGE_ROLL_NO=sa.COLLEGE_ROLL_NO AND sa.COLLEGE_ROLL_NO=\''.$college_roll_no.'\' AND p.CUSTODY=\'Y\'';
             $people_RET = DBGet(DBQuery($p_sql),array(),array('LAST_NAME'));
 
 		if(count($people_RET))
@@ -55,9 +55,9 @@ function MailingLabel($address_id)
 		}
 
 
-		$_openSIS['MailingLabel'][$address_id][$student_id] = $return;
+		$_openSIS['MailingLabel'][$address_id][$college_roll_no] = $return;
 	}
 
-	return $_openSIS['MailingLabel'][$address_id][$student_id];
+	return $_openSIS['MailingLabel'][$address_id][$college_roll_no];
 }
 ?>

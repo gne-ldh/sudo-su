@@ -199,33 +199,33 @@ $current_Q = 'SELECT ATTENDANCE_TEACHER_CODE,COLLEGE_ROLL_NO,ADMIN,COMMENT FROM 
 $current_RET = DBGet(DBQuery($current_Q), array(), array('COLLEGE_ROLL_NO'));
 
 if ($_REQUEST['attendance'] && ($_POST['attendance'] || $_REQUEST['ajax'])) {
-    foreach ($_REQUEST['attendance'] as $student_id => $value) {
+    foreach ($_REQUEST['attendance'] as $college_roll_no => $value) {
         if (stripos($_SERVER['SERVER_SOFTWARE'], 'linux')) {
-            if (isset($_REQUEST['comment'][$student_id])) {
-                $c = str_replace("'", "\'", $_REQUEST['comment'][$student_id]);
-                $_REQUEST['comment'][$student_id] = clean_param($c, PARAM_SPCL);
+            if (isset($_REQUEST['comment'][$college_roll_no])) {
+                $c = str_replace("'", "\'", $_REQUEST['comment'][$college_roll_no]);
+                $_REQUEST['comment'][$college_roll_no] = clean_param($c, PARAM_SPCL);
             }
         }
-        if ($current_RET[$student_id]) {
+        if ($current_RET[$college_roll_no]) {
 
             $sql = 'UPDATE ' . $table . ' SET ATTENDANCE_TEACHER_CODE=\'' . substr($value, 5) . '\' ';
 
             $sql .= ',ATTENDANCE_CODE=\'' . substr($value, 5) . '\'';
-            if (isset($_REQUEST['comment'][$student_id])) {
-                $cmnt = trim($_REQUEST['comment'][$student_id]);
+            if (isset($_REQUEST['comment'][$college_roll_no])) {
+                $cmnt = trim($_REQUEST['comment'][$college_roll_no]);
                 $cmnt = clean_param($cmnt, PARAM_SPCL);
                 $sql .= ',COMMENT=\'' . str_replace("'", "\'", $cmnt) . '\'';
             }
-            $sql .= ' WHERE COLLEGE_DATE=\'' . date('Y-m-d', strtotime($date)) . '\' AND COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\' AND PERIOD_ID=\'' . UserPeriod() . '\'  AND COLLEGE_ROLL_NO=\'' . $student_id . '\'';
+            $sql .= ' WHERE COLLEGE_DATE=\'' . date('Y-m-d', strtotime($date)) . '\' AND COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\' AND PERIOD_ID=\'' . UserPeriod() . '\'  AND COLLEGE_ROLL_NO=\'' . $college_roll_no . '\'';
         } else {
-            $cmnt = trim($_REQUEST['comment'][$student_id]);
+            $cmnt = trim($_REQUEST['comment'][$college_roll_no]);
             $cmnt = clean_param($cmnt, PARAM_SPCL);
 
-            $sql = "INSERT INTO " . $table . " (COLLEGE_ROLL_NO,COLLEGE_DATE,MARKING_PERIOD_ID,PERIOD_ID,COURSE_PERIOD_ID,ATTENDANCE_CODE,ATTENDANCE_TEACHER_CODE,COMMENT" . ($table == 'lunch_period' ? ',TABLE_NAME' : '') . ") values('$student_id','$date','$mp_id','" . UserPeriod() . "','" . ($cq_cpid != '' ? $cq_cpid : UserCoursePeriod()) . "','" . substr($value, 5) . "','" . substr($value, 5) . "','" . str_replace("'", "\'", $cmnt) . "'" . ($table == 'lunch_period' ? ",'" . optional_param('table', '', PARAM_ALPHANUM) . "'" : '') . ")";
+            $sql = "INSERT INTO " . $table . " (COLLEGE_ROLL_NO,COLLEGE_DATE,MARKING_PERIOD_ID,PERIOD_ID,COURSE_PERIOD_ID,ATTENDANCE_CODE,ATTENDANCE_TEACHER_CODE,COMMENT" . ($table == 'lunch_period' ? ',TABLE_NAME' : '') . ") values('$college_roll_no','$date','$mp_id','" . UserPeriod() . "','" . ($cq_cpid != '' ? $cq_cpid : UserCoursePeriod()) . "','" . substr($value, 5) . "','" . substr($value, 5) . "','" . str_replace("'", "\'", $cmnt) . "'" . ($table == 'lunch_period' ? ",'" . optional_param('table', '', PARAM_ALPHANUM) . "'" : '') . ")";
         }
         DBQuery($sql);
         if ($_REQUEST['table'] == '0')
-            UpdateAttendanceDaily($student_id, $date);
+            UpdateAttendanceDaily($college_roll_no, $date);
     }
     if ($_REQUEST['table'] == '0') {
         // echo 'SELECT \'completed\' AS COMPLETED FROM attendance_completed WHERE (STAFF_ID=\''.User('STAFF_ID').'\' OR SUBSTITUTE_STAFF_ID=\''.  User('STAFF_ID').'\') AND COLLEGE_DATE=\''.date('Y-m-d',strtotime($date)).'\' AND PERIOD_ID=\''.UserPeriod().'\' ';
@@ -600,10 +600,10 @@ function _makeTipMessage($value, $title) {
         return $value;
 }
 
-function makeCommentInput($student_id, $column) {
+function makeCommentInput($college_roll_no, $column) {
     global $current_RET;
 
-    return TextInput($current_RET[$student_id][1]['COMMENT'], 'comment[' . $student_id . ']', '', 'maxlength=80', true, true);
+    return TextInput($current_RET[$college_roll_no][1]['COMMENT'], 'comment[' . $college_roll_no . ']', '', 'maxlength=80', true, true);
 }
 
 ?>

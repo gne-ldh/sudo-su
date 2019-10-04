@@ -119,7 +119,7 @@ $extra['search'] .= '</div>'; //.row
 
 if (!$_REQUEST['search_modfunc'] && User('PROFILE') != 'parent' && User('PROFILE') != 'student') {
     $extra['new'] = true;
-    Search('student_id', $extra);
+    Search('college_roll_no', $extra);
 } else {
     $RET = GetStuList($extra);
     $columns = array('FULL_NAME' => 'Student', 'COURSE_TITLE' => 'Course', 'ELIGIBILITY_CODE' => 'Grade');

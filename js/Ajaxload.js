@@ -312,7 +312,7 @@ function usercheck_error_student_Mod(err) {
 
 // ------------------------------------------------------ College Roll No------------------------------------------------------------------------------ //
 
-function usercheck_student_id(i) {
+function usercheck_college_roll_no(i) {
     var obj = document.getElementById('ajax_output_stid');
     obj.innerHTML = '';
 
@@ -328,10 +328,10 @@ function usercheck_student_id(i) {
         obj.innerHTML = err.join('<br />');
         return;
     }
-    ajax_call('ValidatorInt.php?u=' + i.value + 'stid', usercheck_callback_student_id, usercheck_error_student_id);
+    ajax_call('ValidatorInt.php?u=' + i.value + 'stid', usercheck_callback_college_roll_no, usercheck_error_college_roll_no);
 }
 
-function usercheck_callback_student_id(data) {
+function usercheck_callback_college_roll_no(data) {
     var response = (data == '1');
 
     var obj = document.getElementById('ajax_output_stid');
@@ -339,7 +339,7 @@ function usercheck_callback_student_id(data) {
     obj.innerHTML = (response == '1') ? 'College Roll No OK' : 'College Roll No already taken';
 }
 
-function usercheck_error_student_id(err) {
+function usercheck_error_college_roll_no(err) {
     alert("Error: " + err);
 }
 
@@ -2350,9 +2350,9 @@ function MassScheduleSessionSetCallback(data)
     $('.modal-backdrop').remove();
 }
 
-function TransferredOutModal(modfunc, student_id, drop_code)
+function TransferredOutModal(modfunc, college_roll_no, drop_code)
 {
-    ajax_call('TransferredOutModal.php?modfunc=' + modfunc + '&student_id=' + student_id + '&drop_code=' + drop_code, TransferredOutModalCallback, MassScheduleModalError);
+    ajax_call('TransferredOutModal.php?modfunc=' + modfunc + '&college_roll_no=' + college_roll_no + '&drop_code=' + drop_code, TransferredOutModalCallback, MassScheduleModalError);
 }
 
 function TransferredOutModalCallback(data) {

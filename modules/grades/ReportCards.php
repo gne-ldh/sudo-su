@@ -134,7 +134,7 @@ if ($_REQUEST['modfunc'] == 'save') {
             $handle = PDFStart();
             $total_stu = 1;
             if (!isset($_REQUEST['elements']['percents']) || (isset($_REQUEST['elements']['percents']) && $_REQUEST['elements']['percents'] == 'Y')) {
-                foreach ($RET as $student_id => $course_periods) {
+                foreach ($RET as $college_roll_no => $course_periods) {
 
                     echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
                     echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetCollege(UserCollege()) . ' (' . $cur_session . ')' . "<div style=\"font-size:12px;\">Student Report Card</div></td><td align=right style=\"padding-top:20px\">" . ProperDate(DBDate()) . "<br \>Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
@@ -176,7 +176,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                                 $grades_RET[$i]['GPA'] = ($Total_Credit_Hr_Attempted != 0 && $total_grade_point != 0 ? sprintf("%01.3f", ($total_grade_point / $Total_Credit_Hr_Attempted)) : 0);
                             $total_grade_point = 0;
                             $To_Credit_Hr_Attempted += $Total_Credit_Hr_Attempted;
-                            $to_Credit_hr_attempt[$student_id] = $To_Credit_Hr_Attempted;
+                            $to_Credit_hr_attempt[$college_roll_no] = $To_Credit_Hr_Attempted;
                             $Total_Credit_Hr_Attempted = 0;
 
                             foreach ($_REQUEST['mp_arr'] as $mp) {
@@ -263,7 +263,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                                     $grades_RET[$i]['ABSENCES'] = 'n/a';
                             if ($_REQUEST['elements']['comments'] == 'Y') {
                                 $sep = '';
-                                foreach ($comments_RET[$student_id][$course_period_id][$last_mp] as $comment) {
+                                foreach ($comments_RET[$college_roll_no][$course_period_id][$last_mp] as $comment) {
                                     if ($all_commentsA_RET[$comment['REPORT_CARD_COMMENT_ID']])
                                         $grades_RET[$i]['C' . $comment['REPORT_CARD_COMMENT_ID']] = $comment['COMMENT'] != ' ' ? $comment['COMMENT'] : '&middot;';
                                     else {
@@ -313,13 +313,13 @@ if ($_REQUEST['modfunc'] == 'save') {
                             $count_lines = 3;
                             if ($_REQUEST['elements']['mp_absences'] == 'Y') {
                                 $count = 0;
-                                foreach ($attendance_day_RET[$student_id][$last_mp] as $abs)
+                                foreach ($attendance_day_RET[$college_roll_no][$last_mp] as $abs)
                                     $count += 1 - $abs['STATE_VALUE'];
                                 $mp_absences = '<strong>Daily Absences this ' . GetMP($last_mp, 'TITLE') . ' :</strong> ' . $count;
                             }
                             if ($_REQUEST['elements']['ytd_absences'] == 'Y') {
                                 $count = 0;
-                                foreach ($attendance_day_RET[$student_id] as $mp_abs)
+                                foreach ($attendance_day_RET[$college_roll_no] as $mp_abs)
                                     foreach ($mp_abs as $abs)
                                         $count += 1 - $abs['STATE_VALUE'];
                                 echo '<br/><table width="100%" border="0" cellspacing="0"><tr>';
@@ -336,7 +336,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                                 $attendance_title = DBGet(DBQuery("SELECT TITLE FROM attendance_codes WHERE id='" . $_REQUEST['mp_tardies_code'] . "'"));
                                 $attendance_title = $attendance_title[1]['TITLE'];
                                 $count = 0;
-                                foreach ($attendance_RET[$student_id][$_REQUEST['mp_tardies_code']][$last_mp] as $abs)
+                                foreach ($attendance_RET[$college_roll_no][$_REQUEST['mp_tardies_code']][$last_mp] as $abs)
                                     $count++;
                                 $mp_tardies = $attendance_title . ' in ' . GetMP($last_mp, 'TITLE') . ': ' . $count;
                             }
@@ -344,7 +344,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                                 $attendance_title = DBGet(DBQuery("SELECT TITLE FROM attendance_codes WHERE id='" . $_REQUEST['ytd_tardies_code'] . "'"));
                                 $attendance_title = $attendance_title[1]['TITLE'];
                                 $count = 0;
-                                foreach ($attendance_RET[$student_id][$_REQUEST['ytd_tardies_code']] as $mp_abs)
+                                foreach ($attendance_RET[$college_roll_no][$_REQUEST['ytd_tardies_code']] as $mp_abs)
                                     foreach ($mp_abs as $abs)
                                         $count++;
                                 DrawHeader($attendance_title . ' this year: ' . $count, $mp_tardies);
@@ -519,7 +519,7 @@ if (!$_REQUEST['modfunc']) {
     $extra['search'] .= '</div>'; //.col-lg-6
     $extra['search'] .= '</div>'; //.row
 
-    Search('student_id', $extra, 'true');
+    Search('college_roll_no', $extra, 'true');
     if ($_REQUEST['search_modfunc'] == 'list') {
         if ($_SESSION['count_stu'] != 0)
             echo '<div class="text-right p-b-20 p-r-20"><INPUT type=submit class="btn btn-primary" value=\'Create Report Cards for Selected Students\'></div>';

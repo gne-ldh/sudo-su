@@ -30,8 +30,8 @@ include('../../RedirectModulesInc.php');
 require_once('modules/grades/DeletePromptX.fnc.php');
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'delete') {
     if (($dp = DeletePromptX('final grade'))) {
-        DBQuery('DELETE FROM student_report_card_grades WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ROLL_NO=\'' . $_REQUEST['student_id'] . '\' AND COURSE_PERIOD_ID=\'' . $_REQUEST['course_period_id'] . '\' AND MARKING_PERIOD_ID=\'' . $_REQUEST['marking_period_id'] . '\'');
-        DBQuery('DELETE FROM student_report_card_comments WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ROLL_NO=\'' . $_REQUEST['student_id'] . '\' AND COURSE_PERIOD_ID=\'' . $_REQUEST['course_period_id'] . '\' AND MARKING_PERIOD_ID=\'' . $_REQUEST['marking_period_id'] . '\'');
+        DBQuery('DELETE FROM student_report_card_grades WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ROLL_NO=\'' . $_REQUEST['college_roll_no'] . '\' AND COURSE_PERIOD_ID=\'' . $_REQUEST['course_period_id'] . '\' AND MARKING_PERIOD_ID=\'' . $_REQUEST['marking_period_id'] . '\'');
+        DBQuery('DELETE FROM student_report_card_comments WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ROLL_NO=\'' . $_REQUEST['college_roll_no'] . '\' AND COURSE_PERIOD_ID=\'' . $_REQUEST['course_period_id'] . '\' AND MARKING_PERIOD_ID=\'' . $_REQUEST['marking_period_id'] . '\'');
         $_REQUEST['modfunc'] = 'save';
     } elseif ($dp === false)
         $_REQUEST['modfunc'] = 'save';
@@ -167,7 +167,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
             if ($_REQUEST['elements']['comments'] == 'Y')
                 $columns['COMMENT'] = 'Comment';
             $i = 0;
-            foreach ($RET as $student_id => $course_periods) {
+            foreach ($RET as $college_roll_no => $course_periods) {
                 $course_period_id = key($course_periods);
                 $grades_RET[$i + 1]['FULL_NAME'] = '<div style="white-space: nowrap;">'.$course_periods[$course_period_id][key($course_periods[$course_period_id])][1]['FULL_NAME'].'</div>';
 
@@ -175,7 +175,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
                 foreach ($course_periods as $course_period_id => $mps) {
 
                     $i++;
-                    $grades_RET[$i]['COLLEGE_ROLL_NO'] = $student_id;
+                    $grades_RET[$i]['COLLEGE_ROLL_NO'] = $college_roll_no;
                     $grades_RET[$i]['COURSE_PERIOD_ID'] = $course_period_id;
                     $grades_RET[$i]['MARKING_PERIOD_ID'] = key($mps);
 
@@ -223,7 +223,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
                 unset($tmp_REQUEST['modfunc']);
                 $link['remove']['link'] = PreparePHP_SELF($tmp_REQUEST) . "&modfunc=delete";
 
-                $link['remove']['variables'] = array('student_id' => 'COLLEGE_ROLL_NO', 'course_period_id' => 'COURSE_PERIOD_ID', 'marking_period_id' => 'MARKING_PERIOD_ID');
+                $link['remove']['variables'] = array('college_roll_no' => 'COLLEGE_ROLL_NO', 'course_period_id' => 'COURSE_PERIOD_ID', 'marking_period_id' => 'MARKING_PERIOD_ID');
             }
             echo '<div class="panel panel-default">';
             ListOutputGrade($grades_RET, $columns, 'Course', 'Courses', $link);
@@ -403,7 +403,7 @@ if (!$_REQUEST['modfunc']) {
             $extra['footer'] = '<div class="panel-footer text-right p-r-20">' . SubmitButtonModal('Create Grade Lists for Selected Students', '', 'class="btn btn-primary"') . '</div>';
         //}
     }
-    Search('student_id', $extra, 'true');
+    Search('college_roll_no', $extra, 'true');
 
     if ($_REQUEST['search_modfunc'] == 'list') {
         

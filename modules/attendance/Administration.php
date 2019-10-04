@@ -69,11 +69,11 @@ if (!$current_mp) {
 
 if ($_REQUEST['attendance'] && ($_POST['attendance'] || $_REQUEST['ajax']) && AllowEdit()) {
 
-    foreach ($_REQUEST['attendance'] as $student_id => $values) {
+    foreach ($_REQUEST['attendance'] as $college_roll_no => $values) {
         foreach ($values as $period => $columns) {
             $p_ids = explode('_', $period);
 
-            if ($current_RET[$student_id][$p_ids[0]]) {
+            if ($current_RET[$college_roll_no][$p_ids[0]]) {
 
                 $sql = 'UPDATE ' . $table . ' SET ADMIN=\'Y\',';
 
@@ -84,7 +84,7 @@ if ($_REQUEST['attendance'] && ($_POST['attendance'] || $_REQUEST['ajax']) && Al
                         $sql .= $column . '=\'' . str_replace("\'", "''", $value) . '\',';
                 }
 
-                $sql = substr($sql, 0, -1) . ' WHERE COLLEGE_DATE=\'' . $date . '\' AND COURSE_PERIOD_ID=\'' . $p_ids[0] . '\' AND COLLEGE_ROLL_NO=\'' . $student_id . '\'' . $extra_sql;
+                $sql = substr($sql, 0, -1) . ' WHERE COLLEGE_DATE=\'' . $date . '\' AND COURSE_PERIOD_ID=\'' . $p_ids[0] . '\' AND COLLEGE_ROLL_NO=\'' . $college_roll_no . '\'' . $extra_sql;
                 if (isset($_REQUEST['admin_update']) && $_REQUEST['admin_update'] == 'UPDATE')
                     DBQuery($sql);
             }
@@ -93,7 +93,7 @@ if ($_REQUEST['attendance'] && ($_POST['attendance'] || $_REQUEST['ajax']) && Al
                 $sql = 'INSERT INTO ' . $table . ' ';
 
                 $fields = 'COLLEGE_ROLL_NO,COLLEGE_DATE,PERIOD_ID,MARKING_PERIOD_ID,COURSE_PERIOD_ID,ADMIN,';
-                $values = '\'' . $student_id . '\',\'' . $date . '\',\'' . $p_ids[1] . '\',\'' . $current_mp . '\',\'' . $p_ids[0] . '\',\'Y\',';
+                $values = '\'' . $college_roll_no . '\',\'' . $date . '\',\'' . $p_ids[1] . '\',\'' . $current_mp . '\',\'' . $p_ids[0] . '\',\'Y\',';
                 if ($table == 'lunch_period') {
                     $fields .= 'TABLE_NAME,';
                     $values .= '\'' . $_REQUEST['table'] . '\',';
@@ -118,33 +118,33 @@ if ($_REQUEST['attendance'] && ($_POST['attendance'] || $_REQUEST['ajax']) && Al
             }
         }
 
-        $val = $_REQUEST['attendance_day'][$student_id]['COMMENT'];
-        UpdateAttendanceDaily($student_id, $date, ($val ? $val : false));
-        unset($_REQUEST['attendance_day'][$student_id]);
+        $val = $_REQUEST['attendance_day'][$college_roll_no]['COMMENT'];
+        UpdateAttendanceDaily($college_roll_no, $date, ($val ? $val : false));
+        unset($_REQUEST['attendance_day'][$college_roll_no]);
     }
-    $_REQUEST['attendance_day'][$student_id]['COMMENT'];
+    $_REQUEST['attendance_day'][$college_roll_no]['COMMENT'];
     $current_RET = DBGet(DBQuery('SELECT ATTENDANCE_TEACHER_CODE,ATTENDANCE_CODE,ATTENDANCE_REASON,COLLEGE_ROLL_NO,ADMIN,COURSE_PERIOD_ID,PERIOD_ID FROM ' . $table . ' WHERE COLLEGE_DATE=\'' . $date . '\'' . $extra_sql), array(), array('COLLEGE_ROLL_NO', 'COURSE_PERIOD_ID'));
     unset($_REQUEST['attendance']);
     unset($_SESSION['_REQUEST_vars']['attendance']);
     unset($_SESSION['_REQUEST_vars']['attendance_day']);
 }
 if (count($_REQUEST['attendance_day'])) {
-    foreach ($_REQUEST['attendance_day'] as $student_id => $comment) {
+    foreach ($_REQUEST['attendance_day'] as $college_roll_no => $comment) {
 
         $val = $comment['COMMENT'];
 
-        UpdateAttendanceDaily($student_id, $date, $val);
+        UpdateAttendanceDaily($college_roll_no, $date, $val);
     }
     unset($_REQUEST['attendance_day']);
 }
 
 $codes_RET = DBGet(DBQuery('SELECT ID,SHORT_NAME,TITLE,STATE_CODE FROM attendance_codes WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' AND TABLE_NAME=\'' . $_REQUEST[table] . '\''));
 $periods_RET = DBGet(DBQuery('SELECT PERIOD_ID,SHORT_NAME,TITLE FROM college_periods WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' AND EXISTS (SELECT * FROM course_periods cp,course_period_var cpv WHERE cpv.PERIOD_ID=college_periods.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.DOES_ATTENDANCE=\'Y\') ORDER BY SORT_ORDER'));
-if (isset($_REQUEST['student_id']) && optional_param('student_id', '', PARAM_ALPHANUM) != 'new') {
+if (isset($_REQUEST['college_roll_no']) && optional_param('college_roll_no', '', PARAM_ALPHANUM) != 'new') {
 
-    if (UserStudentID() != optional_param('student_id', '', PARAM_ALPHANUM)) {
+    if (UserStudentID() != optional_param('college_roll_no', '', PARAM_ALPHANUM)) {
 
-        $_SESSION['student_id'] = optional_param('student_id', '', PARAM_ALPHANUM);
+        $_SESSION['college_roll_no'] = optional_param('college_roll_no', '', PARAM_ALPHANUM);
         //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
     }
 
@@ -159,7 +159,7 @@ if (isset($_REQUEST['student_id']) && optional_param('student_id', '', PARAM_ALP
 										s.SYEAR=\'' . UserSyear() . '\' AND s.COLLEGE_ID=\'' . UserCollege() . '\' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND s.MARKING_PERIOD_ID IN (' . GetAllMP($MP_TYPE, $current_mp) . ')
 										AND s.COURSE_ID=c.COURSE_ID
 										AND s.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cpv.PERIOD_ID=p.PERIOD_ID AND cpv.DOES_ATTENDANCE=\'' . 'Y' . '\'
-										AND s.COLLEGE_ROLL_NO=\'' . optional_param('student_id', '', PARAM_ALPHANUM) . '\' AND (\'' . $date . '\' BETWEEN s.START_DATE AND s.END_DATE OR (s.END_DATE IS NULL AND \'' . $date . '\'>=s.START_DATE))
+										AND s.COLLEGE_ROLL_NO=\'' . optional_param('college_roll_no', '', PARAM_ALPHANUM) . '\' AND (\'' . $date . '\' BETWEEN s.START_DATE AND s.END_DATE OR (s.END_DATE IS NULL AND \'' . $date . '\'>=s.START_DATE))
 										AND position(substring(\'' . 'UMTWHFS' . '\' FROM DAYOFWEEK(cast(\'' . $date . '\' AS DATE)) FOR 1) IN cpv.DAYS)>0
 										AND ac.CALENDAR_ID=cp.CALENDAR_ID AND ac.COLLEGE_DATE=\'' . $date . '\' AND ac.MINUTES!=0
 									ORDER BY p.SORT_ORDER'), $functions);
@@ -168,13 +168,13 @@ if (isset($_REQUEST['student_id']) && optional_param('student_id', '', PARAM_ALP
     $action = PreparePHP_SELF($tmp_req);
     echo "<FORM class=\"form-horizontal\" action=$action&modfunc=student method=POST>";
 
-    if (isset($_REQUEST['student_id'])) {
+    if (isset($_REQUEST['college_roll_no'])) {
         $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX FROM students WHERE COLLEGE_ROLL_NO=\'' . UserStudentID() . '\''));
         $count_student_RET = DBGet(DBQuery('SELECT COUNT(*) AS NUM FROM students'));
         if ($count_student_RET[1]['NUM'] > 1) {
             #-----------------------------------------------------newly added attendance code and the date in back to list--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
             echo '<div class="panel panel-default">';
-            DrawHeader('Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'], '<span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=students/Student.php&codes[]=' . $_SESSION[code][0] . '&ajax=true&bottom_back=true&month_date=' . $_REQUEST[month_date] . '&day_date=' . $_REQUEST[day_date] . '&year_date=' . $_REQUEST[year_date] . ' target=body><i class="icon-square-left"></i> Back to Student List</A></span><div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div>');
+            DrawHeader('Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'], '<span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=students/Student.php&codes[]=' . $_SESSION[code][0] . '&ajax=true&bottom_back=true&month_date=' . $_REQUEST[month_date] . '&day_date=' . $_REQUEST[day_date] . '&year_date=' . $_REQUEST[year_date] . ' target=body><i class="icon-square-left"></i> Back to Student List</A></span><div class="btn-group heading-btn"><A HREF=Side.php?college_roll_no=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div>');
             echo '</div>';
             #-----------------------------------------------------newly added attendance code and the date in back to list--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         }
@@ -244,7 +244,7 @@ if (isset($_REQUEST['student_id']) && optional_param('student_id', '', PARAM_ALP
     $extra['columns_after']['DAILY_COMMENT'] = 'Comment';
     $extra['columns_after']['PHONE'] = 'Phone';
     $extra['link']['FULL_NAME']['link'] = "Modules.php?modname=$_REQUEST[modname]&month_date=$_REQUEST[month_date]&day_date=$_REQUEST[day_date]&year_date=$_REQUEST[year_date]";
-    $extra['link']['FULL_NAME']['variables'] = array('student_id' => 'COLLEGE_ROLL_NO');
+    $extra['link']['FULL_NAME']['variables'] = array('college_roll_no' => 'COLLEGE_ROLL_NO');
     $extra['BackPrompt'] = false;
     $extra['Redirect'] = false;
     $extra['new'] = true;
@@ -363,7 +363,7 @@ if (isset($_REQUEST['student_id']) && optional_param('student_id', '', PARAM_ALP
     $extra['DEBUG'] = true;
 
 
-    Search('student_id', $extra);
+    Search('college_roll_no', $extra);
 
     echo '<div class="panel-footer text-right p-r-20">' . SubmitButton('UPDATE', 'admin_update', 'class="btn btn-primary"') . '</div>';
 

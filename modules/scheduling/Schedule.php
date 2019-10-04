@@ -42,10 +42,10 @@ if ($_REQUEST['modfunc'] == 'cp_insert') {
             $res = DBGet(DBQuery("SELECT parent_id from  course_periods WHERE course_period_id=" . $val));
 
             if ($res[1]['PARENT_ID'] != $val) {
-                $res_sch = DBGet(DBQuery('SELECT count(*) as res from  schedule WHERE course_period_id=' . $res[1]['PARENT_ID'] . ' and student_id=' . UserStudentID()));
+                $res_sch = DBGet(DBQuery('SELECT count(*) as res from  schedule WHERE course_period_id=' . $res[1]['PARENT_ID'] . ' and college_roll_no=' . UserStudentID()));
 
                 if ($res_sch[1]['RES'] > 0) {
-                    DBQuery("INSERT INTO schedule(syear, college_id, student_id, start_date, end_date,modified_by, course_id, course_weight, course_period_id, mp, marking_period_id, scheduler_lock, dropped) SELECT syear, college_id, student_id, start_date, end_date, modified_by, course_id, course_weight, course_period_id, mp, marking_period_id, scheduler_lock, dropped FROM temp_schedule WHERE course_period_id =$val");
+                    DBQuery("INSERT INTO schedule(syear, college_id, college_roll_no, start_date, end_date,modified_by, course_id, course_weight, course_period_id, mp, marking_period_id, scheduler_lock, dropped) SELECT syear, college_id, college_roll_no, start_date, end_date, modified_by, course_id, course_weight, course_period_id, mp, marking_period_id, scheduler_lock, dropped FROM temp_schedule WHERE course_period_id =$val");
                     DBQuery("DROP TABLE IF EXISTS temp_schedule");
                     unset($_SESSION['course_periods']);
                     unset($_SESSION['marking_period_id']);
@@ -57,7 +57,7 @@ if ($_REQUEST['modfunc'] == 'cp_insert') {
             } else {
 
 
-                DBQuery("INSERT INTO schedule(syear, college_id, student_id, start_date, end_date,modified_by, course_id, course_weight, course_period_id, mp, marking_period_id, scheduler_lock, dropped) SELECT syear, college_id, student_id, start_date, end_date, modified_by, course_id, course_weight, course_period_id, mp, marking_period_id, scheduler_lock, dropped FROM temp_schedule WHERE course_period_id=$val");
+                DBQuery("INSERT INTO schedule(syear, college_id, college_roll_no, start_date, end_date,modified_by, course_id, course_weight, course_period_id, mp, marking_period_id, scheduler_lock, dropped) SELECT syear, college_id, college_roll_no, start_date, end_date, modified_by, course_id, course_weight, course_period_id, mp, marking_period_id, scheduler_lock, dropped FROM temp_schedule WHERE course_period_id=$val");
 
                 unset($_SESSION['course_periods']);
                 unset($_SESSION['marking_period_id']);
@@ -84,7 +84,7 @@ if ($_REQUEST['modfunc'] == 'cp_insert') {
         $_SESSION['conflict_cp'] = $parent_c_name;
     }
     DBQuery("DROP TABLE IF EXISTS temp_schedule");
-    echo "<script type=text/javascript>window.location.href='Modules.php?modname=scheduling/Schedule.php&student_id=" . UserStudentID() . "';</script>";
+    echo "<script type=text/javascript>window.location.href='Modules.php?modname=scheduling/Schedule.php&college_roll_no=" . UserStudentID() . "';</script>";
 }
 
 foreach ($_REQUEST as $i => $r) {
@@ -132,8 +132,8 @@ $extra['search'] .= '</div>'; //.col-lg-6
 $extra['search'] .= '</div>'; //.row
 
 
-if (!$_SESSION['student_id']) {
-    Search('student_id', $extra);
+if (!$_SESSION['college_roll_no']) {
+    Search('college_roll_no', $extra);
 }
 ####################
 /////For deleting schedule
@@ -235,10 +235,10 @@ if (isset($_SESSION['conflict_cp']) && $_SESSION['conflict_cp'] != '') {
     unset($_SESSION['conflict_cp']);
 }
 if ($_REQUEST['del'] == 'true') {
-    $association_query_reportcard = DBQuery('Select * from  student_report_card_grades where student_id=\'' . UserStudentId() . '\' and course_period_id=\'' . $_REQUEST['cp_id'] . '\'');
-    $association_query_grade = DBQuery('Select * from gradebook_grades where student_id=\'' . UserStudentId() . '\' and course_period_id=\'' . $_REQUEST['cp_id'] . '\' ');
-    $association_query_attendance = DBQuery('Select * from attendance_period where student_id=\'' . UserStudentId() . '\' and course_period_id=\'' . $_REQUEST['cp_id'] . '\' ');
-    $schedule_data = DBGet(DBQuery('Select * from schedule where student_id=\'' . UserStudentId() . '\' and course_period_id=\'' . $_REQUEST['cp_id'] . '\' and syear =' . UserSyear() . ' '));
+    $association_query_reportcard = DBQuery('Select * from  student_report_card_grades where college_roll_no=\'' . UserStudentId() . '\' and course_period_id=\'' . $_REQUEST['cp_id'] . '\'');
+    $association_query_grade = DBQuery('Select * from gradebook_grades where college_roll_no=\'' . UserStudentId() . '\' and course_period_id=\'' . $_REQUEST['cp_id'] . '\' ');
+    $association_query_attendance = DBQuery('Select * from attendance_period where college_roll_no=\'' . UserStudentId() . '\' and course_period_id=\'' . $_REQUEST['cp_id'] . '\' ');
+    $schedule_data = DBGet(DBQuery('Select * from schedule where college_roll_no=\'' . UserStudentId() . '\' and course_period_id=\'' . $_REQUEST['cp_id'] . '\' and syear =' . UserSyear() . ' '));
     // echo mysql_num_rows($association_query_reportcard); //exit;
     $a_attn = count(DBGet($association_query_attendance));
     $a_grd = count(DBGet($association_query_grade));
@@ -271,7 +271,7 @@ if ($_REQUEST['del'] == 'true') {
             if ($schedule_status == 'N') {
                 $seat_fill = $seat_fetch[1]['FILLED_SEATS'] - 1;
             }
-            DBQuery('Delete from schedule where student_id=\'' . UserStudentId() . '\' and course_period_id=\'' . $_REQUEST['cp_id'] . '\' and course_id=\'' . $_REQUEST['c_id'] . '\' and id=\'' . $_REQUEST['schedule_id'] . '\'');
+            DBQuery('Delete from schedule where college_roll_no=\'' . UserStudentId() . '\' and course_period_id=\'' . $_REQUEST['cp_id'] . '\' and course_id=\'' . $_REQUEST['c_id'] . '\' and id=\'' . $_REQUEST['schedule_id'] . '\'');
             DBQuery('Update course_periods set filled_seats=\'' . $seat_fill . '\' where course_id=\'' . $_REQUEST['c_id'] . '\' and course_period_id=\'' . $_REQUEST['cp_id'] . '\' ');
             unset($_REQUEST['del']);
             unset($_REQUEST['c_id']);
@@ -283,14 +283,14 @@ if ($_REQUEST['del'] == 'true') {
         unset($_REQUEST['c_id']);
     }
 } else {
-    if (isset($_REQUEST['student_id'])) {
-        $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,COLLEGE_ID FROM students,student_enrollment WHERE students.COLLEGE_ROLL_NO=\'' . $_REQUEST['student_id'] . '\' AND student_enrollment.COLLEGE_ROLL_NO = students.COLLEGE_ROLL_NO '));
+    if (isset($_REQUEST['college_roll_no'])) {
+        $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,COLLEGE_ID FROM students,student_enrollment WHERE students.COLLEGE_ROLL_NO=\'' . $_REQUEST['college_roll_no'] . '\' AND student_enrollment.COLLEGE_ROLL_NO = students.COLLEGE_ROLL_NO '));
 
         $count_student_RET[1]['NUM'] = $_SESSION['count_stu'];
         if ($count_student_RET[1]['NUM'] > 1) {
-            DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student:' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=students/Student.php&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> Back to Student List</A></span><div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div></div>');
+            DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student:' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=students/Student.php&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> Back to Student List</A></span><div class="btn-group heading-btn"><A HREF=Side.php?college_roll_no=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div></div>');
         } else if ($count_student_RET[1]['NUM'] == 1) {
-            DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div>');
+            DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><A HREF=Side.php?college_roll_no=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div>');
         }
     }
 ####################
@@ -1000,7 +1000,7 @@ if ($_REQUEST['del'] == 'true') {
         else {
             foreach ($_REQUEST['sel_course_period'] as $ses_cpid => $select_cpid) {
 
-                $student_start_date = DBGet(DBQuery('SELECT START_DATE FROM student_enrollment WHERE student_id=' . UserStudentID() . ' AND COLLEGE_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear()));
+                $student_start_date = DBGet(DBQuery('SELECT START_DATE FROM student_enrollment WHERE college_roll_no=' . UserStudentID() . ' AND COLLEGE_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear()));
                 $student_start_date = $student_start_date[1]['START_DATE'];
                 $get_cp_date = DBGet(DBQuery('SELECT BEGIN_DATE FROM course_periods WHERE course_period_id=' . $select_cpid));
                 if (strtotime($date) < strtotime($get_cp_date[1]['BEGIN_DATE']))
@@ -1054,7 +1054,7 @@ function _makeTitle($value, $column = '') {
 function _makeAction($value) {
     global $THIS_RET;
     $i = UserStudentId();
-    $rem = "<center><a href=Modules.php?modname=scheduling/Schedule.php&student_id=$i&del=true&c_id=$value&cp_id=$THIS_RET[COURSE_PERIOD_ID]&schedule_id=$THIS_RET[SCHEDULE_ID] class=\"btn btn-danger btn-xs btn-icon\"><i class=\"fa fa-times\"></i></a></center>";
+    $rem = "<center><a href=Modules.php?modname=scheduling/Schedule.php&college_roll_no=$i&del=true&c_id=$value&cp_id=$THIS_RET[COURSE_PERIOD_ID]&schedule_id=$THIS_RET[SCHEDULE_ID] class=\"btn btn-danger btn-xs btn-icon\"><i class=\"fa fa-times\"></i></a></center>";
     return $rem;
 }
 
@@ -1159,8 +1159,8 @@ function _makeMPSelect_red($mp_id, $name = '') {
 
         foreach ($_openSIS['_makeMPSelect'][$mp_id] as $value) {
 
-            $student_id = UserStudentID();
-            $qr = DBGet(DBQuery('select end_date from student_enrollment where student_id=' . $student_id . ' order by id desc limit 0,1'));
+            $college_roll_no = UserStudentID();
+            $qr = DBGet(DBQuery('select end_date from student_enrollment where college_roll_no=' . $college_roll_no . ' order by id desc limit 0,1'));
 
             $stu_end_date = $qr[1]['END_DATE'];
             $qr1 = DBGet(DBQuery('select end_date from course_periods where COURSE_PERIOD_ID=' . $THIS_RET['COURSE_PERIOD_ID'] . ''));
@@ -1182,8 +1182,8 @@ function _makeMPSelect_red($mp_id, $name = '') {
 
         return SelectInput($THIS_RET['MARKING_PERIOD_ID'], "schedule[$THIS_RET[COURSE_PERIOD_ID]][$THIS_RET[START_DATE]][MARKING_PERIOD_ID]", '', $mps, false);
     } else {
-        $student_id = UserStudentID();
-        $qr = DBGet(DBQuery('select end_date from student_enrollment where student_id=' . $student_id . ' order by id desc limit 0,1'));
+        $college_roll_no = UserStudentID();
+        $qr = DBGet(DBQuery('select end_date from student_enrollment where college_roll_no=' . $college_roll_no . ' order by id desc limit 0,1'));
 
         $stu_end_date = $qr[1]['END_DATE'];
         $qr1 = DBGet(DBQuery('select end_date from course_periods where COURSE_PERIOD_ID=' . $THIS_RET['COURSE_PERIOD_ID'] . ''));
@@ -1337,7 +1337,7 @@ function VerifySchedule(&$schedule) {
                                      
                                     break;
                                 }
-    $student_id = UserStudentID();
+    $college_roll_no = UserStudentID();
 
 
     foreach ($conflicts as $i => $true)

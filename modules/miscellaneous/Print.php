@@ -170,7 +170,7 @@ else
 	if($Search && function_exists($Search))
 	    	$Search($extra);
 	else
-		Search('student_id',$extra);
+		Search('college_roll_no',$extra);
 	echo '</TD></TR></TABLE>';
 }
 ?>

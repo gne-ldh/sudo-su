@@ -337,8 +337,8 @@ if (User('PROFILE') != 'teacher') {
         echo '<div class="form-group">';
         $RET = DBGet(DBQuery("SELECT sju.COLLEGE_ROLL_NO,CONCAT(s.LAST_NAME,', ',s.FIRST_NAME) AS FULL_NAME,se.COLLEGE_ID FROM students s,students_join_people sju, student_enrollment se WHERE s.COLLEGE_ROLL_NO=sju.COLLEGE_ROLL_NO AND sju.PERSON_ID='" . User('STAFF_ID') . "' AND se.SYEAR=" . UserSyear() . " AND se.COLLEGE_ROLL_NO=sju.COLLEGE_ROLL_NO AND (('" . DBDate() . "' BETWEEN se.START_DATE AND se.END_DATE OR se.END_DATE IS NULL) AND '" . DBDate() . "'>=se.START_DATE)"));
         if (!UserStudentID())
-            $_SESSION['student_id'] = $RET[1]['COLLEGE_ROLL_NO'];
-        echo "<SELECT class=\"select\" name=student_id onChange='this.form.submit();'>";
+            $_SESSION['college_roll_no'] = $RET[1]['COLLEGE_ROLL_NO'];
+        echo "<SELECT class=\"select\" name=college_roll_no onChange='this.form.submit();'>";
         if (count($RET)) {
             foreach ($RET as $student) {
                 echo "<OPTION value=$student[COLLEGE_ROLL_NO]" . ((UserStudentID() == $student['COLLEGE_ROLL_NO']) ? ' SELECTED' : '') . ">" . $student['FULL_NAME'] . "</OPTION>";
@@ -922,8 +922,8 @@ if ($_REQUEST['modname'] || $_GET['modname']) {
     /*     * *****************back to list*************************** */
     if ($_REQUEST['bottom_back'] && $_SESSION['staff_id'])
         unset($_SESSION['staff_id']);
-    if ($_REQUEST['bottom_back'] && $_SESSION['student_id'])
-        unset($_SESSION['student_id']);
+    if ($_REQUEST['bottom_back'] && $_SESSION['college_roll_no'])
+        unset($_SESSION['college_roll_no']);
     /*     * ********************************************* */
     if ($_REQUEST['_openSIS_PDF'] == 'true')
         ob_start();

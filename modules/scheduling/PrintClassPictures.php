@@ -76,16 +76,16 @@ if ($_REQUEST['modfunc'] == 'save') {
                     }
 
                     foreach ($RET as $student) {
-                        $student_id = $student['COLLEGE_ROLL_NO'];
+                        $college_roll_no = $student['COLLEGE_ROLL_NO'];
 
                         if ($i++ % 5 == 0)
                             echo '<TR>';
 
                         echo '<TD valign=bottom><TABLE>';
                         
-                        if($student_id)
+                        if($college_roll_no)
                         {
-                        $stu_img_info= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID='.$student_id.' AND PROFILE_ID=3 AND COLLEGE_ID='. UserCollege().' AND SYEAR='.UserSyear().' AND FILE_INFO=\'stuimg\''));
+                        $stu_img_info= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID='.$college_roll_no.' AND PROFILE_ID=3 AND COLLEGE_ID='. UserCollege().' AND SYEAR='.UserSyear().' AND FILE_INFO=\'stuimg\''));
                         $StudentPicturesPath=1;
                         }   
                         else
@@ -101,7 +101,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 //                                echo '';
 //                        }
                         
-//                        if ($StudentPicturesPath && (($size = getimagesize($picture_path = $StudentPicturesPath . '/' . $student_id . '.JPG')) || $_REQUEST['last_year'] == 'Y' && ($size = getimagesize($picture_path = $StudentPicturesPath . '/' . $student_id . '.JPG'))))
+//                        if ($StudentPicturesPath && (($size = getimagesize($picture_path = $StudentPicturesPath . '/' . $college_roll_no . '.JPG')) || $_REQUEST['last_year'] == 'Y' && ($size = getimagesize($picture_path = $StudentPicturesPath . '/' . $college_roll_no . '.JPG'))))
 //                            if ($size[1] / $size[0] > 144 / 144)
 //                                echo '<TR><TD><IMG SRC="data:image/jpeg;base64,'.base64_encode($stu_img_info[1]['CONTENT']).'" width=144></TD></TR>';
 //                            else

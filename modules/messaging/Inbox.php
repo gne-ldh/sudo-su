@@ -180,9 +180,9 @@ if ($_REQUEST['button'] == 'Send') {
             foreach ($tmp_q1 as $tmp_a) {
                 $stu_arr[] = $tmp_a['COLLEGE_ROLL_NO'];
             }
-            $student_id = implode(',', $stu_arr);
+            $college_roll_no = implode(',', $stu_arr);
 
-            $asso_people = DBGet(DBQuery('select la.USERNAME from students_join_people sjp ,login_authentication la where sjp.person_id=la.user_id and la.profile_id=4 and sjp.student_id in(' . $student_id . ')'));
+            $asso_people = DBGet(DBQuery('select la.USERNAME from students_join_people sjp ,login_authentication la where sjp.person_id=la.user_id and la.profile_id=4 and sjp.college_roll_no in(' . $college_roll_no . ')'));
 
             foreach ($asso_people as $asso_v) {
                 $tmp_arr[] = $asso_v['USERNAME'];
@@ -374,10 +374,10 @@ else {
                 $chkStudent = $_POST['list_gpa_student'];
                 $course_period_id = $_SESSION['course_period_id'];
                 if ($chkStudent == 'Y')
-                    $stuList_forCourseArr = DBGet(DBQuery("SELECT la.username,student_id from students s ,login_authentication la where student_id in(Select distinct student_id from course_periods INNER JOIN schedule using(course_period_id) where course_periods.course_period_id=" . $course_period_id . ") AND la.USER_ID=s.COLLEGE_ROLL_NO AND la.PROFILE_ID=3 AND username IS NOT NULL"));
+                    $stuList_forCourseArr = DBGet(DBQuery("SELECT la.username,college_roll_no from students s ,login_authentication la where college_roll_no in(Select distinct college_roll_no from course_periods INNER JOIN schedule using(course_period_id) where course_periods.course_period_id=" . $course_period_id . ") AND la.USER_ID=s.COLLEGE_ROLL_NO AND la.PROFILE_ID=3 AND username IS NOT NULL"));
 
                 if ($chkParent == 'Y') {
-                    $parentList_forCourseArr = DBGet(DBQuery("SELECT username FROM login_authentication WHERE username IS NOT NULL AND PROFILE_ID=4 AND USER_ID IN (SELECT DISTINCT person_id FROM students_join_people WHERE student_id IN (Select student_id from students where student_id in(Select distinct student_id from course_periods INNER JOIN schedule using(course_period_id) where course_periods.course_period_id=" . $course_period_id . ")))"));
+                    $parentList_forCourseArr = DBGet(DBQuery("SELECT username FROM login_authentication WHERE username IS NOT NULL AND PROFILE_ID=4 AND USER_ID IN (SELECT DISTINCT person_id FROM students_join_people WHERE college_roll_no IN (Select college_roll_no from students where college_roll_no in(Select distinct college_roll_no from course_periods INNER JOIN schedule using(course_period_id) where course_periods.course_period_id=" . $course_period_id . ")))"));
                 }
                 $stuList_forCourse = '';
                 foreach ($stuList_forCourseArr as $stu) {

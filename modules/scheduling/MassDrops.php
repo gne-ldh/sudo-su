@@ -39,11 +39,11 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
         $mp_table = GetMPTable(GetMP($_REQUEST['marking_period_id'], 'TABLE'));
         $current_RET = DBGet(DBQuery('SELECT COLLEGE_ROLL_NO FROM schedule WHERE COURSE_PERIOD_ID=\'' . $_SESSION['MassDrops.php']['course_period_id'] . '\''));
         if (count($_REQUEST['student']) > 0) {
-            foreach ($_REQUEST['student'] as $student_id => $yes) {
-                $start_end_RET = DBGet(DBQuery('SELECT START_DATE,END_DATE,SCHEDULER_LOCK FROM schedule WHERE COLLEGE_ROLL_NO=\'' . $student_id . '\' AND COURSE_PERIOD_ID=\'' . $_SESSION['MassDrops.php']['course_period_id'] . '\''));
+            foreach ($_REQUEST['student'] as $college_roll_no => $yes) {
+                $start_end_RET = DBGet(DBQuery('SELECT START_DATE,END_DATE,SCHEDULER_LOCK FROM schedule WHERE COLLEGE_ROLL_NO=\'' . $college_roll_no . '\' AND COURSE_PERIOD_ID=\'' . $_SESSION['MassDrops.php']['course_period_id'] . '\''));
                 if (count($start_end_RET)) {
                     if ($start_end_RET[1]['SCHEDULER_LOCK'] == 'Y' || $start_end_RET[1]['START_DATE'] > $end_date_mod) {
-                        $select_stu = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME FROM students WHERE COLLEGE_ROLL_NO=\'' . $student_id . '\''));
+                        $select_stu = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME FROM students WHERE COLLEGE_ROLL_NO=\'' . $college_roll_no . '\''));
                         $select_stu = $select_stu[1]['FIRST_NAME'] . "&nbsp;" . $select_stu[1]['LAST_NAME'];
                         if ($start_end_RET[1]['SCHEDULER_LOCK'] == 'Y') {
                             $inactive_schedule2 .= $select_stu . "<br>";
@@ -54,7 +54,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
                             $inactive_schedule_found = 1;
                         }
                     } else {
-                        DBQuery('UPDATE schedule SET END_DATE=\'' . $end_date_mod . '\',MODIFIED_DATE=\'' . Date('Y-m-d') . '\',MODIFIED_BY=\'' . User('STAFF_ID') . '\'  WHERE COLLEGE_ROLL_NO=\'' . clean_param($student_id, PARAM_INT) . '\' AND COURSE_PERIOD_ID=\'' . clean_param($_SESSION['MassDrops.php']['course_period_id'], PARAM_INT) . '\'');
+                        DBQuery('UPDATE schedule SET END_DATE=\'' . $end_date_mod . '\',MODIFIED_DATE=\'' . Date('Y-m-d') . '\',MODIFIED_BY=\'' . User('STAFF_ID') . '\'  WHERE COLLEGE_ROLL_NO=\'' . clean_param($college_roll_no, PARAM_INT) . '\' AND COURSE_PERIOD_ID=\'' . clean_param($_SESSION['MassDrops.php']['course_period_id'], PARAM_INT) . '\'');
                         DBQuery('CALL SEAT_COUNT()');
                         $note = "Selected students have been dropped from the course period.";
                     }

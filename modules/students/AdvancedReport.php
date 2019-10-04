@@ -185,7 +185,7 @@ if (!$_REQUEST['modfunc']) {
 
         $extra['new'] = true;
 
-        Search('student_id', $extra);
+        Search('college_roll_no', $extra);
 
         if ($_SESSION['count_stu'] != '0') {
             unset($_SESSION['count_stu']);
@@ -224,7 +224,7 @@ if (!$_REQUEST['modfunc']) {
 
         $extra['new'] = true;
 
-        Search('student_id', $extra);
+        Search('college_roll_no', $extra);
     }
 }
 

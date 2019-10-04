@@ -71,7 +71,7 @@ function UserStudentID()
 	if(User('PROFILE')=='student')
 	return $_SESSION['COLLEGE_ROLL_NO'];
 	else
-	return $_SESSION['student_id'];
+	return $_SESSION['college_roll_no'];
 }
 
 function UserStaffID()

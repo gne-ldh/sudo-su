@@ -34,7 +34,7 @@ Widgets('request');
 $extra['search'] .= '</div>'; //.col-lg-6
 $extra['search'] .= '</div>'; //.row
 
-Search('student_id', $extra);
+Search('college_roll_no', $extra);
 echo '<div class="panel panel-default">';
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'remove') {
     if (DeletePromptModRequest('request')) {

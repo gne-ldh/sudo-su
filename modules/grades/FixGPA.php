@@ -50,9 +50,9 @@ if(clean_param($_REQUEST['modfunc'],PARAM_ALPHA)=='save')
 {
     if($_REQUEST['student'])
     {
-        foreach($_REQUEST['student'] as $student_id=>$yes)
+        foreach($_REQUEST['student'] as $college_roll_no=>$yes)
         {
-            $stu_all.=$student_id.',';
+            $stu_all.=$college_roll_no.',';
         }
         $stu_all=  substr($stu_all, 0,-1);
         
@@ -75,7 +75,7 @@ if(!$_REQUEST['modfunc'])
 	$extra['new'] = true;
         $extra['GROUP']="COLLEGE_ROLL_NO";
         
-        Search('student_id',$extra);
+        Search('college_roll_no',$extra);
 	if($_REQUEST['search_modfunc']=='list')
 	{
             if($_SESSION['count_stu']!=0)

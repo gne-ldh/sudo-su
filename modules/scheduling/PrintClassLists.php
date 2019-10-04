@@ -98,7 +98,7 @@ if ($_REQUEST['modfunc'] == 'save') {
             if ($_REQUEST['fields']['USERNAME']) {
                 $extra['SELECT'] .= ',la.username AS USERNAME';
                 $extra['FROM'].=' ,login_authentication la';
-                $extra['WHERE'].=' AND la.user_id=s.student_id AND la.profile_id=3';
+                $extra['WHERE'].=' AND la.user_id=s.college_roll_no AND la.profile_id=3';
             }
             $extra['SELECT'] .= ',ssm.NEXT_COLLEGE,ssm.CALENDAR_ID,ssm.SYEAR,ssm.SECTION_ID,s.*';
             if ($_REQUEST['fields']['FIRST_INIT'])
@@ -211,11 +211,11 @@ if ($_REQUEST['modfunc'] == 'save') {
 
                         foreach ($RET as $stu_key => $stu_val) {
 
-                            $add_reslt = "SELECT sa.STREET_ADDRESS_1 AS ADDRESS,sa.CITY,sa.STATE,sa.ZIPCODE,COALESCE((SELECT STREET_ADDRESS_1 FROM student_address WHERE student_id=" . $stu_val['COLLEGE_ROLL_NO'] . " AND TYPE='MAIL'),sa.STREET_ADDRESS_1) AS 
+                            $add_reslt = "SELECT sa.STREET_ADDRESS_1 AS ADDRESS,sa.CITY,sa.STATE,sa.ZIPCODE,COALESCE((SELECT STREET_ADDRESS_1 FROM student_address WHERE college_roll_no=" . $stu_val['COLLEGE_ROLL_NO'] . " AND TYPE='MAIL'),sa.STREET_ADDRESS_1) AS 
 
-                                        MAIL_ADDRESS,COALESCE((SELECT CITY FROM student_address WHERE student_id=" . $stu_val['COLLEGE_ROLL_NO'] . " AND TYPE='MAIL'),sa.CITY) AS MAIL_CITY,COALESCE((SELECT STATE FROM student_address WHERE student_id=" . $stu_val['COLLEGE_ROLL_NO'] . " AND TYPE='MAIL'),sa.STATE) AS MAIL_STATE,
+                                        MAIL_ADDRESS,COALESCE((SELECT CITY FROM student_address WHERE college_roll_no=" . $stu_val['COLLEGE_ROLL_NO'] . " AND TYPE='MAIL'),sa.CITY) AS MAIL_CITY,COALESCE((SELECT STATE FROM student_address WHERE college_roll_no=" . $stu_val['COLLEGE_ROLL_NO'] . " AND TYPE='MAIL'),sa.STATE) AS MAIL_STATE,
 
-                                        COALESCE((SELECT ZIPCODE FROM student_address WHERE student_id=" . $stu_val['COLLEGE_ROLL_NO'] . " AND TYPE='MAIL'),sa.ZIPCODE) AS MAIL_ZIPCODE  from student_address sa   WHERE  sa.TYPE='HOME ADDRESS' AND sa.COLLEGE_ROLL_NO=" . $stu_val['COLLEGE_ROLL_NO'];
+                                        COALESCE((SELECT ZIPCODE FROM student_address WHERE college_roll_no=" . $stu_val['COLLEGE_ROLL_NO'] . " AND TYPE='MAIL'),sa.ZIPCODE) AS MAIL_ZIPCODE  from student_address sa   WHERE  sa.TYPE='HOME ADDRESS' AND sa.COLLEGE_ROLL_NO=" . $stu_val['COLLEGE_ROLL_NO'];
 
                             $res = DBGet(DBQuery($add_reslt));
 
@@ -238,7 +238,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                     }
                     $date = DBDate();
 
-                    $get_schedule = DBGet(DBQuery('SELECT count(ss.student_id) AS TOT FROM students s,course_periods cp,schedule ss ,student_enrollment ssm WHERE ssm.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ssm.COLLEGE_ROLL_NO=ss.COLLEGE_ROLL_NO AND ssm.COLLEGE_ID=' . UserCollege() . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND (ss.END_DATE>=\'' . $date . '\' OR ss.END_DATE IS NULL) AND cp.COURSE_PERIOD_ID IN (' . $cr_pr_id . ') AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND (\'' . $date . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL) AND (\'' . $date . '\'<=ss.END_DATE OR ss.END_DATE IS NULL)'));
+                    $get_schedule = DBGet(DBQuery('SELECT count(ss.college_roll_no) AS TOT FROM students s,course_periods cp,schedule ss ,student_enrollment ssm WHERE ssm.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ssm.COLLEGE_ROLL_NO=ss.COLLEGE_ROLL_NO AND ssm.COLLEGE_ID=' . UserCollege() . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND (ss.END_DATE>=\'' . $date . '\' OR ss.END_DATE IS NULL) AND cp.COURSE_PERIOD_ID IN (' . $cr_pr_id . ') AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND (\'' . $date . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL) AND (\'' . $date . '\'<=ss.END_DATE OR ss.END_DATE IS NULL)'));
 
                     if ($get_schedule[1]['TOT'] > 0 && count($RET) > 0)
                         $table = ListOutputPrintReportMod($RET, $columns);
@@ -412,7 +412,7 @@ function mySearch($extra) {
     }
     $date = DBDate();
 
-    $stu_schedule_qr = DBGet(DBQuery('SELECT count(ss.student_id) AS TOT FROM students s,course_periods cp,schedule ss ,student_enrollment ssm WHERE ssm.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ssm.COLLEGE_ROLL_NO=ss.COLLEGE_ROLL_NO AND ssm.COLLEGE_ID=' . UserCollege() . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND (ss.END_DATE>=\'' . $date . '\' OR ss.END_DATE IS NULL) AND cp.COURSE_PERIOD_ID IN (' . $cr_pr_id . ') AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND (\'' . $date . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL) AND (\'' . $date . '\'<=ss.END_DATE OR ss.END_DATE IS NULL)'));
+    $stu_schedule_qr = DBGet(DBQuery('SELECT count(ss.college_roll_no) AS TOT FROM students s,course_periods cp,schedule ss ,student_enrollment ssm WHERE ssm.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ssm.COLLEGE_ROLL_NO=ss.COLLEGE_ROLL_NO AND ssm.COLLEGE_ID=' . UserCollege() . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND (ss.END_DATE>=\'' . $date . '\' OR ss.END_DATE IS NULL) AND cp.COURSE_PERIOD_ID IN (' . $cr_pr_id . ') AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND (\'' . $date . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL) AND (\'' . $date . '\'<=ss.END_DATE OR ss.END_DATE IS NULL)'));
      
     if ($stu_schedule_qr[1]['TOT'] > 0) {
         echo '<div class="alert bg-success alert-styled-left">' . ($stu_schedule_qr[1]['TOT'] == 1 ? $stu_schedule_qr[1]['TOT'] . "student is found." : $stu_schedule_qr[1]['TOT'] . " students are found.") . '</div>';
@@ -457,7 +457,7 @@ function GetPeriodOcc($cp_id) {
 function _make_no_student($value) {
     $date = DBDate();
 
-    $stu_schedule_qr = DBGet(DBQuery('SELECT count(ss.student_id) AS TOT FROM students s,course_periods cp,schedule ss ,student_enrollment ssm WHERE ssm.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ssm.COLLEGE_ROLL_NO=ss.COLLEGE_ROLL_NO AND ssm.COLLEGE_ID=' . UserCollege() . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND (ss.END_DATE>=\'' . $date . '\' OR ss.END_DATE IS NULL) AND cp.COURSE_PERIOD_ID=\'' . $value . '\' AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND (\'' . $date . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL) AND (\'' . $date . '\'<=ss.END_DATE OR ss.END_DATE IS NULL)'));
+    $stu_schedule_qr = DBGet(DBQuery('SELECT count(ss.college_roll_no) AS TOT FROM students s,course_periods cp,schedule ss ,student_enrollment ssm WHERE ssm.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ssm.COLLEGE_ROLL_NO=ss.COLLEGE_ROLL_NO AND ssm.COLLEGE_ID=' . UserCollege() . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND (ss.END_DATE>=\'' . $date . '\' OR ss.END_DATE IS NULL) AND cp.COURSE_PERIOD_ID=\'' . $value . '\' AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND (\'' . $date . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL) AND (\'' . $date . '\'<=ss.END_DATE OR ss.END_DATE IS NULL)'));
     return $stu_schedule_qr[1]['TOT'];
 }
 

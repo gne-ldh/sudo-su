@@ -90,7 +90,7 @@ if(count($calendars_RET))
 	foreach($calendars_RET as $calendar)
 		$calendar_options[$calendar['CALENDAR_ID']] = $calendar['TITLE'];
 }
-if($_REQUEST['student_id']!='new')
+if($_REQUEST['college_roll_no']!='new')
 {
 	if(count($RET))
 		$id = $RET[count($RET)]['ID'];

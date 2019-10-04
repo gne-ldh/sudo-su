@@ -116,9 +116,9 @@ if($_FILES['uploadfile']['name'])
             if($filename=='.' || $filename=='..')
             continue;
 
-            $student_id_up = explode('-',$filename);
+            $college_roll_no_up = explode('-',$filename);
 
-            if($student_id_up[0]==UserStudentID())
+            if($college_roll_no_up[0]==UserStudentID())
             {
                 $found=true;
                  echo '<tr class="'.$gridClass.'">

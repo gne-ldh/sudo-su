@@ -31,7 +31,7 @@ include('../../../RedirectIncludes.php');
 function _makeTextInput($column, $name, $size, $request = 'students', $title = "") {
     global $value, $field;
 
-    if ($_REQUEST['student_id'] == 'new' && $field['DEFAULT_SELECTION']) {
+    if ($_REQUEST['college_roll_no'] == 'new' && $field['DEFAULT_SELECTION']) {
         $value[$column] = $field['DEFAULT_SELECTION'];
         $div = false;
         $req = $field['REQUIRED'] == 'Y' ? array('<FONT color=red>', '</FONT>') : array('', '');
@@ -50,7 +50,7 @@ function _makeTextInput($column, $name, $size, $request = 'students', $title = "
 function _makeDateInput($column, $name, $request = 'students') {//for custom fields
     global $value, $field;
 
-    if ($_REQUEST['student_id'] == 'new' && $field['DEFAULT_SELECTION']) {
+    if ($_REQUEST['college_roll_no'] == 'new' && $field['DEFAULT_SELECTION']) {
         $value[$column] = $field['DEFAULT_SELECTION'];
         $div = false;
         $req = $field['REQUIRED'] == 'Y' ? array('<FONT color=red>', '</FONT>') : array('', '');
@@ -65,7 +65,7 @@ function _makeDateInput($column, $name, $request = 'students') {//for custom fie
 function _makeSelectInput($column, $name, $request = 'students', $title = "") {
     global $value, $field;
 
-    if ($_REQUEST['student_id'] == 'new' && $field['DEFAULT_SELECTION']) {
+    if ($_REQUEST['college_roll_no'] == 'new' && $field['DEFAULT_SELECTION']) {
         $value[$column] = $field['DEFAULT_SELECTION'];
         $div = false;
         $req = $field['REQUIRED'] == 'Y' ? array('<FONT color=red>', '</FONT>') : array('', '');
@@ -94,7 +94,7 @@ function _makeSelectInput($column, $name, $request = 'students', $title = "") {
 function _makeAutoSelectInput($column, $name, $request = 'students') {
     global $value, $field;
 
-    if ($_REQUEST['student_id'] == 'new' && $field['DEFAULT_SELECTION']) {
+    if ($_REQUEST['college_roll_no'] == 'new' && $field['DEFAULT_SELECTION']) {
         $value[$column] = $field['DEFAULT_SELECTION'];
         $div = false;
         $req = $field['REQUIRED'] == 'Y' ? array('<span class="text-danger">', '</span>') : array('', '');
@@ -137,19 +137,19 @@ function _makeAutoSelectInput($column, $name, $request = 'students') {
 function _makeCheckboxInput($column, $name, $request = 'students') {
     global $value, $field;
 
-    if ($_REQUEST['student_id'] == 'new' && $field['DEFAULT_SELECTION']) {
+    if ($_REQUEST['college_roll_no'] == 'new' && $field['DEFAULT_SELECTION']) {
         $value[$column] = $field['DEFAULT_SELECTION'];
         $div = false;
     } else
         $div = true;
 
-    return CheckboxInput($value[$column], $request . '[' . $column . ']', $name, '', ($_REQUEST['student_id'] == 'new'), '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>');
+    return CheckboxInput($value[$column], $request . '[' . $column . ']', $name, '', ($_REQUEST['college_roll_no'] == 'new'), '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>');
 }
 
 function _makeTextareaInput($column, $name, $request = 'students') {
     global $value, $field;
 
-    if ($_REQUEST['student_id'] == 'new' && $field['DEFAULT_SELECTION']) {
+    if ($_REQUEST['college_roll_no'] == 'new' && $field['DEFAULT_SELECTION']) {
         $value[$column] = $field['DEFAULT_SELECTION'];
         $div = false;
     } else
@@ -291,7 +291,7 @@ function _makeDate_mod($value, $column = 'MEDICAL_DATE') {//not used anywhere
 function _makeDateInput_mod($column, $name, $request = 'students') {//for custom_field_students
     global $value, $field;
 
-    if ($_REQUEST['student_id'] == 'new' && $field['DEFAULT_SELECTION']) {
+    if ($_REQUEST['college_roll_no'] == 'new' && $field['DEFAULT_SELECTION']) {
         $value[$column] = $field['DEFAULT_SELECTION'];
         $div = false;
         $req = $field['REQUIRED'] == 'Y' ? array('<FONT color=red>', '</FONT>') : array('', '');
@@ -393,7 +393,7 @@ function _makeStartInputDate($value, $column) {//student enrollment info tab
 
     if ($THIS_RET['ID'])
         $id = $THIS_RET['ID'];
-    elseif ($_REQUEST['student_id'] == 'new') {
+    elseif ($_REQUEST['college_roll_no'] == 'new') {
         $id = 'new';
         $default = DBGet(DBQuery('SELECT min(COLLEGE_DATE) AS START_DATE FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
         $default = $default[1]['START_DATE'];
@@ -408,7 +408,7 @@ function _makeStartInputDate($value, $column) {//student enrollment info tab
 
 //	
 
-    if ($_REQUEST['student_id'] == 'new')
+    if ($_REQUEST['college_roll_no'] == 'new')
         $div = false;
     else
         $div = true;
@@ -416,14 +416,14 @@ function _makeStartInputDate($value, $column) {//student enrollment info tab
     $maxyear = DBGet(DBQuery('SELECT max(syear) AS SYEAR FROM student_enrollment WHERE COLLEGE_ROLL_NO=\'' . UserStudentID() . '\''));
 //          
     if ($THIS_RET['SYEAR'] == $maxyear[1]['SYEAR']) {
-        if ($_REQUEST['student_id'] != 'new')
-            return '<TABLE class=LO_field><TR>' . $add . '<TD>' . DateInputAY($value, 'values[student_enrollment][' . $id . '][' . $column . ']', $_REQUEST['student_id']) . '</TD></TR></TABLE>';
+        if ($_REQUEST['college_roll_no'] != 'new')
+            return '<TABLE class=LO_field><TR>' . $add . '<TD>' . DateInputAY($value, 'values[student_enrollment][' . $id . '][' . $column . ']', $_REQUEST['college_roll_no']) . '</TD></TR></TABLE>';
         else
             return '<TABLE class=LO_field><TR>' . $add . '<TD>' . DateInputAY($value, 'values[student_enrollment][' . $id . '][' . $column . ']', 0) . '</TD></TR></TABLE>';
     }
     else {
-        if ($_REQUEST['student_id'] != 'new')
-            return '<TABLE class=LO_field><TR>' . $add . '<TD>' . ($value == '' ? DateInputAY($value, 'values[student_enrollment][' . $id . '][' . $column . ']', $_REQUEST['student_id']) : date('M/d/Y', strtotime($value)) ) . '</TD></TR></TABLE>';
+        if ($_REQUEST['college_roll_no'] != 'new')
+            return '<TABLE class=LO_field><TR>' . $add . '<TD>' . ($value == '' ? DateInputAY($value, 'values[student_enrollment][' . $id . '][' . $column . ']', $_REQUEST['college_roll_no']) : date('M/d/Y', strtotime($value)) ) . '</TD></TR></TABLE>';
         else
             return '<TABLE class=LO_field><TR>' . $add . '<TD>' . ($value == '' ? DateInputAY($value, 'values[student_enrollment][' . $id . '][' . $column . ']', 0) : date('M/d/Y', strtotime($value)) ) . '</TD></TR></TABLE>';
     }
@@ -434,7 +434,7 @@ function _makeStartInputDateenrl($value, $column) {//student enrollment tab
 
     if ($THIS_RET['ID'])
         $id = $THIS_RET['ID'];
-    elseif ($_REQUEST['student_id'] == 'new') {
+    elseif ($_REQUEST['college_roll_no'] == 'new') {
         $id = 'new';
         $default = DBGet(DBQuery('SELECT min(COLLEGE_DATE) AS START_DATE FROM attendance_calendar WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
         $default = $default[1]['START_DATE'];
@@ -447,7 +447,7 @@ function _makeStartInputDateenrl($value, $column) {//student enrollment tab
         $id = 'new';
     }
 
-    if ($_REQUEST['student_id'] == 'new') {
+    if ($_REQUEST['college_roll_no'] == 'new') {
         $div = false;
         $counter = 0;
     } else {
@@ -552,7 +552,7 @@ function _makeCollegeInput($value, $column) {
     if ($THIS_RET['COLLEGE_ID']) {
         $name = DBGet(DBQuery('SELECT TITLE FROM colleges WHERE ID=\'' . $THIS_RET['COLLEGE_ID'] . '\''));
         return $name[1]['TITLE'] . '<input type=hidden name=enrollment_id value="' . $id . '" />';
-    } elseif ($_REQUEST['student_id'] != 'new') {
+    } elseif ($_REQUEST['college_roll_no'] != 'new') {
         if ($id != 'new') {
             if ($colleges[$value]) {
                 $name = DBGet(DBQuery('SELECT TITLE FROM colleges WHERE ID=\'' . UserCollege() . '\''));

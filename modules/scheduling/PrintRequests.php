@@ -43,7 +43,7 @@ if (!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) {
     $extra['new'] = true;
     $extra['action'] .= "&_openSIS_PDF=true&head_html=Student+Print+Request";
     $extra['pdf'] = true;
-    Search('student_id', $extra);
+    Search('college_roll_no', $extra);
 } else {
     $columns = array('COURSE_TITLE' => 'Course', 'MARKING_PERIOD_ID' => 'Marking Period', 'WITH_TEACHER_ID' => 'With Teacher', 'WITH_PERIOD_ID' => 'In Period', 'NOT_TEACHER_ID' => 'Not with Teacher', 'NOT_PERIOD_ID' => 'Not in Period');
     $extra['SELECT'] .= ',c.TITLE AS COURSE_TITLE,c.COURSE_ID,srp.PRIORITY,srp.MARKING_PERIOD_ID,srp.WITH_TEACHER_ID,srp.NOT_TEACHER_ID,srp.WITH_PERIOD_ID,srp.NOT_PERIOD_ID';
@@ -62,7 +62,7 @@ if (!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) {
         $handle = PDFStart();
         echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
         echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetCollege(UserCollege()) . "<div style=\"font-size:12px;\">Student Print Request</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br \>Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
-        foreach ($RET as $student_id => $courses) {
+        foreach ($RET as $college_roll_no => $courses) {
             if ($_REQUEST['mailing_labels'] == 'Y') {
                 foreach ($courses as $address) {
 

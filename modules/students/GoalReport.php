@@ -66,11 +66,11 @@ if ($_REQUEST['modfunc'] == 'save') {
             $handle = PDFStart();
             $error = 'Y';
             foreach ($RET as $student) {
-                $_SESSION['student_id'] = $student['COLLEGE_ROLL_NO'];
+                $_SESSION['college_roll_no'] = $student['COLLEGE_ROLL_NO'];
 
 
 
-                $sql_student = DBGet(DBQuery('SELECT gender AS GENDER, ethnicity AS ETHNICITY, common_name AS COM_NAME, social_security AS SOCIAL_SEC, language AS LANG, birthdate AS BDATE  FROM students WHERE COLLEGE_ROLL_NO=\'' . $_SESSION['student_id'] . '\''), array('BDATE' => 'ProperDate'));
+                $sql_student = DBGet(DBQuery('SELECT gender AS GENDER, ethnicity AS ETHNICITY, common_name AS COM_NAME, social_security AS SOCIAL_SEC, language AS LANG, birthdate AS BDATE  FROM students WHERE COLLEGE_ROLL_NO=\'' . $_SESSION['college_roll_no'] . '\''), array('BDATE' => 'ProperDate'));
 
                 $sql_student = $sql_student[1];
 
@@ -78,18 +78,18 @@ if ($_REQUEST['modfunc'] == 'save') {
                 unset($_openSIS['DrawHeader']);
 
                 if (!isset($st_dt) && !isset($end_dt)) {
-                    $sql_goal = 'SELECT GOAL_ID,GOAL_TITLE,START_DATE,END_DATE,GOAL_DESCRIPTION FROM student_goal WHERE COLLEGE_ROLL_NO=\'' . $_SESSION['student_id'] . '\' AND SYEAR=\'' . UserSyear() . '\' ' . ($_REQUEST['_search_all_colleges'] != 'Y' ? 'AND  COLLEGE_ID=' . UserCollege() : '') . ' ORDER BY GOAL_TITLE';
-//        $sql_goal = 'SELECT GOAL_ID,GOAL_TITLE,START_DATE,END_DATE,GOAL_DESCRIPTION FROM student_goal WHERE COLLEGE_ROLL_NO=\''.$_SESSION['student_id'].'\' AND SYEAR=\''.UserSyear().'\' AND COLLEGE_ID='.UserCollege().' ORDER BY GOAL_TITLE';
+                    $sql_goal = 'SELECT GOAL_ID,GOAL_TITLE,START_DATE,END_DATE,GOAL_DESCRIPTION FROM student_goal WHERE COLLEGE_ROLL_NO=\'' . $_SESSION['college_roll_no'] . '\' AND SYEAR=\'' . UserSyear() . '\' ' . ($_REQUEST['_search_all_colleges'] != 'Y' ? 'AND  COLLEGE_ID=' . UserCollege() : '') . ' ORDER BY GOAL_TITLE';
+//        $sql_goal = 'SELECT GOAL_ID,GOAL_TITLE,START_DATE,END_DATE,GOAL_DESCRIPTION FROM student_goal WHERE COLLEGE_ROLL_NO=\''.$_SESSION['college_roll_no'].'\' AND SYEAR=\''.UserSyear().'\' AND COLLEGE_ID='.UserCollege().' ORDER BY GOAL_TITLE';
                 }
                 if (isset($st_dt) && !isset($end_dt)) {
-//	$sql_goal = 'SELECT GOAL_ID,GOAL_TITLE,START_DATE,END_DATE,GOAL_DESCRIPTION FROM student_goal WHERE COLLEGE_ROLL_NO=\''.$_SESSION['student_id'].'\' AND SYEAR=\''.UserSyear().'\' AND COLLEGE_ID=\''.UserCollege().'\' AND START_DATE>=\''.$st_dt.'\' ORDER BY GOAL_TITLE';
-                    $sql_goal = 'SELECT GOAL_ID,GOAL_TITLE,START_DATE,END_DATE,GOAL_DESCRIPTION FROM student_goal WHERE COLLEGE_ROLL_NO=\'' . $_SESSION['student_id'] . '\' AND SYEAR=\'' . UserSyear() . '\' ' . ($_REQUEST['_search_all_colleges'] != 'Y' ? 'AND  COLLEGE_ID=' . UserCollege() : '') . ' AND START_DATE>=\'' . $st_dt . '\' ORDER BY GOAL_TITLE';
+//	$sql_goal = 'SELECT GOAL_ID,GOAL_TITLE,START_DATE,END_DATE,GOAL_DESCRIPTION FROM student_goal WHERE COLLEGE_ROLL_NO=\''.$_SESSION['college_roll_no'].'\' AND SYEAR=\''.UserSyear().'\' AND COLLEGE_ID=\''.UserCollege().'\' AND START_DATE>=\''.$st_dt.'\' ORDER BY GOAL_TITLE';
+                    $sql_goal = 'SELECT GOAL_ID,GOAL_TITLE,START_DATE,END_DATE,GOAL_DESCRIPTION FROM student_goal WHERE COLLEGE_ROLL_NO=\'' . $_SESSION['college_roll_no'] . '\' AND SYEAR=\'' . UserSyear() . '\' ' . ($_REQUEST['_search_all_colleges'] != 'Y' ? 'AND  COLLEGE_ID=' . UserCollege() : '') . ' AND START_DATE>=\'' . $st_dt . '\' ORDER BY GOAL_TITLE';
                 }
                 if (!isset($st_dt) && isset($end_dt)) {
-                    $sql_goal = 'SELECT GOAL_ID,GOAL_TITLE,START_DATE,END_DATE,GOAL_DESCRIPTION FROM student_goal WHERE COLLEGE_ROLL_NO=\'' . $_SESSION['student_id'] . '\' AND SYEAR=\'' . UserSyear() . '\' ' . ($_REQUEST['_search_all_colleges'] != 'Y' ? 'AND  COLLEGE_ID=' . UserCollege() : '') . ' AND START_DATE<=\'' . $end_dt . '\' ORDER BY GOAL_TITLE';
+                    $sql_goal = 'SELECT GOAL_ID,GOAL_TITLE,START_DATE,END_DATE,GOAL_DESCRIPTION FROM student_goal WHERE COLLEGE_ROLL_NO=\'' . $_SESSION['college_roll_no'] . '\' AND SYEAR=\'' . UserSyear() . '\' ' . ($_REQUEST['_search_all_colleges'] != 'Y' ? 'AND  COLLEGE_ID=' . UserCollege() : '') . ' AND START_DATE<=\'' . $end_dt . '\' ORDER BY GOAL_TITLE';
                 }
                 if (isset($st_dt) && isset($end_dt)) {
-                    $sql_goal = 'SELECT GOAL_ID,GOAL_TITLE,START_DATE,END_DATE,GOAL_DESCRIPTION FROM student_goal WHERE COLLEGE_ROLL_NO=\'' . $_SESSION['student_id'] . '\' AND SYEAR=\'' . UserSyear() . '\' ' . ($_REQUEST['_search_all_colleges'] != 'Y' ? 'AND  COLLEGE_ID=' . UserCollege() : '') . ' AND START_DATE>=\'' . $st_dt . '\' AND START_DATE<=\'' . $end_dt . '\' ORDER BY GOAL_TITLE';
+                    $sql_goal = 'SELECT GOAL_ID,GOAL_TITLE,START_DATE,END_DATE,GOAL_DESCRIPTION FROM student_goal WHERE COLLEGE_ROLL_NO=\'' . $_SESSION['college_roll_no'] . '\' AND SYEAR=\'' . UserSyear() . '\' ' . ($_REQUEST['_search_all_colleges'] != 'Y' ? 'AND  COLLEGE_ID=' . UserCollege() : '') . ' AND START_DATE>=\'' . $st_dt . '\' AND START_DATE<=\'' . $end_dt . '\' ORDER BY GOAL_TITLE';
                 }
 
                 $res_goal = DBGet(DBQuery($sql_goal), array('START_DATE' => 'ProperDate', 'END_DATE' => 'ProperDate'));
@@ -142,7 +142,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
                         if ($progress == 'Y') {
                             $goal_id = $row_goal['GOAL_ID'];
-                            $res_pro = DBGet(DBQuery("SELECT START_DATE,PROGRESS_NAME ,PROFICIENCY,PROGRESS_DESCRIPTION,(SELECT TITLE FROM course_periods cp WHERE cp.COURSE_PERIOD_ID=student_goal_progress.COURSE_PERIOD_ID) AS CP_TITLE FROM student_goal_progress WHERE COLLEGE_ROLL_NO='" . $_SESSION['student_id'] . "' AND GOAL_ID='" . $goal_id . "' ORDER BY PROGRESS_NAME"), array('START_DATE' => 'ProperDate'));
+                            $res_pro = DBGet(DBQuery("SELECT START_DATE,PROGRESS_NAME ,PROFICIENCY,PROGRESS_DESCRIPTION,(SELECT TITLE FROM course_periods cp WHERE cp.COURSE_PERIOD_ID=student_goal_progress.COURSE_PERIOD_ID) AS CP_TITLE FROM student_goal_progress WHERE COLLEGE_ROLL_NO='" . $_SESSION['college_roll_no'] . "' AND GOAL_ID='" . $goal_id . "' ORDER BY PROGRESS_NAME"), array('START_DATE' => 'ProperDate'));
                             echo '<tr><td><b><u>Progress Details</u></b></td><td>&nbsp;</td></tr>';
                             echo "<tr><td colspan=2 style=\"height:18px\"></td></tr>";
                             foreach ($res_pro as $row_pro) {
@@ -187,7 +187,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
     if ($error == 'Y')
         BackPrompt('No goals and progress were found.');
-    unset($_SESSION['student_id']);
+    unset($_SESSION['college_roll_no']);
     $_REQUEST['modfunc'] = true;
 }
 
@@ -261,7 +261,7 @@ if (!$_REQUEST['modfunc']) {
     $extra['search'] .= '</div>';
 
 
-    Search('student_id', $extra);
+    Search('college_roll_no', $extra);
     if ($_REQUEST['search_modfunc'] == 'list') {
         echo '<div class="text-right p-b-20 p-r-20"><INPUT type=submit class="btn btn-primary" value=\'Print Info for Selected Students\'></div>';
         echo "</FORM>";

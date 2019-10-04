@@ -37,8 +37,8 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
     unset($_SESSION['new_sql']);
     unset($_SESSION['newsql']);
     unset($_SESSION['newsql1']);
-    if ($_SESSION['student_id'] && User('PROFILE') == 'admin' && $_REQUEST['student_id'] == 'new') {
-        unset($_SESSION['student_id']);
+    if ($_SESSION['college_roll_no'] && User('PROFILE') == 'admin' && $_REQUEST['college_roll_no'] == 'new') {
+        unset($_SESSION['college_roll_no']);
         //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
     }
     switch (User('PROFILE')) {
@@ -241,7 +241,7 @@ else {
 
     $LO_columns = array('FULL_NAME' => 'Student', 'COLLEGE_ROLL_NO' => 'College Roll No', 'ALT_ID' => 'Alternate ID', 'GRADE_ID' => 'Grade', 'PHONE' => 'Phone');
     $name_link['FULL_NAME']['link'] = "Modules.php?modname=$_REQUEST[next_modname]";
-    $name_link['FULL_NAME']['variables'] = array('student_id' => 'COLLEGE_ROLL_NO');
+    $name_link['FULL_NAME']['variables'] = array('college_roll_no' => 'COLLEGE_ROLL_NO');
     if ($_REQUEST['_search_all_colleges'])
         $name_link['FULL_NAME']['variables'] += array('college_id' => 'COLLEGE_ID');
 
@@ -296,7 +296,7 @@ else {
                 $_REQUEST[$var] = $students_RET['1'][$val];
         }
         if (!is_array($students_RET[1]['COLLEGE_ROLL_NO'])) {
-            $_SESSION['student_id'] = $students_RET[1]['COLLEGE_ROLL_NO'];
+            $_SESSION['college_roll_no'] = $students_RET[1]['COLLEGE_ROLL_NO'];
             if (User('PROFILE') == 'admin')
                 $_SESSION['UserCollege'] = $students_RET[1]['LIST_COLLEGE_ID'];
             if (User('PROFILE') == 'teacher')

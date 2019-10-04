@@ -40,7 +40,7 @@ function GetNameFromUserName($userName)
        }
        if($userProfileId==3)
        {
-           $nameQuery="Select CONCAT(first_name,' ', last_name) name from students where student_id=$UserId  ";
+           $nameQuery="Select CONCAT(first_name,' ', last_name) name from students where college_roll_no=$UserId  ";
        }
        if($userProfileId==4)
        {

@@ -319,7 +319,7 @@ if(!$_REQUEST['modfunc'])
 	$extra['new'] = true;
           $extra['moreland_cust'] = 'assignment_grade';
 
-	Search('student_id',$extra,'true');
+	Search('college_roll_no',$extra,'true');
 	if($_REQUEST['search_modfunc']=='list')
 	{
             if($_SESSION['count_stu']!=0)

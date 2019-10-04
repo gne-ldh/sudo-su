@@ -233,7 +233,7 @@ if (count($calendars_RET)) {
         $calendar_options[$calendar['CALENDAR_ID']] = $calendar['TITLE'];
 }
 
-if ($_REQUEST['student_id'] != 'new') {
+if ($_REQUEST['college_roll_no'] != 'new') {
     if (count($RET))
         $id = $RET[count($RET)]['ID'];
     else
@@ -267,24 +267,24 @@ echo '</div>'; //.row
 
 echo '<hr class="no-margin-bottom"/>';
 
-if ($_REQUEST['student_id'] && $_REQUEST['student_id'] != 'new') {
+if ($_REQUEST['college_roll_no'] && $_REQUEST['college_roll_no'] != 'new') {
 
 
-    $sql_enroll_id = DBGet(DBQuery('SELECT MAX(ID) AS M_ID FROM student_enrollment WHERE COLLEGE_ROLL_NO=\'' . $_REQUEST['student_id'] . '\' AND SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
+    $sql_enroll_id = DBGet(DBQuery('SELECT MAX(ID) AS M_ID FROM student_enrollment WHERE COLLEGE_ROLL_NO=\'' . $_REQUEST['college_roll_no'] . '\' AND SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
 
     $enroll_id = $sql_enroll_id[1]['M_ID'];
 
-    $end_date = DBGet(DBQuery('SELECT END_DATE FROM student_enrollment WHERE COLLEGE_ROLL_NO=\'' . $_REQUEST['student_id'] . '\' AND SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND ID=\'' . $enroll_id . '\''));
+    $end_date = DBGet(DBQuery('SELECT END_DATE FROM student_enrollment WHERE COLLEGE_ROLL_NO=\'' . $_REQUEST['college_roll_no'] . '\' AND SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND ID=\'' . $enroll_id . '\''));
 
     // print_r($_REQUEST);
     if ($end_date[1]['END_DATE']) {
         $end_date = $end_date[1]['END_DATE'];
-        DBQuery('UPDATE schedule SET END_DATE=\'' . $end_date . '\' WHERE COLLEGE_ROLL_NO=\'' . $_REQUEST['student_id'] . '\' AND SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND (END_DATE IS NULL OR \'' . $end_date . '\' < END_DATE )');
+        DBQuery('UPDATE schedule SET END_DATE=\'' . $end_date . '\' WHERE COLLEGE_ROLL_NO=\'' . $_REQUEST['college_roll_no'] . '\' AND SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND (END_DATE IS NULL OR \'' . $end_date . '\' < END_DATE )');
         DBQuery('CALL SEAT_COUNT()');
     }
 }
 
-if ($_REQUEST['student_id'] != 'new') {
+if ($_REQUEST['college_roll_no'] != 'new') {
     if (count($RET))
         $id = $RET[count($RET)]['ID'];
     else

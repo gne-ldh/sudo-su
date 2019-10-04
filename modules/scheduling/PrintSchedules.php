@@ -144,7 +144,7 @@ if ($_REQUEST['modfunc'] == 'save') {
             }
         }
 //      
-//        foreach($RET as $student_id =>$RET1)
+//        foreach($RET as $college_roll_no =>$RET1)
 //        {
 //            $ex_cp_arr=array();
 //            foreach($RET1 as $key => $val)
@@ -155,18 +155,18 @@ if ($_REQUEST['modfunc'] == 'save') {
 //                }
 // else {
 //
-//     unset($RET[$student_id][$key]);
+//     unset($RET[$college_roll_no][$key]);
 // }
 //            }
 //        }
 //        $RET_new=array();
-//        foreach($RET as $student_id =>$RET1)
+//        foreach($RET as $college_roll_no =>$RET1)
 //        {
 //            $k=1;
 //            $ex_cp_arr=array();
 //            foreach($RET1 as $key => $val)
 //            {
-//               $RET_new[$student_id][$k]=$val;
+//               $RET_new[$college_roll_no][$k]=$val;
 //               $k++;
 //
 //            }
@@ -176,7 +176,7 @@ if ($_REQUEST['modfunc'] == 'save') {
         if (count($RET)) {
             $handle = PDFStart();
 
-            foreach ($RET as $student_id => $courses) {
+            foreach ($RET as $college_roll_no => $courses) {
                 echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
                 echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetCollege(UserCollege()) . "<div style=\"font-size:12px;\">Student Schedules Report</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
 
@@ -246,7 +246,7 @@ if (!$_REQUEST['modfunc']) {
     $extra['search'] .= '</div>'; //.col-lg-6
     $extra['search'] .= '</div>'; //.row
 
-    Search('student_id', $extra);
+    Search('college_roll_no', $extra);
 
     if ($_REQUEST['search_modfunc'] == 'list') {
         if ($_SESSION['count_stu'] != 0)

@@ -34,14 +34,14 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
         $mp_id = $mp_id[1]['MARKING_PERIOD_ID'];
 
         # ------------------  Without Period Selection Request Entry Start  ------------------------------------ #
-        foreach ($_REQUEST['student'] as $student_id => $yes) {
+        foreach ($_REQUEST['student'] as $college_roll_no => $yes) {
 
-            $check_dup = DBGet(DBQuery("SELECT COUNT(COLLEGE_ROLL_NO) AS DUPLICATE FROM schedule_requests WHERE COURSE_ID='" . clean_param($_SESSION['MassRequests.php']['course_id'], PARAM_INT) . "' AND SYEAR='" . UserSyear() . "' AND COLLEGE_ROLL_NO='" . clean_param($student_id, PARAM_INT) . "' AND WITH_TEACHER_ID='" . clean_param($_REQUEST['with_teacher_id'], PARAM_INT) . "' AND WITH_PERIOD_ID='" . clean_param($_REQUEST['with_period_id'], PARAM_INT) . "'"));
+            $check_dup = DBGet(DBQuery("SELECT COUNT(COLLEGE_ROLL_NO) AS DUPLICATE FROM schedule_requests WHERE COURSE_ID='" . clean_param($_SESSION['MassRequests.php']['course_id'], PARAM_INT) . "' AND SYEAR='" . UserSyear() . "' AND COLLEGE_ROLL_NO='" . clean_param($college_roll_no, PARAM_INT) . "' AND WITH_TEACHER_ID='" . clean_param($_REQUEST['with_teacher_id'], PARAM_INT) . "' AND WITH_PERIOD_ID='" . clean_param($_REQUEST['with_period_id'], PARAM_INT) . "'"));
             $check_dup = $check_dup[1]['DUPLICATE'];
             if ($check_dup < 1) {
-                if ($current_RET[$student_id] != $student_id) {
+                if ($current_RET[$college_roll_no] != $college_roll_no) {
                     $sql = "INSERT INTO schedule_requests (SYEAR,COLLEGE_ID,COLLEGE_ROLL_NO,SUBJECT_ID,COURSE_ID,MARKING_PERIOD_ID,WITH_TEACHER_ID,NOT_TEACHER_ID,WITH_PERIOD_ID,NOT_PERIOD_ID)
-									values('" . UserSyear() . "','" . UserCollege() . "','" . $student_id . "','" . $_SESSION['MassRequests.php']['subject_id'] . "','" . $_SESSION['MassRequests.php']['course_id'] . "','" . UserMP() . "','" . $_REQUEST['with_teacher_id'] . "','" . $_REQUEST['without_teacher_id'] . "','" . $_REQUEST['with_period_id'] . "','" . $_REQUEST['without_period_id'] . "')";
+									values('" . UserSyear() . "','" . UserCollege() . "','" . $college_roll_no . "','" . $_SESSION['MassRequests.php']['subject_id'] . "','" . $_SESSION['MassRequests.php']['course_id'] . "','" . UserMP() . "','" . $_REQUEST['with_teacher_id'] . "','" . $_REQUEST['without_teacher_id'] . "','" . $_REQUEST['with_period_id'] . "','" . $_REQUEST['without_period_id'] . "')";
                     DBQuery($sql);
                 }
             } else {
@@ -142,7 +142,7 @@ if (!$_REQUEST['modfunc']) {
     $extra['search'] .= '</div>'; //.col-lg-6
     $extra['search'] .= '</div>'; //.row
 
-    Search('student_id', $extra);
+    Search('college_roll_no', $extra);
 }
 
 if ($_REQUEST['modfunc'] != 'choose_course') {

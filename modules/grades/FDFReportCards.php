@@ -81,7 +81,7 @@ if(!$_REQUEST['search_modfunc'] || $_openSIS['modules_search'])
 	DrawHeader(ProgramTitle());
 
 	$extra['new'] = true;
-	Search('student_id',$extra,'true');
+	Search('college_roll_no',$extra,'true');
 }
 else
 {
@@ -132,7 +132,7 @@ else
 	
 	if(count($RET))
 	{	
-		foreach($RET as $student_id=>$course_periods)
+		foreach($RET as $college_roll_no=>$course_periods)
 		{
 			$tempfile=tempnam('','html');
 			exec("chmod 777 $tempfile");
@@ -201,13 +201,13 @@ else
 				foreach($attendance_codes as $attendance_code)
 				{
 					$attendance_code = $attendance_code['SHORT_NAME'];
-					$value = $attendance_RET[$student_id][$qtr][$attendance_code];
+					$value = $attendance_RET[$college_roll_no][$qtr][$attendance_code];
 
 					$this_PDF = str_replace('/T(values[ac]['.$attendance_code.']['.GetMP($mp,'SORT_ORDER').'])',"/T(values[$student_count][ac][".$attendance_code.'][1])',$this_PDF);
 					$this_PDF = str_replace('(default[ac]['.$attendance_code.']['.GetMP($mp,'SORT_ORDER').'])','( '.count($value).' )',$this_PDF);
 				}
 				$this_PDF = str_replace('/T(values[abs]['.GetMP($mp,'SORT_ORDER').'])',"/T(values[$student_count][abs][1])",$this_PDF);
-				$this_PDF = str_replace('(default[abs]['.GetMP($mp,'SORT_ORDER').'])','( '.count($attendance_day_RET[$student_id][$qtr]).' )',$this_PDF);
+				$this_PDF = str_replace('(default[abs]['.GetMP($mp,'SORT_ORDER').'])','( '.count($attendance_day_RET[$college_roll_no][$qtr]).' )',$this_PDF);
 			}
 			
 			foreach($_REQUEST['mp_arr'] as $mp)

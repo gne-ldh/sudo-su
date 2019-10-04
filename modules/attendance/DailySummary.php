@@ -43,26 +43,26 @@ if ($_REQUEST['day_end'] && $_REQUEST['month_end'] && $_REQUEST['year_end']) {
 }
 DrawBC("Attendance > " . ProgramTitle());
 ####################
-if (isset($_REQUEST['student_id'])) {
-    $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,COLLEGE_ID FROM students,student_enrollment WHERE students.COLLEGE_ROLL_NO=\'' . $_REQUEST['student_id'] . '\' AND student_enrollment.COLLEGE_ROLL_NO = students.COLLEGE_ROLL_NO '));
+if (isset($_REQUEST['college_roll_no'])) {
+    $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,COLLEGE_ID FROM students,student_enrollment WHERE students.COLLEGE_ROLL_NO=\'' . $_REQUEST['college_roll_no'] . '\' AND student_enrollment.COLLEGE_ROLL_NO = students.COLLEGE_ROLL_NO '));
     $count_student_RET = DBGet(DBQuery('SELECT COUNT(*) AS NUM FROM students'));
     if ($count_student_RET[1]['NUM'] > 1) {
-        DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=' . $_REQUEST['modname'] . '&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> Back to Student List</A></span><div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div></div>');
+        DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=' . $_REQUEST['modname'] . '&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> Back to Student List</A></span><div class="btn-group heading-btn"><A HREF=Side.php?college_roll_no=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div></div>');
     } else if ($count_student_RET[1]['NUM'] == 1) {
-        DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div>');
+        DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><A HREF=Side.php?college_roll_no=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div>');
     }
 }
 ####################
 if ($_REQUEST['attendance'] && ($_POST['attendance'] || $_REQUEST['ajax']) && AllowEdit()) {
-    foreach ($_REQUEST['attendance'] as $student_id => $values) {
+    foreach ($_REQUEST['attendance'] as $college_roll_no => $values) {
         foreach ($values as $college_date => $columns) {
             $sql = 'UPDATE attendance_period SET ADMIN=\'Y\',';
             foreach ($columns as $column => $value)
                 $sql .= $column . "='" . str_replace("\'", "''", $value) . "',";
 
-            $sql = substr($sql, 0, -1) . ' WHERE COLLEGE_DATE=\'' . date('Y-m-d', strtotime($college_date)) . '\' AND PERIOD_ID=\'' . optional_param('period_id', '', PARAM_SPCL) . '\' AND COLLEGE_ROLL_NO=\'' . $student_id . '\'';
+            $sql = substr($sql, 0, -1) . ' WHERE COLLEGE_DATE=\'' . date('Y-m-d', strtotime($college_date)) . '\' AND PERIOD_ID=\'' . optional_param('period_id', '', PARAM_SPCL) . '\' AND COLLEGE_ROLL_NO=\'' . $college_roll_no . '\'';
             DBQuery($sql);
-            UpdateAttendanceDaily($student_id, $college_date);
+            UpdateAttendanceDaily($college_roll_no, $college_date);
         }
     }
 
@@ -79,10 +79,10 @@ echo "<FORM class=\"form-horizontal\" action=Modules.php?modname=$_REQUEST[modna
 
 //Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&search_modfunc=list&next_modname=
 echo "<div class=\"panel panel-default\">";
-if ($_REQUEST['search_modfunc'] || $_REQUEST['student_id'] || UserStudentID() || User('PROFILE') == 'parent' || User('PROFILE') == 'student') {
+if ($_REQUEST['search_modfunc'] || $_REQUEST['college_roll_no'] || UserStudentID() || User('PROFILE') == 'parent' || User('PROFILE') == 'student') {
     $extraM .= "";
     $period_select = "<SELECT name=period_id onchange='this.form.submit();' class='form-control'><OPTION value=\"\">Daily</OPTION>";
-    if (!UserStudentID() && !$_REQUEST['student_id']) {
+    if (!UserStudentID() && !$_REQUEST['college_roll_no']) {
         $periods_RET = DBGet(DBQuery('SELECT PERIOD_ID,TITLE FROM college_periods WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER'));
         if (count($periods_RET) > 1) {
             foreach ($periods_RET as $period) {
@@ -119,9 +119,9 @@ if ($_REQUEST['search_modfunc'] || $_REQUEST['student_id'] || UserStudentID() ||
 $cal_RET = DBGet(DBQuery('SELECT DISTINCT COLLEGE_DATE,CONCAT(\'_\',DATE_FORMAT(COLLEGE_DATE,\'%Y%m%d\')) AS SHORT_DATE FROM attendance_calendar WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND COLLEGE_DATE BETWEEN \'' . date('Y-m-d', strtotime($start_date)) . '\' AND \'' . date('Y-m-d', strtotime($end_date)) . '\' ORDER BY COLLEGE_DATE'));
 
 
-if (UserStudentID() || $_REQUEST['student_id'] || User('PROFILE') == 'parent') {
+if (UserStudentID() || $_REQUEST['college_roll_no'] || User('PROFILE') == 'parent') {
     // JUST TO SET USERSTUDENTID()
-    Search('student_id');
+    Search('college_roll_no');
 
     $MP_TYPE_RET = DBGet(DBQuery('SELECT MP_TYPE FROM marking_periods WHERE MARKING_PERIOD_ID=\'' . UserMP() . '\' LIMIT 1'));
     $MP_TYPE = $MP_TYPE_RET[1]['MP_TYPE'];
@@ -243,7 +243,7 @@ if (UserStudentID() || $_REQUEST['student_id'] || User('PROFILE') == 'parent') {
             $extra['functions']['_' . str_replace('-', '', $value['COLLEGE_DATE'])] = '_makeColor';
 
             $extra['link']['FULL_NAME']['link'] = "Modules.php?modname=" . optional_param('modname', '', PARAM_NOTAGS) . "&day_start=$_REQUEST[day_start]&day_end=$_REQUEST[day_end]&month_start=$_REQUEST[month_start]&month_end=$_REQUEST[month_end]&year_start=$_REQUEST[year_start]&year_end=$_REQUEST[year_end]&period_id=" . optional_param('period_id', '', PARAM_SPCL);
-            $extra['link']['FULL_NAME']['variables'] = array('student_id' => 'COLLEGE_ROLL_NO');
+            $extra['link']['FULL_NAME']['variables'] = array('college_roll_no' => 'COLLEGE_ROLL_NO');
         }
     }
 
@@ -258,7 +258,7 @@ if (UserStudentID() || $_REQUEST['student_id'] || User('PROFILE') == 'parent') {
 
     $extra['new'] = true;
 
-    Search('student_id', $extra);
+    Search('college_roll_no', $extra);
 
 
     /*
@@ -345,7 +345,7 @@ function _makePeriodColor($name, $state_code, $default_code) {
     }
 }
 
-function makeCodePulldown($value, $student_id, $date) {
+function makeCodePulldown($value, $college_roll_no, $date) {
     global $THIS_RET, $attendance_codes, $_openSIS;
 
     $date = substr($date, 1, 4) . '-' . substr($date, 5, 2) . '-' . substr($date, 7);
@@ -355,7 +355,7 @@ function makeCodePulldown($value, $student_id, $date) {
             $_openSIS['code_options'][$id] = ($code[1]['SHORT_NAME'] == '' ? $code[1]['TITLE'] : $code[1]['SHORT_NAME']);
     }
 
-    return SelectInput($value, 'attendance[' . $student_id . '][' . $date . '][ATTENDANCE_CODE]', '', $_openSIS['code_options']);
+    return SelectInput($value, 'attendance[' . $college_roll_no . '][' . $date . '][ATTENDANCE_CODE]', '', $_openSIS['code_options']);
 }
 
 ?>

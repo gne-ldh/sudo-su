@@ -264,7 +264,7 @@ if (clean_param($_REQUEST['tables'], PARAM_NOTAGS) && ($_POST['tables'] || $_REQ
                 # ---------------------------------------------------------------- #
 
                 if ($tabl == 'student_goal_progress' && $flag != 1) {
-                    $sql_p_max = 'select max(progress_id) as p_id from student_goal_progress where student_id=' . UserStudentID();
+                    $sql_p_max = 'select max(progress_id) as p_id from student_goal_progress where college_roll_no=' . UserStudentID();
                     $res_p_max = DBQuery($sql_p_max);
                     $row_p_max = DBGet($res_p_max);
 

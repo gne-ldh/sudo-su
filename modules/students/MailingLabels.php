@@ -419,7 +419,7 @@ if (!$_REQUEST['modfunc']) {
     $extra['options']['search'] = false;
     $extra['new'] = true;
 
-    Search('student_id', $extra);
+    Search('college_roll_no', $extra);
     if ($_REQUEST['search_modfunc'] == 'list') {
         echo '<div class="text-right p-b-20 p-r-20"><INPUT type=submit class="btn btn-primary" value=\'Create Labels for Selected Students\'></div>';
         echo "</FORM>";

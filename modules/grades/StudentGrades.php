@@ -32,7 +32,7 @@ $_openSIS['allow_edit'] = false;
 if ($_REQUEST['_openSIS_PDF'])
     $do_stats = false;
 
-Search('student_id');
+Search('college_roll_no');
 $MP_TYPE_RET = DBGet(DBQuery('SELECT MP_TYPE FROM marking_periods WHERE MARKING_PERIOD_ID=' . UserMP() . ' LIMIT 1'));
 $MP_TYPE = $MP_TYPE_RET[1]['MP_TYPE'];
 if ($MP_TYPE == 'year') {
@@ -48,14 +48,14 @@ $rank_RET = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE college_id=\''
 $rank = $rank_RET[1];
 $display_rank = $rank['VALUE'];
 ####################
-if (isset($_REQUEST['student_id'])) {
-    $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,COLLEGE_ID FROM students,student_enrollment WHERE students.COLLEGE_ROLL_NO=\'' . $_REQUEST['student_id'] . '\' AND student_enrollment.COLLEGE_ROLL_NO = students.COLLEGE_ROLL_NO '));
+if (isset($_REQUEST['college_roll_no'])) {
+    $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,COLLEGE_ID FROM students,student_enrollment WHERE students.COLLEGE_ROLL_NO=\'' . $_REQUEST['college_roll_no'] . '\' AND student_enrollment.COLLEGE_ROLL_NO = students.COLLEGE_ROLL_NO '));
 
     $count_student_RET = DBGet(DBQuery('SELECT COUNT(*) AS NUM FROM students'));
     if ($count_student_RET[1]['NUM'] > 1) {
-       DrawHeaderHome( 'Selected Student: '.$RET[1]['FIRST_NAME'].'&nbsp;'.($RET[1]['MIDDLE_NAME']?$RET[1]['MIDDLE_NAME'].' ':'').$RET[1]['LAST_NAME'].'&nbsp;'.$RET[1]['NAME_SUFFIX'].' (<A HREF=Side.php?student_id=new&modcat='.$_REQUEST['modcat'].'><font color=red>Deselect</font></A>) | <A HREF=Modules.php?modname='.$_REQUEST['modname'].'&search_modfunc=list&next_modname=students/Student.php&ajax=true&bottom_back=true&return_session=true target=body>Back to Student List</A>');
+       DrawHeaderHome( 'Selected Student: '.$RET[1]['FIRST_NAME'].'&nbsp;'.($RET[1]['MIDDLE_NAME']?$RET[1]['MIDDLE_NAME'].' ':'').$RET[1]['LAST_NAME'].'&nbsp;'.$RET[1]['NAME_SUFFIX'].' (<A HREF=Side.php?college_roll_no=new&modcat='.$_REQUEST['modcat'].'><font color=red>Deselect</font></A>) | <A HREF=Modules.php?modname='.$_REQUEST['modname'].'&search_modfunc=list&next_modname=students/Student.php&ajax=true&bottom_back=true&return_session=true target=body>Back to Student List</A>');
     } else if ($count_student_RET[1]['NUM'] == 1) {
-      DrawHeaderHome( 'Selected Student: '.$RET[1]['FIRST_NAME'].'&nbsp;'.($RET[1]['MIDDLE_NAME']?$RET[1]['MIDDLE_NAME'].' ':'').$RET[1]['LAST_NAME'].'&nbsp;'.$RET[1]['NAME_SUFFIX'].' (<A HREF=Side.php?student_id=new&modcat='.$_REQUEST['modcat'].'><font color=red>Deselect</font></A>) ');
+      DrawHeaderHome( 'Selected Student: '.$RET[1]['FIRST_NAME'].'&nbsp;'.($RET[1]['MIDDLE_NAME']?$RET[1]['MIDDLE_NAME'].' ':'').$RET[1]['LAST_NAME'].'&nbsp;'.$RET[1]['NAME_SUFFIX'].' (<A HREF=Side.php?college_roll_no=new&modcat='.$_REQUEST['modcat'].'><font color=red>Deselect</font></A>) ');
     }
 }
 ####################
@@ -188,7 +188,7 @@ if (UserStudentID() && !$_REQUEST['modfunc']) {
                     $min_percent = $max_percent = $percent;
                     $avg_percent = 0;
                     $lower = $higher = 0;
-                    foreach ($all_RET as $xstudent_id => $student) {
+                    foreach ($all_RET as $xcollege_roll_no => $student) {
                         if ($student['COLLEGE_ROLL_NO'])
                             $count++;
                         $total = $total_percent = 0;
@@ -207,7 +207,7 @@ if (UserStudentID() && !$_REQUEST['modfunc']) {
                     if ($total > $max_percent)
                         $max_percent = $total;
                     $avg_percent += $total;
-                    if ($xstudent_id !== UserStudentID())
+                    if ($xcollege_roll_no !== UserStudentID())
                         if ($total > $percent)
                             $higher++;
                         else

@@ -37,29 +37,29 @@ if (clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) == 'clearall') {
     if (DeletePromptParent('Parent')) {
 
         $person_id = $_REQUEST['person_id'];
-        $student_id = UserStudentID();
+        $college_roll_no = UserStudentID();
         $relation = $_REQUEST['relation'];
         ;
-        $qr_ot_stu_asso = DBGet(DBQuery('select * from students_join_people where person_id=\'' . $person_id . '\' and student_id <>\'' . $student_id . '\''));
+        $qr_ot_stu_asso = DBGet(DBQuery('select * from students_join_people where person_id=\'' . $person_id . '\' and college_roll_no <>\'' . $college_roll_no . '\''));
         if (count($qr_ot_stu_asso) == 0) {
 
             DBQuery('delete from people where staff_id=\'' . $person_id . '\'');
             DBQuery('delete from  login_authentication where user_id=\'' . $person_id . '\' and profile_id=4');
         }
 
-        DBQuery('delete from students_join_people where person_id=\'' . $person_id . '\' and student_id=\'' . $student_id . '\' and emergency_type=\'' . $relation . '\'');
+        DBQuery('delete from students_join_people where person_id=\'' . $person_id . '\' and college_roll_no=\'' . $college_roll_no . '\' and emergency_type=\'' . $relation . '\'');
 //        DBQuery('insert into people (current_college_id,profile,profile_id) values (1,\'parent\',4)');
 //        $pe_qr = DBGet(DBQuery("select max(staff_id) as pid from people"));
 //        $people_id=$pe_qr[1]['PID'];
-//        DBQuery('insert into students_join_people(student_id,person_id,relationship) values(\''.$student_id.'\',\''.$people_id.'\',\''.$relation.'\')');
-//        DBQuery('update student_address set people_id=\''.$people_id.'\' where student_id=\''.$student_id.'\' and type=\''.$relation.'\'' );
+//        DBQuery('insert into students_join_people(college_roll_no,person_id,relationship) values(\''.$college_roll_no.'\',\''.$people_id.'\',\''.$relation.'\')');
+//        DBQuery('update student_address set people_id=\''.$people_id.'\' where college_roll_no=\''.$college_roll_no.'\' and type=\''.$relation.'\'' );
 // 
         unset($_REQUEST['modfunc']);
         echo "<script>window.location.href='Modules.php?modname=students/Student.php&include=AddressInc&category_id=3'</script>";
     } 
 }
-if ($_REQUEST['student_enable'] == 'N' && $_REQUEST['student_id'] != 'new') {
-    DBQuery('UPDATE students SET IS_DISABLE=NULL WHERE student_id=' . $_REQUEST['student_id']);
+if ($_REQUEST['student_enable'] == 'N' && $_REQUEST['college_roll_no'] != 'new') {
+    DBQuery('UPDATE students SET IS_DISABLE=NULL WHERE college_roll_no=' . $_REQUEST['college_roll_no']);
 }
 if (isset($_REQUEST['custom_date_id']) && count($_REQUEST['custom_date_id']) > 0) {
     foreach ($_REQUEST['custom_date_id'] as $custom_id) {
@@ -71,7 +71,7 @@ if (isset($_REQUEST['custom_date_id']) && count($_REQUEST['custom_date_id']) > 0
 if ($_REQUEST['modname'] && $_REQUEST['stu_id'] && $_REQUEST['include_a'] == 'EnrollmentInfoInc') {
 
 
-    $res = DBGet(DBQuery('SELECT * FROM student_enrollment WHERE student_id=' . $_REQUEST['stu_id'] . ''));
+    $res = DBGet(DBQuery('SELECT * FROM student_enrollment WHERE college_roll_no=' . $_REQUEST['stu_id'] . ''));
 
     if ($res[1]['CALENDAR_ID'] == '' || $res[1]['CALENDAR_ID'] == NULL) {
         $sid = $_REQUEST['stu_id'];
@@ -80,12 +80,12 @@ if ($_REQUEST['modname'] && $_REQUEST['stu_id'] && $_REQUEST['include_a'] == 'En
         $_REQUEST['modname'] = 'students/Student.php';
         $_REQUEST['include'] = 'GeneralInfoInc';
         $_REQUEST['category_id'] = 1;
-        $_REQUEST['student_id'] = 'new';
+        $_REQUEST['college_roll_no'] = 'new';
     } else {
         $_REQUEST['modname'] = 'students/Student.php';
         $_REQUEST['include'] = 'GeneralInfoInc';
         $_REQUEST['category_id'] = 1;
-        $_REQUEST['student_id'] = $_REQUEST['stu_id'];
+        $_REQUEST['college_roll_no'] = $_REQUEST['stu_id'];
     }
 }
 
@@ -94,14 +94,14 @@ if ($_REQUEST[address_error]) {
     unset($_REQUEST[address_error]);
 }
 
-if ($_REQUEST['month_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE'] != '' && $_REQUEST['day_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE'] != '' && $_REQUEST['year_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE'] != '') {
+if ($_REQUEST['month_values']['student_enrollment'][$_REQUEST['college_roll_no']]['START_DATE'] != '' && $_REQUEST['day_values']['student_enrollment'][$_REQUEST['college_roll_no']]['START_DATE'] != '' && $_REQUEST['year_values']['student_enrollment'][$_REQUEST['college_roll_no']]['START_DATE'] != '') {
     $months_arr = array("JAN" => "01", "FEB" => "02", "MAR" => "03", "APR" => "04", "MAY" => "05", "JUN" => "06", "JUL" => "07", "AUG" => "08", "SEP" => "09", "OCT" => "10", "NOV" => "11", "DEC" => "12");
-    $s_date = $_REQUEST['year_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE'] . '-' . $months_arr[$_REQUEST['month_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE']] . '-' . $_REQUEST['day_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE'];
+    $s_date = $_REQUEST['year_values']['student_enrollment'][$_REQUEST['college_roll_no']]['START_DATE'] . '-' . $months_arr[$_REQUEST['month_values']['student_enrollment'][$_REQUEST['college_roll_no']]['START_DATE']] . '-' . $_REQUEST['day_values']['student_enrollment'][$_REQUEST['college_roll_no']]['START_DATE'];
 
-    if ($_REQUEST['values']['student_enrollment'][$_REQUEST['student_id']]['CALENDAR_ID'] != '') {
-        $cal_id = $_REQUEST['values']['student_enrollment'][$_REQUEST['student_id']]['CALENDAR_ID'];
+    if ($_REQUEST['values']['student_enrollment'][$_REQUEST['college_roll_no']]['CALENDAR_ID'] != '') {
+        $cal_id = $_REQUEST['values']['student_enrollment'][$_REQUEST['college_roll_no']]['CALENDAR_ID'];
     } else {
-        $cal_id = DBGet(DBQuery('SELECT CALENDAR_ID FROM student_enrollment WHERE COLLEGE_ROLL_NO=' . $_REQUEST['student_id'] . ' AND SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege() . ' ORDER BY ID DESC LIMIT 0,1'));
+        $cal_id = DBGet(DBQuery('SELECT CALENDAR_ID FROM student_enrollment WHERE COLLEGE_ROLL_NO=' . $_REQUEST['college_roll_no'] . ' AND SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege() . ' ORDER BY ID DESC LIMIT 0,1'));
         $cal_id = $cal_id[1]['CALENDAR_ID'];
     }
 
@@ -110,31 +110,31 @@ if ($_REQUEST['month_values']['student_enrollment'][$_REQUEST['student_id']]['ST
     if (count($get_c_dates) > 0) {
 //        if($get_c_dates[1]['START_DATE']>$s_date)
 //        {
-//            unset($_REQUEST['month_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE']);
-//            unset($_REQUEST['day_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE']);
-//            unset($_REQUEST['year_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE']);
-//            unset($_REQUEST['values']['student_enrollment'][$_REQUEST['student_id']]['CALENDAR_ID']);
+//            unset($_REQUEST['month_values']['student_enrollment'][$_REQUEST['college_roll_no']]['START_DATE']);
+//            unset($_REQUEST['day_values']['student_enrollment'][$_REQUEST['college_roll_no']]['START_DATE']);
+//            unset($_REQUEST['year_values']['student_enrollment'][$_REQUEST['college_roll_no']]['START_DATE']);
+//            unset($_REQUEST['values']['student_enrollment'][$_REQUEST['college_roll_no']]['CALENDAR_ID']);
 //            $err='Start date cannot be before calendar\'s start date';
 //        }
 //        elseif($get_c_dates[1]['END_DATE']<$s_date)
 //        if($get_c_dates[1]['END_DATE']<$s_date)
 //        {
-//            unset($_REQUEST['month_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE']);
-//            unset($_REQUEST['day_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE']);
-//            unset($_REQUEST['year_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE']);
-//            unset($_REQUEST['values']['student_enrollment'][$_REQUEST['student_id']]['CALENDAR_ID']);
+//            unset($_REQUEST['month_values']['student_enrollment'][$_REQUEST['college_roll_no']]['START_DATE']);
+//            unset($_REQUEST['day_values']['student_enrollment'][$_REQUEST['college_roll_no']]['START_DATE']);
+//            unset($_REQUEST['year_values']['student_enrollment'][$_REQUEST['college_roll_no']]['START_DATE']);
+//            unset($_REQUEST['values']['student_enrollment'][$_REQUEST['college_roll_no']]['CALENDAR_ID']);
 //            $err='Start date cannot be after calendar\'s end date';
 //        }
 //        else
 //        {
-        $get_sch = DBGet(DBQuery('SELECT * FROM schedule WHERE COLLEGE_ROLL_NO=' . $_REQUEST['student_id'] . ' AND SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege() . ' AND (END_DATE IS NULL OR END_DATE>=\'' . date('Y-m-d') . '\') ORDER BY START_DATE ASC '));
+        $get_sch = DBGet(DBQuery('SELECT * FROM schedule WHERE COLLEGE_ROLL_NO=' . $_REQUEST['college_roll_no'] . ' AND SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege() . ' AND (END_DATE IS NULL OR END_DATE>=\'' . date('Y-m-d') . '\') ORDER BY START_DATE ASC '));
         if (count($get_sch) > 0) {
             foreach ($get_sch as $gsi => $gsd) {
                 if (strtotime($s_date) > strtotime($gsd['START_DATE'])) {
-                    unset($_REQUEST['month_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE']);
-                    unset($_REQUEST['day_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE']);
-                    unset($_REQUEST['year_values']['student_enrollment'][$_REQUEST['student_id']]['START_DATE']);
-                    unset($_REQUEST['values']['student_enrollment'][$_REQUEST['student_id']]['CALENDAR_ID']);
+                    unset($_REQUEST['month_values']['student_enrollment'][$_REQUEST['college_roll_no']]['START_DATE']);
+                    unset($_REQUEST['day_values']['student_enrollment'][$_REQUEST['college_roll_no']]['START_DATE']);
+                    unset($_REQUEST['year_values']['student_enrollment'][$_REQUEST['college_roll_no']]['START_DATE']);
+                    unset($_REQUEST['values']['student_enrollment'][$_REQUEST['college_roll_no']]['CALENDAR_ID']);
                     $err = 'Cannot change start date as student has association from ' . date('F j, Y', strtotime($gsd['START_DATE']));
                     break;
                 }
@@ -258,25 +258,25 @@ if ($_REQUEST['action'] == 'delete' || $_REQUEST['action'] == 'delete_can' || $_
 
 if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
 
-    if (UserStudentID() != '' && $_REQUEST['student_id'] != 'new')
-        $_REQUEST['student_id'] = UserStudentID();
+    if (UserStudentID() != '' && $_REQUEST['college_roll_no'] != 'new')
+        $_REQUEST['college_roll_no'] = UserStudentID();
     ####################
-    if (isset($_REQUEST['student_id']) && $_REQUEST['student_id'] != 'new' && $title_set != 'y' && clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) != 'detail' && clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) != 'lookup') {
-        $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,COLLEGE_ID FROM students,student_enrollment WHERE students.COLLEGE_ROLL_NO=\'' . $_REQUEST['student_id'] . '\' AND student_enrollment.COLLEGE_ROLL_NO = students.COLLEGE_ROLL_NO '));
+    if (isset($_REQUEST['college_roll_no']) && $_REQUEST['college_roll_no'] != 'new' && $title_set != 'y' && clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) != 'detail' && clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) != 'lookup') {
+        $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,COLLEGE_ID FROM students,student_enrollment WHERE students.COLLEGE_ROLL_NO=\'' . $_REQUEST['college_roll_no'] . '\' AND student_enrollment.COLLEGE_ROLL_NO = students.COLLEGE_ROLL_NO '));
 
 
         if (User('PROFILE') == 'parent')
-            $count_student_RET = DBGet(DBQuery('SELECT COUNT(*) AS NUM FROM students s,students_join_people sj where s.student_id=sj.student_id and sj.person_id=' . UserID() . ''));
+            $count_student_RET = DBGet(DBQuery('SELECT COUNT(*) AS NUM FROM students s,students_join_people sj where s.college_roll_no=sj.college_roll_no and sj.person_id=' . UserID() . ''));
         else {
             $count_student_RET = DBGet(DBQuery("SELECT COUNT(*) AS NUM FROM students"));
         }
 
         if ($count_student_RET[1]['NUM'] > 1 && User('PROFILE') != 'student' && User('PROFILE') != 'parent') {
-            DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=Students/Student.php&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> Back to Student List</A></span><div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div></div>');
+            DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=Students/Student.php&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> Back to Student List</A></span><div class="btn-group heading-btn"><A HREF=Side.php?college_roll_no=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div></div></div></div>');
         } else if (User('PROFILE') == 'student') {
             DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Student Name : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6></div></div>');
         } else if ($count_student_RET[1]['NUM'] == 1) {
-            DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><A HREF=SideForStudent.php?student_id=new&modcat=' . $_REQUEST['modcat'] . '&modname=' . $_REQUEST['modname'] . '  class="btn btn-danger btn-xs">Deselect</A></div></div></div>');
+            DrawHeaderHome('<div class="panel"><div class="panel-heading"><h6 class="panel-title">Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . '</h6> <div class="heading-elements"><A HREF=SideForStudent.php?college_roll_no=new&modcat=' . $_REQUEST['modcat'] . '&modname=' . $_REQUEST['modname'] . '  class="btn btn-danger btn-xs">Deselect</A></div></div></div>');
         }
     }
     if ($title_set == 'y')
@@ -288,10 +288,10 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
 
 
     if (User('PROFILE') == 'admin') {
-        if ($_REQUEST['student_id'] == 'new') {
+        if ($_REQUEST['college_roll_no'] == 'new') {
             if (!$_REQUEST['include']) {
-                unset($_SESSION['student_id']);
-                unset($_SESSION['_REQUEST_vars']['student_id']);
+                unset($_SESSION['college_roll_no']);
+                unset($_SESSION['_REQUEST_vars']['college_roll_no']);
             }
         }
     }
@@ -299,18 +299,18 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
     if ($_REQUEST['err_msg'] == true)
         echo "<center><font color=red><b>Birthdate is invalid, data could not be saved.</b><font></center>";
 
-    if (clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) == 'update' && $_REQUEST['student_id'] && $_REQUEST['student_id'] != 'new' && $_POST['button'] == 'Save') {
+    if (clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) == 'update' && $_REQUEST['college_roll_no'] && $_REQUEST['college_roll_no'] != 'new' && $_POST['button'] == 'Save') {
 //        if ($_POST['button'] == 'Save') { #&& AllowEdit()
         $transfer_flag = 0;
 
         if ($_REQUEST['TRANSFER']['COLLEGE'] != '' && $_REQUEST['TRANSFER']['Grade_Level'] != '') {
-            $drop_code = $_REQUEST['values']['student_enrollment'][$_REQUEST['student_id']]['DROP_CODE'];
+            $drop_code = $_REQUEST['values']['student_enrollment'][$_REQUEST['college_roll_no']]['DROP_CODE'];
 
             $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] = date("Y-m-d", strtotime($_REQUEST['year_TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '-' . $_REQUEST['month_TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '-' . $_REQUEST['day_TRANSFER']['STUDENT_ENROLLMENT_END_DATE']));
 
             $gread_exists = DBGet(DBQuery('SELECT COUNT(TITLE) AS PRESENT,ID FROM college_gradelevels WHERE COLLEGE_ID=\'' . $_REQUEST['TRANSFER']['COLLEGE'] . '\' AND TITLE=(SELECT TITLE FROM
                             college_gradelevels WHERE ID=(SELECT GRADE_ID FROM student_enrollment WHERE
-                            COLLEGE_ROLL_NO=\'' . $_REQUEST['student_id'] . '\' AND COLLEGE_ID=\'' . UserCollege() . '\'  AND SYEAR=\'' . UserSyear() . '\'  ORDER BY ID DESC LIMIT 1))'));  //pinki
+                            COLLEGE_ROLL_NO=\'' . $_REQUEST['college_roll_no'] . '\' AND COLLEGE_ID=\'' . UserCollege() . '\'  AND SYEAR=\'' . UserSyear() . '\'  ORDER BY ID DESC LIMIT 1))'));  //pinki
 
             $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_START'] = date("Y-m-d", strtotime($_REQUEST['year_TRANSFER']['STUDENT_ENROLLMENT_START'] . '-' . $_REQUEST['month_TRANSFER']['STUDENT_ENROLLMENT_START'] . '-' . $_REQUEST['day_TRANSFER']['STUDENT_ENROLLMENT_START']));
 
@@ -318,7 +318,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
 
 
             if (strtotime($_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_START']) >= strtotime($_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'])) {
-                $check_asociation = DBGet(DBQuery('SELECT COUNT(COLLEGE_ROLL_NO) as REC_EX FROM student_enrollment WHERE COLLEGE_ROLL_NO=' . $_REQUEST['student_id'] . ' AND SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege() . ' AND START_DATE<=\'' . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '\' AND (END_DATE IS NULL OR END_DATE=\'0000-00-00\' AND END_DATE<=\'' . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '\') ORDER BY ID DESC LIMIT 0,1'));
+                $check_asociation = DBGet(DBQuery('SELECT COUNT(COLLEGE_ROLL_NO) as REC_EX FROM student_enrollment WHERE COLLEGE_ROLL_NO=' . $_REQUEST['college_roll_no'] . ' AND SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege() . ' AND START_DATE<=\'' . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '\' AND (END_DATE IS NULL OR END_DATE=\'0000-00-00\' AND END_DATE<=\'' . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '\') ORDER BY ID DESC LIMIT 0,1'));
                 $end_date_old = $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'];
                 $start_date_new = $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_START'];
                     if($start_date_new == $end_date_old)
@@ -329,11 +329,11 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                     {
                     unset($_SESSION['ERR_TRANS']);
                     if ($check_asociation[1]['REC_EX'] != 0) {
-                        DBQuery('UPDATE student_enrollment SET DROP_CODE=\'' . $drop_code . '\',END_DATE=\'' . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '\' WHERE COLLEGE_ROLL_NO=\'' . $_REQUEST['student_id'] . '\' AND COLLEGE_ID=\'' . UserCollege() . '\'  AND SYEAR=\'' . UserSyear() . '\'');  //pinki    
+                        DBQuery('UPDATE student_enrollment SET DROP_CODE=\'' . $drop_code . '\',END_DATE=\'' . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '\' WHERE COLLEGE_ROLL_NO=\'' . $_REQUEST['college_roll_no'] . '\' AND COLLEGE_ID=\'' . UserCollege() . '\'  AND SYEAR=\'' . UserSyear() . '\'');  //pinki    
                         $syear_RET = DBGet(DBQuery("SELECT MAX(SYEAR) AS SYEAR,TITLE FROM college_years WHERE COLLEGE_ID=" . $_REQUEST['TRANSFER']['COLLEGE']));
                         $syear = $syear_RET[1]['SYEAR'];
                         $enroll_code = DBGet(DBQuery('SELECT id FROM student_enrollment_codes WHERE syear=\'' . $syear . '\' AND type=\'TrnE\''));  //pinki
-                        $last_college_RET = DBGet(DBQuery('SELECT COLLEGE_ID FROM student_enrollment WHERE COLLEGE_ROLL_NO=\'' . $_REQUEST['student_id'] . '\' AND SYEAR=\'' . UserSyear() . '\'')); //pinki
+                        $last_college_RET = DBGet(DBQuery('SELECT COLLEGE_ID FROM student_enrollment WHERE COLLEGE_ROLL_NO=\'' . $_REQUEST['college_roll_no'] . '\' AND SYEAR=\'' . UserSyear() . '\'')); //pinki
                         $last_college = $last_college_RET[1]['COLLEGE_ID'];
                         $sch_id = $_REQUEST['TRANSFER']['COLLEGE'];
                         $num_default_cal = DBGet(DBQuery('SELECT CALENDAR_ID FROM college_calendars WHERE COLLEGE_ID=' . $_REQUEST['TRANSFER']['COLLEGE'] . ' AND DEFAULT_CALENDAR=\'Y\' '));
@@ -348,32 +348,32 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                             $calender_id = 'NULL';
                         }
                         if ($gread_exists[1]['PRESENT'] == 1 && $gread_exists[1]['ID']) {
-                            DBQuery("INSERT INTO student_enrollment (SYEAR ,COLLEGE_ID ,COLLEGE_ROLL_NO ,GRADE_ID ,START_DATE ,END_DATE ,ENROLLMENT_CODE ,DROP_CODE ,NEXT_COLLEGE ,CALENDAR_ID ,LAST_COLLEGE) VALUES (" . $syear . "," . $_REQUEST['TRANSFER']['COLLEGE'] . "," . $_REQUEST['student_id'] . "," . $_REQUEST['TRANSFER']['Grade_Level'] . ",'" . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_START'] . "',''," . $enroll_code[1]['ID'] . ",'','" . $_REQUEST['TRANSFER']['COLLEGE'] . "',$calender_id,$last_college)");
-                            DBQuery('UPDATE student_enrollment SET DROP_CODE=\'' . $drop_code . '\',END_DATE=\'' . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '\' WHERE COLLEGE_ROLL_NO=\'' . $_REQUEST['student_id'] . '\' AND COLLEGE_ID=\'' . UserCollege() . '\'  AND SYEAR=\'' . UserSyear() . '\'');  //pinki    
+                            DBQuery("INSERT INTO student_enrollment (SYEAR ,COLLEGE_ID ,COLLEGE_ROLL_NO ,GRADE_ID ,START_DATE ,END_DATE ,ENROLLMENT_CODE ,DROP_CODE ,NEXT_COLLEGE ,CALENDAR_ID ,LAST_COLLEGE) VALUES (" . $syear . "," . $_REQUEST['TRANSFER']['COLLEGE'] . "," . $_REQUEST['college_roll_no'] . "," . $_REQUEST['TRANSFER']['Grade_Level'] . ",'" . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_START'] . "',''," . $enroll_code[1]['ID'] . ",'','" . $_REQUEST['TRANSFER']['COLLEGE'] . "',$calender_id,$last_college)");
+                            DBQuery('UPDATE student_enrollment SET DROP_CODE=\'' . $drop_code . '\',END_DATE=\'' . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '\' WHERE COLLEGE_ROLL_NO=\'' . $_REQUEST['college_roll_no'] . '\' AND COLLEGE_ID=\'' . UserCollege() . '\'  AND SYEAR=\'' . UserSyear() . '\'');  //pinki    
                         } else {
-                            DBQuery("INSERT INTO student_enrollment (SYEAR ,COLLEGE_ID ,COLLEGE_ROLL_NO ,GRADE_ID ,START_DATE ,END_DATE ,ENROLLMENT_CODE ,DROP_CODE ,NEXT_COLLEGE ,CALENDAR_ID ,LAST_COLLEGE) VALUES (" . $syear . "," . $_REQUEST['TRANSFER']['COLLEGE'] . "," . $_REQUEST['student_id'] . "," . $_REQUEST['TRANSFER']['Grade_Level'] . ",'" . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_START'] . "',''," . $enroll_code[1]['ID'] . ",'','" . $_REQUEST['TRANSFER']['COLLEGE'] . "',$calender_id,$last_college)");
-                            DBQuery('UPDATE student_enrollment SET DROP_CODE=\'' . $drop_code . '\',END_DATE=\'' . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '\' WHERE COLLEGE_ROLL_NO=\'' . $_REQUEST['student_id'] . '\' AND COLLEGE_ID=\'' . UserCollege() . '\'  AND SYEAR=\'' . UserSyear() . '\'');  //pinki    
+                            DBQuery("INSERT INTO student_enrollment (SYEAR ,COLLEGE_ID ,COLLEGE_ROLL_NO ,GRADE_ID ,START_DATE ,END_DATE ,ENROLLMENT_CODE ,DROP_CODE ,NEXT_COLLEGE ,CALENDAR_ID ,LAST_COLLEGE) VALUES (" . $syear . "," . $_REQUEST['TRANSFER']['COLLEGE'] . "," . $_REQUEST['college_roll_no'] . "," . $_REQUEST['TRANSFER']['Grade_Level'] . ",'" . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_START'] . "',''," . $enroll_code[1]['ID'] . ",'','" . $_REQUEST['TRANSFER']['COLLEGE'] . "',$calender_id,$last_college)");
+                            DBQuery('UPDATE student_enrollment SET DROP_CODE=\'' . $drop_code . '\',END_DATE=\'' . $_REQUEST['TRANSFER']['STUDENT_ENROLLMENT_END_DATE'] . '\' WHERE COLLEGE_ROLL_NO=\'' . $_REQUEST['college_roll_no'] . '\' AND COLLEGE_ID=\'' . UserCollege() . '\'  AND SYEAR=\'' . UserSyear() . '\'');  //pinki    
                             
                         }
                         $trans_college = $syear_RET[1]['TITLE'];
 
-                        $trans_student_RET = DBGet(DBQuery("SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX FROM students WHERE COLLEGE_ROLL_NO='" . $_REQUEST['student_id'] . "'"));
+                        $trans_student_RET = DBGet(DBQuery("SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX FROM students WHERE COLLEGE_ROLL_NO='" . $_REQUEST['college_roll_no'] . "'"));
 
                         $trans_student = $trans_student_RET[1]['LAST_NAME'] . ' ' . $trans_student_RET[1]['FIRST_NAME'];
-                        DBQuery('UPDATE medical_info SET COLLEGE_ID=' . $_REQUEST['TRANSFER']['COLLEGE'] . ', SYEAR=' . $syear . ' WHERE COLLEGE_ROLL_NO=\'' . $_REQUEST['student_id'] . '\' AND SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\'');
+                        DBQuery('UPDATE medical_info SET COLLEGE_ID=' . $_REQUEST['TRANSFER']['COLLEGE'] . ', SYEAR=' . $syear . ' WHERE COLLEGE_ROLL_NO=\'' . $_REQUEST['college_roll_no'] . '\' AND SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\'');
                         unset($_REQUEST['modfunc']);
-                        unset($_SESSION['_REQUEST_vars']['student_id']);
+                        unset($_SESSION['_REQUEST_vars']['college_roll_no']);
                         $transfer_flag = 1;
                     } else {
                         unset($_REQUEST['modfunc']);
-                        unset($_SESSION['_REQUEST_vars']['student_id']);
+                        unset($_SESSION['_REQUEST_vars']['college_roll_no']);
                        
                     }
                 }
                     
             } else {
                 unset($_REQUEST['modfunc']);
-                unset($_SESSION['_REQUEST_vars']['student_id']);
+                unset($_SESSION['_REQUEST_vars']['college_roll_no']);
                     
             }
         } else {
@@ -575,8 +575,8 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
             unset($_REQUEST['day_students']);
             unset($_REQUEST['month_students']);
             unset($_REQUEST['year_students']);
-            if ($_REQUEST['student_id'] && $_REQUEST['student_id'] != 'new') {
-                $_SESSION['student_id'] = $_REQUEST['student_id'];
+            if ($_REQUEST['college_roll_no'] && $_REQUEST['college_roll_no'] != 'new') {
+                $_SESSION['college_roll_no'] = $_REQUEST['college_roll_no'];
                 $stud_rec = DBGet(DBQuery("SELECT BIRTHDATE,FIRST_NAME,MIDDLE_NAME,LAST_NAME FROM students WHERE 
                             COLLEGE_ROLL_NO=" . UserStudentID()));
                 if (isset($_REQUEST['students']['BIRTHDATE'])) {
@@ -627,7 +627,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                     //echo '<br/><br/>';
                     // print_r($_FILES);
                     //exit;
-                    if ($_REQUEST['student_id'] && $_REQUEST['student_id'] != 'new') {
+                    if ($_REQUEST['college_roll_no'] && $_REQUEST['college_roll_no'] != 'new') {
 
                         if (count($_REQUEST['students'])) {
                             $log_go = false;
@@ -673,7 +673,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                                     if($column_name=='ALT_ID' && $value!='')
                                    {
                                         
-                                        $alt_check=DBGet(DBQuery("SELECT * FROM students WHERE ALT_ID='".$value."' AND COLLEGE_ROLL_NO!=".$_REQUEST['student_id']));
+                                        $alt_check=DBGet(DBQuery("SELECT * FROM students WHERE ALT_ID='".$value."' AND COLLEGE_ROLL_NO!=".$_REQUEST['college_roll_no']));
                                         if(count($alt_check)==0){
                                             $value = paramlib_validation($column_name, trim($value));
                                         }
@@ -718,19 +718,19 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                                     }
                                 }
                                 if ($column_name == 'IS_DISABLE' && $value != 'Y') {
-                                    DBQuery("UPDATE login_authentication SET FAILED_LOGIN=NULL,LAST_LOGIN=NOW() WHERE USER_ID=" . $_REQUEST[student_id] . " AND PROFILE_ID=0");
+                                    DBQuery("UPDATE login_authentication SET FAILED_LOGIN=NULL,LAST_LOGIN=NOW() WHERE USER_ID=" . $_REQUEST[college_roll_no] . " AND PROFILE_ID=0");
                                 }
                             }
 
-                            $sql = substr($sql, 0, -1) . " WHERE COLLEGE_ROLL_NO='$_REQUEST[student_id]'";
-                            $log_sql = substr($log_sql, 0, -1) . " WHERE USER_ID='$_REQUEST[student_id]' AND PROFILE_ID=3";
+                            $sql = substr($sql, 0, -1) . " WHERE COLLEGE_ROLL_NO='$_REQUEST[college_roll_no]'";
+                            $log_sql = substr($log_sql, 0, -1) . " WHERE USER_ID='$_REQUEST[college_roll_no]' AND PROFILE_ID=3";
                             if (!$error) {
                                 DBQuery($sql);
-                                $last_student_id = $_REQUEST[student_id];
+                                $last_college_roll_no = $_REQUEST[college_roll_no];
 
                                 if ($_FILES['file']['name']) {
 
-//                                    $target_path = $StudentPicturesPath . '/' . $last_student_id . '.JPG';
+//                                    $target_path = $StudentPicturesPath . '/' . $last_college_roll_no . '.JPG';
 //                                    $destination_path = $StudentPicturesPath;
 //                                    $upload = new upload();
 //                                    $upload->target_path = $target_path;
@@ -754,12 +754,12 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
 //                                    }
 
 
-                                    $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . $_REQUEST[student_id] . ' AND PROFILE_ID=3 AND COLLEGE_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
+                                    $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . $_REQUEST[college_roll_no] . ' AND PROFILE_ID=3 AND COLLEGE_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
                                     $fileName = $_FILES['file']['name'];
                                     $tmpName = $_FILES['file']['tmp_name'];
                                     $fileSize = $_FILES['file']['size'];
                                     $fileType = $_FILES['file']['type'];
-//                                        $target_path=$StudentPicturesPath.'/'.$last_student_id.'.JPG';
+//                                        $target_path=$StudentPicturesPath.'/'.$last_college_roll_no.'.JPG';
 //	$destination_path = $StudentPicturesPath;	   
                                     $upload = new upload();
 //	$upload->target_path=$target_path;
@@ -792,7 +792,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                                             $fileName = addslashes($fileName);
                                         }
 
-                                        DBQuery('INSERT INTO user_file_upload (USER_ID,PROFILE_ID,COLLEGE_ID,SYEAR,NAME, SIZE, TYPE, CONTENT,FILE_INFO) VALUES (' . $_REQUEST[student_id] . ',\'3\',' . UserCollege() . ',' . UserSyear() . ',\'' . $fileName . '\', \'' . $fileSize . '\', \'' . $fileType . '\', \'' . $content . '\',\'stuimg\')');
+                                        DBQuery('INSERT INTO user_file_upload (USER_ID,PROFILE_ID,COLLEGE_ID,SYEAR,NAME, SIZE, TYPE, CONTENT,FILE_INFO) VALUES (' . $_REQUEST[college_roll_no] . ',\'3\',' . UserCollege() . ',' . UserSyear() . ',\'' . $fileName . '\', \'' . $fileSize . '\', \'' . $fileType . '\', \'' . $content . '\',\'stuimg\')');
                                     }
                                 }
                                 /////////////////  for update those students pic who have not upload pic before////                  
@@ -800,13 +800,13 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                             if ($log_go) {
                                 DBQuery($log_sql);
                             }
-                            $enrollment_info = DBGet(DBQuery("select enrollment_code from student_enrollment where COLLEGE_ROLL_NO=$_REQUEST[student_id]"));
+                            $enrollment_info = DBGet(DBQuery("select enrollment_code from student_enrollment where COLLEGE_ROLL_NO=$_REQUEST[college_roll_no]"));
                             $enrollment_code = $enrollment_info[1]['ENROLLMENT_CODE'];
                             if ($enrollment_code == NULL)
                                 echo "<script>window.location.href='Modules.php?modname=students/Student.php&include=EnrollmentInfoInc&category_id=6'</script>";
                         }
                         if (count($_REQUEST['medical_info'])) {
-                            $get_medical_info = DBGet(DBQuery('SELECT * FROM medical_info WHERE COLLEGE_ROLL_NO=' . $_REQUEST[student_id] . ' AND SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege()));
+                            $get_medical_info = DBGet(DBQuery('SELECT * FROM medical_info WHERE COLLEGE_ROLL_NO=' . $_REQUEST[college_roll_no] . ' AND SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege()));
                             if (count($get_medical_info) > 0) {
                                 $sql = "UPDATE medical_info SET ";
                                 foreach ($_REQUEST['medical_info'] as $column_name => $value) {
@@ -816,12 +816,12 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                                     } else
                                         $sql .= "$column_name='" . str_replace("'", "''", str_replace("'`", "''", trim($value))) . "',";
                                 }
-                                $sql = substr($sql, 0, -1) . " WHERE COLLEGE_ROLL_NO='$_REQUEST[student_id]' AND SYEAR=" . UserSyear() . " AND COLLEGE_ID=" . UserCollege() . "";
+                                $sql = substr($sql, 0, -1) . " WHERE COLLEGE_ROLL_NO='$_REQUEST[college_roll_no]' AND SYEAR=" . UserSyear() . " AND COLLEGE_ID=" . UserCollege() . "";
                             }
                             else {
                                 $sql = "INSERT INTO medical_info  ";
                                 $columns_medical = 'COLLEGE_ROLL_NO,SYEAR,COLLEGE_ID,';
-                                $values_medical = $_REQUEST[student_id] . ',' . UserSyear() . ',' . UserCollege() . ',';
+                                $values_medical = $_REQUEST[college_roll_no] . ',' . UserSyear() . ',' . UserCollege() . ',';
                                 foreach ($_REQUEST['medical_info'] as $column_name => $value) {
                                     $value = paramlib_validation($column_name, trim($value));
                                     if (stripos($_SERVER['SERVER_SOFTWARE'], 'linux')) {
@@ -843,7 +843,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                                 DBQuery($sql);
                             }
                         }
-                        $stu_enroll_id = DBGet(DBQuery('SELECT MAX(ID) AS M_ID FROM student_enrollment WHERE COLLEGE_ROLL_NO=\'' . $_REQUEST['student_id'] . '\' AND SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
+                        $stu_enroll_id = DBGet(DBQuery('SELECT MAX(ID) AS M_ID FROM student_enrollment WHERE COLLEGE_ROLL_NO=\'' . $_REQUEST['college_roll_no'] . '\' AND SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
                         if (!$_REQUEST['enrollment_id'])
                             $e_id = $stu_enroll_id[1]['M_ID'];
                         else
@@ -927,9 +927,9 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                             }
                         }
 
-                        if ($_REQUEST['values']['student_enrollment'][$_REQUEST['student_id']]['GRADE_ID'] != '') {
+                        if ($_REQUEST['values']['student_enrollment'][$_REQUEST['college_roll_no']]['GRADE_ID'] != '') {
                             if ($e_id != '')
-                                DBQuery('UPDATE student_enrollment SET grade_id=' . $_REQUEST['values']['student_enrollment'][$_REQUEST['student_id']]['GRADE_ID'] . ' WHERE ID=' . $e_id);
+                                DBQuery('UPDATE student_enrollment SET grade_id=' . $_REQUEST['values']['student_enrollment'][$_REQUEST['college_roll_no']]['GRADE_ID'] . ' WHERE ID=' . $e_id);
                         }
                         if (count($_REQUEST['values']['student_enrollment'][$e_id])) {
                             $sql = 'SELECT ID,COURSE_ID,COURSE_PERIOD_ID,MARKING_PERIOD_ID FROM schedule WHERE COLLEGE_ROLL_NO=\'' . UserStudentID() . '\' AND SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\'';
@@ -998,7 +998,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                                     $error = false;
                                 }
                             }
-                            $sql = substr($sql, 0, -1) . " WHERE COLLEGE_ROLL_NO='$_REQUEST[student_id]' AND SYEAR='" . UserSyear() . "' AND COLLEGE_ID='" . UserCollege() . "' AND iD='" . $e_id . "'";
+                            $sql = substr($sql, 0, -1) . " WHERE COLLEGE_ROLL_NO='$_REQUEST[college_roll_no]' AND SYEAR='" . UserSyear() . "' AND COLLEGE_ID='" . UserCollege() . "' AND iD='" . $e_id . "'";
 //                            print_r($_REQUEST);
 //                            echo $_REQUEST['values']['student_enrollment'][$e_id]['DROP_CODE'];
                            if(isset($_REQUEST['values']['student_enrollment'][$e_id]['DROP_CODE']) && $_REQUEST['values']['student_enrollment'][$e_id]['DROP_CODE']!='')
@@ -1046,24 +1046,24 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                             echo '<font style="color:red"><b>' . $msg . '</b></font>';
                     }
                     else {
-                        if ($_REQUEST['assign_student_id']) {
-                            $student_id = $_REQUEST['assign_student_id'];
-                            if (count(DBGet(DBQuery("SELECT COLLEGE_ROLL_NO FROM students WHERE COLLEGE_ROLL_NO='$student_id'"))))
+                        if ($_REQUEST['assign_college_roll_no']) {
+                            $college_roll_no = $_REQUEST['assign_college_roll_no'];
+                            if (count(DBGet(DBQuery("SELECT COLLEGE_ROLL_NO FROM students WHERE COLLEGE_ROLL_NO='$college_roll_no'"))))
                                 BackPrompt('That College Roll No is already taken. Please select a different one.');
                         }
                         else {
                             do {
                                 $id = DBGet(DBQuery("SHOW TABLE STATUS LIKE 'students'"));
-                                $student_id[1]['COLLEGE_ROLL_NO'] = $id[1]['AUTO_INCREMENT'];
-                                $student_id = $student_id[1]['COLLEGE_ROLL_NO'];
-                            } while (count(DBGet(DBQuery("SELECT COLLEGE_ROLL_NO FROM students WHERE COLLEGE_ROLL_NO='$student_id'"))));
+                                $college_roll_no[1]['COLLEGE_ROLL_NO'] = $id[1]['AUTO_INCREMENT'];
+                                $college_roll_no = $college_roll_no[1]['COLLEGE_ROLL_NO'];
+                            } while (count(DBGet(DBQuery("SELECT COLLEGE_ROLL_NO FROM students WHERE COLLEGE_ROLL_NO='$college_roll_no'"))));
                         }
                         $sql = "INSERT INTO students ";
                         $log_sql = 'INSERT INTO login_authentication ';
                         $fields = '';
                         $values = "";
                         $log_fields = 'PROFILE_ID,USER_ID,';
-                        $log_values = '3,' . $student_id . ',';
+                        $log_values = '3,' . $college_roll_no . ',';
                         foreach ($_REQUEST['students'] as $column => $value) {
                             
                             if (substr($column, 0, 6) == 'CUSTOM') {
@@ -1176,9 +1176,9 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
 
                             if ($un_chl_res != 'exist' && $pass_chl_res != 'exist' && $day_valid != false) {
                                 DBQuery($sql);
-                                $last_student_id = mysqli_insert_id($connection);
+                                $last_college_roll_no = mysqli_insert_id($connection);
 //                                if ($_FILES['file']['name']) {
-//                                    $target_path = $StudentPicturesPath . '/' . $last_student_id . '.JPG';
+//                                    $target_path = $StudentPicturesPath . '/' . $last_college_roll_no . '.JPG';
 //                                    $destination_path = $StudentPicturesPath;
 //                                    $upload = new upload();
 //                                    $upload->target_path = $target_path;
@@ -1204,7 +1204,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
 //                                }
 
                                 if ($_FILES['file']['name']) {
-//                                        $target_path=$StudentPicturesPath.'/'.$last_student_id.'.JPG';
+//                                        $target_path=$StudentPicturesPath.'/'.$last_college_roll_no.'.JPG';
 //	$destination_path = $StudentPicturesPath;
                                     $fileName = $_FILES['file']['name'];
                                     $tmpName = $_FILES['file']['tmp_name'];
@@ -1239,7 +1239,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                                             $fileName = addslashes($fileName);
                                         }
 
-                                        DBQuery('INSERT INTO user_file_upload (USER_ID,PROFILE_ID,COLLEGE_ID,SYEAR,NAME, SIZE, TYPE, CONTENT,FILE_INFO) VALUES (' . $last_student_id . ',\'3\',' . UserCollege() . ',' . UserSyear() . ',\'' . $fileName . '\', \'' . $fileSize . '\', \'' . $fileType . '\', \'' . $content . '\',\'stuimg\')');
+                                        DBQuery('INSERT INTO user_file_upload (USER_ID,PROFILE_ID,COLLEGE_ID,SYEAR,NAME, SIZE, TYPE, CONTENT,FILE_INFO) VALUES (' . $last_college_roll_no . ',\'3\',' . UserCollege() . ',' . UserSyear() . ',\'' . $fileName . '\', \'' . $fileSize . '\', \'' . $fileType . '\', \'' . $content . '\',\'stuimg\')');
 
 
                                         PopTable('footer');
@@ -1264,7 +1264,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
 
                         $sql = "INSERT INTO student_enrollment ";
                         $fields = 'COLLEGE_ROLL_NO,SYEAR,COLLEGE_ID,';
-                        $values = "'$student_id','" . UserSyear() . "','" . UserCollege() . "',";
+                        $values = "'$college_roll_no','" . UserSyear() . "','" . UserCollege() . "',";
 
                         if ($_REQUEST['day_values'])
                             $_REQUEST['values']['student_enrollment']['new']['START_DATE'] = $_REQUEST['day_values']['student_enrollment']['new']['START_DATE'] . '-' . $_REQUEST['month_values']['student_enrollment']['new']['START_DATE'] . '-' . $_REQUEST['year_values']['student_enrollment']['new']['START_DATE'];
@@ -1298,7 +1298,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
 
 
                         if ($required_faild_error == true || $type_faild_error == true) {
-                            $_REQUEST['student_id'] = 'new';
+                            $_REQUEST['college_roll_no'] = 'new';
                             unset($value);
                         }
                         if ($openSISModules['Food_Service']) {
@@ -1306,9 +1306,9 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                         }
                         if (!$error_new_student) {
                             if ($un_chl_res != 'exist' && $pass_chl_res != 'exist') {
-                                $_SESSION['student_id'] = $_REQUEST['student_id'] = $student_id;
+                                $_SESSION['college_roll_no'] = $_REQUEST['college_roll_no'] = $college_roll_no;
                             } else {
-                                $_REQUEST['student_id'] = "new";
+                                $_REQUEST['college_roll_no'] = "new";
                                 unset($value);
                                 if ($un_chl_res == 'exist' && $pass_chl_res != 'exist')
                                     echo "<font color=red><b>User name already exist. Please try with a different user name.</b></font>";
@@ -1344,12 +1344,12 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
         if ($flag != true) {
             if ($err)
                 echo '<center><font color=red><b>' . $err . '</b></font></center>';
-            if ($_REQUEST['student_id'] == 'new')
+            if ($_REQUEST['college_roll_no'] == 'new')
                 DrawBC('Students > Add a Student');
             else
                 DrawBC("Students > " . ProgramTitle());
 
-            Search('student_id_from_student');
+            Search('college_roll_no_from_student');
 
             if ($_REQUEST['stuid']) {
                 $select .= " AND ssm.COLLEGE_ROLL_NO = '" . str_replace("'", "''", $_REQUEST[stuid]) . "' ";
@@ -1617,37 +1617,37 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                 $_SESSION['s'] .= $_SESSION['inactive_stu_filter'];
             }
 
-            if ($_REQUEST['v'] && isset($_REQUEST['student_id'])) {
+            if ($_REQUEST['v'] && isset($_REQUEST['college_roll_no'])) {
 
 
 
                 $val = optional_param('v', 0, PARAM_INT);
                 if ($val == 1) {
-                    unset($_SESSION['student_id']);
-                    $_SESSION['student_id'] = $_SESSION['students_order'][1];
+                    unset($_SESSION['college_roll_no']);
+                    $_SESSION['college_roll_no'] = $_SESSION['students_order'][1];
                 }
                 if ($val == 2) {
-                    $final_pos = array_search($_SESSION['student_id'], $_SESSION['students_order']);
+                    $final_pos = array_search($_SESSION['college_roll_no'], $_SESSION['students_order']);
                     $final_pos = $final_pos - 1;
-                    unset($_SESSION['student_id']);
-                    $_SESSION['student_id'] = $_SESSION['students_order'][$final_pos];
+                    unset($_SESSION['college_roll_no']);
+                    $_SESSION['college_roll_no'] = $_SESSION['students_order'][$final_pos];
                 }
                 if ($val == 3) {
-                    $final_pos = array_search($_SESSION['student_id'], $_SESSION['students_order']);
+                    $final_pos = array_search($_SESSION['college_roll_no'], $_SESSION['students_order']);
                     $final_pos = $final_pos + 1;
-                    unset($_SESSION['student_id']);
-                    $_SESSION['student_id'] = $_SESSION['students_order'][$final_pos];
+                    unset($_SESSION['college_roll_no']);
+                    $_SESSION['college_roll_no'] = $_SESSION['students_order'][$final_pos];
                 }
                 if ($val == 4) {
-                    unset($_SESSION['student_id']);
+                    unset($_SESSION['college_roll_no']);
                     $final_pos = count($_SESSION['students_order']);
-                    $_SESSION['student_id'] = $_SESSION['students_order'][$final_pos];
+                    $_SESSION['college_roll_no'] = $_SESSION['students_order'][$final_pos];
                 }
             }
 
 
-            if (UserStudentID() || $_REQUEST['student_id'] == 'new') {
-                if ($_REQUEST['student_id'] != 'new') {
+            if (UserStudentID() || $_REQUEST['college_roll_no'] == 'new') {
+                if ($_REQUEST['college_roll_no'] != 'new') {
                     if (User('PROFILE') == 'admin') {
                         $s_ln = DBGet(DBQuery("SELECT LAST_NAME,FIRST_NAME,s.COLLEGE_ROLL_NO " . $admin_COMMON . " AND s.COLLEGE_ROLL_NO =" . UserStudentID() . "  " . $_SESSION['s'] . " " . $_SESSION['custom_count_sql']));
 
@@ -1682,7 +1682,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                     if (User('PROFILE') == 'admin' || User('PROFILE') == 'teacher') {
                         $val = $_REQUEST['v'];
 
-                        $count = array_search($_SESSION['student_id'], $_SESSION['students_order']);
+                        $count = array_search($_SESSION['college_roll_no'], $_SESSION['students_order']);
                         $_SESSION['count'] = $count;
                         $_SESSION['total_stu'] = count($_SESSION['students_order']);
                         $last_stu = count($_SESSION['students_order']);
@@ -1694,15 +1694,15 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
 
                         if (count($_SESSION['students_order']) > 1) {
                             if (UserStudentID() != $_SESSION['students_order'][1]) {
-                                echo "<span class='pg-prev' style='margin-right:10px; font-size:14px; font-weight:normal;'><A HREF=Modules.php?modname=students/Student.php&v=1&student_id=" . UserStudentID() . " ><i class=\"icon-first\"></i> First</A></span>";
+                                echo "<span class='pg-prev' style='margin-right:10px; font-size:14px; font-weight:normal;'><A HREF=Modules.php?modname=students/Student.php&v=1&college_roll_no=" . UserStudentID() . " ><i class=\"icon-first\"></i> First</A></span>";
 
-                                echo "<span class='pg-prev' style='margin-right:10px; font-size:14px; font-weight:normal;'><A HREF=Modules.php?modname=students/Student.php&v=2&student_id=" . UserStudentID() . " > <i class=\"icon-backward2\"></i> Previous</A></span>";
+                                echo "<span class='pg-prev' style='margin-right:10px; font-size:14px; font-weight:normal;'><A HREF=Modules.php?modname=students/Student.php&v=2&college_roll_no=" . UserStudentID() . " > <i class=\"icon-backward2\"></i> Previous</A></span>";
                             }
                             if (UserStudentID() != $last_stu) {
 
-                                echo "<span class='pg-nxt' style='margin-left:10px; font-size:14px; font-weight:normal;'><A HREF=Modules.php?modname=students/Student.php&v=3&student_id=" . UserStudentID() . " >Next <i class=\"icon-forward3\"></i></A></span>";
+                                echo "<span class='pg-nxt' style='margin-left:10px; font-size:14px; font-weight:normal;'><A HREF=Modules.php?modname=students/Student.php&v=3&college_roll_no=" . UserStudentID() . " >Next <i class=\"icon-forward3\"></i></A></span>";
 
-                                echo "<span class='pg-nxt' style='margin-left:10px; font-size:14px; font-weight:normal;'><A HREF=Modules.php?modname=students/Student.php&v=4&student_id=" . UserStudentID() . " >Last <i class=\"icon-last\"></i></A></span>";
+                                echo "<span class='pg-nxt' style='margin-left:10px; font-size:14px; font-weight:normal;'><A HREF=Modules.php?modname=students/Student.php&v=4&college_roll_no=" . UserStudentID() . " >Last <i class=\"icon-last\"></i></A></span>";
                             }
                         }
                         echo "</div>";
@@ -1712,7 +1712,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
 
                 if (clean_param($_REQUEST['modfunc'], PARAM_NOTAGS) != 'delete' || $_REQUEST['delete_ok'] == '1') {
 
-                    if ($_REQUEST['student_id'] != 'new') {
+                    if ($_REQUEST['college_roll_no'] != 'new') {
 
                         $sql = "SELECT s.COLLEGE_ROLL_NO,s.FIRST_NAME,s.LAST_NAME,s.MIDDLE_NAME,s.NAME_SUFFIX,la.USERNAME,la.PASSWORD,la.LAST_LOGIN,s.IS_DISABLE,s.ESTIMATED_GRAD_DATE,s.GENDER,s.ETHNICITY,s.COMMON_NAME,s.BIRTHDATE,s.LANGUAGE_ID,s.ALT_ID,s.EMAIL,s.PHONE,(SELECT COLLEGE_ID FROM student_enrollment WHERE SYEAR='" . UserSyear() . "' AND COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO ORDER BY START_DATE DESC,END_DATE DESC LIMIT 1) AS COLLEGE_ID,
                         (SELECT GRADE_ID FROM student_enrollment WHERE SYEAR='" . UserSyear() . "' AND COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO ORDER BY START_DATE DESC,END_DATE DESC LIMIT 1) AS GRADE_ID,
@@ -1728,14 +1728,14 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                         if (count($stu_Medical_info) > 0)
                             $student+=$stu_Medical_info[1];
                         $college = DBGet(DBQuery("SELECT COLLEGE_ID,GRADE_ID FROM student_enrollment WHERE COLLEGE_ROLL_NO='" . UserStudentID() . "' AND SYEAR='" . UserSyear() . "' AND ('" . DBDate() . "' BETWEEN START_DATE AND END_DATE OR END_DATE IS NULL)"));
-                        $_REQUEST['modname'] = str_replace('?student_id=new', '', $_REQUEST['modname']);
-                        echo "<FORM name=student class=\"form-horizontal\" enctype='multipart/form-data' action=Modules.php?modname=$_REQUEST[modname]&include=$_REQUEST[include]&category_id=$_REQUEST[category_id]&student_id=" . UserStudentID() . "&modfunc=update method=POST>";
+                        $_REQUEST['modname'] = str_replace('?college_roll_no=new', '', $_REQUEST['modname']);
+                        echo "<FORM name=student class=\"form-horizontal\" enctype='multipart/form-data' action=Modules.php?modname=$_REQUEST[modname]&include=$_REQUEST[include]&category_id=$_REQUEST[category_id]&college_roll_no=" . UserStudentID() . "&modfunc=update method=POST>";
                     } else
                         echo "<FORM id=student_isertion enctype='multipart/form-data' name=student id=frmstu action=Modules.php?modname=$_REQUEST[modname]&include=$_REQUEST[include]&modfunc=update method=POST>";
 
                     $name = $student['FIRST_NAME'] . ' ' . $student['MIDDLE_NAME'] . ' ' . $student['LAST_NAME'] . ' ' . $student['NAME_SUFFIX'];
 
-                    if ($_REQUEST['student_id'] != 'new')
+                    if ($_REQUEST['college_roll_no'] != 'new')
                         $name .= ' - ' . $student['COLLEGE_ROLL_NO'];
 
                     if (User('PROFILE') != 'student')
@@ -1826,11 +1826,11 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                     if (isset($_REQUEST['goal_id']) && $_REQUEST['goal_id'] != 'new' && !isset($_REQUEST['progress_id']))
                         $buttons = SubmitButton('Save', '', 'class="btn btn-primary pull-right" onclick="formcheck_student_student();"');
                     else {
-                        if ($_REQUEST['student_id'] != 'new') {
+                        if ($_REQUEST['college_roll_no'] != 'new') {
 
-                            $student_id = explode(" - ", trim($name));
-                            $student_id = $student_id[count($student_id) - 1];
-                            $enrollment_info = DBGet(DBQuery('SELECT ENROLLMENT_CODE FROM student_enrollment WHERE COLLEGE_ROLL_NO=' . $student_id));
+                            $college_roll_no = explode(" - ", trim($name));
+                            $college_roll_no = $college_roll_no[count($college_roll_no) - 1];
+                            $enrollment_info = DBGet(DBQuery('SELECT ENROLLMENT_CODE FROM student_enrollment WHERE COLLEGE_ROLL_NO=' . $college_roll_no));
                             $enrollment_code = $enrollment_info[1]['ENROLLMENT_CODE'];
                             if ($_REQUEST['category_id'] == 1 && $enrollment_code == NULL)
                                 $buttons = SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_student_student();"');
@@ -1866,7 +1866,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
 echo '<div id="modal_default_transferred_out" class="modal fade">';
 echo '<div class="modal-dialog">';
 echo '<div class="modal-content">';
-echo "<FORM class=m-b-0 name=student enctype='multipart/form-data' action=Modules.php?modname=$_REQUEST[modname]&include=$_REQUEST[include]&category_id=$_REQUEST[category_id]&student_id=" . UserStudentID() . "&modfunc=update method=POST>";
+echo "<FORM class=m-b-0 name=student enctype='multipart/form-data' action=Modules.php?modname=$_REQUEST[modname]&include=$_REQUEST[include]&category_id=$_REQUEST[category_id]&college_roll_no=" . UserStudentID() . "&modfunc=update method=POST>";
 echo '<div id="modal-res"></div>';
 echo '</FORM>';
 echo '</div>';

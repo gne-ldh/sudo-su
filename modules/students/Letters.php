@@ -83,7 +83,7 @@ if (!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) {
 
     $extra['new'] = true;
     $extra['pdf'] = 'true';
-    Search('student_id', $extra);
+    Search('college_roll_no', $extra);
     echo '<div id="modal_default" class="modal fade">';
     echo '<div class="modal-dialog modal-lg">';
     echo '<div class="modal-content">';

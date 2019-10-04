@@ -28,7 +28,7 @@
 include('../../RedirectModulesInc.php');
 $menu['students']['admin'] = array(
 						'students/Student.php'=>'Student Info',
-						'students/Student.php&include=GeneralInfoInc&student_id=new'=>'Add a Student',
+						'students/Student.php&include=GeneralInfoInc&college_roll_no=new'=>'Add a Student',
 						'students/AssignOtherInfo.php'=>'Admission',
 
                                                 'students/StudentReenroll.php'=>'Student Re Enroll',
@@ -62,7 +62,7 @@ $menu['students']['parent'] = array(
 					);
 
 $exceptions['students'] = array(
-						'students/Student.php?include=GeneralInfoInc?student_id=new'=>true,
+						'students/Student.php?include=GeneralInfoInc?college_roll_no=new'=>true,
 						'students/AssignOtherInfo.php'=>true
 					);
 ?>

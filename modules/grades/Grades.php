@@ -62,32 +62,32 @@ if ($_REQUEST['assignment_id'] && $_REQUEST['assignment_id'] != 'all') {
         unset($_REQUEST['assignment_id']);
 }
 ####################
-if (clean_param($_REQUEST['student_id'], PARAM_INT)) {
-    $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,COLLEGE_ID FROM students,student_enrollment WHERE students.COLLEGE_ROLL_NO=\'' . $_REQUEST['student_id'] . '\' AND student_enrollment.COLLEGE_ROLL_NO = students.COLLEGE_ROLL_NO '));
+if (clean_param($_REQUEST['college_roll_no'], PARAM_INT)) {
+    $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,COLLEGE_ID FROM students,student_enrollment WHERE students.COLLEGE_ROLL_NO=\'' . $_REQUEST['college_roll_no'] . '\' AND student_enrollment.COLLEGE_ROLL_NO = students.COLLEGE_ROLL_NO '));
 
     $count_student_RET = DBGet(DBQuery("SELECT COUNT(*) AS NUM FROM students"));
     if ($count_student_RET[1]['NUM'] > 1) {
         if (UserStaffId() != '' && SelfStaffProfile('PROFILE') == 'admin')
-            DrawHeaderHome('Selected Student: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . ' (<A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>Deselect</font></A>) | <A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=' . $_REQUEST['modname'] . '&ajax=true&bottom_back=true&return_session=true&staff_id=' . UserStaffId() . ($_REQUEST['period'] != '' ? '&period=' . $_REQUEST['period'] : '') . ' target=body>Back to Student List</A>');
+            DrawHeaderHome('Selected Student: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . ' (<A HREF=Side.php?college_roll_no=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>Deselect</font></A>) | <A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=' . $_REQUEST['modname'] . '&ajax=true&bottom_back=true&return_session=true&staff_id=' . UserStaffId() . ($_REQUEST['period'] != '' ? '&period=' . $_REQUEST['period'] : '') . ' target=body>Back to Student List</A>');
         else
-            DrawHeaderHome('Selected Student: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . ' (<A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>Deselect</font></A>) | <A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=' . $_REQUEST['modname'] . '&ajax=true&bottom_back=true&return_session=true target=body>Back to Student List</A>');
+            DrawHeaderHome('Selected Student: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . ' (<A HREF=Side.php?college_roll_no=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>Deselect</font></A>) | <A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=' . $_REQUEST['modname'] . '&ajax=true&bottom_back=true&return_session=true target=body>Back to Student List</A>');
     }else if ($count_student_RET[1]['NUM'] == 1) {
-        DrawHeaderHome('Selected Student: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . ' (<A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>Deselect</font></A>) ');
+        DrawHeaderHome('Selected Student: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . ' (<A HREF=Side.php?college_roll_no=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>Deselect</font></A>) ');
     }
 }
 ####################
-if (clean_param($_REQUEST['student_id'], PARAM_INT)) {
-    if ($_REQUEST['student_id'] != $_SESSION['student_id']) {
-        $_SESSION['student_id'] = $_REQUEST['student_id'];
+if (clean_param($_REQUEST['college_roll_no'], PARAM_INT)) {
+    if ($_REQUEST['college_roll_no'] != $_SESSION['college_roll_no']) {
+        $_SESSION['college_roll_no'] = $_REQUEST['college_roll_no'];
         //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
     }
-    $_REQUEST['stuid'] = $_REQUEST['student_id'];
+    $_REQUEST['stuid'] = $_REQUEST['college_roll_no'];
     $LO_columns = array('TYPE_TITLE' => 'Category', 'TITLE' => 'Assignment', 'POINTS' => 'Points', 'LETTER_GRADE' => 'Grade', 'COMMENT' => 'Comment');
     $item = 'Assignment';
     $items = 'Assignments';
     $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]";
     $link['TITLE']['variables'] = array('assignment_id' => 'ASSIGNMENT_ID');
-    $current_RET[$_REQUEST['student_id']] = DBGet(DBQuery('SELECT g.ASSIGNMENT_ID FROM gradebook_grades g,gradebook_assignments a WHERE a.ASSIGNMENT_ID=g.ASSIGNMENT_ID AND a.MARKING_PERIOD_ID=\'' . (GetCpDet($course_period_id, 'MARKING_PERIOD_ID') != '' ? UserMP() : GetMPId('FY')) . '\' AND g.COLLEGE_ROLL_NO=\'' . $_REQUEST['student_id'] . '\' AND g.COURSE_PERIOD_ID=\'' . $course_period_id . '\'' . ($_REQUEST['assignment_id'] == 'all' ? '' : ' AND g.ASSIGNMENT_ID=\'' . $_REQUEST['assignment_id'] . '\'')), array(), array('ASSIGNMENT_ID'));
+    $current_RET[$_REQUEST['college_roll_no']] = DBGet(DBQuery('SELECT g.ASSIGNMENT_ID FROM gradebook_grades g,gradebook_assignments a WHERE a.ASSIGNMENT_ID=g.ASSIGNMENT_ID AND a.MARKING_PERIOD_ID=\'' . (GetCpDet($course_period_id, 'MARKING_PERIOD_ID') != '' ? UserMP() : GetMPId('FY')) . '\' AND g.COLLEGE_ROLL_NO=\'' . $_REQUEST['college_roll_no'] . '\' AND g.COURSE_PERIOD_ID=\'' . $course_period_id . '\'' . ($_REQUEST['assignment_id'] == 'all' ? '' : ' AND g.ASSIGNMENT_ID=\'' . $_REQUEST['assignment_id'] . '\'')), array(), array('ASSIGNMENT_ID'));
     if (count($assignments_RET)) {
         foreach ($assignments_RET as $id => $assignment)
             $total_points[$id] = $assignment[1]['POINTS'];
@@ -109,9 +109,9 @@ if (clean_param($_REQUEST['student_id'], PARAM_INT)) {
     $item = 'Student';
     $items = 'Students';
     $link['FULL_NAME']['link'] = "Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&assignment_id=all" . ($_REQUEST['period'] != '' ? '&period=' . $_REQUEST['period'] : '');
-    $link['FULL_NAME']['variables'] = array('student_id' => 'COLLEGE_ROLL_NO');
-    if ($_SESSION['student_id']) {
-        unset($_SESSION['student_id']);
+    $link['FULL_NAME']['variables'] = array('college_roll_no' => 'COLLEGE_ROLL_NO');
+    if ($_SESSION['college_roll_no']) {
+        unset($_SESSION['college_roll_no']);
         //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
     }
     if (clean_param($_REQUEST['assignment_id'], PARAM_ALPHA) == 'all') {
@@ -214,7 +214,7 @@ if (clean_param($_REQUEST['student_id'], PARAM_INT)) {
     }
 }
 if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQUEST['ajax']) && $_SESSION['assignment_id'] == clean_param($_REQUEST['assignment_id'], PARAM_INT)) {
-    foreach ($_REQUEST['values'] as $student_id => $assignments) {
+    foreach ($_REQUEST['values'] as $college_roll_no => $assignments) {
         foreach ($assignments as $assignment_id => $columns) {
             if ($columns['POINTS']) {
                 if ($columns['POINTS'] == '*')
@@ -232,7 +232,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                 }
             }
             $sql = '';
-            if ($current_RET[$student_id][$assignment_id]) {
+            if ($current_RET[$college_roll_no][$assignment_id]) {
                 $sql = "UPDATE gradebook_grades SET ";
                 foreach ($columns as $column => $value) {
                     if ($column == 'COMMENT')
@@ -247,23 +247,23 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                     $sql .= $column . "='" . $value . " ',";
                 }
 
-                $sql = substr($sql, 0, -1) . " WHERE COLLEGE_ROLL_NO='$student_id' AND ASSIGNMENT_ID='$assignment_id' AND COURSE_PERIOD_ID='$course_period_id'";
+                $sql = substr($sql, 0, -1) . " WHERE COLLEGE_ROLL_NO='$college_roll_no' AND ASSIGNMENT_ID='$assignment_id' AND COURSE_PERIOD_ID='$course_period_id'";
             } elseif ($columns['POINTS'] != '' || $columns['COMMENT']) {
                 $columns['COMMENT'] = singleQuoteReplace("", "", $columns['COMMENT']);
-                $sql = 'INSERT INTO gradebook_grades (COLLEGE_ROLL_NO,PERIOD_ID,COURSE_PERIOD_ID,ASSIGNMENT_ID,POINTS,COMMENT) values(\'' . clean_param($student_id, PARAM_INT) . '\',\'' . clean_param(UserPeriod(), PARAM_INT) . '\',\'' . clean_param($course_period_id, PARAM_INT) . '\',\'' . clean_param($assignment_id, PARAM_INT) . '\',\'' . $columns['POINTS'] . '\',\'' . clean_param($columns['COMMENT'], PARAM_NOTAGS) . '\')';
+                $sql = 'INSERT INTO gradebook_grades (COLLEGE_ROLL_NO,PERIOD_ID,COURSE_PERIOD_ID,ASSIGNMENT_ID,POINTS,COMMENT) values(\'' . clean_param($college_roll_no, PARAM_INT) . '\',\'' . clean_param(UserPeriod(), PARAM_INT) . '\',\'' . clean_param($course_period_id, PARAM_INT) . '\',\'' . clean_param($assignment_id, PARAM_INT) . '\',\'' . $columns['POINTS'] . '\',\'' . clean_param($columns['COMMENT'], PARAM_NOTAGS) . '\')';
             }
             if ($sql) {
                 DBQuery($sql);
                 
                 if(isset($columns['POINTS']) && $columns['POINTS']=='')
-                DBQuery("UPDATE gradebook_grades SET points=null WHERE COLLEGE_ROLL_NO='$student_id' AND ASSIGNMENT_ID='$assignment_id' AND COURSE_PERIOD_ID='$course_period_id'");
+                DBQuery("UPDATE gradebook_grades SET points=null WHERE COLLEGE_ROLL_NO='$college_roll_no' AND ASSIGNMENT_ID='$assignment_id' AND COURSE_PERIOD_ID='$course_period_id'");
 
                 DBQuery('UPDATE gradebook_assignments SET UNGRADED=2 WHERE ASSIGNMENT_ID IN (SELECT ASSIGNMENT_ID FROM gradebook_grades WHERE POINTS IS NULL OR POINTS=\'\') OR ASSIGNMENT_ID NOT IN (SELECT ASSIGNMENT_ID FROM gradebook_grades WHERE POINTS IS NOT NULL OR POINTS!=\'\')');
             }
         }
     }
-    if ($_REQUEST['student_id'])
-        $current_RET[$_REQUEST['student_id']] = DBGet(DBQuery('SELECT g.ASSIGNMENT_ID FROM gradebook_grades g,gradebook_assignments a WHERE a.ASSIGNMENT_ID=g.ASSIGNMENT_ID AND a.MARKING_PERIOD_ID=\'' . (GetCpDet($course_period_id, 'MARKING_PERIOD_ID') != '' ? UserMP() : GetMPId('FY')) . '\' AND g.COLLEGE_ROLL_NO=\'' . $_REQUEST[student_id] . '\' AND g.COURSE_PERIOD_ID=\'' . $course_period_id . '\'' . ($_REQUEST['assignment_id'] == 'all' ? '' : ' AND g.ASSIGNMENT_ID=\'' . $_REQUEST[assignment_id] . '\'')), array(), array('ASSIGNMENT_ID'));
+    if ($_REQUEST['college_roll_no'])
+        $current_RET[$_REQUEST['college_roll_no']] = DBGet(DBQuery('SELECT g.ASSIGNMENT_ID FROM gradebook_grades g,gradebook_assignments a WHERE a.ASSIGNMENT_ID=g.ASSIGNMENT_ID AND a.MARKING_PERIOD_ID=\'' . (GetCpDet($course_period_id, 'MARKING_PERIOD_ID') != '' ? UserMP() : GetMPId('FY')) . '\' AND g.COLLEGE_ROLL_NO=\'' . $_REQUEST[college_roll_no] . '\' AND g.COURSE_PERIOD_ID=\'' . $course_period_id . '\'' . ($_REQUEST['assignment_id'] == 'all' ? '' : ' AND g.ASSIGNMENT_ID=\'' . $_REQUEST[assignment_id] . '\'')), array(), array('ASSIGNMENT_ID'));
     elseif ($_REQUEST['assignment_id'] == 'all')
         $current_RET = DBGet(DBQuery('SELECT g.COLLEGE_ROLL_NO,g.ASSIGNMENT_ID,g.POINTS FROM gradebook_grades g,gradebook_assignments a WHERE a.ASSIGNMENT_ID=g.ASSIGNMENT_ID AND a.MARKING_PERIOD_ID=\'' . (GetCpDet($course_period_id, 'MARKING_PERIOD_ID') != '' ? UserMP() : GetMPId('FY')) . '\' AND g.COURSE_PERIOD_ID=\'' . $course_period_id . '\''), array(), array('COLLEGE_ROLL_NO', 'ASSIGNMENT_ID'));
     else
@@ -275,27 +275,27 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
 $_SESSION['assignment_id'] = $_REQUEST['assignment_id'];
 $extra['GROUP'] = 's.COLLEGE_ROLL_NO';
 $stu_RET = GetStuList($extra);
-$assignment_select = '<SELECT name=assignment_id class="form-control" onchange="document.location.href=\'Modules.php?modname=' . $_REQUEST['modname'] . '&include_inactive=' . $_REQUEST['include_inactive'] . '&cpv_id=' . CpvId() . '&assignment_id=\'+this.options[selectedIndex].value"><OPTION value="">Totals</OPTION><OPTION value="all"' . (($_REQUEST['assignment_id'] == 'all' && !$_REQUEST['student_id']) ? ' SELECTED' : '') . '>All</OPTION>';
-if ($_REQUEST['student_id'])
+$assignment_select = '<SELECT name=assignment_id class="form-control" onchange="document.location.href=\'Modules.php?modname=' . $_REQUEST['modname'] . '&include_inactive=' . $_REQUEST['include_inactive'] . '&cpv_id=' . CpvId() . '&assignment_id=\'+this.options[selectedIndex].value"><OPTION value="">Totals</OPTION><OPTION value="all"' . (($_REQUEST['assignment_id'] == 'all' && !$_REQUEST['college_roll_no']) ? ' SELECTED' : '') . '>All</OPTION>';
+if ($_REQUEST['college_roll_no'])
     $assignment_select .= '<OPTION value=' . $_REQUEST['assignment_id'] . ' SELECTED>' . $stu_RET[1]['FULL_NAME'] . '</OPTION>';
 foreach ($assignments_RET as $id => $assignment)
-    $assignment_select .= '<OPTION value=' . $id . (($_REQUEST['assignment_id'] == $id && !$_REQUEST['student_id']) ? ' SELECTED' : '') . '>' . $assignment[1]['TYPE_TITLE'] . ' - ' . $assignment[1]['TITLE'] . '</OPTION>';
+    $assignment_select .= '<OPTION value=' . $id . (($_REQUEST['assignment_id'] == $id && !$_REQUEST['college_roll_no']) ? ' SELECTED' : '') . '>' . $assignment[1]['TYPE_TITLE'] . ' - ' . $assignment[1]['TITLE'] . '</OPTION>';
 $assignment_select .= '</SELECT>';
 
-echo "<FORM action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&student_id=" . strip_tags(trim($_REQUEST[student_id])) . "&cpv_id=" . CpvId() . " method=POST>";
+echo "<FORM action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&college_roll_no=" . strip_tags(trim($_REQUEST[college_roll_no])) . "&cpv_id=" . CpvId() . " method=POST>";
 $tmp_REQUEST = $_REQUEST;
 unset($tmp_REQUEST['include_inactive']);
 
-if (count($stu_RET) == 0 && !$_REQUEST['student_id'])
+if (count($stu_RET) == 0 && !$_REQUEST['college_roll_no'])
     echo '<div class="form-group"><div class="form-inline">' . $assignment_select . ' &nbsp; <label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '><span></span>Include Inactive Students</label></div></div>';
 else {
-    if (!$_REQUEST['student_id']) {
+    if (!$_REQUEST['college_roll_no']) {
         echo '<div class="form-group"><div class="form-inline">' . $assignment_select . ' &nbsp; &nbsp; <label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '><span></span>Include Inactive Students</label> &nbsp; ' . ($_REQUEST['assignment_id'] ? SubmitButton('Save', '', 'class="btn btn-primary"') : '') . '</div></div>';
     } else {
         echo '<div class="form-group"><div class="form-inline">' . $assignment_select . ' &nbsp; ' . ($_REQUEST['assignment_id'] ? SubmitButton('Save', '', 'class="btn btn-primary"') : '') . '</div></div>';
     }
 }
-if (!$_REQUEST['student_id'] && $_REQUEST['assignment_id'] == 'all')
+if (!$_REQUEST['college_roll_no'] && $_REQUEST['assignment_id'] == 'all')
     $options = array('yscroll' => true);
 
 echo '<hr class="no-margin-bottom"/>';
@@ -354,7 +354,7 @@ function _makeExtraAssnCols($assignment_id, $column) {
         case 'POINTS':
             $tabindex++;
 
-            if ($assignment_id == '' && !$_REQUEST['student_id']) {
+            if ($assignment_id == '' && !$_REQUEST['college_roll_no']) {
                 if (count($points_RET[$THIS_RET['COLLEGE_ROLL_NO']])) {
                     $total = $total_points = 0;
                     foreach ($points_RET[$THIS_RET['COLLEGE_ROLL_NO']] as $partial_points)
@@ -379,7 +379,7 @@ function _makeExtraAssnCols($assignment_id, $column) {
             }
             break;
         case 'LETTER_GRADE':
-            if ($assignment_id == '' && !$_REQUEST['student_id']) {
+            if ($assignment_id == '' && !$_REQUEST['college_roll_no']) {
                 if (count($points_RET[$THIS_RET['COLLEGE_ROLL_NO']])) {
 
 
@@ -479,7 +479,7 @@ function _makeExtraStuCols($value, $column) {
 }
 
 function _makeExtraCols($assignment_id, $column) {
-    global $THIS_RET, $total_points, $current_RET, $old_student_id, $student_count, $tabindex, $count_students, $max_allowed;
+    global $THIS_RET, $total_points, $current_RET, $old_college_roll_no, $student_count, $tabindex, $count_students, $max_allowed;
 
     $rounding = DBGet(DBQuery('SELECT VALUE FROM program_user_config WHERE USER_ID=\'' . User('STAFF_ID') . '\' AND TITLE=\'ROUNDING\' AND PROGRAM=\'Gradebook\' '));
 
@@ -490,10 +490,10 @@ function _makeExtraCols($assignment_id, $column) {
     else
         $days_left = floor((strtotime($THIS_RET['DUE_' . $assignment_id], 0) - strtotime($THIS_RET['START_DATE'], 0)) / 86400);
     if ($days_left >= 1) {
-        if ($THIS_RET['COLLEGE_ROLL_NO'] != $old_student_id) {
+        if ($THIS_RET['COLLEGE_ROLL_NO'] != $old_college_roll_no) {
             $student_count++;
             $tabindex = $student_count;
-            $old_student_id = $THIS_RET['COLLEGE_ROLL_NO'];
+            $old_college_roll_no = $THIS_RET['COLLEGE_ROLL_NO'];
         } else
             $tabindex += $count_students;
         if ($current_RET[$THIS_RET['COLLEGE_ROLL_NO']][$assignment_id][1]['POINTS'] == '-1')
@@ -546,7 +546,7 @@ function _makeWtg($assignment_id,$column)
 {	
         global $THIS_RET,$total_points,$current_RET,$points_RET,$tabindex,$max_allowed; 
        
-        if(clean_param($_REQUEST['assignment_id'],PARAM_INT)=='' && substr($_REQUEST['assignment_id'],0,1)!='t' && !$_REQUEST['student_id'])
+        if(clean_param($_REQUEST['assignment_id'],PARAM_INT)=='' && substr($_REQUEST['assignment_id'],0,1)!='t' && !$_REQUEST['college_roll_no'])
 			{
 
 				if(count($current_RET[$THIS_RET['COLLEGE_ROLL_NO']]))
@@ -619,7 +619,7 @@ function _makeWtg($assignment_id,$column)
 //                                else
 //					return 'Not Graded';
 			}
-			else if(clean_param($_REQUEST['assignment_id'],PARAM_INT)!='' && substr($_REQUEST['assignment_id'],0,1)!='t' && !$_REQUEST['student_id'])
+			else if(clean_param($_REQUEST['assignment_id'],PARAM_INT)!='' && substr($_REQUEST['assignment_id'],0,1)!='t' && !$_REQUEST['college_roll_no'])
 			{
 				$points = $points_RET[$THIS_RET['COLLEGE_ROLL_NO']][1]['POINTS'];                                
 					if($points!='-1')

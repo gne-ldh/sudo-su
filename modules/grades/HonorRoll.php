@@ -225,7 +225,7 @@ if (!$_REQUEST['modfunc']) {
             $extra['footer'] = '<div class="panel-footer text-right p-r-20">' . SubmitButton('Create Honor Roll for Selected Students', '', 'class="btn btn-primary"') . '</div>';
         }
     }
-    Search('student_id', $extra);
+    Search('college_roll_no', $extra);
 
     if ($_REQUEST['search_modfunc'] == 'list') {
         echo "</FORM>";

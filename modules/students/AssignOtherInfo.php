@@ -75,9 +75,9 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
             unset($_REQUEST['values']['COMMENT_DATE']);
         }
         
-        foreach ($_REQUEST['student'] as $student_id => $yes) {
+        foreach ($_REQUEST['student'] as $college_roll_no => $yes) {
             if ($yes == 'Y') {
-                $students .= ",'$student_id'";
+                $students .= ",'$college_roll_no'";
                 $students_count++;
             }
         }
@@ -110,21 +110,21 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
         
         $fields = explode(',', $fields);
         $values = explode(',', $values);
-        $medical_student_id = explode(',', $students);
-        $check_student_avail = DBGet(DBQuery('SELECT student_id from medical_info where SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege()));
+        $medical_college_roll_no = explode(',', $students);
+        $check_student_avail = DBGet(DBQuery('SELECT college_roll_no from medical_info where SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege()));
 
         foreach ($check_student_avail as $stu_key => $stu_id) {
             foreach ($stu_id as $stu_id_k => $stu_id_v)
                 $med_stu_id[] = $stu_id_v;
         }
-        foreach ($_REQUEST['student'] as $student_id => $yes) {
+        foreach ($_REQUEST['student'] as $college_roll_no => $yes) {
             if ($yes == 'Y') {
                 if($com_date!='' && $comment!='')
                 {
-                    DBQuery('INSERT INTO student_mp_comments (student_id,syear,marking_period_id,staff_id,comment,comment_date) Values ('.$student_id.','. UserSyear().','. UserMP().','.User('STAFF_ID').',\''.$comment.'\',\''.$com_date.'\')');
+                    DBQuery('INSERT INTO student_mp_comments (college_roll_no,syear,marking_period_id,staff_id,comment,comment_date) Values ('.$college_roll_no.','. UserSyear().','. UserMP().','.User('STAFF_ID').',\''.$comment.'\',\''.$com_date.'\')');
                     $note = '<div class="alert bg-success alert-styled-left">The specified information was applied to the selected students.</div>';   
                 }
-                $students_m_id[] = $student_id;
+                $students_m_id[] = $college_roll_no;
             }
         }
 
@@ -594,7 +594,7 @@ if (!$_REQUEST['modfunc']) {
     $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'st_arr\');">');
     $extra['new'] = true;
 
-    Search('student_id', $extra);
+    Search('college_roll_no', $extra);
     echo '<div id="modal_default" class="modal fade">';
     echo '<div class="modal-dialog modal-lg">';
     echo '<div class="modal-content">';

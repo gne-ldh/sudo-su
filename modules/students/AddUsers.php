@@ -41,9 +41,9 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save' && AllowEdit()) 
         $note = "The selected user's profile now includes access to the selected students.";
 }
 DrawBC("Students > " . ProgramTitle());
-if (isset($_REQUEST['student_id']) && $_REQUEST['student_id'] != 'new' || UserStudentID()) {
-    if ($_REQUEST['student_id'] && $_REQUEST['student_id'] != 'new')
-        $stu_id = $_REQUEST['student_id'];
+if (isset($_REQUEST['college_roll_no']) && $_REQUEST['college_roll_no'] != 'new' || UserStudentID()) {
+    if ($_REQUEST['college_roll_no'] && $_REQUEST['college_roll_no'] != 'new')
+        $stu_id = $_REQUEST['college_roll_no'];
     else
         $stu_id = UserStudentID();
     $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,COLLEGE_ID FROM students,student_enrollment WHERE students.COLLEGE_ROLL_NO=\'' . $stu_id . '\' AND student_enrollment.COLLEGE_ROLL_NO = students.COLLEGE_ROLL_NO '));
@@ -51,11 +51,11 @@ if (isset($_REQUEST['student_id']) && $_REQUEST['student_id'] != 'new' || UserSt
     $count_student_RET = DBGet(DBQuery('SELECT COUNT(*) AS NUM FROM students'));
     if ($count_student_RET[1]['NUM'] > 1) {
         echo '<div class="panel panel-default">';
-        DrawHeader('Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'], '<span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=students/Student.php&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> Back to Student List</A></span><div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div>');
+        DrawHeader('Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'], '<span class="heading-text"><A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=students/Student.php&ajax=true&bottom_back=true&return_session=true target=body><i class="icon-square-left"></i> Back to Student List</A></span><div class="btn-group heading-btn"><A HREF=Side.php?college_roll_no=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div>');
         echo '</div>';
     } else if ($count_student_RET[1]['NUM'] == 1) {
         echo '<div class="panel panel-default">';
-        DrawHeader('Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'], '<div class="btn-group heading-btn"><A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div>');
+        DrawHeader('Selected Student : ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'], '<div class="btn-group heading-btn"><A HREF=Side.php?college_roll_no=new&modcat=' . $_REQUEST['modcat'] . ' class="btn btn-danger btn-xs">Deselect</A></div>');
         echo '</div>';
     }
 }
@@ -70,7 +70,7 @@ if ($note)
 if ($_REQUEST['modfunc'] != 'delete') {
     $extra['SELECT'] = ',(SELECT count(distinct u.PERSON_ID) FROM students_join_people u,people p WHERE u.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND p.STAFF_ID=u.PERSON_ID) AS ASSOCIATED';
     $extra['columns_after'] = array('ASSOCIATED' => '# Associated');
-    Search('student_id', $extra);
+    Search('college_roll_no', $extra);
     if (UserStudentID()) {
 
         if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'list') {

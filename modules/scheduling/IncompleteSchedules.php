@@ -65,7 +65,7 @@ foreach ($periods_RET as $period) {
     $extra['functions']['PERIOD_' . $period['PERIOD_ID']] = '_preparePeriods';
 }
 if (!$_REQUEST['search_modfunc'])
-    Search('student_id', $extra);
+    Search('college_roll_no', $extra);
 else {
     $singular = 'Student with an incomplete schedule';
     $plural = 'students with incomplete schedules';
@@ -82,7 +82,7 @@ else {
     unset($bad_students[0]);
 
     $link['FULL_NAME']['link'] = "Modules.php?modname=scheduling/Schedule.php";
-    $link['FULL_NAME']['variables'] = array('student_id' => 'COLLEGE_ROLL_NO');
+    $link['FULL_NAME']['variables'] = array('college_roll_no' => 'COLLEGE_ROLL_NO');
     echo '<div class="panel panel-default">';
     echo '<div class="table-responsive">';
     ListOutput($bad_students, array('FULL_NAME' => 'Student', 'COLLEGE_ROLL_NO' => 'College Roll No', 'GRADE_ID' => 'Grade') + $extra['columns_after'], $singular, $plural, $link);
