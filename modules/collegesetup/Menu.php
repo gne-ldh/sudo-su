@@ -27,37 +27,37 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 $menu['collegesetup']['admin'] = array(
-						'collegesetup/PortalNotes.php'=>'Portal Notes',
-						'collegesetup/MarkingPeriods.php'=>'Marking Periods',
+						'collegesetup/PortalNotes.php'=>'Notice',
+						'collegesetup/MarkingPeriods.php'=>'Sessions',
 						'collegesetup/Calendar.php'=>'Calendars',
-						'collegesetup/Periods.php'=>'Periods',
-						'collegesetup/GradeLevels.php'=>'Grade Levels',
+						//'collegesetup/Periods.php'=>'Periods',
+						'collegesetup/GradeLevels.php'=>'Course',
                                                 'collegesetup/Sections.php'=>'Sections',
-                                                'collegesetup/Rooms.php'=>'Rooms',
+                                                //'collegesetup/Rooms.php'=>'Rooms',
                          1=>'College',
                         'collegesetup/Colleges.php'=>'College Information',
 						'collegesetup/Colleges.php?new_college=true'=>'Add a College',
 						'collegesetup/CopyCollege.php'=>'Copy College',
 						'collegesetup/SystemPreference.php'=>'System Preference',
                                                 'collegesetup/CollegeCustomFields.php'=>'College Custom Fields',
-                         2=>'Courses',
-                        'collegesetup/Courses.php'=>'Course Manager',
-                        'collegesetup/CourseCatalog.php'=>'Course Catalog',
+                         2=>'Subjects',
+                        'collegesetup/Courses.php'=>'Subject Manager',
+                        'collegesetup/CourseCatalog.php'=>'Subject Catalog',
                         'collegesetup/PrintCatalog.php'=>'Print Catalog by Term', 
                         'collegesetup/PrintCatalogGradeLevel.php'=>'Print Catalog by Grade Level', 
-                        'collegesetup/PrintAllCourses.php'=>'Print all Courses',
+                        'collegesetup/PrintAllCourses.php'=>'Print all Subjects',
                         'collegesetup/TeacherReassignment.php'=>'Teacher Re-Assignment'
               );
 
 $menu['collegesetup']['teacher'] = array(
 						'collegesetup/Colleges.php'=>'College Information',
-						'collegesetup/MarkingPeriods.php'=>'Marking Periods',
+						'collegesetup/MarkingPeriods.php'=>'Sessions',
 						'collegesetup/Calendar.php'=>'Calendar',
-						1=>'Courses',
-                        'collegesetup/Courses.php'=>'Course Manager',
-                        'collegesetup/CourseCatalog.php'=>'Course Catalog',
+						1=>'Subjects',
+                        'collegesetup/Courses.php'=>'Subjects Manager',
+                        'collegesetup/CourseCatalog.php'=>'Subjects Catalog',
                         'collegesetup/PrintCatalog.php'=>'Print Catalog by Term', 
-                        'collegesetup/PrintAllCourses.php'=>'Print all Courses'
+                        'collegesetup/PrintAllCourses.php'=>'Print all Subjects'
 					);
 
 $menu['collegesetup']['parent'] = array(
