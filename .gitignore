@@ -4,3 +4,5 @@ Data.php
 # Swap files
 *.swp
 
+# Cache files of form tools
+formtools/cache/*
