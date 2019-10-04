@@ -33,7 +33,7 @@ unset($_SESSION['_REQUEST_vars']['course_period_id']);
 
 
 if ($_REQUEST['modfunc'] != 'delete' && !$_REQUEST['subject_id']) {
-    $subjects_RET = DBGet(DBQuery("SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "'"));
+    $subjects_RET = DBGet(DBQuery("SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE COLLEGE_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "'"));
     if (count($subjects_RET) == 1)
         $_REQUEST['subject_id'] = $subjects_RET[1]['SUBJECT_ID'];
 }
@@ -46,9 +46,9 @@ if (clean_param($_REQUEST['course_modfunc'], PARAM_ALPHAMOD) == 'search') {
     PopTable('footer');
 
     if ($_REQUEST['search_term']) {
-        $subjects_RET = DBGet(DBQuery('SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE (UPPER(TITLE) LIKE \'%' . strtoupper($_REQUEST['search_term']) . '%\' OR UPPER(SHORT_NAME) = \'' . strtoupper($_REQUEST['search_term']) . '\') AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
-        $courses_RET = DBGet(DBQuery('SELECT SUBJECT_ID,COURSE_ID,TITLE FROM courses WHERE (UPPER(TITLE) LIKE \'%' . strtoupper($_REQUEST['search_term']) . '%\' OR UPPER(SHORT_NAME) = \'' . strtoupper($_REQUEST['search_term']) . '\') AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
-        $periods_RET = DBGet(DBQuery('SELECT c.SUBJECT_ID,cp.COURSE_ID,cp.COURSE_PERIOD_ID,cp.TITLE FROM course_periods cp,courses c WHERE cp.COURSE_ID=c.COURSE_ID AND (UPPER(cp.TITLE) LIKE \'%' . strtoupper($_REQUEST['search_term']) . '%\' OR UPPER(cp.SHORT_NAME) = \'' . strtoupper($_REQUEST['search_term']) . '\') AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.SCHOOL_ID=\'' . UserCollege() . '\''));
+        $subjects_RET = DBGet(DBQuery('SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE (UPPER(TITLE) LIKE \'%' . strtoupper($_REQUEST['search_term']) . '%\' OR UPPER(SHORT_NAME) = \'' . strtoupper($_REQUEST['search_term']) . '\') AND SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
+        $courses_RET = DBGet(DBQuery('SELECT SUBJECT_ID,COURSE_ID,TITLE FROM courses WHERE (UPPER(TITLE) LIKE \'%' . strtoupper($_REQUEST['search_term']) . '%\' OR UPPER(SHORT_NAME) = \'' . strtoupper($_REQUEST['search_term']) . '\') AND SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
+        $periods_RET = DBGet(DBQuery('SELECT c.SUBJECT_ID,cp.COURSE_ID,cp.COURSE_PERIOD_ID,cp.TITLE FROM course_periods cp,courses c WHERE cp.COURSE_ID=c.COURSE_ID AND (UPPER(cp.TITLE) LIKE \'%' . strtoupper($_REQUEST['search_term']) . '%\' OR UPPER(cp.SHORT_NAME) = \'' . strtoupper($_REQUEST['search_term']) . '\') AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.COLLEGE_ID=\'' . UserCollege() . '\''));
 
         echo '<div class="row">';
         echo '<div class="col-md-4">';
@@ -115,7 +115,7 @@ if ($_REQUEST['action'] == 'undo') {
 if ((!$_REQUEST['modfunc'] || clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'choose_course') && !$_REQUEST['course_modfunc']) {
     if ($_REQUEST['modfunc'] != 'choose_course')
         DrawBC("scheduling > " . ProgramTitle());
-    $sql = 'SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY TITLE';
+    $sql = 'SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY TITLE';
     $QI = DBQuery($sql);
     $subjects_RET = DBGet($QI);
 
@@ -143,7 +143,7 @@ if ((!$_REQUEST['modfunc'] || clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) 
             $header .= '<div class="panel-body">';
             $header .= '<div class="row">';
             $header .= '<div class="col-md-3"><label class="control-label">Select New Teacher</label>';
-            $teachers_RET = DBGet(DBQuery('SELECT STAFF_ID,LAST_NAME,FIRST_NAME,MIDDLE_NAME FROM staff st INNER JOIN staff_college_relationship ssr USING (staff_id) WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND PROFILE=\'teacher\' AND staff_id <>\'' . $RET['TEACHER_ID'] . '\' AND (IS_DISABLE IS NULL OR IS_DISABLE<>\'Y\')  ORDER BY LAST_NAME,FIRST_NAME '));
+            $teachers_RET = DBGet(DBQuery('SELECT STAFF_ID,LAST_NAME,FIRST_NAME,MIDDLE_NAME FROM staff st INNER JOIN staff_college_relationship ssr USING (staff_id) WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND PROFILE=\'teacher\' AND staff_id <>\'' . $RET['TEACHER_ID'] . '\' AND (IS_DISABLE IS NULL OR IS_DISABLE<>\'Y\')  ORDER BY LAST_NAME,FIRST_NAME '));
             if (count($teachers_RET)) {
                 foreach ($teachers_RET as $teacher)
                     $teachers[$teacher['STAFF_ID']] = $teacher['LAST_NAME'] . ', ' . $teacher['FIRST_NAME'] . ' ' . $teacher['MIDDLE_NAME'];

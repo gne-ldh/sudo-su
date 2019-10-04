@@ -41,7 +41,7 @@ if ($_REQUEST['modfunc'] == 'save') {
     $_REQUEST['day'] = $_REQUEST['day_start'];
     $st_dt = $_REQUEST['year'] . '-' . $_REQUEST['month'] . '-' . $_REQUEST['day'];
     if ($_REQUEST['marking_period_id'] != '') {
-        $chk_st_dt = DBGet(DBQuery('SELECT START_DATE,END_DATE FROM marking_periods WHERE MARKING_PERIOD_ID=' . $_REQUEST['marking_period_id'] . ' AND SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserCollege()));
+        $chk_st_dt = DBGet(DBQuery('SELECT START_DATE,END_DATE FROM marking_periods WHERE MARKING_PERIOD_ID=' . $_REQUEST['marking_period_id'] . ' AND SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege()));
         $chk_st_dt = $chk_st_dt[1];
         if (strtotime($st_dt) < strtotime($chk_st_dt['START_DATE']) || strtotime($st_dt) > strtotime($chk_st_dt['END_DATE'])) {
             $modname = $_REQUEST['modname'];
@@ -105,7 +105,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'seatso') {
             foreach ($n_schedule_stu as $k => $v) {
                 if (!in_array($v, $stu_alrd_id)) {
 
-                    $sql = 'INSERT INTO schedule (SYEAR,SCHOOL_ID,STUDENT_ID,COURSE_ID,COURSE_PERIOD_ID,MP,MARKING_PERIOD_ID,START_DATE,MODIFIED_DATE,MODIFIED_BY)
+                    $sql = 'INSERT INTO schedule (SYEAR,COLLEGE_ID,STUDENT_ID,COURSE_ID,COURSE_PERIOD_ID,MP,MARKING_PERIOD_ID,START_DATE,MODIFIED_DATE,MODIFIED_BY)
 	values(\'' . UserSyear() . '\',\'' . UserCollege() . '\',\'' . $v . '\',\'' . $in_data_stu_id[1]['COURSE_ID'] . '\',\'' . $in_data_stu_id[1]['COURSE_PERIOD_ID'] . '\',\'' . $in_data_stu_id[1]['MP'] . '\',\'' . clean_param($in_data_stu_id[1]['MARKING_PERIOD_ID'], PARAM_INT) . '\',\'' . $_SESSION['SCH']['START_DATE'] . '\',\'' . date('Y-m-d') . '\',\'' . User('STAFF_ID') . '\')';
                     DBQuery($sql);
                 }
@@ -260,7 +260,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
                     $stu_sd_err_count++;
                 }
                 if ($_REQUEST['student'][$index]) {
-                    $cp_mp = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,BEGIN_DATE,END_DATE FROM course_periods WHERE SCHOOL_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear() . ' AND COURSE_PERIOD_ID = \'' . $course_per_id . '\' '));
+                    $cp_mp = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,BEGIN_DATE,END_DATE FROM course_periods WHERE COLLEGE_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear() . ' AND COURSE_PERIOD_ID = \'' . $course_per_id . '\' '));
                     $cp_mp[1]['MARKING_PERIOD_ID'] = ($cp_mp[1]['MARKING_PERIOD_ID'] != '' ? $cp_mp[1]['MARKING_PERIOD_ID'] : GetMPId('FY'));
 
                     $cp_mp_st_dt = DBGet(DBQuery('SELECT * FROM marking_periods WHERE MARKING_PERIOD_ID=' . $cp_mp[1]['MARKING_PERIOD_ID']));
@@ -314,8 +314,8 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
                     #$clash = true;
                 }
                 # ------------------------------------ Same Days Conflict Start ------------------------------------------ #
-//echo 'SELECT START_DATE,END_DATE FROM student_enrollment WHERE STUDENT_ID=\'' . $student_id . '\' AND END_DATE IS NOT NULL AND SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserCollege() . ' ORDER BY ID DESC LIMIT 0,1';
-                $select_stu_info = DBGet(DBQuery('SELECT START_DATE,END_DATE FROM student_enrollment WHERE STUDENT_ID=\'' . $student_id . '\'  AND SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserCollege() . ' ORDER BY ID DESC LIMIT 0,1'));
+//echo 'SELECT START_DATE,END_DATE FROM student_enrollment WHERE STUDENT_ID=\'' . $student_id . '\' AND END_DATE IS NOT NULL AND SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege() . ' ORDER BY ID DESC LIMIT 0,1';
+                $select_stu_info = DBGet(DBQuery('SELECT START_DATE,END_DATE FROM student_enrollment WHERE STUDENT_ID=\'' . $student_id . '\'  AND SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege() . ' ORDER BY ID DESC LIMIT 0,1'));
                 if (count($select_stu_info) > 0 && $select_stu_info[1]['END_DATE']!='') {
                     if (strtotime($select_stu_info[1]['END_DATE']) < strtotime($course_bg_date[1]['END_DATE'])) {
                         if ($select_stu_RET[1]['FIRST_NAME'] == '') {
@@ -338,8 +338,8 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
 
                 $period_RET = DBGet(DBQuery('SELECT cpv.DAYS,cpv.PERIOD_ID FROM schedule s,course_periods cp,course_period_var cpv WHERE cp.COURSE_PERIOD_ID=s.COURSE_PERIOD_ID AND s.STUDENT_ID=\'' . $student_id . '\' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.PERIOD_ID IN (\'' . $cp_period_id . '\') AND s.MARKING_PERIOD_ID IN (' . $mps . ') AND (s.END_DATE IS NULL OR \'' . $start_date . '\'<=s.END_DATE)'));
 
-                $ig_scheld = DBGet(DBQuery('SELECT IGNORE_SCHEDULING FROM college_periods WHERE PERIOD_ID IN (\'' . $cp_period_id . '\') AND SCHOOL_ID=\'' . UserCollege() . '\''));
-                $sql_dupl = 'SELECT COURSE_PERIOD_ID FROM schedule WHERE STUDENT_ID = \'' . $student_id . '\' AND COURSE_PERIOD_ID = \'' . $_SESSION['MassSchedule.php']['course_period_id'] . '\' AND (END_DATE IS NULL OR (\'' . $convdate . '\' BETWEEN START_DATE AND END_DATE)) AND SCHOOL_ID=\'' . UserCollege() . '\'';
+                $ig_scheld = DBGet(DBQuery('SELECT IGNORE_SCHEDULING FROM college_periods WHERE PERIOD_ID IN (\'' . $cp_period_id . '\') AND COLLEGE_ID=\'' . UserCollege() . '\''));
+                $sql_dupl = 'SELECT COURSE_PERIOD_ID FROM schedule WHERE STUDENT_ID = \'' . $student_id . '\' AND COURSE_PERIOD_ID = \'' . $_SESSION['MassSchedule.php']['course_period_id'] . '\' AND (END_DATE IS NULL OR (\'' . $convdate . '\' BETWEEN START_DATE AND END_DATE)) AND COLLEGE_ID=\'' . UserCollege() . '\'';
                 $rit_dupl = DBQuery($sql_dupl);
                 $count_entry = DBGet($rit_dupl);
                 $days_conflict = false;
@@ -371,7 +371,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
                     continue;
                 }
                 # ------------------------------------ Same Days Conflict End ------------------------------------------ #
-                $sql = 'SELECT COURSE_PERIOD_ID,START_DATE, MARKING_PERIOD_ID FROM schedule WHERE STUDENT_ID = \'' . $student_id . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND MARKING_PERIOD_ID IN (' . $mps . ') AND (END_DATE IS NULL OR END_DATE >=\'' . $convdate . '\')';
+                $sql = 'SELECT COURSE_PERIOD_ID,START_DATE, MARKING_PERIOD_ID FROM schedule WHERE STUDENT_ID = \'' . $student_id . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND MARKING_PERIOD_ID IN (' . $mps . ') AND (END_DATE IS NULL OR END_DATE >=\'' . $convdate . '\')';
 
                 $coue_p_id = DBGet(DBQuery($sql));
 
@@ -461,19 +461,19 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
                                 $mark_end_date = date('d-M-Y', strtotime($mark_end_qry[1]['END_DATE']));
                             }
                             if (clean_param($_REQUEST['marking_period_id'], PARAM_INT) == 0)
-                                $sql = 'INSERT INTO schedule (SYEAR,SCHOOL_ID,STUDENT_ID,COURSE_ID,COURSE_PERIOD_ID,MP,START_DATE,END_DATE,MODIFIED_DATE,MODIFIED_BY)
+                                $sql = 'INSERT INTO schedule (SYEAR,COLLEGE_ID,STUDENT_ID,COURSE_ID,COURSE_PERIOD_ID,MP,START_DATE,END_DATE,MODIFIED_DATE,MODIFIED_BY)
 													values(\'' . UserSyear() . '\',\'' . UserCollege() . '\',\'' . clean_param($student_id, PARAM_INT) . '\',\'' . $_SESSION['MassSchedule.php']['course_id'] . '\',\'' . $_SESSION['MassSchedule.php']['course_period_id'] . '\',\'' . $mp_table . '\',\'' . $start_date . '\',\'' . $mark_end_date . '\',\'' . date('Y-m-d') . '\',\'' . User('STAFF_ID') . '\')';
                             else {
                                 $mp_id = clean_param($_REQUEST['marking_period_id'], PARAM_INT);
-                                $sql = 'INSERT INTO schedule (SYEAR,SCHOOL_ID,STUDENT_ID,COURSE_ID,COURSE_PERIOD_ID,MP,MARKING_PERIOD_ID,START_DATE,END_DATE,MODIFIED_DATE,MODIFIED_BY)
+                                $sql = 'INSERT INTO schedule (SYEAR,COLLEGE_ID,STUDENT_ID,COURSE_ID,COURSE_PERIOD_ID,MP,MARKING_PERIOD_ID,START_DATE,END_DATE,MODIFIED_DATE,MODIFIED_BY)
 													values(\'' . UserSyear() . '\',\'' . UserCollege() . '\',\'' . clean_param($student_id, PARAM_INT) . '\',\'' . $_SESSION['MassSchedule.php']['course_id'] . '\',\'' . $_SESSION['MassSchedule.php']['course_period_id'] . '\',\'' . $mp_table . '\',\'' . clean_param($_REQUEST['marking_period_id'], PARAM_INT) . '\',\'' . $start_date . '\',\'' . $mark_end_date . '\',\'' . date('Y-m-d') . '\',\'' . User('STAFF_ID') . '\')';
                             }
                             $stat_cp = 0;
                             $exis_cp = DBGet(DBQuery('select count(*) as no from course_period_var where course_period_id=' . $_SESSION['MassSchedule.php']['course_period_id']));
 
 
-                            // $stu_dup_cp=DBGet(DBQuery('select count(*) as no from schedule WHERE course_period_id='.$_SESSION['MassSchedule.php']['course_period_id'].' AND STUDENT_ID='.clean_param($student_id,PARAM_INT).' AND SCHOOL_ID='.UserCollege()));
-                            $stu_dup_cp = DBGet(DBQuery('select count(*) as no from schedule WHERE course_period_id=' . $_SESSION['MassSchedule.php']['course_period_id'] . ' AND (END_DATE IS NULL OR (\'' . $convdate . '\' BETWEEN START_DATE AND END_DATE)) AND STUDENT_ID=' . clean_param($student_id, PARAM_INT) . ' AND SCHOOL_ID=' . UserCollege()));
+                            // $stu_dup_cp=DBGet(DBQuery('select count(*) as no from schedule WHERE course_period_id='.$_SESSION['MassSchedule.php']['course_period_id'].' AND STUDENT_ID='.clean_param($student_id,PARAM_INT).' AND COLLEGE_ID='.UserCollege()));
+                            $stu_dup_cp = DBGet(DBQuery('select count(*) as no from schedule WHERE course_period_id=' . $_SESSION['MassSchedule.php']['course_period_id'] . ' AND (END_DATE IS NULL OR (\'' . $convdate . '\' BETWEEN START_DATE AND END_DATE)) AND STUDENT_ID=' . clean_param($student_id, PARAM_INT) . ' AND COLLEGE_ID=' . UserCollege()));
 
                             if ($stu_dup_cp[1]['NO'] > 0) {
 
@@ -515,7 +515,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
                             $mark_end_date = date('d-M-Y', strtotime($mark_end_qry[1]['END_DATE']));
                         }
 
-                        $sql = 'INSERT INTO schedule (SYEAR,SCHOOL_ID,STUDENT_ID,COURSE_ID,COURSE_PERIOD_ID,MP,MARKING_PERIOD_ID,START_DATE,END_DATE,MODIFIED_DATE,MODIFIED_BY)
+                        $sql = 'INSERT INTO schedule (SYEAR,COLLEGE_ID,STUDENT_ID,COURSE_ID,COURSE_PERIOD_ID,MP,MARKING_PERIOD_ID,START_DATE,END_DATE,MODIFIED_DATE,MODIFIED_BY)
 											values(\'' . UserSyear() . '\',\'' . UserCollege() . '\',\'' . clean_param($student_id, PARAM_INT) . '\',\'' . $_SESSION['MassSchedule.php']['course_id'] . '\',\'' . $_SESSION['MassSchedule.php']['course_period_id'] . '\',\'' . $mp_table . '\',\'' . clean_param($_REQUEST['marking_period_id'], PARAM_INT) . '\',\'' . $start_date . '\',\'' . $mark_end_date . '\',\'' . date('Y-m-d') . '\',\'' . User('STAFF_ID') . '\')';
 
 
@@ -526,7 +526,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
                         $exis_cp = DBGet(DBQuery('select count(*) as no from course_period_var where course_period_id=' . $_SESSION['MassSchedule.php']['course_period_id']));
 
 
-                        $stu_dup_cp = DBGet(DBQuery('select count(*) as no from schedule WHERE course_period_id=' . $_SESSION['MassSchedule.php']['course_period_id'] . ' AND STUDENT_ID=' . clean_param($student_id, PARAM_INT) . ' AND SCHOOL_ID=' . UserCollege()));
+                        $stu_dup_cp = DBGet(DBQuery('select count(*) as no from schedule WHERE course_period_id=' . $_SESSION['MassSchedule.php']['course_period_id'] . ' AND STUDENT_ID=' . clean_param($student_id, PARAM_INT) . ' AND COLLEGE_ID=' . UserCollege()));
 
                         if ($stu_dup_cp[1]['NO'] > 0) {
 
@@ -569,17 +569,17 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
         //$schedule_type_check1 = DBGet(DBQuery("SELECT * FROM course_period_var WHERE COURSE_PERIOD_ID='" . $cps . "'"));
 
         DBQuery("DELETE FROM attendance_completed where course_period_id=$cps and college_date>=$st_dt ");
-        DBQuery("INSERT INTO missing_attendance(SCHOOL_ID,SYEAR,SCHOOL_DATE,COURSE_PERIOD_ID,PERIOD_ID,TEACHER_ID,SECONDARY_TEACHER_ID) 
-          SELECT s.ID AS SCHOOL_ID,acc.SYEAR,acc.SCHOOL_DATE,cp.COURSE_PERIOD_ID,cpv.PERIOD_ID, IF(tra.course_period_id=cp.course_period_id AND acc.college_date<tra.assign_date =true,tra.pre_teacher_id,cp.teacher_id) AS TEACHER_ID,
+        DBQuery("INSERT INTO missing_attendance(COLLEGE_ID,SYEAR,COLLEGE_DATE,COURSE_PERIOD_ID,PERIOD_ID,TEACHER_ID,SECONDARY_TEACHER_ID) 
+          SELECT s.ID AS COLLEGE_ID,acc.SYEAR,acc.COLLEGE_DATE,cp.COURSE_PERIOD_ID,cpv.PERIOD_ID, IF(tra.course_period_id=cp.course_period_id AND acc.college_date<tra.assign_date =true,tra.pre_teacher_id,cp.teacher_id) AS TEACHER_ID,
          cp.SECONDARY_TEACHER_ID FROM attendance_calendar acc INNER JOIN course_periods cp ON cp.CALENDAR_ID=acc.CALENDAR_ID INNER JOIN course_period_var cpv ON cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID 
-         AND (cpv.COURSE_PERIOD_DATE IS NULL AND position(substring('UMTWHFS' FROM DAYOFWEEK(acc.SCHOOL_DATE) FOR 1) IN cpv.DAYS)>0 OR cpv.COURSE_PERIOD_DATE IS NOT NULL AND cpv.COURSE_PERIOD_DATE=acc.SCHOOL_DATE) 
-         INNER JOIN colleges s ON s.ID=acc.SCHOOL_ID LEFT JOIN teacher_reassignment tra ON (cp.course_period_id=tra.course_period_id) INNER JOIN schedule sch ON sch.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID 
+         AND (cpv.COURSE_PERIOD_DATE IS NULL AND position(substring('UMTWHFS' FROM DAYOFWEEK(acc.COLLEGE_DATE) FOR 1) IN cpv.DAYS)>0 OR cpv.COURSE_PERIOD_DATE IS NOT NULL AND cpv.COURSE_PERIOD_DATE=acc.COLLEGE_DATE) 
+         INNER JOIN colleges s ON s.ID=acc.COLLEGE_ID LEFT JOIN teacher_reassignment tra ON (cp.course_period_id=tra.course_period_id) INNER JOIN schedule sch ON sch.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID 
          AND sch.student_id IN(SELECT student_id FROM student_enrollment se WHERE sch.college_id=se.college_id AND sch.syear=se.syear AND start_date<=acc.college_date AND (end_date IS NULL OR end_date>=acc.college_date))
-         AND (cp.MARKING_PERIOD_ID IS NOT NULL AND cp.MARKING_PERIOD_ID IN (SELECT MARKING_PERIOD_ID FROM college_years WHERE SCHOOL_ID=acc.SCHOOL_ID AND acc.SCHOOL_DATE BETWEEN START_DATE AND END_DATE UNION SELECT MARKING_PERIOD_ID FROM college_semesters WHERE SCHOOL_ID=acc.SCHOOL_ID AND acc.SCHOOL_DATE BETWEEN START_DATE AND END_DATE UNION SELECT MARKING_PERIOD_ID FROM college_quarters WHERE SCHOOL_ID=acc.SCHOOL_ID AND acc.SCHOOL_DATE BETWEEN START_DATE AND END_DATE) OR (cp.MARKING_PERIOD_ID IS NULL AND acc.college_date BETWEEN cp.begin_date AND cp.end_date))
-         AND sch.START_DATE<=acc.SCHOOL_DATE AND (sch.END_DATE IS NULL OR sch.END_DATE>=acc.SCHOOL_DATE ) AND cpv.DOES_ATTENDANCE='Y' AND acc.SCHOOL_DATE<CURDATE() AND cp.course_period_id=$cps 
-         AND NOT EXISTS (SELECT '' FROM  attendance_completed ac WHERE ac.SCHOOL_DATE=acc.SCHOOL_DATE AND ac.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND ac.PERIOD_ID=cpv.PERIOD_ID 
+         AND (cp.MARKING_PERIOD_ID IS NOT NULL AND cp.MARKING_PERIOD_ID IN (SELECT MARKING_PERIOD_ID FROM college_years WHERE COLLEGE_ID=acc.COLLEGE_ID AND acc.COLLEGE_DATE BETWEEN START_DATE AND END_DATE UNION SELECT MARKING_PERIOD_ID FROM college_semesters WHERE COLLEGE_ID=acc.COLLEGE_ID AND acc.COLLEGE_DATE BETWEEN START_DATE AND END_DATE UNION SELECT MARKING_PERIOD_ID FROM college_quarters WHERE COLLEGE_ID=acc.COLLEGE_ID AND acc.COLLEGE_DATE BETWEEN START_DATE AND END_DATE) OR (cp.MARKING_PERIOD_ID IS NULL AND acc.college_date BETWEEN cp.begin_date AND cp.end_date))
+         AND sch.START_DATE<=acc.COLLEGE_DATE AND (sch.END_DATE IS NULL OR sch.END_DATE>=acc.COLLEGE_DATE ) AND cpv.DOES_ATTENDANCE='Y' AND acc.COLLEGE_DATE<CURDATE() AND cp.course_period_id=$cps 
+         AND NOT EXISTS (SELECT '' FROM  attendance_completed ac WHERE ac.COLLEGE_DATE=acc.COLLEGE_DATE AND ac.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND ac.PERIOD_ID=cpv.PERIOD_ID 
          AND IF(tra.course_period_id=cp.course_period_id AND acc.college_date<=tra.assign_date =true,ac.staff_id=tra.pre_teacher_id,ac.staff_id=cp.teacher_id)) 
-         GROUP BY acc.SCHOOL_DATE,cp.COURSE_PERIOD_ID,cp.TEACHER_ID,cpv.PERIOD_ID;");
+         GROUP BY acc.COLLEGE_DATE,cp.COURSE_PERIOD_ID,cp.TEACHER_ID,cpv.PERIOD_ID;");
 
         unset($_REQUEST['modfunc']);
         unset($_SESSION['MassSchedule.php']);
@@ -611,9 +611,9 @@ if ($_REQUEST['modfunc'] != 'choose_course') {
 
         echo '<div class="col-md-4"><div class="form-group"><label class="control-label col-lg-4 text-right">Start Date</label><div class="col-lg-8">' . DateInputAY(date('Y-m-d'), 'start', 1) . '</div></div></div>';
         echo '<div class="col-md-4"><div class="form-group"><label class="control-label col-lg-4 text-right">Marking Period</label><div class="col-lg-8">';
-//        $years_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,NULL AS SEMESTER_ID FROM college_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
-//        $semesters_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,NULL AS SEMESTER_ID FROM college_semesters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER'));
-//        $quarters_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,SEMESTER_ID FROM college_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER'));
+//        $years_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,NULL AS SEMESTER_ID FROM college_years WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
+//        $semesters_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,NULL AS SEMESTER_ID FROM college_semesters WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER'));
+//        $quarters_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,SEMESTER_ID FROM college_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER'));
 
 //        echo '<SELECT class="form-control" disabled  id=marking_period><OPTION value=' . $years_RET[1]['MARKING_PERIOD_ID'] . '>' . $years_RET[1]['TITLE'] . '</OPTION>';
 //        echo "<OPTION value='' selected>N/A</OPTION>";
@@ -817,7 +817,7 @@ echo '<div class="modal-body">';
 echo '<div id="conf_div" class="text-center"></div>';
 echo '<div class="row" id="resp_table">';
 echo '<div class="col-md-4">';
-$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE COLLEGE_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
@@ -860,7 +860,7 @@ echo '<div class="modal-body">';
 echo '<div id="conf_div" class="text-center"></div>';
 echo '<div class="row" id="resp_table">';
 echo '<div class="col-md-6">';
-$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE COLLEGE_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 

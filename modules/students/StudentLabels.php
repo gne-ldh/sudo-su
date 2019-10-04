@@ -60,7 +60,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
         $RET = GetStuList($extra);
         $college_wise = array();
         foreach ($RET as $ri => $rd) {
-            $college_wise[$rd['SCHOOL_ID']][] = $rd;
+            $college_wise[$rd['COLLEGE_ID']][] = $rd;
         }
 
         if (count($college_wise)) {
@@ -222,7 +222,7 @@ if (!$_REQUEST['modfunc']) {
 
     echo '<div class="row" id="resp_table">';
     echo '<div class="col-md-4">';
-    $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+    $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE COLLEGE_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
     $QI = DBQuery($sql);
     $subjects_RET = DBGet($QI);
 

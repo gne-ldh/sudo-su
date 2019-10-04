@@ -136,16 +136,16 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && (clean_para
                 }
                 if (User('PROFILE_ID') != 0) {
                     $super_id = DBGet(DBQuery('SELECT STAFF_ID FROM staff WHERE PROFILE_ID=0 AND PROFILE=\'admin\''));
-                    $staff_exists=DBGet(DBQuery('SELECT * FROM staff_college_relationship WHERE STAFF_ID='.$super_id[1]['STAFF_ID'] . ' AND SCHOOL_ID='. $id . ' AND SYEAR='.$syear));
+                    $staff_exists=DBGet(DBQuery('SELECT * FROM staff_college_relationship WHERE STAFF_ID='.$super_id[1]['STAFF_ID'] . ' AND COLLEGE_ID='. $id . ' AND SYEAR='.$syear));
                     if(count($staff_exists)==0)
                         DBQuery('INSERT INTO  staff_college_relationship(staff_id,college_id,syear,start_date) VALUES (' . $super_id[1]['STAFF_ID'] . ',' . $id . ',' . $syear . ',"'.date('Y-m-d').'")');
                 }
-//                DBQuery('INSERT INTO college_years (MARKING_PERIOD_ID,SYEAR,SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,ROLLOVER_ID) SELECT fn_marking_period_seq(),SYEAR,\'' . $id . '\' AS SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,MARKING_PERIOD_ID FROM college_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY MARKING_PERIOD_ID');
-                DBQuery('INSERT INTO college_years (MARKING_PERIOD_ID,SYEAR,SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,ROLLOVER_ID) SELECT fn_marking_period_seq(),\''.$syear.'\' as SYEAR,\'' . $id . '\' AS SCHOOL_ID,TITLE,SHORT_NAME,SORT_ORDER,\''.$start_date.'\' as START_DATE,\''.$end_date.'\' as  END_DATE,MARKING_PERIOD_ID FROM college_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY MARKING_PERIOD_ID');
+//                DBQuery('INSERT INTO college_years (MARKING_PERIOD_ID,SYEAR,COLLEGE_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,ROLLOVER_ID) SELECT fn_marking_period_seq(),SYEAR,\'' . $id . '\' AS COLLEGE_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,POST_START_DATE,POST_END_DATE,DOES_GRADES,DOES_EXAM,DOES_COMMENTS,MARKING_PERIOD_ID FROM college_years WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' ORDER BY MARKING_PERIOD_ID');
+                DBQuery('INSERT INTO college_years (MARKING_PERIOD_ID,SYEAR,COLLEGE_ID,TITLE,SHORT_NAME,SORT_ORDER,START_DATE,END_DATE,ROLLOVER_ID) SELECT fn_marking_period_seq(),\''.$syear.'\' as SYEAR,\'' . $id . '\' AS COLLEGE_ID,TITLE,SHORT_NAME,SORT_ORDER,\''.$start_date.'\' as START_DATE,\''.$end_date.'\' as  END_DATE,MARKING_PERIOD_ID FROM college_years WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' ORDER BY MARKING_PERIOD_ID');
                 DBQuery('INSERT INTO system_preference(college_id, full_day_minute, half_day_minute) VALUES (' . $id . ', NULL, NULL)');
 
-                DBQuery('INSERT INTO program_config (SCHOOL_ID,SYEAR,PROGRAM,TITLE,VALUE) VALUES(\'' . $id . '\',\'' . $syear. '\',\'MissingAttendance\',\'LAST_UPDATE\',\'' . date('Y-m-d') . '\')');
-                DBQuery('INSERT INTO program_config(SCHOOL_ID,SYEAR,PROGRAM,TITLE,VALUE) VALUES(\'' . $id . '\',\'' . $syear . '\',\'UPDATENOTIFY\',\'display_college\',"Y")');
+                DBQuery('INSERT INTO program_config (COLLEGE_ID,SYEAR,PROGRAM,TITLE,VALUE) VALUES(\'' . $id . '\',\'' . $syear. '\',\'MissingAttendance\',\'LAST_UPDATE\',\'' . date('Y-m-d') . '\')');
+                DBQuery('INSERT INTO program_config(COLLEGE_ID,SYEAR,PROGRAM,TITLE,VALUE) VALUES(\'' . $id . '\',\'' . $syear . '\',\'UPDATENOTIFY\',\'display_college\',"Y")');
                 $_SESSION['UserCollege'] = $id;
                 unset($_REQUEST['new_college']);
             }
@@ -181,15 +181,15 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update' && clean_param
     if (DeletePrompt('college')) {
         if (BlockDelete('college')) {
             DBQuery('DELETE FROM colleges WHERE ID=\'' . UserCollege() . '\'');
-            DBQuery('DELETE FROM college_gradelevels WHERE SCHOOL_ID=\'' . UserCollege() . '\'');
-            DBQuery('DELETE FROM attendance_calendar WHERE SCHOOL_ID=\'' . UserCollege() . '\'');
-            DBQuery('DELETE FROM college_periods WHERE SCHOOL_ID=\'' . UserCollege() . '\'');
-            DBQuery('DELETE FROM college_years WHERE SCHOOL_ID=\'' . UserCollege() . '\'');
-            DBQuery('DELETE FROM college_semesters WHERE SCHOOL_ID=\'' . UserCollege() . '\'');
-            DBQuery('DELETE FROM college_quarters WHERE SCHOOL_ID=\'' . UserCollege() . '\'');
-            DBQuery('DELETE FROM college_progress_periods WHERE SCHOOL_ID=\'' . UserCollege() . '\'');
-            DBQuery('UPDATE staff SET CURRENT_SCHOOL_ID=NULL WHERE CURRENT_SCHOOL_ID=\'' . UserCollege() . '\'');
-            DBQuery('UPDATE staff SET SCHOOLS=replace(SCHOOLS,\',' . UserCollege() . ',\',\',\')');
+            DBQuery('DELETE FROM college_gradelevels WHERE COLLEGE_ID=\'' . UserCollege() . '\'');
+            DBQuery('DELETE FROM attendance_calendar WHERE COLLEGE_ID=\'' . UserCollege() . '\'');
+            DBQuery('DELETE FROM college_periods WHERE COLLEGE_ID=\'' . UserCollege() . '\'');
+            DBQuery('DELETE FROM college_years WHERE COLLEGE_ID=\'' . UserCollege() . '\'');
+            DBQuery('DELETE FROM college_semesters WHERE COLLEGE_ID=\'' . UserCollege() . '\'');
+            DBQuery('DELETE FROM college_quarters WHERE COLLEGE_ID=\'' . UserCollege() . '\'');
+            DBQuery('DELETE FROM college_progress_periods WHERE COLLEGE_ID=\'' . UserCollege() . '\'');
+            DBQuery('UPDATE staff SET CURRENT_COLLEGE_ID=NULL WHERE CURRENT_COLLEGE_ID=\'' . UserCollege() . '\'');
+            DBQuery('UPDATE staff SET COLLEGES=replace(COLLEGES,\',' . UserCollege() . ',\',\',\')');
 
             unset($_SESSION['UserCollege']);
             //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
@@ -301,11 +301,11 @@ if (clean_param($_REQUEST['copy'], PARAM_ALPHAMOD) == 'done') {
         echo '<div class="row">';
         echo '<div class="col-md-6">';
 
-//        $uploaded_sql = DBGet(DBQuery("SELECT VALUE FROM program_config WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR IS NULL AND TITLE='PATH'"));
+//        $uploaded_sql = DBGet(DBQuery("SELECT VALUE FROM program_config WHERE COLLEGE_ID='" . UserCollege() . "' AND SYEAR IS NULL AND TITLE='PATH'"));
 //        $_SESSION['logo_path'] = $uploaded_sql[1]['VALUE'];
 //        if (!$_REQUEST['new_college'] && file_exists($uploaded_sql[1]['VALUE']))
         
-        $sch_img_info= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE SCHOOL_ID='. UserCollege().' AND FILE_INFO=\'schlogo\''));
+        $sch_img_info= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE COLLEGE_ID='. UserCollege().' AND FILE_INFO=\'schlogo\''));
     
         
         if(!$_REQUEST['new_college'] && count($sch_img_info)>0)
@@ -318,7 +318,7 @@ if (clean_param($_REQUEST['copy'], PARAM_ALPHAMOD) == 'done') {
 
         if($_REQUEST['new_college']=='true')
         {
-        $get_this_college_date=DBGet(DBQuery('SELECT * FROM college_years where SYEAR='.UserSyear().' AND SCHOOL_ID='.UserCollege()));  
+        $get_this_college_date=DBGet(DBQuery('SELECT * FROM college_years where SYEAR='.UserSyear().' AND COLLEGE_ID='.UserCollege()));  
         
         echo '<div class="row">';
         echo '<div class="col-md-6">';

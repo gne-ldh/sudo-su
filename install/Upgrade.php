@@ -129,12 +129,12 @@
 
                                     $get_colleges = $dbconn->query('SELECT DISTINCT id FROM colleges');
                                     while ($get_colleges_a = $get_colleges->fetch_assoc()) {
-                                        $get_sy = $dbconn->query('SELECT MAX(syear) as syear FROM college_years WHERE SCHOOL_ID=' . $get_colleges_a['id']);
+                                        $get_sy = $dbconn->query('SELECT MAX(syear) as syear FROM college_years WHERE COLLEGE_ID=' . $get_colleges_a['id']);
                                         $get_sy_a = $get_sy->fetch_assoc();
                                         $get_sy_a = $get_sy_a['syear'];
                                         $get_colleges_a = $get_colleges_a['id'];
-                                        $dbconn->query('INSERT INTO program_config (SYEAR,SCHOOL_ID,PROGRAM,TITLE,VALUE) VALUES(\'' . $get_sy_a . '\',\'' . $get_colleges_a . '\',\'UPDATENOTIFY\',\'display\',\'Y\')') or die($dbconn->error);
-                                        $dbconn->query('INSERT INTO program_config (SYEAR,SCHOOL_ID,PROGRAM,TITLE,VALUE) VALUES(\'' . $get_sy_a . '\',\'' . $get_colleges_a . '\',\'UPDATENOTIFY\',\'display_college\',\'Y\')') or die($dbconn->error);
+                                        $dbconn->query('INSERT INTO program_config (SYEAR,COLLEGE_ID,PROGRAM,TITLE,VALUE) VALUES(\'' . $get_sy_a . '\',\'' . $get_colleges_a . '\',\'UPDATENOTIFY\',\'display\',\'Y\')') or die($dbconn->error);
+                                        $dbconn->query('INSERT INTO program_config (SYEAR,COLLEGE_ID,PROGRAM,TITLE,VALUE) VALUES(\'' . $get_sy_a . '\',\'' . $get_colleges_a . '\',\'UPDATENOTIFY\',\'display_college\',\'Y\')') or die($dbconn->error);
                                     }
 
                                     $get_pf = $dbconn->query('SELECT COUNT(*) as rec_ex FROM profile_exceptions WHERE modname=\'students/Student.php&category_id=4\' AND can_edit=\'Y\' ');

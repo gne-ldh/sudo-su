@@ -43,7 +43,7 @@ if ($_REQUEST['modfunc'] == 'save') {
             $teacher_id = $course_period['TEACHER_ID'];
 
             if ($teacher_id) {
-                $_openSIS['User'] = array(1 => array('STAFF_ID' => $teacher_id, 'NAME' => 'name', 'PROFILE' => 'teacher', 'SCHOOLS' => ',' . UserCollege() . ',', 'SYEAR' => UserSyear()));
+                $_openSIS['User'] = array(1 => array('STAFF_ID' => $teacher_id, 'NAME' => 'name', 'PROFILE' => 'teacher', 'COLLEGES' => ',' . UserCollege() . ',', 'SYEAR' => UserSyear()));
                 $_SESSION['UserCoursePeriod'] = $course_period_id;
 
                 $extra = array('SELECT_ONLY' => 's.STUDENT_ID,s.LAST_NAME,s.FIRST_NAME', 'ORDER_BY' => 's.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME');
@@ -85,7 +85,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                         
                         if($student_id)
                         {
-                        $stu_img_info= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID='.$student_id.' AND PROFILE_ID=3 AND SCHOOL_ID='. UserCollege().' AND SYEAR='.UserSyear().' AND FILE_INFO=\'stuimg\''));
+                        $stu_img_info= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID='.$student_id.' AND PROFILE_ID=3 AND COLLEGE_ID='. UserCollege().' AND SYEAR='.UserSyear().' AND FILE_INFO=\'stuimg\''));
                         $StudentPicturesPath=1;
                         }   
                         else
@@ -146,7 +146,7 @@ echo '<div class="modal-body">';
 echo '<div id="conf_div" class="text-center"></div>';
 echo '<div class="row" id="resp_table">';
 echo '<div class="col-md-4">';
-$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE COLLEGE_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
@@ -210,7 +210,7 @@ function mySearch($type, $extra = '') {
 
         PopTable('header', 'Search');
 
-        $RET = DBGet(DBQuery('SELECT s.STAFF_ID,CONCAT(s.LAST_NAME,\'' . ',' . '\',s.FIRST_NAME) AS FULL_NAME FROM staff s,staff_college_relationship ssr WHERE s.STAFF_ID=ssr.STAFF_ID AND s.PROFILE=\'' . 'teacher' . '\' AND position(\'' . UserCollege() . '\' IN ssr.SCHOOL_ID)>0 AND ssr.SYEAR=\'' . UserSyear() . '\' ORDER BY FULL_NAME'));
+        $RET = DBGet(DBQuery('SELECT s.STAFF_ID,CONCAT(s.LAST_NAME,\'' . ',' . '\',s.FIRST_NAME) AS FULL_NAME FROM staff s,staff_college_relationship ssr WHERE s.STAFF_ID=ssr.STAFF_ID AND s.PROFILE=\'' . 'teacher' . '\' AND position(\'' . UserCollege() . '\' IN ssr.COLLEGE_ID)>0 AND ssr.SYEAR=\'' . UserSyear() . '\' ORDER BY FULL_NAME'));
         echo '<div class="row">';
         echo '<div class="col-lg-6">';
         echo '<div class="form-group"><label class="control-label col-lg-4">Teacher</label><div class="col-lg-8">';
@@ -220,7 +220,7 @@ function mySearch($type, $extra = '') {
         echo '</SELECT></div></div>';
         echo '</div>'; //.col-lg-6
 
-        $RET = DBGet(DBQuery('SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY TITLE'));
+        $RET = DBGet(DBQuery('SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY TITLE'));
         echo '<div class="col-lg-6">';
         echo '<div class="form-group"><label class="control-label col-lg-4">Subject</label><div class="col-lg-8">';
         echo "<SELECT name=subject_id class=\"form-control\"><OPTION value=''>N/A</OPTION>";
@@ -230,7 +230,7 @@ function mySearch($type, $extra = '') {
         echo '</div>'; //.col-lg-6
         echo '</div>'; //.row
 
-        $RET = DBGet(DBQuery('SELECT PERIOD_ID,TITLE FROM college_periods WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER'));
+        $RET = DBGet(DBQuery('SELECT PERIOD_ID,TITLE FROM college_periods WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER'));
         echo '<div class="row">';
         echo '<div class="col-lg-6">';
         echo '<div class="form-group"><label class="control-label col-lg-4">Period</label><div class="col-lg-8">';
@@ -274,12 +274,12 @@ function mySearch($type, $extra = '') {
             if ($_REQUEST['period_id'])
                 $where .= " AND cpv.PERIOD_ID='" . $_REQUEST['period_id'] . "'";
 
-            $sql = 'SELECT cp.COURSE_PERIOD_ID,cp.TITLE,sp.ATTENDANCE FROM course_periods cp,course_period_var cpv,college_periods sp' . $from . ' WHERE cp.SCHOOL_ID=\'' . UserCollege() . '\' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.SYEAR=\'' . UserSyear() . '\' AND sp.PERIOD_ID=cpv.PERIOD_ID' . $where . '';
+            $sql = 'SELECT cp.COURSE_PERIOD_ID,cp.TITLE,sp.ATTENDANCE FROM course_periods cp,course_period_var cpv,college_periods sp' . $from . ' WHERE cp.COLLEGE_ID=\'' . UserCollege() . '\' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.SYEAR=\'' . UserSyear() . '\' AND sp.PERIOD_ID=cpv.PERIOD_ID' . $where . '';
         }
         elseif (User('PROFILE') == 'teacher') {
-            $sql = 'SELECT cp.COURSE_PERIOD_ID,cp.TITLE,sp.ATTENDANCE FROM course_periods cp,course_period_var cpv,college_periods sp WHERE cp.SCHOOL_ID=\'' . UserCollege() . '\' AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.TEACHER_ID=\'' . User('STAFF_ID') . '\' AND sp.PERIOD_ID=cpv.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID';
+            $sql = 'SELECT cp.COURSE_PERIOD_ID,cp.TITLE,sp.ATTENDANCE FROM course_periods cp,course_period_var cpv,college_periods sp WHERE cp.COLLEGE_ID=\'' . UserCollege() . '\' AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.TEACHER_ID=\'' . User('STAFF_ID') . '\' AND sp.PERIOD_ID=cpv.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID';
         } else {
-            $sql = 'SELECT cp.COURSE_PERIOD_ID,cp.TITLE,sp.ATTENDANCE FROM course_periods cp,course_period_var cpv,college_periods sp,schedule ss WHERE cp.SCHOOL_ID=\'' . UserCollege() . '\' AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND ss.SYEAR=\'' . UserSyear() . '\' AND ss.STUDENT_ID=\'' . UserStudentID() . '\' AND (CURRENT_DATE>=ss.START_DATE AND (ss.END_DATE IS NULL OR CURRENT_DATE<=ss.END_DATE)) AND sp.PERIOD_ID=cpv.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID';
+            $sql = 'SELECT cp.COURSE_PERIOD_ID,cp.TITLE,sp.ATTENDANCE FROM course_periods cp,course_period_var cpv,college_periods sp,schedule ss WHERE cp.COLLEGE_ID=\'' . UserCollege() . '\' AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND ss.SYEAR=\'' . UserSyear() . '\' AND ss.STUDENT_ID=\'' . UserStudentID() . '\' AND (CURRENT_DATE>=ss.START_DATE AND (ss.END_DATE IS NULL OR CURRENT_DATE<=ss.END_DATE)) AND sp.PERIOD_ID=cpv.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID';
         }
         $sql .= ' GROUP BY cp.COURSE_PERIOD_ID ORDER BY sp.PERIOD_ID';
 

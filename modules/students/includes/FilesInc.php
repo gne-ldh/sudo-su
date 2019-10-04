@@ -92,7 +92,7 @@ if (!$_REQUEST['modfunc']) {
                 $fileName = addslashes($fileName);
             }
 
-            DBQuery('INSERT INTO user_file_upload (USER_ID,PROFILE_ID,SCHOOL_ID,SYEAR,NAME, SIZE, TYPE, CONTENT,FILE_INFO) VALUES (' . UserStudentID() . ',\'3\',' . UserCollege() . ',' . UserSyear() . ',\'' . $fileName . '\', \'' . $fileSize . '\', \'' . $fileType . '\', \'' . $content . '\',\'stufile\')');
+            DBQuery('INSERT INTO user_file_upload (USER_ID,PROFILE_ID,COLLEGE_ID,SYEAR,NAME, SIZE, TYPE, CONTENT,FILE_INFO) VALUES (' . UserStudentID() . ',\'3\',' . UserCollege() . ',' . UserSyear() . ',\'' . $fileName . '\', \'' . $fileSize . '\', \'' . $fileType . '\', \'' . $content . '\',\'stufile\')');
 
             $msg = '<span style="color: #669900; font-family: Arial, Helvetica, sans-serif; font-size: 11px;">Successfully uploaded</span>';
 
@@ -129,7 +129,7 @@ if (!$_REQUEST['modfunc']) {
 
         echo '<table class="table table-bordered table-striped m-t-15">';
 //        $dir = dir($dir);
-        $file_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . UserStudentID() . ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear() . ' AND file_info=\'stufile\''));
+        $file_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . UserStudentID() . ' AND PROFILE_ID=3 AND COLLEGE_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear() . ' AND file_info=\'stufile\''));
         echo '<tbody>';
         $found = false;
         $gridClass = "";

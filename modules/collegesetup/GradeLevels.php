@@ -31,7 +31,7 @@ if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUE
     foreach($_REQUEST['values'] as $id=>$columns)
     {
             if($id!='new')
-            { $sql1='SELECT TITLE,SHORT_NAME,SORT_ORDER FROM college_gradelevels WHERE SCHOOL_ID =\''.UserCollege().'\' AND ID!='.$id;
+            { $sql1='SELECT TITLE,SHORT_NAME,SORT_ORDER FROM college_gradelevels WHERE COLLEGE_ID =\''.UserCollege().'\' AND ID!='.$id;
                 $gradelevels=  DBGet(DBQuery($sql1));
                 for($i=1;$i<=count($gradelevels);$i++)
                 {
@@ -62,7 +62,7 @@ if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUE
             }
             else
             {
-                $sql='SELECT TITLE,SHORT_NAME,SORT_ORDER FROM college_gradelevels WHERE SCHOOL_ID =\''.UserCollege().'\'';
+                $sql='SELECT TITLE,SHORT_NAME,SORT_ORDER FROM college_gradelevels WHERE COLLEGE_ID =\''.UserCollege().'\'';
                 $gradelevels=  DBGet(DBQuery($sql));
                 for($i=1;$i<=count($gradelevels);$i++)
                 {
@@ -94,7 +94,7 @@ if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUE
                             if(clean_param(trim($_REQUEST['values']['new']['TITLE']),PARAM_NOTAGS)!='')
                             {
                                 $sql = 'INSERT INTO college_gradelevels ';
-                                $fields = 'SCHOOL_ID,';
+                                $fields = 'COLLEGE_ID,';
                                 $values = '\''.UserCollege().'\',';
 
                                 $go = 0;
@@ -144,7 +144,7 @@ if(clean_param($_REQUEST['modfunc'],PARAM_ALPHAMOD)=='remove')
 
 if($_REQUEST['modfunc']!='remove')
 {
-	$sql = 'SELECT ID,TITLE,SHORT_NAME,SORT_ORDER,NEXT_GRADE_ID FROM college_gradelevels WHERE SCHOOL_ID=\''.UserCollege().'\' ORDER BY SORT_ORDER';
+	$sql = 'SELECT ID,TITLE,SHORT_NAME,SORT_ORDER,NEXT_GRADE_ID FROM college_gradelevels WHERE COLLEGE_ID=\''.UserCollege().'\' ORDER BY SORT_ORDER';
 	$QI = DBQuery($sql);
         $LO = DBGet(DBQuery($sql));
 $grade_id_arr=array();
@@ -254,7 +254,7 @@ function makeGradeInput($value,$name)
 		
 	if(!$grades)
 	{
-		$grades_RET = DBGet(DBQuery('SELECT ID,TITLE FROM college_gradelevels WHERE SCHOOL_ID=\''.UserCollege().'\' ORDER BY SORT_ORDER'));
+		$grades_RET = DBGet(DBQuery('SELECT ID,TITLE FROM college_gradelevels WHERE COLLEGE_ID=\''.UserCollege().'\' ORDER BY SORT_ORDER'));
 		if(count($grades_RET))
 		{
 			foreach($grades_RET as $grade)

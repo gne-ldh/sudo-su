@@ -34,11 +34,11 @@ if ($_REQUEST['From'] && $_REQUEST['to']) {
     $_REQUEST['placed_From'] = $_REQUEST['day_From'] . '-' . $_REQUEST['month_From'] . '-' . $_REQUEST['year_From'];
     $From = (date('Y-m-d', strtotime($_REQUEST['placed_From'])));
 } elseif (!$_REQUEST['month_From'] && !$_REQUEST['day_From'] && !$_REQUEST['year_From']) {
-    $missing_date= DBGet(DBQuery('SELECT MIN(SCHOOL_DATE) AS SCHOOL_DATE FROM missing_attendance WHERE SCHOOL_ID='.UserCollege().' AND SYEAR='.UserSyear()));
+    $missing_date= DBGet(DBQuery('SELECT MIN(COLLEGE_DATE) AS COLLEGE_DATE FROM missing_attendance WHERE COLLEGE_ID='.UserCollege().' AND SYEAR='.UserSyear()));
     
-    if(count($missing_date) > 0 && $missing_date[1]['SCHOOL_DATE']!="")
+    if(count($missing_date) > 0 && $missing_date[1]['COLLEGE_DATE']!="")
     {
-     $_REQUEST['placed_From'] = $missing_date[1]['SCHOOL_DATE'];
+     $_REQUEST['placed_From'] = $missing_date[1]['COLLEGE_DATE'];
     }
     else
     $_REQUEST['placed_From'] = '01-' . date('m') . '-' . date('Y');
@@ -58,8 +58,8 @@ if (User('PROFILE') == 'admin') {
     
     echo '<div class="panel panel-default">';
 
-    $qr = DBGet(DBQuery('select START_DATE from college_years where SCHOOL_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear()));
-//    $qr=  DBGet(DBQuery('select START_DATE from college_years where SCHOOL_ID='.UserCollege()));	
+    $qr = DBGet(DBQuery('select START_DATE from college_years where COLLEGE_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear()));
+//    $qr=  DBGet(DBQuery('select START_DATE from college_years where COLLEGE_ID='.UserCollege()));	
     $start_date = strtotime($qr[1]['START_DATE']);
 
     $date = strtotime($_REQUEST['placed_From']);

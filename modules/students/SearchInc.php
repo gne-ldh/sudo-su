@@ -177,7 +177,7 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
             echo '<div class="col-md-12">';
             if (User('PROFILE') == 'admin') {
                 echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=address_group value=Y' . (Preferences('DEFAULT_FAMILIES') == 'Y' ? ' CHECKED' : '') . '> Group by Family</label>';
-                echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=_search_all_colleges value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '> Search All Colleges</label>';
+                echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=_search_all_colleges value=Y' . (Preferences('DEFAULT_ALL_COLLEGES') == 'Y' ? ' CHECKED' : '') . '> Search All Colleges</label>';
             }
             if ($_REQUEST['modname'] != 'students/StudentReenroll.php')
                 echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=include_inactive value=Y> Include Inactive Students</label>';
@@ -251,7 +251,7 @@ else {
         $course = DBGet(DBQuery('SELECT c.TITLE FROM courses c WHERE c.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\''));
         if (!$_REQUEST['not_request_course']) {
             $extra['FROM'] .= ',schedule_requests sch_r';
-            $extra['WHERE'] = ' AND sch_r.STUDENT_ID=s.STUDENT_ID AND sch_r.SYEAR=ssm.SYEAR AND sch_r.SCHOOL_ID=ssm.SCHOOL_ID AND sch_r.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\'';
+            $extra['WHERE'] = ' AND sch_r.STUDENT_ID=s.STUDENT_ID AND sch_r.SYEAR=ssm.SYEAR AND sch_r.COLLEGE_ID=ssm.COLLEGE_ID AND sch_r.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\'';
 
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Request: </b></font>' . $course[1]['TITLE'] . '<BR>';
         } else {
@@ -266,7 +266,7 @@ else {
             $extra['FROM'] .=',schedule sr '; 
                  $extra['WHERE'] .=' AND sr.STUDENT_ID=ssm.STUDENT_ID AND s.student_id=ssm.student_id'; 
        }
-       $extra['WHERE'] .= ' AND sr.SYEAR=ssm.SYEAR AND sr.SCHOOL_ID=ssm.SCHOOL_ID AND sr.COURSE_PERIOD_ID=\'' . $_SESSION['MassDrops.php']['course_period_id'] . '\'';
+       $extra['WHERE'] .= ' AND sr.SYEAR=ssm.SYEAR AND sr.COLLEGE_ID=ssm.COLLEGE_ID AND sr.COURSE_PERIOD_ID=\'' . $_SESSION['MassDrops.php']['course_period_id'] . '\'';
         unset($_SESSION['MassDrops.php']['course_period_id']);
     }
 
@@ -301,7 +301,7 @@ else {
     $name_link['FULL_NAME']['link'] = "Modules.php?modname=$_REQUEST[next_modname]";
     $name_link['FULL_NAME']['variables'] = array('student_id' => 'STUDENT_ID');
     if ($_REQUEST['_search_all_colleges'])
-        $name_link['FULL_NAME']['variables'] += array('college_id' => 'SCHOOL_ID');
+        $name_link['FULL_NAME']['variables'] += array('college_id' => 'COLLEGE_ID');
 
     if (is_array($extra['link']))
         $link = $extra['link'] + $name_link;
@@ -432,9 +432,9 @@ else {
 
 
             if (User('PROFILE') == 'admin')
-                $_SESSION['UserCollege'] = $students_RET[1]['LIST_SCHOOL_ID'];
+                $_SESSION['UserCollege'] = $students_RET[1]['LIST_COLLEGE_ID'];
             if (User('PROFILE') == 'teacher')
-                $_SESSION['UserCollege'] = $students_RET[1]['SCHOOL_ID'];
+                $_SESSION['UserCollege'] = $students_RET[1]['COLLEGE_ID'];
 
 
 //            echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
@@ -466,7 +466,7 @@ echo '<center><div id="conf_div"></div></center>';
 
 echo'<div class="row" id="resp_table">';
 echo '<div class="col-md-6">';
-$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE COLLEGE_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
@@ -501,7 +501,7 @@ echo '<div class="modal-body">';
 echo '<div id="conf_div" class="text-center"></div>';
 echo '<div class="row" id="resp_table">';
 echo '<div class="col-md-4">';
-$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE COLLEGE_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
@@ -546,7 +546,7 @@ if ($clash) {
 echo '<div class="row" id="resp_table">';
 echo '<div class="col-md-12" class="col-md-4"id="selected_course1"></div>';
 echo '<div class="col-md-4">';
-$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE COLLEGE_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 

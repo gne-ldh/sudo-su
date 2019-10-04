@@ -45,7 +45,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'print' && $_REQUEST['r
 
         foreach ($ret as $s_id) {
             echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-            $mark_name_rp = DBGet(DBQuery('SELECT TITLE,SHORT_NAME,\'2\'  FROM college_quarters WHERE MARKING_PERIOD_ID=\'' . $_REQUEST['marking_period_id'] . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' UNION SELECT TITLE,SHORT_NAME,\'1\'  FROM college_semesters WHERE MARKING_PERIOD_ID=\'' . $_REQUEST['marking_period_id'] . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' UNION SELECT TITLE,SHORT_NAME,\'0\'  FROM college_years WHERE MARKING_PERIOD_ID=\'' . $_REQUEST['marking_period_id'] . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY 3'));
+            $mark_name_rp = DBGet(DBQuery('SELECT TITLE,SHORT_NAME,\'2\'  FROM college_quarters WHERE MARKING_PERIOD_ID=\'' . $_REQUEST['marking_period_id'] . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' UNION SELECT TITLE,SHORT_NAME,\'1\'  FROM college_semesters WHERE MARKING_PERIOD_ID=\'' . $_REQUEST['marking_period_id'] . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' UNION SELECT TITLE,SHORT_NAME,\'0\'  FROM college_years WHERE MARKING_PERIOD_ID=\'' . $_REQUEST['marking_period_id'] . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY 3'));
             $mark_name_rpt = $mark_name_rp[1]['TITLE'];
             if ($mark_name_rpt != '') {
                 echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetCollege(UserCollege()) . "<div style=\"font-size:12px;\">Course catalog by Term: " . $mark_name_rpt . "</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
@@ -120,7 +120,7 @@ else {
     echo '<div class="col-md-6 col-md-offset-3">';
     PopTable('header', 'Print Catalog by Term', 'class="panel panel-default"');
     echo "<FORM id='search' name='search' class='form-horizontal' method=POST action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . ">";
-    $mp_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,\'2\'  FROM college_quarters WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' UNION SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,\'1\'  FROM college_semesters WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' UNION SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,\'0\'  FROM college_years WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY 3'));
+    $mp_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,\'2\'  FROM college_quarters WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' UNION SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,\'1\'  FROM college_semesters WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' UNION SELECT MARKING_PERIOD_ID,TITLE,SHORT_NAME,\'0\'  FROM college_years WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY 3'));
     unset($options);
     if (count($mp_RET)) {
         foreach ($mp_RET as $key => $value) {
@@ -137,7 +137,7 @@ else {
         echo '<div class="form-group"><div class="col-md-12">'.CreateSelect($mp_RET, 'marking_period_id', 'All', 'Select Term', 'Modules.php?modname=' . strip_tags(trim($_REQUEST['modname'])) . '&marking_period_id=').'</div></div>';
     }
     if (clean_param($_REQUEST['marking_period_id'], PARAM_ALPHANUM)) {
-        $mark_name = DBGet(DBQuery('SELECT TITLE,SHORT_NAME,\'2\'  FROM college_quarters WHERE MARKING_PERIOD_ID=\'' . $_REQUEST['marking_period_id'] . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' UNION SELECT TITLE,SHORT_NAME,\'1\'  FROM college_semesters WHERE MARKING_PERIOD_ID=\'' . $_REQUEST['marking_period_id'] . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' UNION SELECT TITLE,SHORT_NAME,\'0\'  FROM college_years WHERE MARKING_PERIOD_ID=\'' . $_REQUEST['marking_period_id'] . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY 3'));
+        $mark_name = DBGet(DBQuery('SELECT TITLE,SHORT_NAME,\'2\'  FROM college_quarters WHERE MARKING_PERIOD_ID=\'' . $_REQUEST['marking_period_id'] . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' UNION SELECT TITLE,SHORT_NAME,\'1\'  FROM college_semesters WHERE MARKING_PERIOD_ID=\'' . $_REQUEST['marking_period_id'] . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' UNION SELECT TITLE,SHORT_NAME,\'0\'  FROM college_years WHERE MARKING_PERIOD_ID=\'' . $_REQUEST['marking_period_id'] . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY 3'));
         $mark_name = $mark_name[1]['SHORT_NAME'];
         echo '<div class="alert bg-success alert-styled-left">Report generated for ' . $mark_name . ' Term</div>';
     } else {

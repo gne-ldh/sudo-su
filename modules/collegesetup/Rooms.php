@@ -77,7 +77,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                         $sql .= $column . '=\'' . singleQuoteReplace("'", "''", $value) . ' \',';
                     if ($column == 'SORT_ORDER') {
                         $srt_odr = singleQuoteReplace("'", "''", $value);
-                        $validate_srt_odr = DBGet(DBQuery('SELECT *  FROM rooms WHERE  SORT_ORDER=\'' . $srt_odr . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
+                        $validate_srt_odr = DBGet(DBQuery('SELECT *  FROM rooms WHERE  SORT_ORDER=\'' . $srt_odr . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
                         $sql .= $column . ($value != '' ? '=\'' . singleQuoteReplace("'", "''", $value) . ' \',' : '=NULL,');
                     }
                 }
@@ -87,7 +87,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                 $sql = str_replace('&#039;', "", $sql);
                 $sql = str_replace('&lt;', "", $sql);
                 $sql = str_replace('&gt;', "", $sql);
-                $validate_title = DBGet(DBQuery('SELECT *  FROM rooms WHERE  TITLE=\'' . $title . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
+                $validate_title = DBGet(DBQuery('SELECT *  FROM rooms WHERE  TITLE=\'' . $title . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
 
 
                 if (count($validate_title) != 0) {
@@ -111,7 +111,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                 }
             } else {
                 $sql = "INSERT INTO rooms ";
-                $fields = 'SCHOOL_ID,';
+                $fields = 'COLLEGE_ID,';
                 $values = "'" . UserCollege() . "',";
                 $go = 0;
                 foreach ($columns as $column => $value) {
@@ -122,7 +122,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                         if ($value != '') {
                             $value = trim(paramlib_validation($column, $value));
 
-//                            $validate_srtodr = DBGet(DBQuery('SELECT count(*) as NO  FROM rooms WHERE  SORT_ORDER=\'' . $value . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
+//                            $validate_srtodr = DBGet(DBQuery('SELECT count(*) as NO  FROM rooms WHERE  SORT_ORDER=\'' . $value . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
 //                            if ($validate_srtodr[1]['NO'] > 0) {
 //                                echo '<div class="alert bg-danger alert-styled-left">';
 //                                echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
@@ -145,7 +145,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                 $sql .= '(' . substr($fields, 0, -1) . ') values(' . substr($values, 0, -1) . ')';
 
 
-                $validate_title = DBGet(DBQuery('SELECT TITLE  FROM rooms WHERE  TITLE=\'' . $title . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
+                $validate_title = DBGet(DBQuery('SELECT TITLE  FROM rooms WHERE  TITLE=\'' . $title . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
 
 
                 if (count($validate_title) != 0) {

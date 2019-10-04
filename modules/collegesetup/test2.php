@@ -10,10 +10,10 @@
     $cal_id = paramlib_validation($colmn, $_REQUEST['calendar_id']);
     $acs_RET = DBGet(DBQuery('SELECT TITLE, DEFAULT_CALENDAR FROM college_calendars WHERE CALENDAR_ID=\'' . $cal_id . '\''));
     $acs_RET = $acs_RET[1];
-    $ac_RET = DBGet(DBQuery('SELECT MIN(SCHOOL_DATE) AS START_DATE,MAX(SCHOOL_DATE) AS END_DATE FROM attendance_calendar WHERE CALENDAR_ID=\'' . $cal_id . '\''));
+    $ac_RET = DBGet(DBQuery('SELECT MIN(COLLEGE_DATE) AS START_DATE,MAX(COLLEGE_DATE) AS END_DATE FROM attendance_calendar WHERE CALENDAR_ID=\'' . $cal_id . '\''));
     $ac_RET = $ac_RET[1];
 
-    $day_RET = DBGet(DBQuery('SELECT DAYNAME(SCHOOL_DATE) AS DAY_NAME FROM attendance_calendar WHERE CALENDAR_ID=\'' . $cal_id . '\' ORDER BY SCHOOL_DATE LIMIT 0, 7'));
+    $day_RET = DBGet(DBQuery('SELECT DAYNAME(COLLEGE_DATE) AS DAY_NAME FROM attendance_calendar WHERE CALENDAR_ID=\'' . $cal_id . '\' ORDER BY COLLEGE_DATE LIMIT 0, 7'));
     $i = 0;
     foreach ($day_RET as $day) {
         $weekdays[$i] = $day['DAY_NAME'];

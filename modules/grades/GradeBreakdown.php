@@ -36,7 +36,7 @@ if (!$_REQUEST['gd_mp'])
 else
     $mp = $_REQUEST['gd_mp'];
 
-$chk_qua = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,SEMESTER_ID FROM college_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
+$chk_qua = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,SEMESTER_ID FROM college_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
 if ($chk_qua)
     $sem = GetParentMP('SEM', UserMP());
 else
@@ -51,7 +51,7 @@ echo '<hr class="no-margin"/>';
 
 $sql = 'SELECT CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME) as FULL_NAME,s.STAFF_ID,g.REPORT_CARD_GRADE_ID FROM student_report_card_grades g,staff s,staff_college_relationship ssr,course_periods cp WHERE g.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cp.TEACHER_ID=s.STAFF_ID AND s.STAFF_ID=ssr.STAFF_ID AND cp.SYEAR=ssr.SYEAR AND cp.SYEAR=g.SYEAR AND ssr.SYEAR=\'' . UserSyear() . '\' AND g.MARKING_PERIOD_ID=\'' . (isset($_REQUEST['mp']) ? $_REQUEST['mp'] : UserMP()) . '\'';
 $grouped_RET = DBGet(DBQuery($sql), array(), array('STAFF_ID', 'REPORT_CARD_GRADE_ID'));
-$grades_RET = DBGet(DBQuery('SELECT rg.ID,rg.TITLE FROM report_card_grades rg,report_card_grade_scales rs WHERE rg.SCHOOL_ID=\'' . UserCollege() . '\' AND rg.SYEAR=\'' . UserSyear() . '\' AND rs.ID=rg.GRADE_SCALE_ID ORDER BY rs.SORT_ORDER,rs.ID,rg.BREAK_OFF IS NOT NULL DESC,rg.BREAK_OFF DESC,rg.SORT_ORDER'));
+$grades_RET = DBGet(DBQuery('SELECT rg.ID,rg.TITLE FROM report_card_grades rg,report_card_grade_scales rs WHERE rg.COLLEGE_ID=\'' . UserCollege() . '\' AND rg.SYEAR=\'' . UserSyear() . '\' AND rs.ID=rg.GRADE_SCALE_ID ORDER BY rs.SORT_ORDER,rs.ID,rg.BREAK_OFF IS NOT NULL DESC,rg.BREAK_OFF DESC,rg.SORT_ORDER'));
 if (count($grouped_RET)) {
     foreach ($grouped_RET as $staff_id => $grades) {
         $i++;

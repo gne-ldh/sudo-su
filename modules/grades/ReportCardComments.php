@@ -47,7 +47,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
 //                            $c_id = ($_REQUEST['tab_id'] != 'new' ? "'$_REQUEST[tab_id]'" : 'NULL');
 //
 //
-//                            $ck_sql = 'SELECT * from report_card_comments WHERE  SORT_ORDER=' . $value . ' AND SCHOOL_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear();
+//                            $ck_sql = 'SELECT * from report_card_comments WHERE  SORT_ORDER=' . $value . ' AND COLLEGE_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear();
 //
 //
 //                            if ($c_id == 'NULL')
@@ -68,7 +68,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
                 } else {
                     if (clean_param(trim($_REQUEST['values']['new']['TITLE']), PARAM_NOTAGS) != '') {
                         $sql = 'INSERT INTO report_card_comments ';
-                        $fields = 'SCHOOL_ID,SYEAR,COURSE_ID,';
+                        $fields = 'COLLEGE_ID,SYEAR,COURSE_ID,';
                         $values = '\'' . UserCollege() . '\',\'' . UserSyear() . '\',' . ($_REQUEST['tab_id'] != 'new' ? "'$_REQUEST[tab_id]'" : 'NULL') . ',';
 
                         $go = false;
@@ -80,7 +80,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
 //                                    $c_id = ($_REQUEST['tab_id'] != 'new' ? "'$_REQUEST[tab_id]'" : 'NULL');
 //
 //
-//                                    $ck_sql = 'SELECT * from report_card_comments WHERE  SORT_ORDER=' . $value . ' AND SCHOOL_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear();
+//                                    $ck_sql = 'SELECT * from report_card_comments WHERE  SORT_ORDER=' . $value . ' AND COLLEGE_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear();
 //
 //
 //                                    if ($c_id == 'NULL')
@@ -133,7 +133,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'remove') {
 
 if (!$_REQUEST['modfunc']) {
     if (User('PROFILE') == 'admin') {
-        $courses_RET = DBGet(DBQuery('SELECT TITLE,COURSE_ID FROM courses WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' AND COURSE_ID IN (SELECT DISTINCT COURSE_ID FROM course_periods WHERE GRADE_SCALE_ID IS NOT NULL) ORDER BY TITLE'));
+        $courses_RET = DBGet(DBQuery('SELECT TITLE,COURSE_ID FROM courses WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' AND COURSE_ID IN (SELECT DISTINCT COURSE_ID FROM course_periods WHERE GRADE_SCALE_ID IS NOT NULL) ORDER BY TITLE'));
         if (!$_REQUEST['course_id'])
             $_REQUEST['course_id'] = $courses_RET[1]['COURSE_ID'];
 
@@ -164,7 +164,7 @@ if (!$_REQUEST['modfunc']) {
             $sql = 'SELECT * FROM report_card_comments WHERE COURSE_ID=\'' . $_REQUEST['tab_id'] . '\' ORDER BY SORT_ORDER';
         else
         // need to be more specific since course_period_id=0 is not unique
-            $sql = 'SELECT * FROM report_card_comments WHERE COURSE_ID=\'' . $_REQUEST['tab_id'] . '\' AND SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER';
+            $sql = 'SELECT * FROM report_card_comments WHERE COURSE_ID=\'' . $_REQUEST['tab_id'] . '\' AND SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER';
         $functions = array('TITLE' => 'makeCommentsInput', 'SORT_ORDER' => 'makeCommentsInput');
 
         $LO_columns = array('TITLE' => 'Comment', 'SORT_ORDER' => 'Sort Order');
@@ -177,7 +177,7 @@ if (!$_REQUEST['modfunc']) {
         $link['add']['html']['remove'] = button('add');
     }
     else {
-        $sql = 'SELECT * FROM report_card_comments WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' AND COURSE_ID IS NULL ORDER BY SORT_ORDER';
+        $sql = 'SELECT * FROM report_card_comments WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' AND COURSE_ID IS NULL ORDER BY SORT_ORDER';
         $functions = array('SORT_ORDER' => 'makeTextInput', 'TITLE' => 'makeTextInput');
         $LO_columns = array('SORT_ORDER' => 'ID', 'TITLE' => 'Comment');
 

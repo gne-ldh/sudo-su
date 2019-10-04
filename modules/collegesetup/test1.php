@@ -5,7 +5,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-   $fy_RET = DBGet(DBQuery('SELECT START_DATE,END_DATE FROM college_years WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\''));
+   $fy_RET = DBGet(DBQuery('SELECT START_DATE,END_DATE FROM college_years WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\''));
     $fy_RET = $fy_RET[1];
 
     $message = '<div class="row">';
