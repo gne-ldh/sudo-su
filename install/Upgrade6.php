@@ -229,7 +229,7 @@ while ($custom_user_fetch = $qr_custom_user->fetch_assoc()) {
 }
 //------------------student table start--------------------------------------//
 $stu_cr = "CREATE TABLE IF NOT EXISTS students_new (
-    student_id INT(8) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    college_roll_no INT(8) NOT NULL AUTO_INCREMENT PRIMARY KEY,
     last_name character varying(50) NOT NULL,
     first_name character varying(50) NOT NULL,
     middle_name character varying(50),
@@ -584,7 +584,7 @@ $dbconn->query($stu_al)  or die('<i class="fa fa-exclamation-triangle fa-3x text
 
 $stu_join_cr = "CREATE TABLE IF NOT EXISTS students_join_people_new (
    id INT(8) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-   student_id numeric NOT NULL,
+   college_roll_no numeric NOT NULL,
    person_id numeric(10,0) NOT NULL,
    is_emergency varchar(10) DEFAULT NULL,
    emergency_type varchar(100) DEFAULT NULL,
@@ -617,7 +617,7 @@ $stu_people_qr = "CREATE TABLE IF NOT EXISTS `people_new` (
 $dbconn->query($stu_people_qr)  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 618</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
 $add_qr = "CREATE TABLE IF NOT EXISTS `student_address` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `student_id` int(11) NOT NULL,
+  `college_roll_no` int(11) NOT NULL,
   `syear` int(11) NOT NULL,
   `college_id` int(11) NOT NULL,
   `street_address_1` varchar(5000) DEFAULT NULL,
@@ -647,9 +647,9 @@ if (empty($stu_c_arr)) {
     $custom_stu = "";
 } else
     $custom_stu = "," . implode(',', $stu_c_arr);
-$qr1 = "insert into students_new(student_id,last_name,first_name,middle_name,name_suffix,gender,ethnicity,common_name,social_security,birthdate,language,estimated_grad_date,alt_id,email,phone,is_disable " . $custom_stu . ") select student_id,last_name,first_name,middle_name,name_suffix,gender,ethnicity,common_name,social_security,birthdate,language,estimated_grad_date,alt_id,email,phone,is_disable" . $custom_stu . " from students";
+$qr1 = "insert into students_new(college_roll_no,last_name,first_name,middle_name,name_suffix,gender,ethnicity,common_name,social_security,birthdate,language,estimated_grad_date,alt_id,email,phone,is_disable " . $custom_stu . ") select college_roll_no,last_name,first_name,middle_name,name_suffix,gender,ethnicity,common_name,social_security,birthdate,language,estimated_grad_date,alt_id,email,phone,is_disable" . $custom_stu . " from students";
 $dbconn->query($qr1)  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 652</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
-$qr_student_login_auth = "insert into login_authentication_new(user_id,profile_id,username,password,last_login,failed_login) select student_id,'3',IF(username IS NULL,'', username) as username,IF(password IS NULL,'',password) as password,last_login,failed_login from students";
+$qr_student_login_auth = "insert into login_authentication_new(user_id,profile_id,username,password,last_login,failed_login) select college_roll_no,'3',IF(username IS NULL,'', username) as username,IF(password IS NULL,'',password) as password,last_login,failed_login from students";
 $dbconn->query($qr_student_login_auth)  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 654</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
 $qr = $dbconn->query("select * from people")  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 655</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
 while ($res = $qr->fetch_assoc()) {
@@ -657,14 +657,14 @@ while ($res = $qr->fetch_assoc()) {
     $st_jq = $dbconn->query("select * from students_join_people where person_id='$per_id'")  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 658</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
     $st_f = $st_jq->fetch_assoc();
     $join_id = $st_f['id'];
-    $qr1 = $dbconn->query("SELECT college_id FROM student_enrollment WHERE student_id=(select student_id from students_join_people where person_id='$per_id') order by id desc limit 0,1")  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 661</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
+    $qr1 = $dbconn->query("SELECT college_id FROM student_enrollment WHERE college_roll_no=(select college_roll_no from students_join_people where person_id='$per_id') order by id desc limit 0,1")  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 661</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
     $res1 = $qr1->fetch_assoc();
 
     $crnt_sch_id = $res1['college_id'];
 
     $qr2 = 'insert into people_new(staff_id,current_college_id,last_name,first_name,middle_name)select person_id,\'' . $crnt_sch_id . '\',first_name,last_name,middle_name from people where person_id=' . $per_id . '';
     $dbconn->query($qr2)  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 667</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
-    $wq = 'insert into student_address(student_id,syear,college_id,street_address_1,street_address_2,city,state,zipcode,type,people_id,bus_pickup,bus_dropoff,bus_no)select \'' . $student_id . '\',\'' . $syear . '\',\'' . $crnt_sch_id . '\',addn_address,addn_street,addn_city,addn_state,addn_zipcode,\'Other\',person_id,addn_bus_pickup,addn_bus_dropoff,addn_busno from students_join_people where id=' . $join_id . '';
+    $wq = 'insert into student_address(college_roll_no,syear,college_id,street_address_1,street_address_2,city,state,zipcode,type,people_id,bus_pickup,bus_dropoff,bus_no)select \'' . $college_roll_no . '\',\'' . $syear . '\',\'' . $crnt_sch_id . '\',addn_address,addn_street,addn_city,addn_state,addn_zipcode,\'Other\',person_id,addn_bus_pickup,addn_bus_dropoff,addn_busno from students_join_people where id=' . $join_id . '';
     $dbconn->query($wq)  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 669 '.$wq.'</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
 }
 $qrp1 = $dbconn->query("select * from people_new")  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 671</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
@@ -672,7 +672,7 @@ while ($res = $qrp1->fetch_assoc()) {
     $per_id = $res['staff_id'];
     $st_jq = $dbconn->query("select * from students_join_people where person_id='$per_id'")  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 674</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
     $st_f = $st_jq->fetch_assoc();
-    $qr1 = $dbconn->query("SELECT college_id FROM student_enrollment WHERE student_id=(select student_id from students_join_people where person_id='$per_id') order by id desc limit 0,1")  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 676</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
+    $qr1 = $dbconn->query("SELECT college_id FROM student_enrollment WHERE college_roll_no=(select college_roll_no from students_join_people where person_id='$per_id') order by id desc limit 0,1")  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 676</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
     $res1 = $qr1->fetch_assoc();
 
     $crnt_sch_id = $res1['college_id'];
@@ -694,15 +694,15 @@ while ($res = $qrp1->fetch_assoc()) {
 }
 
 $emeregncy = 'Other';
-$qr2 = 'insert into students_join_people_new(student_id,person_id,emergency_type,is_emergency,relationship)select student_id,person_id,\'' . $emeregncy . '\',emergency,student_relation from students_join_people';
+$qr2 = 'insert into students_join_people_new(college_roll_no,person_id,emergency_type,is_emergency,relationship)select college_roll_no,person_id,\'' . $emeregncy . '\',emergency,student_relation from students_join_people';
 $dbconn->query($qr2)  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 699</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
 $qr_add = $dbconn->query("select * from address")  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 700</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
 while ($res = $qr_add->fetch_assoc()) {
 
     $add_id = $res['address_id'];
-    $student_id = $res['student_id'];
+    $college_roll_no = $res['college_roll_no'];
 
-    $qr1 = $dbconn->query("SELECT college_id,syear FROM student_enrollment WHERE student_id='$student_id' order by id desc limit 0,1")  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 706</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
+    $qr1 = $dbconn->query("SELECT college_id,syear FROM student_enrollment WHERE college_roll_no='$college_roll_no' order by id desc limit 0,1")  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 706</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
     $res1 = $qr1->fetch_assoc();
 
     $crnt_sch_id = $res1['college_id'];
@@ -714,8 +714,8 @@ while ($res = $qr_add->fetch_assoc()) {
     $po_id = '4';
     $qr2_pe = 'insert into people_new(staff_id,current_college_id,last_name,first_name,home_phone,work_phone,cell_phone,email,profile,profile_id,custody) select \'' . $p_p_id . '\',\'' . $crnt_sch_id . '\',pri_last_name,pri_first_name,home_phone,work_phone,mobile_phone,email,\'' . $type . '\',\'' . $po_id . '\',prim_custody from address where address_id=' . $add_id . '';
 
-    $qr2_join = 'insert into students_join_people_new(student_id,person_id,emergency_type,relationship) select \'' . $student_id . '\',\'' . $p_p_id . '\',\'Primary\',prim_student_relation from address where address_id=' . $add_id . '';
-    $qr2_add = 'insert into student_address(student_id,syear,college_id,street_address_1,street_address_2,city,state,zipcode,type,people_id) select \'' . $student_id . '\',\'' . $syear . '\',\'' . $crnt_sch_id . '\',prim_address,prim_street,prim_city,prim_state,prim_zipcode,\'Primary\',\'' . $p_p_id . '\' from address where address_id=' . $add_id . '';
+    $qr2_join = 'insert into students_join_people_new(college_roll_no,person_id,emergency_type,relationship) select \'' . $college_roll_no . '\',\'' . $p_p_id . '\',\'Primary\',prim_student_relation from address where address_id=' . $add_id . '';
+    $qr2_add = 'insert into student_address(college_roll_no,syear,college_id,street_address_1,street_address_2,city,state,zipcode,type,people_id) select \'' . $college_roll_no . '\',\'' . $syear . '\',\'' . $crnt_sch_id . '\',prim_address,prim_street,prim_city,prim_state,prim_zipcode,\'Primary\',\'' . $p_p_id . '\' from address where address_id=' . $add_id . '';
     $dbconn->query($qr2_pe)  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 720</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
     $dbconn->query($qr2_join)  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 721</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
     $dbconn->query($qr2_add)  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 722</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
@@ -725,24 +725,24 @@ while ($res = $qr_add->fetch_assoc()) {
 
     $qr2s_pe = 'insert into people_new(staff_id,current_college_id,last_name,first_name,home_phone,work_phone,cell_phone,email,profile,profile_id,custody) select \'' . $s_p_id . '\',\'' . $crnt_sch_id . '\',sec_last_name,sec_first_name,sec_home_phone,sec_work_phone,sec_mobile_phone,sec_email,\'' . $type . '\',\'' . $po_id . '\',sec_custody from address where address_id=' . $add_id . '';
 
-    $qr2s_join = 'insert into students_join_people_new(student_id,person_id,emergency_type,relationship) select \'' . $student_id . '\',\'' . $s_p_id . '\',\'Secondary\',sec_student_relation from address where address_id=' . $add_id . '';
-    $qr2s_add = 'insert into student_address(student_id,syear,college_id,street_address_1,street_address_2,city,state,zipcode,type,people_id)select \'' . $student_id . '\',\'' . $syear . '\',\'' . $crnt_sch_id . '\',sec_address,sec_street,sec_city,sec_state,sec_zipcode,\'Secondary\',\'' . $s_p_id . '\' from address where address_id=' . $add_id . '';
+    $qr2s_join = 'insert into students_join_people_new(college_roll_no,person_id,emergency_type,relationship) select \'' . $college_roll_no . '\',\'' . $s_p_id . '\',\'Secondary\',sec_student_relation from address where address_id=' . $add_id . '';
+    $qr2s_add = 'insert into student_address(college_roll_no,syear,college_id,street_address_1,street_address_2,city,state,zipcode,type,people_id)select \'' . $college_roll_no . '\',\'' . $syear . '\',\'' . $crnt_sch_id . '\',sec_address,sec_street,sec_city,sec_state,sec_zipcode,\'Secondary\',\'' . $s_p_id . '\' from address where address_id=' . $add_id . '';
     $dbconn->query($qr2s_pe)  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 731</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
     $dbconn->query($qr2s_join)  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 732</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
     $dbconn->query($qr2s_add)  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 733</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
-    $t = $dbconn->query("select * from students_join_people where student_id='$student_id'")  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 734</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
+    $t = $dbconn->query("select * from students_join_people where college_roll_no='$college_roll_no'")  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 734</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
     $k = $t->num_rows;
 
     if ($k > 0) {
         while ($tf = $t->fetch_assoc()) {
             $person_id = $tf[person_id];
             $join_id = $tf['id'];
-            $wq = 'insert into student_address(student_id,syear,college_id,street_address_1,street_address_2,city,state,zipcode,type,people_id,bus_pickup,bus_dropoff,bus_no)select \'' . $student_id . '\',\'' . $syear . '\',\'' . $crnt_sch_id . '\',addn_address,addn_street,addn_city,addn_state,addn_zipcode,\'Other\',\'' . $person_id . '\',addn_bus_pickup,addn_bus_dropoff,addn_busno from students_join_people where id=' . $join_id . '';
+            $wq = 'insert into student_address(college_roll_no,syear,college_id,street_address_1,street_address_2,city,state,zipcode,type,people_id,bus_pickup,bus_dropoff,bus_no)select \'' . $college_roll_no . '\',\'' . $syear . '\',\'' . $crnt_sch_id . '\',addn_address,addn_street,addn_city,addn_state,addn_zipcode,\'Other\',\'' . $person_id . '\',addn_bus_pickup,addn_bus_dropoff,addn_busno from students_join_people where id=' . $join_id . '';
             $dbconn->query($wq)  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 742</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
         }
     }
-    $wq1 = 'insert into student_address(student_id,syear,college_id,street_address_1,street_address_2,city,state,zipcode,type)select \'' . $student_id . '\',\'' . $syear . '\',\'' . $crnt_sch_id . '\',address,street,city,state,zipcode,\'Home Address\' from address where address_id=' . $add_id . '';
-    $wq2 = 'insert into student_address(student_id,syear,college_id,street_address_1,street_address_2,city,state,zipcode,type)select\'' . $student_id . '\',\'' . $syear . '\',\'' . $crnt_sch_id . '\',mail_address,mail_street,mail_city,mail_state,mail_zipcode,\'Mail\'from address where address_id=' . $add_id . '';
+    $wq1 = 'insert into student_address(college_roll_no,syear,college_id,street_address_1,street_address_2,city,state,zipcode,type)select \'' . $college_roll_no . '\',\'' . $syear . '\',\'' . $crnt_sch_id . '\',address,street,city,state,zipcode,\'Home Address\' from address where address_id=' . $add_id . '';
+    $wq2 = 'insert into student_address(college_roll_no,syear,college_id,street_address_1,street_address_2,city,state,zipcode,type)select\'' . $college_roll_no . '\',\'' . $syear . '\',\'' . $crnt_sch_id . '\',mail_address,mail_street,mail_city,mail_state,mail_zipcode,\'Mail\'from address where address_id=' . $add_id . '';
     $dbconn->query($wq1)  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 747</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
     $dbconn->query($wq2)  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 748</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
 }
@@ -754,14 +754,14 @@ while ($res = $qr_add->fetch_assoc()) {
 //while($res_assoc=mysql_fetch_array($staff_qr_assoc))
 //{
 //$per_id=$res_assoc['staff_id'];
-//    $assoc_stu=mysql_fetch_array($dbconn->query("select student_id from  students_join_users where staff_id ='$res_assoc[staff_id]'"));
+//    $assoc_stu=mysql_fetch_array($dbconn->query("select college_roll_no from  students_join_users where staff_id ='$res_assoc[staff_id]'"));
 // 
-//    $assoc_student_id=$assoc_stu['student_id'];
+//    $assoc_college_roll_no=$assoc_stu['college_roll_no'];
 //
 //    $qr_staff_in=mysql_fetch_array($dbconn->query("select * from staff_college_relationship where staff_id='$per_id'"));
 //    $syear=$qr_staff_in['syear'];
 //    $crnt_sch_id=$qr_staff_in['college_id'];
-//     $qr_sch=$dbconn->query("SELECT college_id FROM student_enrollment WHERE student_id=(select student_id from students_join_people where person_id='$per_id') order by id desc limit 0,1");
+//     $qr_sch=$dbconn->query("SELECT college_id FROM student_enrollment WHERE college_roll_no=(select college_roll_no from students_join_people where person_id='$per_id') order by id desc limit 0,1");
 //    $pe_qr=$dbconn->query("select max(person_id) as pid from students_join_people_new");
 //    $pe_f=mysql_fetch_array($pe_qr);
 //     $p_p_id=$pe_f['pid']+1;
@@ -770,9 +770,9 @@ while ($res = $qr_add->fetch_assoc()) {
 // $qr2_pe='insert into people_new(last_name,staff_id,current_college_id,first_name,middle_name,email,profile,profile_id,home_phone)select last_name,\''.$p_p_id.'\',\''.$crnt_sch_id.'\',first_name,middle_name,email,\'parent\',\'4\',phone from staff where staff_id='.$per_id.'';
 //
 //    $dbconn->query($qr2_pe);
-//       $qr2_join="insert into students_join_people_new(student_id,person_id,emergency_type,relationship) values('$assoc_student_id','$p_p_id','Other','Legal Guardian')";
+//       $qr2_join="insert into students_join_people_new(college_roll_no,person_id,emergency_type,relationship) values('$assoc_college_roll_no','$p_p_id','Other','Legal Guardian')";
 //$dbconn->query($qr2_join);
-//         $wq1='insert into student_address(student_id,syear,college_id,street_address_1,street_address_2,city,state,zipcode,people_id,type)select \''.$assoc_student_id.'\',\''.$syear.'\',\''.$crnt_sch_id.'\',address,street,city,state,zipcode,\''.$p_p_id.'\',\'Other\' from address where student_id='.$assoc_student_id.''; 
+//         $wq1='insert into student_address(college_roll_no,syear,college_id,street_address_1,street_address_2,city,state,zipcode,people_id,type)select \''.$assoc_college_roll_no.'\',\''.$syear.'\',\''.$crnt_sch_id.'\',address,street,city,state,zipcode,\''.$p_p_id.'\',\'Other\' from address where college_roll_no='.$assoc_college_roll_no.''; 
 // 
 //
 // $dbconn->query($wq1);
@@ -802,7 +802,7 @@ while ($res_assoc1 = $staff_qr_assoc->fetch_assoc()) {
     $qr_staff_in=$qr_staff_in_qry->fetch_assoc();
     $syear = $qr_staff_in['syear'];
     $crnt_sch_id = $qr_staff_in['college_id'];
-    $qr_sch = $dbconn->query("SELECT college_id FROM student_enrollment WHERE student_id=(select student_id from students_join_people where person_id='$per_id') order by id desc limit 0,1")  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 806</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
+    $qr_sch = $dbconn->query("SELECT college_id FROM student_enrollment WHERE college_roll_no=(select college_roll_no from students_join_people where person_id='$per_id') order by id desc limit 0,1")  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 806</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
     $pe_qr = $dbconn->query("select max(person_id) as pid from students_join_people_new")  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 807</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
     $pe_f = $pe_qr->fetch_assoc();
     $p_p_id = $pe_f['pid'] + 1;
@@ -814,12 +814,12 @@ while ($res_assoc1 = $staff_qr_assoc->fetch_assoc()) {
 
     while ($assoc_stu1 = $assoc_stu->fetch_assoc()) {
 
-        $assoc_student_id = $assoc_stu1['student_id'];
+        $assoc_college_roll_no = $assoc_stu1['college_roll_no'];
 
-        $qr2_join = "insert into students_join_people_new(student_id,person_id,emergency_type,relationship) values('$assoc_student_id','$p_p_id','Other','Legal Guardian')";
+        $qr2_join = "insert into students_join_people_new(college_roll_no,person_id,emergency_type,relationship) values('$assoc_college_roll_no','$p_p_id','Other','Legal Guardian')";
 
         $dbconn->query($qr2_join)  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 822</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
-        $wq1 = 'insert into student_address(student_id,syear,college_id,street_address_1,street_address_2,city,state,zipcode,people_id,type)select \'' . $assoc_student_id . '\',\'' . $syear . '\',\'' . $crnt_sch_id . '\',address,street,city,state,zipcode,\'' . $p_p_id . '\',\'Other\' from address where student_id=' . $assoc_student_id . '';
+        $wq1 = 'insert into student_address(college_roll_no,syear,college_id,street_address_1,street_address_2,city,state,zipcode,people_id,type)select \'' . $assoc_college_roll_no . '\',\'' . $syear . '\',\'' . $crnt_sch_id . '\',address,street,city,state,zipcode,\'' . $p_p_id . '\',\'Other\' from address where college_roll_no=' . $assoc_college_roll_no . '';
         $dbconn->query($wq1)  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 824</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
     }
 
@@ -914,7 +914,7 @@ $dbconn->query($app_insert)  or die('<i class="fa fa-exclamation-triangle fa-3x 
 //-----------------------------app end--------------------------------//
 //-----------------------------student gpa calculated start----------------//
 $qr_student_gpa_create = "CREATE TABLE student_gpa_calculated_new (
-    student_id numeric,
+    college_roll_no numeric,
     marking_period_id integer,
     mp character varying(4),
     gpa decimal(10,2),
@@ -930,28 +930,28 @@ $qr_student_gpa_create = "CREATE TABLE student_gpa_calculated_new (
 $dbconn->query($qr_student_gpa_create)  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 931</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
 $qr_gpa_calcultate = $dbconn->query('select * from student_gpa_calculated') or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 932</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
 while ($gpa_fetch = $qr_gpa_calcultate->fetch_assoc()) {
-    $stu_id = $gpa_fetch[student_id];
+    $stu_id = $gpa_fetch[college_roll_no];
 
     $marking_period_id = $gpa_fetch[marking_period_id];
 
-    $gpa_cal_insert = 'insert into student_gpa_calculated_new(student_id,marking_period_id,mp,gpa,weighted_gpa,unweighted_gpa,class_rank,grade_level_short)select \'' . $stu_id . '\',\'' . $marking_period_id . '\',mp,gpa,weighted_gpa,unweighted_gpa,class_rank,grade_level_short from student_gpa_calculated where student_id=' . $stu_id . ' and marking_period_id=' . $marking_period_id . '';
+    $gpa_cal_insert = 'insert into student_gpa_calculated_new(college_roll_no,marking_period_id,mp,gpa,weighted_gpa,unweighted_gpa,class_rank,grade_level_short)select \'' . $stu_id . '\',\'' . $marking_period_id . '\',mp,gpa,weighted_gpa,unweighted_gpa,class_rank,grade_level_short from student_gpa_calculated where college_roll_no=' . $stu_id . ' and marking_period_id=' . $marking_period_id . '';
     $dbconn->query($gpa_cal_insert) or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 939</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
-    $cum_qry = 'select cum_unweighted_factor from  student_mp_stats where student_id=' . $gpa_fetch[student_id] . ' and marking_period_id=' . $gpa_fetch[marking_period_id] . '';
+    $cum_qry = 'select cum_unweighted_factor from  student_mp_stats where college_roll_no=' . $gpa_fetch[college_roll_no] . ' and marking_period_id=' . $gpa_fetch[marking_period_id] . '';
     $cum_qr=$dbconn->query($cum_qry) or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 941</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
     if ($cum_qr->num_rows > 0) {
         $cum_unweighted_factor_qr = $cum_qr->fetch_assoc();
         $cum_unweighted_factor = $cum_unweighted_factor_qr['cum_unweighted_factor'];
         if($cum_unweighted_factor!='')
-        $dbconn->query('update student_gpa_calculated_new set cum_unweighted_factor=' . $cum_unweighted_factor . ' where student_id=' . $stu_id . ' and marking_period_id=' . $marking_period_id . '') or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 946 update student_gpa_calculated_new set cum_unweighted_factor=' . $cum_unweighted_factor . ' where student_id=' . $stu_id . ' and marking_period_id=' . $marking_period_id . '</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
+        $dbconn->query('update student_gpa_calculated_new set cum_unweighted_factor=' . $cum_unweighted_factor . ' where college_roll_no=' . $stu_id . ' and marking_period_id=' . $marking_period_id . '') or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 946 update student_gpa_calculated_new set cum_unweighted_factor=' . $cum_unweighted_factor . ' where college_roll_no=' . $stu_id . ' and marking_period_id=' . $marking_period_id . '</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
     }
 
-    $cgp_qry = 'select cgpa from student_gpa_running where student_id=' . $gpa_fetch[student_id] . ' and marking_period_id=' . $gpa_fetch[marking_period_id] . '';
+    $cgp_qry = 'select cgpa from student_gpa_running where college_roll_no=' . $gpa_fetch[college_roll_no] . ' and marking_period_id=' . $gpa_fetch[marking_period_id] . '';
     $cgp_qr=$dbconn->query($cgp_qry) or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 950</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
     if ($cgp_qr->num_rows > 0) {
         $cgpa_qr = $cgp_qr->fetch_assoc();
         $cgpa = $cgpa_qr['cgpa'];
         if ($cgpa != '')
-            $dbconn->query('update student_gpa_calculated_new set cgpa=' . $cgpa . ' where student_id=' . $stu_id . ' and marking_period_id=' . $marking_period_id . '') or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 955</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
+            $dbconn->query('update student_gpa_calculated_new set cgpa=' . $cgpa . ' where college_roll_no=' . $stu_id . ' and marking_period_id=' . $marking_period_id . '') or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 955</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
     }
 }
 
@@ -1162,7 +1162,7 @@ $dbconn->query("INSERT INTO `profile_exceptions` (`profile_id`, `modname`, `can_
 ('5', 'collegesetup/PrintAllCourses.php', 'Y', NULL),
 ('5', 'collegesetup/TeacherReassignment.php', 'Y', NULL),
 ('5', 'students/Student.php', 'Y', 'Y'),
-('5', 'students/Student.php&include=GeneralInfoInc&student_id=new', 'Y', 'Y'),
+('5', 'students/Student.php&include=GeneralInfoInc&college_roll_no=new', 'Y', 'Y'),
 ('5', 'students/AssignOtherInfo.php', 'Y', 'Y'),
 ('5', 'students/AddUsers.php', 'Y', 'Y'),
 ('5', 'students/AdvancedReport.php', 'Y', 'Y'),
@@ -1280,7 +1280,7 @@ $dbconn->query("INSERT INTO `profile_exceptions` (`profile_id`, `modname`, `can_
 ('1', 'collegesetup/UploadLogo.php', 'Y', 'Y'),
 ('1', 'collegesetup/TeacherReassignment.php', 'Y', 'Y'),
 ('1', 'students/Student.php', 'Y', 'Y'),
-('1', 'students/Student.php&include=GeneralInfoInc&student_id=new', 'Y', 'Y'),
+('1', 'students/Student.php&include=GeneralInfoInc&college_roll_no=new', 'Y', 'Y'),
 ('1', 'students/AssignOtherInfo.php', 'Y', 'Y'),
 ('1', 'students/AddUsers.php', 'Y', 'Y'),
 ('1', 'students/AdvancedReport.php', 'Y', 'Y'),
@@ -1438,7 +1438,7 @@ $dbconn->query("INSERT INTO `profile_exceptions` (`profile_id`, `modname`, `can_
 ('0', 'collegesetup/UploadLogo.php', 'Y', 'Y'),
 ('0', 'collegesetup/TeacherReassignment.php', 'Y', 'Y'),
 ('0', 'students/Student.php', 'Y', 'Y'),
-('0', 'students/Student.php&include=GeneralInfoInc&student_id=new', 'Y', 'Y'),
+('0', 'students/Student.php&include=GeneralInfoInc&college_roll_no=new', 'Y', 'Y'),
 ('0', 'students/AssignOtherInfo.php', 'Y', 'Y'),
 ('0', 'students/AddUsers.php', 'Y', 'Y'),
 ('0', 'students/AdvancedReport.php', 'Y', 'Y'),

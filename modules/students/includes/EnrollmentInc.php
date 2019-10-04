@@ -40,7 +40,7 @@ if(($_REQUEST['month_values'] && ($_POST['month_values'] || $_REQUEST['ajax'])) 
 	else
 	{
 		$date = $_REQUEST['day_values']['student_enrollment']['new']['START_DATE'].'-'.$_REQUEST['month_values']['student_enrollment']['new']['START_DATE'].'-'.$_REQUEST['year_values']['student_enrollment']['new']['START_DATE'];
-		$found_RET = DBGet(DBQuery("SELECT ID FROM student_enrollment WHERE STUDENT_ID='".UserStudentID()."' AND SYEAR='".UserSyear()."' AND '" . date("Y-m-d",strtotime($date))."' BETWEEN START_DATE AND END_DATE"));
+		$found_RET = DBGet(DBQuery("SELECT ID FROM student_enrollment WHERE COLLEGE_ROLL_NO='".UserStudentID()."' AND SYEAR='".UserSyear()."' AND '" . date("Y-m-d",strtotime($date))."' BETWEEN START_DATE AND END_DATE"));
 		if(count($found_RET))
 		{
 			unset($_REQUEST['values']['student_enrollment']['new']);
@@ -51,8 +51,8 @@ if(($_REQUEST['month_values'] && ($_POST['month_values'] || $_REQUEST['ajax'])) 
 		}
 	}
 
-	$iu_extra['student_enrollment'] = "STUDENT_ID='".UserStudentID()."' AND ID='__ID__'";
-	$iu_extra['fields']['student_enrollment'] = 'SYEAR,STUDENT_ID,';
+	$iu_extra['student_enrollment'] = "COLLEGE_ROLL_NO='".UserStudentID()."' AND ID='__ID__'";
+	$iu_extra['fields']['student_enrollment'] = 'SYEAR,COLLEGE_ROLL_NO,';
 	$iu_extra['values']['student_enrollment'] = "'".UserSyear()."','".UserStudentID()."',";
 	if(!$new_student)
 		SaveData($iu_extra,'',$field_names);
@@ -60,7 +60,7 @@ if(($_REQUEST['month_values'] && ($_POST['month_values'] || $_REQUEST['ajax'])) 
 
 $functions = array('START_DATE'=>'_makeStartInput','END_DATE'=>'_makeEndInput','COLLEGE_ID'=>'_makeCollegeInput');
 unset($THIS_RET);
-$RET = DBGet(DBQuery('SELECT e.ID,e.ENROLLMENT_CODE,e.START_DATE,e.DROP_CODE,e.END_DATE,e.END_DATE AS END,e.COLLEGE_ID,e.NEXT_COLLEGE,e.CALENDAR_ID FROM student_enrollment e WHERE e.STUDENT_ID=\''.UserStudentID().'\' AND e.SYEAR=\''.UserSyear().'\' ORDER BY e.START_DATE'),$functions);
+$RET = DBGet(DBQuery('SELECT e.ID,e.ENROLLMENT_CODE,e.START_DATE,e.DROP_CODE,e.END_DATE,e.END_DATE AS END,e.COLLEGE_ID,e.NEXT_COLLEGE,e.CALENDAR_ID FROM student_enrollment e WHERE e.COLLEGE_ROLL_NO=\''.UserStudentID().'\' AND e.SYEAR=\''.UserSyear().'\' ORDER BY e.START_DATE'),$functions);
 
 $add = true;
 if(count($RET))
@@ -90,7 +90,7 @@ if(count($calendars_RET))
 	foreach($calendars_RET as $calendar)
 		$calendar_options[$calendar['CALENDAR_ID']] = $calendar['TITLE'];
 }
-if($_REQUEST['student_id']!='new')
+if($_REQUEST['college_roll_no']!='new')
 {
 	if(count($RET))
 		$id = $RET[count($RET)]['ID'];

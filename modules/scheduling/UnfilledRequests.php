@@ -34,7 +34,7 @@ if ($_REQUEST['modname'] == 'scheduling/UnfilledRequests.php') {
 }
 $extra['SELECT'] = ',c.TITLE AS COURSE,sr.SUBJECT_ID,sr.COURSE_ID,sr.WITH_TEACHER_ID,sr.NOT_TEACHER_ID,sr.WITH_PERIOD_ID,sr.NOT_PERIOD_ID,(SELECT COALESCE(sum(COALESCE(cp.TOTAL_SEATS,0)-COALESCE(cp.FILLED_SEATS,0)),0) AS AVAILABLE_SEATS FROM course_periods cp,course_period_var cpv WHERE cp.COURSE_ID=sr.COURSE_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND (cp.GENDER_RESTRICTION=\'N\' OR cp.GENDER_RESTRICTION=substring(s.GENDER,1,1)) AND (sr.WITH_TEACHER_ID IS NULL OR sr.WITH_TEACHER_ID=\'\' OR sr.WITH_TEACHER_ID=cp.TEACHER_ID) AND (sr.NOT_TEACHER_ID IS NULL OR sr.NOT_TEACHER_ID=\'\' OR sr.NOT_TEACHER_ID!=cp.TEACHER_ID) AND (sr.WITH_PERIOD_ID IS NULL OR sr.WITH_PERIOD_ID=\'\' OR sr.WITH_PERIOD_ID=cpv.PERIOD_ID) AND (sr.NOT_PERIOD_ID IS NULL OR sr.NOT_PERIOD_ID=\'\' OR sr.NOT_PERIOD_ID!=cpv.PERIOD_ID)) AS AVAILABLE_SEATS,(SELECT count(*) AS SECTIONS FROM course_periods cp,course_period_var cpv WHERE cp.COURSE_ID=sr.COURSE_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND (cp.GENDER_RESTRICTION=\'N\' OR cp.GENDER_RESTRICTION=substring(s.GENDER,1,1)) AND (sr.WITH_TEACHER_ID IS NULL OR sr.WITH_TEACHER_ID=\'\' OR sr.WITH_TEACHER_ID=cp.TEACHER_ID) AND (sr.NOT_TEACHER_ID IS NULL OR sr.NOT_TEACHER_ID=\'\' OR sr.NOT_TEACHER_ID!=cp.TEACHER_ID) AND (sr.WITH_PERIOD_ID IS NULL OR sr.WITH_PERIOD_ID=\'\' OR sr.WITH_PERIOD_ID=cpv.PERIOD_ID) AND (sr.NOT_PERIOD_ID IS NULL OR sr.NOT_PERIOD_ID=\'\' OR sr.NOT_PERIOD_ID!=cpv.PERIOD_ID)) AS SECTIONS ';
 $extra['FROM'] = ',schedule_requests sr,courses c,student_enrollment ssm';
-$extra['WHERE'] = ' AND sr.STUDENT_ID=ssm.STUDENT_ID AND sr.SYEAR=ssm.SYEAR AND sr.COLLEGE_ID=ssm.COLLEGE_ID AND sr.COURSE_ID=c.COURSE_ID ';
+$extra['WHERE'] = ' AND sr.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND sr.SYEAR=ssm.SYEAR AND sr.COLLEGE_ID=ssm.COLLEGE_ID AND sr.COURSE_ID=c.COURSE_ID ';
 $extra['functions'] = array('WITH_TEACHER_ID' => '_makeTeacher', 'WITH_PERIOD_ID' => '_makePeriod');
 $extra['columns_after'] = array('COURSE' => 'Course', 'AVAILABLE_SEATS' => 'Available Seats', 'SECTIONS' => 'Sections', 'WITH_TEACHER_ID' => 'Teacher', 'WITH_PERIOD_ID' => 'Period');
 $extra['singular'] = 'Request';
@@ -42,12 +42,12 @@ $extra['plural'] = 'Requests';
 if (!$extra['link']['FULL_NAME']) {
     $extra['link']['FULL_NAME']['link'] = 'Modules.php?modname=scheduling/Requests.php';
 
-    $extra['link']['FULL_NAME']['variables']['student_id'] = 'STUDENT_ID';
+    $extra['link']['FULL_NAME']['variables']['college_roll_no'] = 'COLLEGE_ROLL_NO';
 }
 $extra['new'] = true;
 $extra['Redirect'] = false;
 
-Search('student_id', $extra);
+Search('college_roll_no', $extra);
 
 function _makeTeacher($value, $column) {
     global $THIS_RET;

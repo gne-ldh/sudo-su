@@ -461,17 +461,17 @@ function VerifyBlockedSchedule($columns,$course_period_id,$sec,$edit=false)
 
 //================ Student schedule varification=============================
 
-function VerifyStudentSchedule($course_RET,$student_id='')
+function VerifyStudentSchedule($course_RET,$college_roll_no='')
 {
-    if($student_id=='')
-        $student_id=  UserStudentID ();
+    if($college_roll_no=='')
+        $college_roll_no=  UserStudentID ();
     if(!$course_RET)
     {
         return 'Incomplete course period';
     }
     if(count($course_RET)>0)
     {
-        $schedule_exist = DBGet(DBQuery("SELECT *  FROM `schedule` WHERE `syear` =".$course_RET[1]['SYEAR']." AND `college_id` =".$course_RET[1]['COLLEGE_ID']." AND `student_id` =".$student_id." AND `course_id` =".$course_RET[1]['COURSE_ID']." AND `course_period_id` = ".$course_RET[1]['COURSE_PERIOD_ID'].' AND (END_DATE>="'.date('Y-m-d').'" OR END_DATE IS NULL OR END_DATE="0000-00-00")'));
+        $schedule_exist = DBGet(DBQuery("SELECT *  FROM `schedule` WHERE `syear` =".$course_RET[1]['SYEAR']." AND `college_id` =".$course_RET[1]['COLLEGE_ID']." AND `college_roll_no` =".$college_roll_no." AND `course_id` =".$course_RET[1]['COURSE_ID']." AND `course_period_id` = ".$course_RET[1]['COURSE_PERIOD_ID'].' AND (END_DATE>="'.date('Y-m-d').'" OR END_DATE IS NULL OR END_DATE="0000-00-00")'));
         if(count($schedule_exist)>0)
         {
             return 'Course period already scheduled';
@@ -480,7 +480,7 @@ function VerifyStudentSchedule($course_RET,$student_id='')
     $check_parent_schedule=DBGet(DBQuery('SELECT PARENT_ID FROM course_periods WHERE COURSE_PERIOD_ID='.$course_RET[1]['COURSE_PERIOD_ID']));
     if($check_parent_schedule[1]['PARENT_ID']!='' && $check_parent_schedule[1]['PARENT_ID']!=$course_RET[1]['COURSE_PERIOD_ID'])
     {
-        $check_stu_schedule=DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM schedule WHERE COURSE_PERIOD_ID='.$check_parent_schedule[1]['PARENT_ID'].' AND STUDENT_ID='.$student_id.' AND (END_DATE>="'.date('Y-m-d').'" OR END_DATE IS NULL OR END_DATE="0000-00-00")'));
+        $check_stu_schedule=DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM schedule WHERE COURSE_PERIOD_ID='.$check_parent_schedule[1]['PARENT_ID'].' AND COLLEGE_ROLL_NO='.$college_roll_no.' AND (END_DATE>="'.date('Y-m-d').'" OR END_DATE IS NULL OR END_DATE="0000-00-00")'));
         if($check_stu_schedule[1]['REC_EX']==0)
             return 'Course period has parent course restriction';
 
@@ -489,7 +489,7 @@ function VerifyStudentSchedule($course_RET,$student_id='')
     {
         return 'Seat not available';
     }
-    $student_RET=DBGet(DBQuery("SELECT LEFT(GENDER,1) AS GENDER FROM students WHERE STUDENT_ID='".$student_id."'"));
+    $student_RET=DBGet(DBQuery("SELECT LEFT(GENDER,1) AS GENDER FROM students WHERE COLLEGE_ROLL_NO='".$college_roll_no."'"));
     $student=$student_RET[1];
     if($course_RET[1]['GENDER_RESTRICTION']!='N' && $course_RET[1]['GENDER_RESTRICTION']!=$student['GENDER'])
     {
@@ -546,7 +546,7 @@ function VerifyStudentSchedule($course_RET,$student_id='')
         $period_days_append_sql=  substr($period_days_append_sql,0,-4).'))';
     }
    
-    $exist_RET=  DBGet(DBQuery("SELECT s.ID FROM schedule s WHERE student_id=".  $student_id." AND s.syear='".UserSyear()."' {$mp_append_sql}{$period_days_append_sql} UNION SELECT s.ID FROM temp_schedule s WHERE student_id=".  $student_id."{$mp_append_sql}{$period_days_append_sql}"));
+    $exist_RET=  DBGet(DBQuery("SELECT s.ID FROM schedule s WHERE college_roll_no=".  $college_roll_no." AND s.syear='".UserSyear()."' {$mp_append_sql}{$period_days_append_sql} UNION SELECT s.ID FROM temp_schedule s WHERE college_roll_no=".  $college_roll_no."{$mp_append_sql}{$period_days_append_sql}"));
     if($exist_RET)
         return 'There is a Period Conflict ('.$course_RET[1]['CP_TITLE'].')';
     else

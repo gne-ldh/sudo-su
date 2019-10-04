@@ -33,11 +33,11 @@ if ($_REQUEST['func'] == 'Basic') {
     $num_colleges = DBGet(DBQuery('SELECT COUNT(ID) as TOTAL_COLLEGES FROM colleges'));
     $num_colleges = $num_colleges[1]['TOTAL_COLLEGES'];
 
-    $num_students = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) as TOTAL_STUDENTS FROM students WHERE STUDENT_ID IN (SELECT DISTINCT STUDENT_ID FROM student_enrollment WHERE SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege() . ')'));
+    $num_students = DBGet(DBQuery('SELECT COUNT(COLLEGE_ROLL_NO) as TOTAL_STUDENTS FROM students WHERE COLLEGE_ROLL_NO IN (SELECT DISTINCT COLLEGE_ROLL_NO FROM student_enrollment WHERE SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege() . ')'));
     $num_students = $num_students[1]['TOTAL_STUDENTS'];
-    $male = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) as MALE FROM students WHERE GENDER=\'Male\' AND STUDENT_ID IN (SELECT DISTINCT STUDENT_ID FROM student_enrollment WHERE SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege() . ')'));
+    $male = DBGet(DBQuery('SELECT COUNT(COLLEGE_ROLL_NO) as MALE FROM students WHERE GENDER=\'Male\' AND COLLEGE_ROLL_NO IN (SELECT DISTINCT COLLEGE_ROLL_NO FROM student_enrollment WHERE SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege() . ')'));
     $male = $male[1]['MALE'];
-    $female = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) as FEMALE FROM students WHERE GENDER=\'Female\' AND STUDENT_ID IN (SELECT DISTINCT STUDENT_ID FROM student_enrollment WHERE SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege() . ')'));
+    $female = DBGet(DBQuery('SELECT COUNT(COLLEGE_ROLL_NO) as FEMALE FROM students WHERE GENDER=\'Female\' AND COLLEGE_ROLL_NO IN (SELECT DISTINCT COLLEGE_ROLL_NO FROM student_enrollment WHERE SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege() . ')'));
     $female = $female[1]['FEMALE'];
     $num_staff = 0;
     $num_teacher = 0;
@@ -50,7 +50,7 @@ if ($_REQUEST['func'] == 'Basic') {
             $num_teacher = $gt_dt['TOTAL_USER'];
     }
 
-    $num_parent = DBGet(DBQuery('SELECT COUNT(distinct p.STAFF_ID) as TOTAL_PARENTS FROM people p,students_join_people sjp WHERE sjp.PERSON_ID=p.STAFF_ID AND sjp.STUDENT_ID IN (SELECT DISTINCT STUDENT_ID FROM student_enrollment WHERE SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege() . ')'));
+    $num_parent = DBGet(DBQuery('SELECT COUNT(distinct p.STAFF_ID) as TOTAL_PARENTS FROM people p,students_join_people sjp WHERE sjp.PERSON_ID=p.STAFF_ID AND sjp.COLLEGE_ROLL_NO IN (SELECT DISTINCT COLLEGE_ROLL_NO FROM student_enrollment WHERE SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege() . ')'));
     if ($num_parent[1]['TOTAL_PARENTS'] == '')
         $num_parent = 0;
     else

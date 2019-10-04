@@ -428,7 +428,7 @@ if (count($_REQUEST['values']['COLLEGES'])>0) {
                         $tmpName = $_FILES['file']['tmp_name'];
                         $fileSize = $_FILES['file']['size'];
                         $fileType = $_FILES['file']['type'];
-//                                        $target_path=$StudentPicturesPath.'/'.$last_student_id.'.JPG';
+//                                        $target_path=$StudentPicturesPath.'/'.$last_college_roll_no.'.JPG';
 //	$destination_path = $StudentPicturesPath;	
                         $upload = new upload();
 //	$upload->target_path=$target_path;

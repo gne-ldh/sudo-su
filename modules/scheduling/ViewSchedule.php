@@ -45,16 +45,16 @@ Widgets('request');
 $extra['search'] .= '</div>'; //.col-lg-6
 $extra['search'] .= '</div>'; //.row
 
-if (!$_SESSION['student_id']) {
-    Search('student_id', $extra);
+if (!$_SESSION['college_roll_no']) {
+    Search('college_roll_no', $extra);
 }
-if (isset($_REQUEST['student_id'])) {
-    $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,COLLEGE_ID FROM students,student_enrollment WHERE students.STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND student_enrollment.STUDENT_ID = students.STUDENT_ID '));
+if (isset($_REQUEST['college_roll_no'])) {
+    $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,COLLEGE_ID FROM students,student_enrollment WHERE students.COLLEGE_ROLL_NO=\'' . $_REQUEST['college_roll_no'] . '\' AND student_enrollment.COLLEGE_ROLL_NO = students.COLLEGE_ROLL_NO '));
     $count_student_RET = DBGet(DBQuery('SELECT COUNT(*) AS NUM FROM students'));
     if ($count_student_RET[1]['NUM'] > 1) {
-        DrawHeaderHome('Selected Student: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . ' (<A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>Deselect</font></A>) | <A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=students/Student.php&ajax=true&bottom_back=true&return_session=true target=body>Back to Student List</A>');
+        DrawHeaderHome('Selected Student: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . ' (<A HREF=Side.php?college_roll_no=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>Deselect</font></A>) | <A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=students/Student.php&ajax=true&bottom_back=true&return_session=true target=body>Back to Student List</A>');
     } else if ($count_student_RET[1]['NUM'] == 1) {
-        DrawHeaderHome('Selected Student: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . ' (<A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>Deselect</font></A>) ');
+        DrawHeaderHome('Selected Student: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . ' (<A HREF=Side.php?college_roll_no=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>Deselect</font></A>) ');
     }
 }
 if ($_REQUEST['month__date'] && $_REQUEST['day__date'] && $_REQUEST['year__date']) {
@@ -172,7 +172,7 @@ if (UserStudentID()) {
         sp.SORT_ORDER,
         c.TITLE,
         cp.COURSE_PERIOD_ID AS PERIOD_PULLDOWN,
-        s.STUDENT_ID,
+        s.COLLEGE_ROLL_NO,
         r.TITLE AS ROOM,
         cpv.DAYS,
         SCHEDULER_LOCK
@@ -189,7 +189,7 @@ if (UserStudentID()) {
         AND sp.PERIOD_ID = cpv.PERIOD_ID
         AND (cp.MARKING_PERIOD_ID IN (' . implode(',', $mp_ids_arr) . ') OR (cp.MARKING_PERIOD_ID IS NULL AND cp.BEGIN_DATE<=\'' . date('Y-m-d', strtotime($date)) . '\' AND cp.END_DATE>=\'' . date('Y-m-d', strtotime($date)) . '\'))
         AND POSITION(\'' . $day . '\' IN cpv.days)>0
-        AND s.STUDENT_ID=\'' . UserStudentID() . '\'
+        AND s.COLLEGE_ROLL_NO=\'' . UserStudentID() . '\'
         AND s.SYEAR=\'' . UserSyear() . '\' 
         AND s.COLLEGE_ID = \'' . UserCollege() . '\' 
         AND (cpv.COURSE_PERIOD_DATE=\'' . date('Y-m-d', strtotime($date)) . '\' OR cpv.COURSE_PERIOD_DATE IS NULL)
@@ -234,8 +234,8 @@ GROUP BY cp.COURSE_PERIOD_ID
                                 INNER JOIN course_period_var cpv ON cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID
 				INNER JOIN college_periods sp ON sp.SYEAR=acc.SYEAR AND sp.COLLEGE_ID=acc.COLLEGE_ID AND sp.PERIOD_ID=cpv.PERIOD_ID
                                                                         INNER JOIN schedule sch ON sch.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND sch.START_DATE<=acc.COLLEGE_DATE AND (sch.END_DATE IS NULL OR sch.END_DATE>=acc.COLLEGE_DATE) AND acc.COLLEGE_DATE BETWEEN \'' . $week_start . '\' AND \'' . $week_end . '\'
-                                                                        AND sch.STUDENT_ID=\'' . UserStudentID() . '\''), array(), array('COLLEGE_DATE', 'PERIOD_ID'));
-            $custom_schedule = DBGet(DBQuery('SELECT cp.COURSE_PERIOD_ID FROM course_periods cp,schedule s WHERE cp.MARKING_PERIOD_ID IS NULL AND cp.MARKING_PERIOD_ID IS NULL AND cp.BEGIN_DATE<=\'' . date('Y-m-d', strtotime($date)) . '\' AND cp.END_DATE>=\'' . date('Y-m-d', strtotime($date)) . '\' AND cp.COURSE_PERIOD_ID=s.COURSE_PERIOD_ID AND (\'' . date('Y-m-d', strtotime($date)) . '\' BETWEEN s.START_DATE AND s.END_DATE OR (s.END_DATE IS NULL AND s.START_DATE<=\'' . date('Y-m-d', strtotime($date)) . '\')) AND s.STUDENT_ID=' . UserStudentID() . ' AND s.COLLEGE_ID=' . UserCollege()));
+                                                                        AND sch.COLLEGE_ROLL_NO=\'' . UserStudentID() . '\''), array(), array('COLLEGE_DATE', 'PERIOD_ID'));
+            $custom_schedule = DBGet(DBQuery('SELECT cp.COURSE_PERIOD_ID FROM course_periods cp,schedule s WHERE cp.MARKING_PERIOD_ID IS NULL AND cp.MARKING_PERIOD_ID IS NULL AND cp.BEGIN_DATE<=\'' . date('Y-m-d', strtotime($date)) . '\' AND cp.END_DATE>=\'' . date('Y-m-d', strtotime($date)) . '\' AND cp.COURSE_PERIOD_ID=s.COURSE_PERIOD_ID AND (\'' . date('Y-m-d', strtotime($date)) . '\' BETWEEN s.START_DATE AND s.END_DATE OR (s.END_DATE IS NULL AND s.START_DATE<=\'' . date('Y-m-d', strtotime($date)) . '\')) AND s.COLLEGE_ROLL_NO=' . UserStudentID() . ' AND s.COLLEGE_ID=' . UserCollege()));
             $custom_schedule_cpid = array();
             foreach ($custom_schedule as $csi => $csd)
                 $custom_schedule_cpid[] = $csd['COURSE_PERIOD_ID'];
@@ -252,7 +252,7 @@ GROUP BY cp.COURSE_PERIOD_ID
                         if (in_array(date('Y-m-d', $j), $week_RET[date('Y-m-d', $j)][$course['PERIOD_ID']][1])) {
                             $day = date('l', strtotime($week_RET[date('Y-m-d', $j)][$course['PERIOD_ID']][1]['COLLEGE_DATE']));
                             $day_RET = DBGet(DBQuery('SELECT DISTINCT cp.COURSE_PERIOD_ID,cp.TITLE,cpv.DAYS,r.TITLE AS ROOM FROM course_periods cp,course_period_var cpv,rooms r,marking_periods mp,schedule sch WHERE cp.MARKING_PERIOD_ID=mp.MARKING_PERIOD_ID and sch.MARKING_PERIOD_ID IN (' . GetAllMP(GetMPTable(GetMP($mp_id1, 'TABLE')), $mp_id1) . ') AND cp.COURSE_PERIOD_ID=sch.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND r.ROOM_ID=cpv.ROOM_ID AND
-                            (cpv.COURSE_PERIOD_DATE=\'' . date('Y-m-d', $j) . '\' OR cpv.COURSE_PERIOD_DATE IS NULL) AND sch.START_DATE<=  \'' . date('Y-m-d', $j) . '\' AND (sch.END_DATE>=\'' . date('Y-m-d', $j) . '\' OR sch.END_DATE IS NULL) AND \'' . date('Y-m-d', $j) . '\' BETWEEN mp.START_DATE AND mp.END_DATE AND  cpv.PERIOD_ID =\'' . $course[PERIOD_ID] . '\'  AND r.ROOM_ID=cpv.ROOM_ID AND sch.STUDENT_ID=\'' . UserStudentID() . '\' AND POSITION(\'' . get_db_day($day) . '\' IN cpv.days)>0'));
+                            (cpv.COURSE_PERIOD_DATE=\'' . date('Y-m-d', $j) . '\' OR cpv.COURSE_PERIOD_DATE IS NULL) AND sch.START_DATE<=  \'' . date('Y-m-d', $j) . '\' AND (sch.END_DATE>=\'' . date('Y-m-d', $j) . '\' OR sch.END_DATE IS NULL) AND \'' . date('Y-m-d', $j) . '\' BETWEEN mp.START_DATE AND mp.END_DATE AND  cpv.PERIOD_ID =\'' . $course[PERIOD_ID] . '\'  AND r.ROOM_ID=cpv.ROOM_ID AND sch.COLLEGE_ROLL_NO=\'' . UserStudentID() . '\' AND POSITION(\'' . get_db_day($day) . '\' IN cpv.days)>0'));
                             if (!$day_RET) {
                                 if (count($custom_schedule) > 0 && count($custom_schedule_cpid) > 0)
                                     $day_RET_custom = DBGet(DBQuery('SELECT DISTINCT cp.COURSE_PERIOD_ID,cp.TITLE,cpv.DAYS,r.TITLE AS ROOM FROM course_periods cp,course_period_var cpv,rooms r WHERE cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND r.ROOM_ID=cpv.ROOM_ID AND
@@ -315,7 +315,7 @@ GROUP BY cp.COURSE_PERIOD_ID
 				UNIX_TIMESTAMP(s.START_DATE) AS START_EPOCH,UNIX_TIMESTAMP(s.END_DATE) AS END_EPOCH,sp.PERIOD_ID,CONCAT(sp.START_TIME,\'' . ' - ' . '\',sp.END_TIME) AS TIME_PERIOD,sp.START_TIME,
 				cpv.PERIOD_ID,cp.MARKING_PERIOD_ID as COURSE_MARKING_PERIOD_ID,cp.MP,sp.SORT_ORDER,
 				c.TITLE,cp.COURSE_PERIOD_ID AS PERIOD_PULLDOWN,
-				s.STUDENT_ID,r.TITLE AS ROOM,cpv.DAYS,SCHEDULER_LOCK
+				s.COLLEGE_ROLL_NO,r.TITLE AS ROOM,cpv.DAYS,SCHEDULER_LOCK
 			FROM schedule s,courses c,course_periods cp,course_period_var cpv,college_periods sp,rooms r
 			WHERE
 				s.COURSE_ID = c.COURSE_ID AND s.COURSE_ID = cp.COURSE_ID
@@ -324,7 +324,7 @@ GROUP BY cp.COURSE_PERIOD_ID
 				AND s.COURSE_PERIOD_ID = cp.COURSE_PERIOD_ID
 				AND s.COLLEGE_ID = sp.COLLEGE_ID AND s.SYEAR = c.SYEAR AND sp.PERIOD_ID = cpv.PERIOD_ID
                                                                         AND POSITION(\'' . $day . '\' IN cpv.days)>0
-				AND s.STUDENT_ID=\'' . UserStudentID() . '\'
+				AND s.COLLEGE_ROLL_NO=\'' . UserStudentID() . '\'
 				AND s.SYEAR=\'' . UserSyear() . '\' AND s.COLLEGE_ID = \'' . UserCollege() . '\' AND (cpv.COURSE_PERIOD_DATE=\'' . date('Y-m-d', strtotime($date)) . '\' OR cpv.COURSE_PERIOD_DATE IS NULL) 
                                                                         AND (\'' . date('Y-m-d', strtotime($date)) . '\' BETWEEN s.START_DATE AND s.END_DATE OR (s.END_DATE IS NULL AND s.START_DATE<=\'' . date('Y-m-d', strtotime($date)) . '\'))
                                                                         AND s.MARKING_PERIOD_ID IN (' . GetAllMP(GetMPTable(GetMP($mp_id, 'TABLE')), $mp_id) . ') 
@@ -386,7 +386,7 @@ GROUP BY cp.COURSE_PERIOD_ID
 				UNIX_TIMESTAMP(s.START_DATE) AS START_EPOCH,UNIX_TIMESTAMP(s.END_DATE) AS END_EPOCH,sp.PERIOD_ID,CONCAT(sp.START_TIME,\'' . ' - ' . '\',sp.END_TIME) AS TIME_PERIOD,
 				cpv.PERIOD_ID,cp.MARKING_PERIOD_ID as COURSE_MARKING_PERIOD_ID,cp.MP,sp.SORT_ORDER,
 				c.TITLE ,cp.COURSE_PERIOD_ID AS PERIOD_PULLDOWN,
-				s.STUDENT_ID,r.TITLE AS ROOM,cpv.DAYS,SCHEDULER_LOCK
+				s.COLLEGE_ROLL_NO,r.TITLE AS ROOM,cpv.DAYS,SCHEDULER_LOCK
 			FROM schedule s,courses c,course_periods cp,college_periods sp,course_period_var cpv,rooms r
 			WHERE
 				s.COURSE_ID = c.COURSE_ID AND s.COURSE_ID = cp.COURSE_ID
@@ -396,7 +396,7 @@ GROUP BY cp.COURSE_PERIOD_ID
 				AND s.COLLEGE_ID = sp.COLLEGE_ID AND s.SYEAR = c.SYEAR AND sp.PERIOD_ID = cpv.PERIOD_ID
                                                                         AND (POSITION(\'' . $day . '\' IN cpv.days)>0 or cpv.days IS NULL)
                                                                         AND sp.PERIOD_ID=\'' . $_REQUEST[period] . '\'
-				AND s.STUDENT_ID=\'' . UserStudentID() . '\'
+				AND s.COLLEGE_ROLL_NO=\'' . UserStudentID() . '\'
 				AND s.SYEAR=\'' . UserSyear() . '\' AND s.COLLEGE_ID = \'' . UserCollege() . '\' AND (cpv.COURSE_PERIOD_DATE=\'' . date('Y-m-d', strtotime($date)) . '\' OR cpv.COURSE_PERIOD_DATE IS NULL) 
                                                                         AND (\'' . date('Y-m-d', strtotime($date)) . '\' BETWEEN s.START_DATE AND s.END_DATE OR (s.END_DATE IS NULL AND s.START_DATE<=\'' . date('Y-m-d', strtotime($date)) . '\'))
                                                                         AND s.MARKING_PERIOD_ID IN (' . GetAllMP(GetMPTable(GetMP($mp_id, 'TABLE')), $mp_id) . ') 

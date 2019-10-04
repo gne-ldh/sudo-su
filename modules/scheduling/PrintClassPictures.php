@@ -46,7 +46,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                 $_openSIS['User'] = array(1 => array('STAFF_ID' => $teacher_id, 'NAME' => 'name', 'PROFILE' => 'teacher', 'COLLEGES' => ',' . UserCollege() . ',', 'SYEAR' => UserSyear()));
                 $_SESSION['UserCoursePeriod'] = $course_period_id;
 
-                $extra = array('SELECT_ONLY' => 's.STUDENT_ID,s.LAST_NAME,s.FIRST_NAME', 'ORDER_BY' => 's.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME');
+                $extra = array('SELECT_ONLY' => 's.COLLEGE_ROLL_NO,s.LAST_NAME,s.FIRST_NAME', 'ORDER_BY' => 's.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME');
                 $RET = GetStuList($extra);
                 if (count($RET)) {
                     echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
@@ -76,16 +76,16 @@ if ($_REQUEST['modfunc'] == 'save') {
                     }
 
                     foreach ($RET as $student) {
-                        $student_id = $student['STUDENT_ID'];
+                        $college_roll_no = $student['COLLEGE_ROLL_NO'];
 
                         if ($i++ % 5 == 0)
                             echo '<TR>';
 
                         echo '<TD valign=bottom><TABLE>';
                         
-                        if($student_id)
+                        if($college_roll_no)
                         {
-                        $stu_img_info= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID='.$student_id.' AND PROFILE_ID=3 AND COLLEGE_ID='. UserCollege().' AND SYEAR='.UserSyear().' AND FILE_INFO=\'stuimg\''));
+                        $stu_img_info= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID='.$college_roll_no.' AND PROFILE_ID=3 AND COLLEGE_ID='. UserCollege().' AND SYEAR='.UserSyear().' AND FILE_INFO=\'stuimg\''));
                         $StudentPicturesPath=1;
                         }   
                         else
@@ -101,7 +101,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 //                                echo '';
 //                        }
                         
-//                        if ($StudentPicturesPath && (($size = getimagesize($picture_path = $StudentPicturesPath . '/' . $student_id . '.JPG')) || $_REQUEST['last_year'] == 'Y' && ($size = getimagesize($picture_path = $StudentPicturesPath . '/' . $student_id . '.JPG'))))
+//                        if ($StudentPicturesPath && (($size = getimagesize($picture_path = $StudentPicturesPath . '/' . $college_roll_no . '.JPG')) || $_REQUEST['last_year'] == 'Y' && ($size = getimagesize($picture_path = $StudentPicturesPath . '/' . $college_roll_no . '.JPG'))))
 //                            if ($size[1] / $size[0] > 144 / 144)
 //                                echo '<TR><TD><IMG SRC="data:image/jpeg;base64,'.base64_encode($stu_img_info[1]['CONTENT']).'" width=144></TD></TR>';
 //                            else
@@ -279,7 +279,7 @@ function mySearch($type, $extra = '') {
         elseif (User('PROFILE') == 'teacher') {
             $sql = 'SELECT cp.COURSE_PERIOD_ID,cp.TITLE,sp.ATTENDANCE FROM course_periods cp,course_period_var cpv,college_periods sp WHERE cp.COLLEGE_ID=\'' . UserCollege() . '\' AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.TEACHER_ID=\'' . User('STAFF_ID') . '\' AND sp.PERIOD_ID=cpv.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID';
         } else {
-            $sql = 'SELECT cp.COURSE_PERIOD_ID,cp.TITLE,sp.ATTENDANCE FROM course_periods cp,course_period_var cpv,college_periods sp,schedule ss WHERE cp.COLLEGE_ID=\'' . UserCollege() . '\' AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND ss.SYEAR=\'' . UserSyear() . '\' AND ss.STUDENT_ID=\'' . UserStudentID() . '\' AND (CURRENT_DATE>=ss.START_DATE AND (ss.END_DATE IS NULL OR CURRENT_DATE<=ss.END_DATE)) AND sp.PERIOD_ID=cpv.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID';
+            $sql = 'SELECT cp.COURSE_PERIOD_ID,cp.TITLE,sp.ATTENDANCE FROM course_periods cp,course_period_var cpv,college_periods sp,schedule ss WHERE cp.COLLEGE_ID=\'' . UserCollege() . '\' AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND ss.SYEAR=\'' . UserSyear() . '\' AND ss.COLLEGE_ROLL_NO=\'' . UserStudentID() . '\' AND (CURRENT_DATE>=ss.START_DATE AND (ss.END_DATE IS NULL OR CURRENT_DATE<=ss.END_DATE)) AND sp.PERIOD_ID=cpv.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID';
         }
         $sql .= ' GROUP BY cp.COURSE_PERIOD_ID ORDER BY sp.PERIOD_ID';
 

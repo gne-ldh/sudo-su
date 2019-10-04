@@ -34,7 +34,7 @@ $to_family = 'To the parents of:';
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
     if (count($_REQUEST['st_arr'])) {
         $st_list = '\'' . implode('\',\'', $_REQUEST['st_arr']) . '\'';
-        $extra['WHERE'] = ' AND s.STUDENT_ID IN (' . $st_list . ')';
+        $extra['WHERE'] = ' AND s.COLLEGE_ROLL_NO IN (' . $st_list . ')';
         $_REQUEST['mailing_labels'] = 'Y';
         Widgets('mailing_labels');
         $extra['SELECT'] .= ',coalesce(s.COMMON_NAME,s.FIRST_NAME) AS NICK_NAME';
@@ -86,7 +86,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
                     if ($_REQUEST['to_address'] == 'student') {
 
                         foreach ($addresses as $key => $address) {
-                            $Stu_address = DBGet(DBQuery('SELECT STREET_ADDRESS_1 as ADDRESS,STREET_ADDRESS_2 as STREET,CITY,STATE,ZIPCODE FROM student_address WHERE STUDENT_ID=\'' . $address['STUDENT_ID'] . '\' AND TYPE=\'Home Address\' LIMIT 1'));
+                            $Stu_address = DBGet(DBQuery('SELECT STREET_ADDRESS_1 as ADDRESS,STREET_ADDRESS_2 as STREET,CITY,STATE,ZIPCODE FROM student_address WHERE COLLEGE_ROLL_NO=\'' . $address['COLLEGE_ROLL_NO'] . '\' AND TYPE=\'Home Address\' LIMIT 1'));
                             $Stu_address = $Stu_address[1];
                             if ($cols < 1)
                                 echo '<tr>';
@@ -121,13 +121,13 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
                     } elseif ($_REQUEST['to_address'] == 'pri_contact') {
 
                         foreach ($addresses as $key => $address) {
-                            $pri_par_id = DBGet(DBQuery('SELECT * FROM students_join_people WHERE STUDENT_ID=\'' . $address['STUDENT_ID'] . '\' AND EMERGENCY_TYPE=\'Primary\''));
+                            $pri_par_id = DBGet(DBQuery('SELECT * FROM students_join_people WHERE COLLEGE_ROLL_NO=\'' . $address['COLLEGE_ROLL_NO'] . '\' AND EMERGENCY_TYPE=\'Primary\''));
                             $p_addr = DBGet(DBQuery('SELECT p.FIRST_NAME as PRI_FIRST_NAME,p.LAST_NAME as PRI_LAST_NAME,sa.STREET_ADDRESS_1 as PRIM_ADDRESS,sa.STREET_ADDRESS_2 as PRIM_STREET,sa.CITY as PRIM_CITY,sa.STATE as PRIM_STATE,sa.ZIPCODE as PRIM_ZIPCODE from people p,student_address sa WHERE p.STAFF_ID=sa.PEOPLE_ID  AND p.STAFF_ID=\'' . $pri_par_id[1]['PERSON_ID'] . '\'  AND sa.PEOPLE_ID IS NOT NULL '));
 
 
-                            //echo 'SELECT p.FIRST_NAME as PRI_FIRST_NAME,p.LAST_NAME as PRI_LAST_NAME,sa.STREET_ADDRESS_1 as PRIM_ADDRESS,sa.STREET_ADDRESS_2 as PRIM_STREET,sa.CITY as PRIM_CITY,sa.STATE as PRIM_STATE,sa.ZIPCODE as PRIM_ZIPCODE FROM student_address sa,people p WHERE sa.STUDENT_ID=\''.$address['STUDENT_ID'].'\' AND sa.PEOPLE_ID=p.STAFF_ID AND sa.TYPE=\'Primary\' LIMIT 1';
+                            //echo 'SELECT p.FIRST_NAME as PRI_FIRST_NAME,p.LAST_NAME as PRI_LAST_NAME,sa.STREET_ADDRESS_1 as PRIM_ADDRESS,sa.STREET_ADDRESS_2 as PRIM_STREET,sa.CITY as PRIM_CITY,sa.STATE as PRIM_STATE,sa.ZIPCODE as PRIM_ZIPCODE FROM student_address sa,people p WHERE sa.COLLEGE_ROLL_NO=\''.$address['COLLEGE_ROLL_NO'].'\' AND sa.PEOPLE_ID=p.STAFF_ID AND sa.TYPE=\'Primary\' LIMIT 1';
                             //echo'<br><br>';
-                            //$Stu_address=DBGet(DBQuery('SELECT p.FIRST_NAME as PRI_FIRST_NAME,p.LAST_NAME as PRI_LAST_NAME,sa.STREET_ADDRESS_1 as PRIM_ADDRESS,sa.STREET_ADDRESS_2 as PRIM_STREET,sa.CITY as PRIM_CITY,sa.STATE as PRIM_STATE,sa.ZIPCODE as PRIM_ZIPCODE FROM student_address sa,people p WHERE sa.STUDENT_ID=\''.$address['STUDENT_ID'].'\' AND sa.PEOPLE_ID=p.STAFF_ID AND sa.TYPE=\'Primary\' LIMIT 1'));
+                            //$Stu_address=DBGet(DBQuery('SELECT p.FIRST_NAME as PRI_FIRST_NAME,p.LAST_NAME as PRI_LAST_NAME,sa.STREET_ADDRESS_1 as PRIM_ADDRESS,sa.STREET_ADDRESS_2 as PRIM_STREET,sa.CITY as PRIM_CITY,sa.STATE as PRIM_STATE,sa.ZIPCODE as PRIM_ZIPCODE FROM student_address sa,people p WHERE sa.COLLEGE_ROLL_NO=\''.$address['COLLEGE_ROLL_NO'].'\' AND sa.PEOPLE_ID=p.STAFF_ID AND sa.TYPE=\'Primary\' LIMIT 1'));
                             $Stu_address = $p_addr[1];
                             if ($cols < 1)
                                 echo '<tr>';
@@ -166,10 +166,10 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
 
                         foreach ($addresses as $key => $address) {
 
-                            $sec_par_id = DBGet(DBQuery('SELECT * FROM students_join_people WHERE STUDENT_ID=\'' . $address['STUDENT_ID'] . '\' AND EMERGENCY_TYPE=\'Secondary\''));
+                            $sec_par_id = DBGet(DBQuery('SELECT * FROM students_join_people WHERE COLLEGE_ROLL_NO=\'' . $address['COLLEGE_ROLL_NO'] . '\' AND EMERGENCY_TYPE=\'Secondary\''));
                             $Stu_address = DBGet(DBQuery('SELECT p.FIRST_NAME as SEC_FIRST_NAME,p.LAST_NAME as SEC_LAST_NAME,sa.STREET_ADDRESS_1 as SEC_ADDRESS,sa.STREET_ADDRESS_2 as SEC_STREET,sa.CITY as SEC_CITY,sa.STATE as SEC_STATE,sa.ZIPCODE as SEC_ZIPCODE from people p,student_address sa WHERE p.STAFF_ID=sa.PEOPLE_ID  AND p.STAFF_ID=\'' . $sec_par_id[1]['PERSON_ID'] . '\'  AND sa.PEOPLE_ID IS NOT NULL '));
 
-                            //$Stu_address=DBGet(DBQuery('SELECT p.FIRST_NAME as SEC_FIRST_NAME,p.LAST_NAME as SEC_LAST_NAME,sa.STREET_ADDRESS_1 as SEC_ADDRESS,sa.STREET_ADDRESS_2 as SEC_STREET,sa.CITY as SEC_CITY,sa.STATE as SEC_STATE,sa.ZIPCODE as SEC_ZIPCODE FROM student_address sa,people p WHERE sa.STUDENT_ID=\''.$address['STUDENT_ID'].'\' AND sa.PEOPLE_ID=p.STAFF_ID AND sa.TYPE=\'Secondary\' LIMIT 1'));
+                            //$Stu_address=DBGet(DBQuery('SELECT p.FIRST_NAME as SEC_FIRST_NAME,p.LAST_NAME as SEC_LAST_NAME,sa.STREET_ADDRESS_1 as SEC_ADDRESS,sa.STREET_ADDRESS_2 as SEC_STREET,sa.CITY as SEC_CITY,sa.STATE as SEC_STATE,sa.ZIPCODE as SEC_ZIPCODE FROM student_address sa,people p WHERE sa.COLLEGE_ROLL_NO=\''.$address['COLLEGE_ROLL_NO'].'\' AND sa.PEOPLE_ID=p.STAFF_ID AND sa.TYPE=\'Secondary\' LIMIT 1'));
                             $Stu_address = $Stu_address[1];
                             if ($cols < 1)
                                 echo '<tr>';
@@ -207,8 +207,8 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
                     } elseif ($_REQUEST['to_address'] == 'contact') {
 
                         foreach ($addresses as $key => $address) {
-                            $Stu_prim_address = DBGet(DBQuery('SELECT p.FIRST_NAME as PRI_FIRST_NAME,p.LAST_NAME as PRI_LAST_NAME,sa.STREET_ADDRESS_1 as PRIM_ADDRESS,sa.STREET_ADDRESS_2 as PRIM_STREET,sa.CITY as PRIM_CITY,sa.STATE as PRIM_STATE,sa.ZIPCODE as PRIM_ZIPCODE FROM student_address sa,people p WHERE sa.STUDENT_ID=\'' . $address['STUDENT_ID'] . '\' AND sa.PEOPLE_ID=p.STAFF_ID AND sa.TYPE=\'Primary\' LIMIT 1'));
-                            $Stu_sec_address = DBGet(DBQuery('SELECT p.FIRST_NAME as SEC_FIRST_NAME,p.LAST_NAME as SEC_LAST_NAME,sa.STREET_ADDRESS_1 as SEC_ADDRESS,sa.STREET_ADDRESS_2 as SEC_STREET,sa.CITY as SEC_CITY,sa.STATE as SEC_STATE,sa.ZIPCODE as SEC_ZIPCODE FROM student_address sa,people p WHERE sa.STUDENT_ID=\'' . $address['STUDENT_ID'] . '\' AND sa.PEOPLE_ID=p.STAFF_ID AND sa.TYPE=\'Secondary\' LIMIT 1'));
+                            $Stu_prim_address = DBGet(DBQuery('SELECT p.FIRST_NAME as PRI_FIRST_NAME,p.LAST_NAME as PRI_LAST_NAME,sa.STREET_ADDRESS_1 as PRIM_ADDRESS,sa.STREET_ADDRESS_2 as PRIM_STREET,sa.CITY as PRIM_CITY,sa.STATE as PRIM_STATE,sa.ZIPCODE as PRIM_ZIPCODE FROM student_address sa,people p WHERE sa.COLLEGE_ROLL_NO=\'' . $address['COLLEGE_ROLL_NO'] . '\' AND sa.PEOPLE_ID=p.STAFF_ID AND sa.TYPE=\'Primary\' LIMIT 1'));
+                            $Stu_sec_address = DBGet(DBQuery('SELECT p.FIRST_NAME as SEC_FIRST_NAME,p.LAST_NAME as SEC_LAST_NAME,sa.STREET_ADDRESS_1 as SEC_ADDRESS,sa.STREET_ADDRESS_2 as SEC_STREET,sa.CITY as SEC_CITY,sa.STATE as SEC_STATE,sa.ZIPCODE as SEC_ZIPCODE FROM student_address sa,people p WHERE sa.COLLEGE_ROLL_NO=\'' . $address['COLLEGE_ROLL_NO'] . '\' AND sa.PEOPLE_ID=p.STAFF_ID AND sa.TYPE=\'Secondary\' LIMIT 1'));
 
                             $Stu_address = $Stu_prim_address[1];
                             foreach ($Stu_sec_address[1] as $ind => $col)
@@ -412,14 +412,14 @@ if (!$_REQUEST['modfunc']) {
 
 
 
-    $extra['SELECT'] .= ",s.STUDENT_ID AS CHECKBOX";
+    $extra['SELECT'] .= ",s.COLLEGE_ROLL_NO AS CHECKBOX";
     $extra['link'] = array('FULL_NAME' => false);
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
     $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'unused\');"><A>');
     $extra['options']['search'] = false;
     $extra['new'] = true;
 
-    Search('student_id', $extra);
+    Search('college_roll_no', $extra);
     if ($_REQUEST['search_modfunc'] == 'list') {
         echo '<div class="text-right p-b-20 p-r-20"><INPUT type=submit class="btn btn-primary" value=\'Create Labels for Selected Students\'></div>';
         echo "</FORM>";
@@ -502,7 +502,7 @@ function _makeChooseCheckbox($value, $title) {
     global $THIS_RET;
 //    return '<INPUT type=checkbox name=st_arr[] value=' . $value . ' checked>';
     
-    return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
+    return "<input name=unused[$THIS_RET[COLLEGE_ROLL_NO]] value=" . $THIS_RET[COLLEGE_ROLL_NO] . "  type='checkbox' id=$THIS_RET[COLLEGE_ROLL_NO] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[COLLEGE_ROLL_NO]);' />";
 }
 
 ?>

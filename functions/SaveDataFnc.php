@@ -164,7 +164,7 @@ function SaveData($iu_extra,$fields_done=false,$field_names=false)
                                              $sql[$table] .= $up_values;
                                              if($column == 'END_DATE' && $table=='student_enrollment' )
                                              {
-                                                $sc_qr=  DBGet(DBQuery('SELECT course_period_id from schedule  WHERE STUDENT_ID=\''.$_REQUEST['student_id'].'\' AND COLLEGE_ID=\''.UserCollege().'\'  AND SYEAR=\''.UserSyear().'\'  AND (END_DATE IS NULL OR \''.$value.'\' < END_DATE )'));
+                                                $sc_qr=  DBGet(DBQuery('SELECT course_period_id from schedule  WHERE COLLEGE_ROLL_NO=\''.$_REQUEST['college_roll_no'].'\' AND COLLEGE_ID=\''.UserCollege().'\'  AND SYEAR=\''.UserSyear().'\'  AND (END_DATE IS NULL OR \''.$value.'\' < END_DATE )'));
 
                                                 foreach($sc_qr as $v)
                                                                  {
@@ -177,7 +177,7 @@ function SaveData($iu_extra,$fields_done=false,$field_names=false)
                                                                         else
                                                                          $final_end_date=date('Y-m-d',strtotime($sc_end_date));   
 
-                                                                       DBQuery('UPDATE schedule SET END_DATE=\''.$final_end_date.'\' WHERE STUDENT_ID=\''.$_REQUEST['student_id'].'\' AND COLLEGE_ID=\''.UserCollege().'\'  AND SYEAR=\''.UserSyear().'\' and course_period_id=\''.$v['COURSE_PERIOD_ID'].'\'');  
+                                                                       DBQuery('UPDATE schedule SET END_DATE=\''.$final_end_date.'\' WHERE COLLEGE_ROLL_NO=\''.$_REQUEST['college_roll_no'].'\' AND COLLEGE_ID=\''.UserCollege().'\'  AND SYEAR=\''.UserSyear().'\' and course_period_id=\''.$v['COURSE_PERIOD_ID'].'\'');  
                                                                    }
   
                                              }
@@ -193,7 +193,7 @@ function SaveData($iu_extra,$fields_done=false,$field_names=false)
                             $sql[$table] = 'UPDATE '.$table.' SET '.substr($sql[$table],0,-1).' WHERE '.str_replace('__ID__',$id,$iu_extra[$table]);
                             if($table=='student_enrollment')
                             {
-                                  $enrollment_record=DBGet(DBQuery("SELECT * FROM student_enrollment WHERE STUDENT_ID='$_REQUEST[student_id]' AND SYEAR='".UserSyear()."' AND COLLEGE_ID='".UserCollege()."'"));
+                                  $enrollment_record=DBGet(DBQuery("SELECT * FROM student_enrollment WHERE COLLEGE_ROLL_NO='$_REQUEST[college_roll_no]' AND SYEAR='".UserSyear()."' AND COLLEGE_ID='".UserCollege()."'"));
                                   $enrollment_record=$enrollment_record[1];
                                   
                             }
