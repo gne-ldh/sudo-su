@@ -1,7 +1,7 @@
 <?php
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -31,17 +31,17 @@ include('../../RedirectModulesInc.php');
                                         c.TITLE AS COURSE_TITLE,cp.PERIOD_ID,
                                         (cp.TOTAL_SEATS-cp.FILLED_SEATS) AS OPEN_SEATS,s.STUDENT_ID AS SCHEDULED
                                         FROM schedule_requests r,
-                                        courses c,school_periods sp,
+                                        courses c,college_periods sp,
                                         course_periods cp LEFT OUTER JOIN schedule s ON 
                                         (s.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND s.STUDENT_ID='".UserStudentID()."')
                                         WHERE 
-                                        r.SYEAR='".UserSyear()."' AND r.SCHOOL_ID='".UserSchool()."'
+                                        r.SYEAR='".UserSyear()."' AND r.SCHOOL_ID='".UserCollege()."'
                                         AND r.COURSE_ID=cp.COURSE_ID AND c.COURSE_ID=cp.COURSE_ID
                                         AND r.STUDENT_ID='".UserStudentID()."'
                                         AND sp.PERIOD_ID=cp.PERIOD_ID
                                         ORDER BY ".db_case(array('s.STUDENT_ID',"''","NULL",'sp.SORT_ORDER'))."
 				"),array(),array('CRS','PERIOD_ID'));
-	$periods_RET = DBGet(DBQuery("SELECT PERIOD_ID,SHORT_NAME FROM school_periods WHERE SYEAR='".UserSyear()."' AND SCHOOL_ID='".UserSchool()."' ORDER BY SORT_ORDER"));
+	$periods_RET = DBGet(DBQuery("SELECT PERIOD_ID,SHORT_NAME FROM college_periods WHERE SYEAR='".UserSyear()."' AND SCHOOL_ID='".UserCollege()."' ORDER BY SORT_ORDER"));
 	echo '<CENTER><TABLE style="border: 1px solid;">';
 	echo '<TR><TD></TD>';
 	foreach($periods_RET as $period)

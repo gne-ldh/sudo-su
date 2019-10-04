@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -55,14 +55,14 @@ if (isset($_REQUEST['student_id'])) {
 ####################
 if ($_REQUEST['attendance'] && ($_POST['attendance'] || $_REQUEST['ajax']) && AllowEdit()) {
     foreach ($_REQUEST['attendance'] as $student_id => $values) {
-        foreach ($values as $school_date => $columns) {
+        foreach ($values as $college_date => $columns) {
             $sql = 'UPDATE attendance_period SET ADMIN=\'Y\',';
             foreach ($columns as $column => $value)
                 $sql .= $column . "='" . str_replace("\'", "''", $value) . "',";
 
-            $sql = substr($sql, 0, -1) . ' WHERE SCHOOL_DATE=\'' . date('Y-m-d', strtotime($school_date)) . '\' AND PERIOD_ID=\'' . optional_param('period_id', '', PARAM_SPCL) . '\' AND STUDENT_ID=\'' . $student_id . '\'';
+            $sql = substr($sql, 0, -1) . ' WHERE SCHOOL_DATE=\'' . date('Y-m-d', strtotime($college_date)) . '\' AND PERIOD_ID=\'' . optional_param('period_id', '', PARAM_SPCL) . '\' AND STUDENT_ID=\'' . $student_id . '\'';
             DBQuery($sql);
-            UpdateAttendanceDaily($student_id, $school_date);
+            UpdateAttendanceDaily($student_id, $college_date);
         }
     }
 
@@ -83,7 +83,7 @@ if ($_REQUEST['search_modfunc'] || $_REQUEST['student_id'] || UserStudentID() ||
     $extraM .= "";
     $period_select = "<SELECT name=period_id onchange='this.form.submit();' class='form-control'><OPTION value=\"\">Daily</OPTION>";
     if (!UserStudentID() && !$_REQUEST['student_id']) {
-        $periods_RET = DBGet(DBQuery('SELECT PERIOD_ID,TITLE FROM school_periods WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'));
+        $periods_RET = DBGet(DBQuery('SELECT PERIOD_ID,TITLE FROM college_periods WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' ORDER BY SORT_ORDER'));
         if (count($periods_RET) > 1) {
             foreach ($periods_RET as $period) {
                 $period_select .= "<OPTION value=" . $period['PERIOD_ID'] . (($_REQUEST['period_id'] == $period['PERIOD_ID']) ? ' SELECTED' : '') . ">" . $period['TITLE'] . '</OPTION>';
@@ -116,7 +116,7 @@ if ($_REQUEST['search_modfunc'] || $_REQUEST['student_id'] || UserStudentID() ||
     echo '</div>'; //.panel-body
 }
 
-$cal_RET = DBGet(DBQuery('SELECT DISTINCT SCHOOL_DATE,CONCAT(\'_\',DATE_FORMAT(SCHOOL_DATE,\'%Y%m%d\')) AS SHORT_DATE FROM attendance_calendar WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SCHOOL_DATE BETWEEN \'' . date('Y-m-d', strtotime($start_date)) . '\' AND \'' . date('Y-m-d', strtotime($end_date)) . '\' ORDER BY SCHOOL_DATE'));
+$cal_RET = DBGet(DBQuery('SELECT DISTINCT SCHOOL_DATE,CONCAT(\'_\',DATE_FORMAT(SCHOOL_DATE,\'%Y%m%d\')) AS SHORT_DATE FROM attendance_calendar WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SCHOOL_DATE BETWEEN \'' . date('Y-m-d', strtotime($start_date)) . '\' AND \'' . date('Y-m-d', strtotime($end_date)) . '\' ORDER BY SCHOOL_DATE'));
 
 
 if (UserStudentID() || $_REQUEST['student_id'] || User('PROFILE') == 'parent') {
@@ -137,7 +137,7 @@ if (UserStudentID() || $_REQUEST['student_id'] || User('PROFILE') == 'parent') {
 
     if ($_REQUEST['period_id']) {
         $sql = 'SELECT cp.TITLE as COURSE_PERIOD,sp.TITLE as PERIOD,cpv.PERIOD_ID, cp.COURSE_PERIOD_ID
-                 FROM schedule s,courses c,course_periods cp,course_period_var cpv,school_periods sp
+                 FROM schedule s,courses c,course_periods cp,course_period_var cpv,college_periods sp
                  WHERE
                 s.COURSE_ID = c.COURSE_ID AND s.COURSE_ID = cp.COURSE_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID
                 AND s.COURSE_PERIOD_ID = cp.COURSE_PERIOD_ID AND cpv.PERIOD_ID = sp.PERIOD_ID AND cpv.DOES_ATTENDANCE=\'Y\'
@@ -199,15 +199,15 @@ if (UserStudentID() || $_REQUEST['student_id'] || User('PROFILE') == 'parent') {
 //working
         if ($_REQUEST['myclasses'] != '') {
             if ($_REQUEST['include_inactive'] == 'Y') {
-                $sql = 'SELECT ad.STATE_VALUE,ad.STUDENT_ID,ad.SCHOOL_DATE,CONCAT(\'_\',DATE_FORMAT(ad.SCHOOL_DATE,\'%Y%m%d\')) AS SHORT_DATE FROM attendance_day ad,student_enrollment ssm, attendance_period ap, course_periods cp WHERE ad.STUDENT_ID=ap.STUDENT_ID AND ad.SCHOOL_DATE=ap.SCHOOL_DATE AND ap.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND ' . (($_REQUEST['myclasses'] == 'my_classes') ? '(cp.TEACHER_ID=\'' . User('STAFF_ID') . '\' OR cp.SECONDARY_TEACHER_ID=\'' . User('STAFF_ID') . '\')' : 'cp.COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\'') . ' AND ad.STUDENT_ID=ssm.STUDENT_ID AND \'' . date('Y-m-d', strtotime(DBDate())) . '\'>=ssm.START_DATE AND ssm.SCHOOL_ID=\'' . UserSchool() . '\' AND ad.SCHOOL_DATE BETWEEN \'' . date('Y-m-d', strtotime($start_date)) . '\' AND \'' . date('Y-m-d', strtotime($end_date)) . '\'';
+                $sql = 'SELECT ad.STATE_VALUE,ad.STUDENT_ID,ad.SCHOOL_DATE,CONCAT(\'_\',DATE_FORMAT(ad.SCHOOL_DATE,\'%Y%m%d\')) AS SHORT_DATE FROM attendance_day ad,student_enrollment ssm, attendance_period ap, course_periods cp WHERE ad.STUDENT_ID=ap.STUDENT_ID AND ad.SCHOOL_DATE=ap.SCHOOL_DATE AND ap.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND ' . (($_REQUEST['myclasses'] == 'my_classes') ? '(cp.TEACHER_ID=\'' . User('STAFF_ID') . '\' OR cp.SECONDARY_TEACHER_ID=\'' . User('STAFF_ID') . '\')' : 'cp.COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\'') . ' AND ad.STUDENT_ID=ssm.STUDENT_ID AND \'' . date('Y-m-d', strtotime(DBDate())) . '\'>=ssm.START_DATE AND ssm.SCHOOL_ID=\'' . UserCollege() . '\' AND ad.SCHOOL_DATE BETWEEN \'' . date('Y-m-d', strtotime($start_date)) . '\' AND \'' . date('Y-m-d', strtotime($end_date)) . '\'';
             } else {
-                $sql = 'SELECT ad.STATE_VALUE,ad.STUDENT_ID,ad.SCHOOL_DATE,CONCAT(\'_\',DATE_FORMAT(ad.SCHOOL_DATE,\'%Y%m%d\')) AS SHORT_DATE FROM attendance_day ad,student_enrollment ssm, attendance_period ap, course_periods cp WHERE ad.STUDENT_ID=ap.STUDENT_ID AND ad.SCHOOL_DATE=ap.SCHOOL_DATE AND ap.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND ' . (($_REQUEST['myclasses'] == 'my_classes') ? '(cp.TEACHER_ID=\'' . User('STAFF_ID') . '\' OR cp.SECONDARY_TEACHER_ID=\'' . User('STAFF_ID') . '\')' : 'cp.COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\'') . ' AND ad.STUDENT_ID=ssm.STUDENT_ID AND (\'' . date('Y-m-d', strtotime(DBDate())) . '\' BETWEEN ssm.START_DATE AND ssm.END_DATE OR ssm.END_DATE IS NULL) AND \'' . date('Y-m-d', strtotime(DBDate())) . '\'>=ssm.START_DATE AND ssm.SCHOOL_ID=\'' . UserSchool() . '\' AND ad.SCHOOL_DATE BETWEEN \'' . date('Y-m-d', strtotime($start_date)) . '\' AND \'' . date('Y-m-d', strtotime($end_date)) . '\'';
+                $sql = 'SELECT ad.STATE_VALUE,ad.STUDENT_ID,ad.SCHOOL_DATE,CONCAT(\'_\',DATE_FORMAT(ad.SCHOOL_DATE,\'%Y%m%d\')) AS SHORT_DATE FROM attendance_day ad,student_enrollment ssm, attendance_period ap, course_periods cp WHERE ad.STUDENT_ID=ap.STUDENT_ID AND ad.SCHOOL_DATE=ap.SCHOOL_DATE AND ap.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND ' . (($_REQUEST['myclasses'] == 'my_classes') ? '(cp.TEACHER_ID=\'' . User('STAFF_ID') . '\' OR cp.SECONDARY_TEACHER_ID=\'' . User('STAFF_ID') . '\')' : 'cp.COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\'') . ' AND ad.STUDENT_ID=ssm.STUDENT_ID AND (\'' . date('Y-m-d', strtotime(DBDate())) . '\' BETWEEN ssm.START_DATE AND ssm.END_DATE OR ssm.END_DATE IS NULL) AND \'' . date('Y-m-d', strtotime(DBDate())) . '\'>=ssm.START_DATE AND ssm.SCHOOL_ID=\'' . UserCollege() . '\' AND ad.SCHOOL_DATE BETWEEN \'' . date('Y-m-d', strtotime($start_date)) . '\' AND \'' . date('Y-m-d', strtotime($end_date)) . '\'';
             }
         } else {
             if ($_REQUEST['include_inactive'] == 'Y') {
-                $sql = 'SELECT ad.STATE_VALUE,ad.STUDENT_ID,SCHOOL_DATE,CONCAT(\'_\',DATE_FORMAT(ad.SCHOOL_DATE,\'%Y%m%d\')) AS SHORT_DATE FROM attendance_day ad,student_enrollment ssm WHERE ad.STUDENT_ID=ssm.STUDENT_ID AND \'' . date('Y-m-d', strtotime(DBDate())) . '\'>=ssm.START_DATE AND ssm.SCHOOL_ID=\'' . UserSchool() . '\' AND SCHOOL_DATE BETWEEN \'' . date('Y-m-d', strtotime($start_date)) . '\' AND \'' . date('Y-m-d', strtotime($end_date)) . '\'';
+                $sql = 'SELECT ad.STATE_VALUE,ad.STUDENT_ID,SCHOOL_DATE,CONCAT(\'_\',DATE_FORMAT(ad.SCHOOL_DATE,\'%Y%m%d\')) AS SHORT_DATE FROM attendance_day ad,student_enrollment ssm WHERE ad.STUDENT_ID=ssm.STUDENT_ID AND \'' . date('Y-m-d', strtotime(DBDate())) . '\'>=ssm.START_DATE AND ssm.SCHOOL_ID=\'' . UserCollege() . '\' AND SCHOOL_DATE BETWEEN \'' . date('Y-m-d', strtotime($start_date)) . '\' AND \'' . date('Y-m-d', strtotime($end_date)) . '\'';
             } else {
-                $sql = 'SELECT ad.STATE_VALUE,ad.STUDENT_ID,SCHOOL_DATE,CONCAT(\'_\',DATE_FORMAT(ad.SCHOOL_DATE,\'%Y%m%d\')) AS SHORT_DATE FROM attendance_day ad,student_enrollment ssm WHERE ad.STUDENT_ID=ssm.STUDENT_ID AND (\'' . date('Y-m-d', strtotime(DBDate())) . '\' BETWEEN ssm.START_DATE AND ssm.END_DATE OR ssm.END_DATE IS NULL) AND \'' . date('Y-m-d', strtotime(DBDate())) . '\'>=ssm.START_DATE AND ssm.SCHOOL_ID=\'' . UserSchool() . '\' AND SCHOOL_DATE BETWEEN \'' . date('Y-m-d', strtotime($start_date)) . '\' AND \'' . date('Y-m-d', strtotime($end_date)) . '\'';
+                $sql = 'SELECT ad.STATE_VALUE,ad.STUDENT_ID,SCHOOL_DATE,CONCAT(\'_\',DATE_FORMAT(ad.SCHOOL_DATE,\'%Y%m%d\')) AS SHORT_DATE FROM attendance_day ad,student_enrollment ssm WHERE ad.STUDENT_ID=ssm.STUDENT_ID AND (\'' . date('Y-m-d', strtotime(DBDate())) . '\' BETWEEN ssm.START_DATE AND ssm.END_DATE OR ssm.END_DATE IS NULL) AND \'' . date('Y-m-d', strtotime(DBDate())) . '\'>=ssm.START_DATE AND ssm.SCHOOL_ID=\'' . UserCollege() . '\' AND SCHOOL_DATE BETWEEN \'' . date('Y-m-d', strtotime($start_date)) . '\' AND \'' . date('Y-m-d', strtotime($end_date)) . '\'';
             }
         }
 
@@ -223,8 +223,8 @@ if (UserStudentID() || $_REQUEST['student_id'] || User('PROFILE') == 'parent') {
             $sql .= ' AND ((\'' . date('Y-m-d', strtotime(DBDate())) . '\' BETWEEN ssm.START_DATE AND ssm.END_DATE OR ssm.END_DATE IS NULL) AND \'' . DBDate() . '\'>=ssm.START_DATE) ';
         }
 
-        if ($_REQUEST['_search_all_schools'] != 'Y') {
-            $sql .= ' AND ssm.SCHOOL_ID=\'' . UserSchool() . '\' ';
+        if ($_REQUEST['_search_all_colleges'] != 'Y') {
+            $sql .= ' AND ssm.SCHOOL_ID=\'' . UserCollege() . '\' ';
         }
 //        if()
 //            print_r($_REQUEST);
@@ -276,7 +276,7 @@ if (UserStudentID() || $_REQUEST['student_id'] || User('PROFILE') == 'parent') {
     echo '<div id="conf_div" class="text-center"></div>';
     echo '<div class="row" id="resp_table">';
     echo '<div class="col-md-4">';
-    $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+    $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
     $QI = DBQuery($sql);
     $subjects_RET = DBGet($QI);
 
@@ -305,7 +305,7 @@ function _makeColor($value, $column) {
 
     if ($_REQUEST['period_id']) {
         if (!$attendance_codes)
-            $attendance_codes = DBGet(DBQuery('SELECT ID,TITLE,DEFAULT_CODE,STATE_CODE,SHORT_NAME FROM attendance_codes WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND TABLE_NAME=\'0\''), array(), array('ID'));
+            $attendance_codes = DBGet(DBQuery('SELECT ID,TITLE,DEFAULT_CODE,STATE_CODE,SHORT_NAME FROM attendance_codes WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserCollege() . '\' AND TABLE_NAME=\'0\''), array(), array('ID'));
 
         if ($attendance_codes[$RET[$THIS_RET['STUDENT_ID']][$column][1]['ATTENDANCE_CODE']][1]['DEFAULT_CODE'] == 'Y') {
             return "<TABLE bgcolor=#00FF00 cellpadding=0 cellspacing=0 width=10 class=LO_field><TR><TD>" . makeCodePulldown($RET[$THIS_RET['STUDENT_ID']][$column][1]['ATTENDANCE_CODE'], $THIS_RET['STUDENT_ID'], $column) . "</TD></TR></TABLE>";

@@ -1,7 +1,7 @@
 <?php
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -26,8 +26,8 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-$schoolinfo = DBGET(DBQUERY('SELECT * FROM schools WHERE ID = ' . UserSchool()));
-$schoolinfo = $schoolinfo[1];
+$collegeinfo = DBGET(DBQUERY('SELECT * FROM colleges WHERE ID = ' . UserCollege()));
+$collegeinfo = $collegeinfo[1];
 $tsyear = UserSyear();
 $tpicturepath = $openSISPath . $StudentPicturesPath;
 $studataquery = 'select 
@@ -52,8 +52,8 @@ WHEN sg.short_name = \'09\' THEN e.syear + 4
   END AS gradyear
 from students s
 inner join student_enrollment e on e.student_id=s.student_id and (e.start_date <= e.end_date or e.end_date is null) and e.syear = ' . $tsyear . '
-inner join school_gradelevels sg on sg.id=e.grade_id
-inner join schools sch on sch.id=e.school_id
+inner join college_gradelevels sg on sg.id=e.grade_id
+inner join colleges sch on sch.id=e.college_id
 left join student_address a on (a.student_id=s.student_id and a.type=\'Home Address\')
 where  s.student_id = ';
 $creditquery = 'SELECT divisor AS credit_attempted,credit_earned AS credit_earned
@@ -141,7 +141,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
 
                     if ($firstrec['SCHOOL_ID'] != '' && $firstrec['SYEAR'] != '') {
-                        $gradelevel = DBGet(DBQuery('SELECT sg.TITLE FROM school_gradelevels sg,student_enrollment se WHERE se.STUDENT_ID=' . $firstrec['STUDENT_ID'] . ' AND se.SCHOOL_ID=' . $firstrec['SCHOOL_ID'] . ' AND se.SYEAR=' . $firstrec['SYEAR'] . ' AND se.GRADE_ID=sg.ID ORDER BY se.ID DESC LIMIT 0,1'));
+                        $gradelevel = DBGet(DBQuery('SELECT sg.TITLE FROM college_gradelevels sg,student_enrollment se WHERE se.STUDENT_ID=' . $firstrec['STUDENT_ID'] . ' AND se.SCHOOL_ID=' . $firstrec['SCHOOL_ID'] . ' AND se.SYEAR=' . $firstrec['SYEAR'] . ' AND se.GRADE_ID=sg.ID ORDER BY se.ID DESC LIMIT 0,1'));
                         $gradelevel = $gradelevel[1]['TITLE'];
                     }
                     if ($gradelevel == '' && $firstrec['MP_SOURCE'] == 'History')
@@ -275,11 +275,11 @@ if ($_REQUEST['modfunc'] == 'save') {
             ?>
             <div class="print-wrapper">
                 <div class="print-header m-b-10">
-                    <div class="school-details">
-                        <h2><?php echo $schoolinfo['TITLE']; ?></h2>
-                        <b>Address :</b> <?php echo (($schoolinfo['ADDRESS'] != '') ? $schoolinfo['ADDRESS'] : '') . ' ' . (($schoolinfo['CITY'] != '') ? ', ' . $schoolinfo['CITY'] : '') . (($schoolinfo['STATE'] != '') ? ', ' . $schoolinfo['STATE'] : '') . (($schoolinfo['ZIPCODE'] != '') ? ', ' . $schoolinfo['ZIPCODE'] : '') ?>
-                        <?php if ($schoolinfo['PHONE']) { ?>
-                            <p><b>Phone :</b> <?php echo $schoolinfo['PHONE']; ?></p>
+                    <div class="college-details">
+                        <h2><?php echo $collegeinfo['TITLE']; ?></h2>
+                        <b>Address :</b> <?php echo (($collegeinfo['ADDRESS'] != '') ? $collegeinfo['ADDRESS'] : '') . ' ' . (($collegeinfo['CITY'] != '') ? ', ' . $collegeinfo['CITY'] : '') . (($collegeinfo['STATE'] != '') ? ', ' . $collegeinfo['STATE'] : '') . (($collegeinfo['ZIPCODE'] != '') ? ', ' . $collegeinfo['ZIPCODE'] : '') ?>
+                        <?php if ($collegeinfo['PHONE']) { ?>
+                            <p><b>Phone :</b> <?php echo $collegeinfo['PHONE']; ?></p>
                         <?php } ?>
                     </div>
                     <div class="header-right">
@@ -364,7 +364,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
                 <?php
                 $grade_scale = DBGet(DBQuery('SELECT rcg.TITLE,rcg.GPA_VALUE, rcg.UNWEIGHTED_GP,rcg.COMMENT,rcgs.GP_SCALE FROM report_card_grade_scales rcgs,report_card_grades rcg
-                                        WHERE rcg.grade_scale_id =rcgs.id and rcg.syear=\'' . $tsyear . '\' and rcg.school_id=\'' . UserSchool() . '\' ORDER BY rcg.SORT_ORDER'));
+                                        WHERE rcg.grade_scale_id =rcgs.id and rcg.syear=\'' . $tsyear . '\' and rcg.college_id=\'' . UserCollege() . '\' ORDER BY rcg.SORT_ORDER'));
 
                 $grade_scale_value = $grade_scale[1];
                 ?>
@@ -396,7 +396,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                 <?php
                 $picturehtml = '';
                 if ($_REQUEST['show_photo']) {
-                    $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . $student_id . ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
+                    $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . $student_id . ' AND PROFILE_ID=3 AND SCHOOL_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
                     if (count($stu_img_info) > 0) {
                         $picturehtml = '<td valign="top" align="left" width=30%><img style="padding:4px; width:144px; border:1px solid #333333; background-color:#fff;" src="data:image/jpeg;base64,' . base64_encode($stu_img_info[1]['CONTENT']) . '"></td>';
                     } else {
@@ -509,7 +509,7 @@ if (!$_REQUEST['modfunc']) {
     echo '<div id="conf_div" class="text-center"></div>';
     echo '<div class="row" id="resp_table">';
     echo '<div class="col-md-4">';
-    $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+    $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
     $QI = DBQuery($sql);
     $subjects_RET = DBGet($QI);
 

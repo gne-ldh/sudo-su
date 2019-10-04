@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -120,7 +120,7 @@ if (UserStudentID()) {
             else {
                 $sql = 'INSERT INTO student_report_card_grades ';
                 $fields = 'SCHOOL_ID, SYEAR, STUDENT_ID, MARKING_PERIOD_ID, ';
-                $values = UserSchool() . ", " . UserSyear() . ", $student_id, $mp_id, ";
+                $values = UserCollege() . ", " . UserSyear() . ", $student_id, $mp_id, ";
 
                 $go = false;
 
@@ -167,10 +167,10 @@ if (UserStudentID()) {
 
         $gquery = 'SELECT mp.syear, mp.marking_period_id as mp_id, mp.title as mp_name, mp.post_end_date as posted, sgc.grade_level_short as grade_level, 
        sgc.weighted_gpa, sgc.unweighted_gpa
-       FROM marking_periods mp, student_gpa_calculated sgc, schools s
+       FROM marking_periods mp, student_gpa_calculated sgc, colleges s
        WHERE sgc.marking_period_id = mp.marking_period_id and
-             s.id = mp.school_id and sgc.student_id = ' . $student_id . ' 
-       AND mp.school_id = \'' . UserSchool() . '\' order by mp.post_end_date';
+             s.id = mp.college_id and sgc.student_id = ' . $student_id . ' 
+       AND mp.college_id = \'' . UserCollege() . '\' order by mp.post_end_date';
 
         $GRET = DBGet(DBQuery($gquery));
 
@@ -181,7 +181,7 @@ if (UserStudentID()) {
             foreach ($GRET as $rec) {
                 if ($mp_id == null || $mp_id == $rec['MP_ID']) {
                     $mp_id = $rec['MP_ID'];
-                    $gmp[$rec['MP_ID']] = array('schoolyear' => formatSyear($rec['SYEAR']),
+                    $gmp[$rec['MP_ID']] = array('collegeyear' => formatSyear($rec['SYEAR']),
                         'mp_name' => $rec['MP_NAME'],
                         'grade_level' => $rec['GRADE_LEVEL'],
                         'weighted_cum' => $rec['WEIGHTED_CUM'],
@@ -191,7 +191,7 @@ if (UserStudentID()) {
                         'gpa' => $rec['GPA']);
                 }
                 if ($mp_id != $rec['MP_ID']) {
-                    $gmp[$rec['MP_ID']] = array('schoolyear' => formatSyear($rec['SYEAR']),
+                    $gmp[$rec['MP_ID']] = array('collegeyear' => formatSyear($rec['SYEAR']),
                         'mp_name' => $rec['MP_NAME'],
                         'grade_level' => $rec['GRADE_LEVEL'],
                         'weighted_cum' => $rec['WEIGHTED_CUM'],
@@ -207,7 +207,7 @@ if (UserStudentID()) {
         $mpselect = "<FORM action=Modules.php?modname=$_REQUEST[modname]&tab_id=" . $_REQUEST['tab_id'] . " method=POST>";
         $mpselect .= "<SELECT class=\"form-control\" name=mp_id onchange='this.form.submit();'>";
         foreach ($gmp as $id => $mparray) {
-            $mpselect .= "<OPTION value=" . $id . (($id == $mp_id) ? ' SELECTED' : '') . ">" . $mparray['schoolyear'] . ' ' . $mparray['mp_name'] . ', Grade ' . $mparray['grade_level'] . "</OPTION>";
+            $mpselect .= "<OPTION value=" . $id . (($id == $mp_id) ? ' SELECTED' : '') . ">" . $mparray['collegeyear'] . ' ' . $mparray['mp_name'] . ', Grade ' . $mparray['grade_level'] . "</OPTION>";
         }
         $mpselect .= "<OPTION value=0 " . (($mp_id == '0') ? ' SELECTED' : '') . ">Add another marking period</OPTION>";
         $mpselect .= '</SELECT>';
@@ -242,7 +242,7 @@ if (UserStudentID()) {
 
         if ($mp_id == "0") {
             $syear = UserSyear();
-            $sql = 'SELECT MARKING_PERIOD_ID, SYEAR, TITLE, POST_END_DATE FROM marking_periods WHERE SCHOOL_ID = \'' . UserSchool() .
+            $sql = 'SELECT MARKING_PERIOD_ID, SYEAR, TITLE, POST_END_DATE FROM marking_periods WHERE SCHOOL_ID = \'' . UserCollege() .
                     '\' ORDER BY POST_END_DATE';
             $MPRET = DBGet(DBQuery($sql));
             if ($MPRET) {

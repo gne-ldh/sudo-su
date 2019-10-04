@@ -20,11 +20,11 @@ if (($_REQUEST['event_id'] || !isset($_REQUEST['event_id'])) && !isset($_REQUEST
     } else {
         $_REQUEST['event_id'] = 'new';
         $title = 'New Event';
-        $RET[1]['SCHOOL_DATE'] = date('Y-m-d', strtotime($_REQUEST['school_date']));
+        $RET[1]['SCHOOL_DATE'] = date('Y-m-d', strtotime($_REQUEST['college_date']));
         $RET[1]['CALENDAR_ID'] = '';
         $calendar_id = $_REQUEST['calendar_id'];
     }
-    echo "<FORM name=popform class=\"m-b-0\" id=popform action=Modules.php?modname=schoolsetup/Calendar.php&dd=$_REQUEST[school_date]&modfunc=detail&event_id=$_REQUEST[event_id]&calendar_id=$calendar_id&month=$_REQUEST[month]&year=$_REQUEST[year] METHOD=POST>";
+    echo "<FORM name=popform class=\"m-b-0\" id=popform action=Modules.php?modname=collegesetup/Calendar.php&dd=$_REQUEST[college_date]&modfunc=detail&event_id=$_REQUEST[event_id]&calendar_id=$calendar_id&month=$_REQUEST[month]&year=$_REQUEST[year] METHOD=POST>";
 } else {
     $RET = DBGet(DBQuery('SELECT TITLE,STAFF_ID,DATE_FORMAT(DUE_DATE,\'%d-%b-%y\') AS SCHOOL_DATE,ASSIGNED_DATE,DUE_DATE,DESCRIPTION FROM gradebook_assignments WHERE ASSIGNMENT_ID=\'' . $_REQUEST[assignment_id] . '\''));
     $title = $RET[1]['TITLE'];

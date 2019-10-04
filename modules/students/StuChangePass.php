@@ -1,6 +1,6 @@
 <?php
 include('../../RedirectModulesInc.php');
-DrawBC("School Setup > ".ProgramTitle());
+DrawBC("College Setup > ".ProgramTitle());
 if(($_REQUEST['action'] == 'update') && ($_REQUEST['button']=='Save') && User('PROFILE')=='student')
 {
 	$stu_PASS=DBGet(DBQuery('SELECT PASSWORD FROM students WHERE STUDENT_ID=\''.UserStudentId().'\''));

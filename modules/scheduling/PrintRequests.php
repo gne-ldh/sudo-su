@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -61,7 +61,7 @@ if (!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) {
         $__DBINC_NO_SQLSHOW = true;
         $handle = PDFStart();
         echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-        echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">Student Print Request</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br \>Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+        echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetCollege(UserCollege()) . "<div style=\"font-size:12px;\">Student Print Request</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br \>Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
         foreach ($RET as $student_id => $courses) {
             if ($_REQUEST['mailing_labels'] == 'Y') {
                 foreach ($courses as $address) {
@@ -140,7 +140,7 @@ if (!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) {
                     }
                     // set WITH_PERIOD_ID
                     if ($courses[$key]['WITH_PERIOD_ID']) {
-                        $stmt = DBGet(DBQuery('select title from school_periods where period_id=\'' . $courses[$key]['WITH_PERIOD_ID'] . '\' limit 1'));
+                        $stmt = DBGet(DBQuery('select title from college_periods where period_id=\'' . $courses[$key]['WITH_PERIOD_ID'] . '\' limit 1'));
                         $period_id = $courses[$key]['WITH_PERIOD_ID'];
                         $title = '';
                         $courses[$key]['WITH_PERIOD_ID'] = $stmt[1]['TITLE'];
@@ -148,7 +148,7 @@ if (!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) {
                     }
                     // set NOT_PERIOD_ID
                     if ($courses[$key]['NOT_PERIOD_ID']) {
-                        $stmt = DBGet(DBQuery('select title from school_periods where period_id=\'' . $courses[$key]['NOT_PERIOD_ID'] . '\' limit 1'));
+                        $stmt = DBGet(DBQuery('select title from college_periods where period_id=\'' . $courses[$key]['NOT_PERIOD_ID'] . '\' limit 1'));
                         $period_id = $courses[$key]['NOT_PERIOD_ID'];
                         $title = '';
                         $courses[$key]['NOT_PERIOD_ID'] = $stmt[1]['TITLE'];
@@ -178,7 +178,7 @@ echo '<div class="modal-body">';
 echo '<div id="conf_div" class="text-center"></div>';
 echo '<div class="row" id="resp_table">';
 echo '<div class="col-md-6">';
-$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 

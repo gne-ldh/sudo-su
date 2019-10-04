@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -76,7 +76,7 @@ if (User('PROFILE') == 'admin') {
             echo $extra['search'];
 
         if (User('PROFILE') == 'admin')
-            echo '<label class="checkbox-inline"><INPUT type=checkbox name=_search_all_schools value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '>Search All Schools</label>';
+            echo '<label class="checkbox-inline"><INPUT type=checkbox name=_search_all_colleges value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '>Search All Colleges</label>';
         echo '<label class="checkbox-inline"><INPUT type=checkbox name=_dis_user value=Y>Include Disabled User</label>';
         echo '</div>'; //.col-md-12
         echo '</div>'; //.row

@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -40,7 +40,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
          $start_date=date('Y-m-d',strtotime($start_date));
         $id_array = array();
         foreach ($_REQUEST['student'] as $student_id => $yes) {
-            $next_grade = DBGet(DBQuery('SELECT NEXT_GRADE_ID FROM school_gradelevels WHERE ID=\'' . $_REQUEST['grade_id'] . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
+            $next_grade = DBGet(DBQuery('SELECT NEXT_GRADE_ID FROM college_gradelevels WHERE ID=\'' . $_REQUEST['grade_id'] . '\' AND SCHOOL_ID=\'' . UserCollege() . '\''));
             if ($next_grade[1]['NEXT_GRADE_ID'] != '')
                 $rolling_ret = 1;
             else
@@ -49,7 +49,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
             $end_date = $qr[1]['END_DATE'];
             //echo $start_date; exit;
             if (strtotime($start_date) > strtotime($end_date)) {
-                DBQuery('INSERT INTO student_enrollment (SYEAR,SCHOOL_ID,STUDENT_ID,GRADE_ID,START_DATE,ENROLLMENT_CODE,NEXT_SCHOOL,CALENDAR_ID) VALUES (\'' . UserSyear() . '\',\'' . UserSchool() . '\',' . $student_id . ',\'' . $_REQUEST['grade_id'] . '\',\'' . $start_date . '\',\'' . $_REQUEST['en_code'] . '\',\'' . $rolling_ret . '\',\'' . $_REQUEST['cal_id'] . '\')');
+                DBQuery('INSERT INTO student_enrollment (SYEAR,SCHOOL_ID,STUDENT_ID,GRADE_ID,START_DATE,ENROLLMENT_CODE,NEXT_SCHOOL,CALENDAR_ID) VALUES (\'' . UserSyear() . '\',\'' . UserCollege() . '\',' . $student_id . ',\'' . $_REQUEST['grade_id'] . '\',\'' . $start_date . '\',\'' . $_REQUEST['en_code'] . '\',\'' . $rolling_ret . '\',\'' . $_REQUEST['cal_id'] . '\')');
 
                 $enroll_msg = "Selected students are successfully re enrolled.";
                 $count = 1;
@@ -80,7 +80,7 @@ DrawBC("Students > " . ProgramTitle());
 if ($_REQUEST['search_modfunc'] == 'list') {
     echo "<FORM name=sav class=\"form-horizontal\" id=sav action=Modules.php?modname=$_REQUEST[modname]&modfunc=save method=POST>";
     PopTable_wo_header('header');
-    $calendar = DBGet(DBQuery('SELECT CALENDAR_ID FROM school_calendars WHERE SCHOOL_ID=\'' . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY DEFAULT_CALENDAR DESC LIMIT 0,1"));
+    $calendar = DBGet(DBQuery('SELECT CALENDAR_ID FROM college_calendars WHERE SCHOOL_ID=\'' . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY DEFAULT_CALENDAR DESC LIMIT 0,1"));
 
     echo '<INPUT TYPE=hidden name=cal_id value=' . $calendar[1]["CALENDAR_ID"] . '>';
 
@@ -90,7 +90,7 @@ if ($_REQUEST['search_modfunc'] == 'list') {
     echo '</div><div class="col-lg-6">';
     echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Grade <span class="text-danger">*</span></label><div class="col-lg-8">';
     
-    $sel_grade = DBGet(DBQuery('SELECT TITLE,ID FROM school_gradelevels WHERE SCHOOL_ID=\'' . UserSchool() . '\''));
+    $sel_grade = DBGet(DBQuery('SELECT TITLE,ID FROM college_gradelevels WHERE SCHOOL_ID=\'' . UserCollege() . '\''));
     echo '<SELECT class="form-control" name=grade_id id=grade_id><OPTION value="">Select Grade</OPTION>';
     foreach ($sel_grade as $g_id)
         echo "<OPTION value=$g_id[ID]>" . $g_id['TITLE'] . '</OPTION>';

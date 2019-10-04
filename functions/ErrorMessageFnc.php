@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -34,7 +34,7 @@
 // in a program you may have:
 /*
   if(!$sch)
-  $error[]="School not provided.";
+  $error[]="College not provided.";
   if($count == 0)
   $error[]="Number of students is zero.";
   ErrorMessage($error);

@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that
 #  include student demographic info, scheduling, grade book, attendance,
@@ -47,7 +47,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'update') {
             else {
                 $sql = 'INSERT INTO honor_roll ';
                 $fields = 'SCHOOL_ID,SYEAR,';
-                $values = '\'' . UserSchool() . '\',\'' . UserSyear() . '\',';
+                $values = '\'' . UserCollege() . '\',\'' . UserSyear() . '\',';
 
                 $go = false;
                 foreach ($columns as $column => $value) {
@@ -75,7 +75,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'remove') {
 }
 
 if (!$_REQUEST['modfunc']) {
-    $sql = 'SELECT TITLE,VALUE, id as ID FROM honor_roll WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY VALUE';
+    $sql = 'SELECT TITLE,VALUE, id as ID FROM honor_roll WHERE SCHOOL_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY VALUE';
     $functions = array('TITLE' => '_makeTextInput', 'VALUE' => 'makeTextInputt');
     $LO_columns = array('TITLE' => 'Honor Roll',
         'VALUE' => 'Breakoff');

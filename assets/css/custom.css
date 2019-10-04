@@ -170,7 +170,7 @@ label.radio {
     min-width: 100px;
     width: auto !important;
 }
-ul[id*="select2-school-"] {
+ul[id*="select2-college-"] {
     width: 200px;
 }
 ul[id*="select2-period-"] {
@@ -307,8 +307,8 @@ ul[id*="select2-period-"] {
     border-radius: 50%;
     border: 2px solid #eee;
 }
-.institute-report-icon.icon-school {
-    background: url(../images/school.svg) no-repeat center;
+.institute-report-icon.icon-college {
+    background: url(../images/college.svg) no-repeat center;
     background-size: 60%;
 }
 .institute-report-icon.icon-student {

@@ -23,13 +23,13 @@ if ($_POST['button'] == 'Clear & Exit') {
     else {
         $cpblocked_RET = DBGet(DBQuery("SELECT COURSE_PERIOD_DATE,PERIOD_ID,ROOM_ID,DOES_ATTENDANCE FROM course_period_var where course_period_id=$_REQUEST[course_period_id] AND course_period_date='" . $_REQUEST['meet_date'] . "' AND id='" . $_REQUEST['id'] . "'"));
         $cpblocked_RET = $cpblocked_RET[1];
-        $periods_RET = DBGet(DBQuery("SELECT PERIOD_ID,TITLE FROM school_periods WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER"));
+        $periods_RET = DBGet(DBQuery("SELECT PERIOD_ID,TITLE FROM college_periods WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER"));
         if (count($periods_RET)) {
             foreach ($periods_RET as $period)
                 $periods[$period['PERIOD_ID']] = $period['TITLE'];
         }
 
-        $room_RET = DBGet(DBQuery("SELECT ROOM_ID,TITLE FROM rooms WHERE SCHOOL_ID='" . UserSchool() . "' ORDER BY SORT_ORDER"));
+        $room_RET = DBGet(DBQuery("SELECT ROOM_ID,TITLE FROM rooms WHERE SCHOOL_ID='" . UserCollege() . "' ORDER BY SORT_ORDER"));
         if (count($room_RET)) {
             foreach ($room_RET as $room)
                 $rooms[$room['ROOM_ID']] = $room['TITLE'];
@@ -41,7 +41,7 @@ if ($_POST['button'] == 'Clear & Exit') {
             $_REQUEST['id'] = $_REQUEST['cpv_id'];
         }
         //PopTableforWindow('header', $title);
-        echo "<FORM class=form-horizontal name=popform id=popform action=ForWindow.php?modname=schoolsetup/Courses.php&meet_date=$_REQUEST[meet_date]&modfunc=detail&mode=$_REQUEST[mode]&subject_id=$_REQUEST[subject_id]&course_id=$_REQUEST[course_id]&course_period_id=$_REQUEST[course_period_id]&calendar_id=$_REQUEST[calendar_id] METHOD=POST>";
+        echo "<FORM class=form-horizontal name=popform id=popform action=ForWindow.php?modname=collegesetup/Courses.php&meet_date=$_REQUEST[meet_date]&modfunc=detail&mode=$_REQUEST[mode]&subject_id=$_REQUEST[subject_id]&course_id=$_REQUEST[course_id]&course_period_id=$_REQUEST[course_period_id]&calendar_id=$_REQUEST[calendar_id] METHOD=POST>";
         echo '<div class="panel">';
         echo '<div class="tabbable">';
         echo '<ul class="nav nav-tabs nav-tabs-bottom no-margin-bottom"><li class="active"><a href="javascript:void(0);">Add Class</a></li></ul>';

@@ -1,7 +1,7 @@
 <?php
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -47,16 +47,16 @@ if(clean_param($_REQUEST['sname'],PARAM_NOTAGS) && clean_param($_REQUEST['sample
      $_SESSION['sname']=clean_param($_REQUEST['sname'],PARAM_NOTAGS);
       $beg_date=str_replace("/","-", $_REQUEST['beg_date']);
     $end_date=str_replace("/","-", $_REQUEST['end_date']);
-     $school_beg_date=explode("-",$beg_date);
-    $school_end_date=explode("-", $end_date);
-    $_SESSION['user_school_beg_date']=$school_beg_date[2].'-'.$school_beg_date[0].
-    '-'.$school_beg_date[1];
-    $_SESSION['user_school_end_date']=$school_end_date[2].'-'.$school_end_date[0].
-    '-'.$school_end_date[1];
+     $college_beg_date=explode("-",$beg_date);
+    $college_end_date=explode("-", $end_date);
+    $_SESSION['user_college_beg_date']=$college_beg_date[2].'-'.$college_beg_date[0].
+    '-'.$college_beg_date[1];
+    $_SESSION['user_college_end_date']=$college_end_date[2].'-'.$college_end_date[0].
+    '-'.$college_end_date[1];
   
-    $_SESSION['syear'] = $school_beg_date[2];
-  include('SqlForClientSchoolAndSampleDataInc.php');
-	$_SESSION['school_installed']='both';
+    $_SESSION['syear'] = $college_beg_date[2];
+  include('SqlForClientCollegeAndSampleDataInc.php');
+	$_SESSION['college_installed']='both';
 
     
 
@@ -65,22 +65,22 @@ else if(clean_param($_REQUEST['sname'],PARAM_NOTAGS)){
 	$_SESSION['sname']=clean_param($_REQUEST['sname'],PARAM_NOTAGS);
     $beg_date=str_replace("/","-", $_REQUEST['beg_date']);
     $end_date=str_replace("/","-", $_REQUEST['end_date']);
-    $school_beg_date=explode("-",$beg_date);
-    $school_end_date=explode("-",$end_date);
-    $_SESSION['user_school_beg_date']=$school_beg_date[2].'-'.$school_beg_date[0].
-    '-'.$school_beg_date[1];
-    $_SESSION['user_school_end_date']=$school_end_date[2].'-'.$school_end_date[0].
-    '-'.$school_end_date[1];
-    $_SESSION['syear']=$school_beg_date[2];
-    $_SESSION['nextyear'] = $school_beg_date[2]+1;
+    $college_beg_date=explode("-",$beg_date);
+    $college_end_date=explode("-",$end_date);
+    $_SESSION['user_college_beg_date']=$college_beg_date[2].'-'.$college_beg_date[0].
+    '-'.$college_beg_date[1];
+    $_SESSION['user_college_end_date']=$college_end_date[2].'-'.$college_end_date[0].
+    '-'.$college_end_date[1];
+    $_SESSION['syear']=$college_beg_date[2];
+    $_SESSION['nextyear'] = $college_beg_date[2]+1;
    
-    include('SqlForClientSchoolInc.php');
-  $_SESSION['school_installed']='user';
+    include('SqlForClientCollegeInc.php');
+  $_SESSION['college_installed']='user';
 
 }
 else if(clean_param($_REQUEST['sample_data'],PARAM_ALPHA)){
      include('SqlSampleDataInc.php');
-$_SESSION['school_installed']='sample';
+$_SESSION['college_installed']='sample';
 
 }
 

@@ -1,7 +1,7 @@
 <?php
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -36,7 +36,7 @@ if($_REQUEST['ses'])
 // if only one subject, select it automatically -- works for Course Setup and Choose a Course
 if($_REQUEST['modfunc']!='delete' && !$_REQUEST['subject_id'])
 {
-	$subjects_RET = DBGet(DBQuery('SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID=\''.UserSchool().'\' AND SYEAR=\''.UserSyear().'\''));
+	$subjects_RET = DBGet(DBQuery('SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\''));
 	if(count($subjects_RET)==1)
 		$_REQUEST['subject_id'] = $subjects_RET[1]['SUBJECT_ID'];
 }
@@ -49,9 +49,9 @@ if($_REQUEST['course_modfunc']=='search')
 	PopTable('footer');
 	if($_REQUEST['search_term'])
 	{
-		$subjects_RET = DBGet(DBQuery('SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE (UPPER(TITLE) LIKE \''.'%'.strtoupper($_REQUEST['search_term']).'%' .'\' OR UPPER(SHORT_NAME) = \''.strtoupper($_REQUEST['search_term']).'\') AND SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserSchool().'\''));
-		$courses_RET = DBGet(DBQuery('SELECT SUBJECT_ID,COURSE_ID,TITLE FROM courses WHERE (UPPER(TITLE) LIKE \''.'%'.strtoupper($_REQUEST['search_term']).'%'.'\' OR UPPER(SHORT_NAME) = \''.strtoupper($_REQUEST['search_term']).'\') AND SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserSchool().'\''));
-		$periods_RET = DBGet(DBQuery('SELECT c.SUBJECT_ID,cp.COURSE_ID,cp.COURSE_PERIOD_ID,cp.TITLE FROM course_periods cp,courses c WHERE cp.COURSE_ID=c.COURSE_ID AND (UPPER(cp.TITLE) LIKE \''.'%'.strtoupper($_REQUEST['search_term']).'%'.'\' OR UPPER(cp.SHORT_NAME) = \''.strtoupper($_REQUEST['search_term']).'\') AND cp.SYEAR=\''.UserSyear().'\' AND cp.SCHOOL_ID=\''.UserSchool().'\''));
+		$subjects_RET = DBGet(DBQuery('SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE (UPPER(TITLE) LIKE \''.'%'.strtoupper($_REQUEST['search_term']).'%' .'\' OR UPPER(SHORT_NAME) = \''.strtoupper($_REQUEST['search_term']).'\') AND SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserCollege().'\''));
+		$courses_RET = DBGet(DBQuery('SELECT SUBJECT_ID,COURSE_ID,TITLE FROM courses WHERE (UPPER(TITLE) LIKE \''.'%'.strtoupper($_REQUEST['search_term']).'%'.'\' OR UPPER(SHORT_NAME) = \''.strtoupper($_REQUEST['search_term']).'\') AND SYEAR=\''.UserSyear().'\' AND SCHOOL_ID=\''.UserCollege().'\''));
+		$periods_RET = DBGet(DBQuery('SELECT c.SUBJECT_ID,cp.COURSE_ID,cp.COURSE_PERIOD_ID,cp.TITLE FROM course_periods cp,courses c WHERE cp.COURSE_ID=c.COURSE_ID AND (UPPER(cp.TITLE) LIKE \''.'%'.strtoupper($_REQUEST['search_term']).'%'.'\' OR UPPER(cp.SHORT_NAME) = \''.strtoupper($_REQUEST['search_term']).'\') AND cp.SYEAR=\''.UserSyear().'\' AND cp.SCHOOL_ID=\''.UserCollege().'\''));
 
 		echo '<TABLE><TR><TD valign=top>';
 		$link['TITLE']['link'] = "ForWindow.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]";
@@ -110,7 +110,7 @@ if((!$_REQUEST['modfunc'] || $_REQUEST['modfunc']=='choose_course') && !$_REQUES
            
             if($res_sch[1]['RES']>0)
             {
-           DBQuery("INSERT INTO schedule(syear, school_id, student_id, start_date, end_date,modified_by, course_id, course_weight, course_period_id, mp, marking_period_id, scheduler_lock, dropped) SELECT syear, school_id, student_id, start_date, end_date, modified_by, course_id, course_weight, course_period_id, mp, marking_period_id, scheduler_lock, dropped FROM temp_schedule WHERE course_period_id =$val");
+           DBQuery("INSERT INTO schedule(syear, college_id, student_id, start_date, end_date,modified_by, course_id, course_weight, course_period_id, mp, marking_period_id, scheduler_lock, dropped) SELECT syear, college_id, student_id, start_date, end_date, modified_by, course_id, course_weight, course_period_id, mp, marking_period_id, scheduler_lock, dropped FROM temp_schedule WHERE course_period_id =$val");
             DBQuery("DROP TABLE IF EXISTS temp_schedule");
             unset($_SESSION['course_periods']);
             unset($_SESSION['marking_period_id']);
@@ -125,7 +125,7 @@ if((!$_REQUEST['modfunc'] || $_REQUEST['modfunc']=='choose_course') && !$_REQUES
           else {
 
                
-              DBQuery("INSERT INTO schedule(syear, school_id, student_id, start_date, end_date,modified_by, course_id, course_weight, course_period_id, mp, marking_period_id, scheduler_lock, dropped) SELECT syear, school_id, student_id, start_date, end_date, modified_by, course_id, course_weight, course_period_id, mp, marking_period_id, scheduler_lock, dropped FROM temp_schedule WHERE course_period_id=$val");
+              DBQuery("INSERT INTO schedule(syear, college_id, student_id, start_date, end_date,modified_by, course_id, course_weight, course_period_id, mp, marking_period_id, scheduler_lock, dropped) SELECT syear, college_id, student_id, start_date, end_date, modified_by, course_id, course_weight, course_period_id, mp, marking_period_id, scheduler_lock, dropped FROM temp_schedule WHERE course_period_id=$val");
 
             unset($_SESSION['course_periods']);
             unset($_SESSION['marking_period_id']);
@@ -162,7 +162,7 @@ if((!$_REQUEST['modfunc'] || $_REQUEST['modfunc']=='choose_course') && !$_REQUES
 	DrawHeaderHome('Courses',"<A HREF=ForWindow.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&course_modfunc=search>Search</A>");
 
 	echo '<TABLE><TR>';
-	$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserSchool()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
+	$sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY TITLE";
 	$QI = DBQuery($sql);
 	$subjects_RET = DBGet($QI);
 	if(count($subjects_RET))
@@ -195,7 +195,7 @@ if((!$_REQUEST['modfunc'] || $_REQUEST['modfunc']=='choose_course') && !$_REQUES
 	if($_REQUEST['subject_id'] && $_REQUEST['subject_id']!='new')
 	{
 		
-            $sql="SELECT COURSE_ID,c.TITLE, CONCAT_WS(' - ',c.short_name,c.title) AS GRADE_COURSE FROM courses c LEFT JOIN school_gradelevels sg ON c.grade_level=sg.id WHERE SUBJECT_ID='$_REQUEST[subject_id]' ORDER BY c.TITLE";
+            $sql="SELECT COURSE_ID,c.TITLE, CONCAT_WS(' - ',c.short_name,c.title) AS GRADE_COURSE FROM courses c LEFT JOIN college_gradelevels sg ON c.grade_level=sg.id WHERE SUBJECT_ID='$_REQUEST[subject_id]' ORDER BY c.TITLE";
 		$QI = DBQuery($sql);
 		$courses_RET = DBGet($QI);
 

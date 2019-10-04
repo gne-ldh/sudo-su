@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -30,18 +30,18 @@ include('../../RedirectModulesInc.php');
 ini_set('memory_limit', '120000000000M');
 ini_set('max_execution_time', '50000000');
 if ($_REQUEST['func'] == 'Basic') {
-    $num_schools = DBGet(DBQuery('SELECT COUNT(ID) as TOTAL_SCHOOLS FROM schools'));
-    $num_schools = $num_schools[1]['TOTAL_SCHOOLS'];
+    $num_colleges = DBGet(DBQuery('SELECT COUNT(ID) as TOTAL_SCHOOLS FROM colleges'));
+    $num_colleges = $num_colleges[1]['TOTAL_SCHOOLS'];
 
-    $num_students = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) as TOTAL_STUDENTS FROM students WHERE STUDENT_ID IN (SELECT DISTINCT STUDENT_ID FROM student_enrollment WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ')'));
+    $num_students = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) as TOTAL_STUDENTS FROM students WHERE STUDENT_ID IN (SELECT DISTINCT STUDENT_ID FROM student_enrollment WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserCollege() . ')'));
     $num_students = $num_students[1]['TOTAL_STUDENTS'];
-    $male = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) as MALE FROM students WHERE GENDER=\'Male\' AND STUDENT_ID IN (SELECT DISTINCT STUDENT_ID FROM student_enrollment WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ')'));
+    $male = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) as MALE FROM students WHERE GENDER=\'Male\' AND STUDENT_ID IN (SELECT DISTINCT STUDENT_ID FROM student_enrollment WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserCollege() . ')'));
     $male = $male[1]['MALE'];
-    $female = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) as FEMALE FROM students WHERE GENDER=\'Female\' AND STUDENT_ID IN (SELECT DISTINCT STUDENT_ID FROM student_enrollment WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ')'));
+    $female = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) as FEMALE FROM students WHERE GENDER=\'Female\' AND STUDENT_ID IN (SELECT DISTINCT STUDENT_ID FROM student_enrollment WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserCollege() . ')'));
     $female = $female[1]['FEMALE'];
     $num_staff = 0;
     $num_teacher = 0;
-    $num_users = DBGet(DBQuery('SELECT COUNT(DISTINCT s.STAFF_ID) as TOTAL_USER,IF(PROFILE_ID=2,\'Teacher\',\'Staff\') as PROFILEID FROM staff s,staff_school_relationship ssr WHERE s.STAFF_ID=ssr.STAFF_ID AND SYEAR = ' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ' AND SCHOOL_ID IN (SELECT ID FROM schools ) GROUP BY PROFILEID'));
+    $num_users = DBGet(DBQuery('SELECT COUNT(DISTINCT s.STAFF_ID) as TOTAL_USER,IF(PROFILE_ID=2,\'Teacher\',\'Staff\') as PROFILEID FROM staff s,staff_college_relationship ssr WHERE s.STAFF_ID=ssr.STAFF_ID AND SYEAR = ' . UserSyear() . ' AND SCHOOL_ID=' . UserCollege() . ' AND SCHOOL_ID IN (SELECT ID FROM colleges ) GROUP BY PROFILEID'));
 
     foreach ($num_users as $gt_dt) {
         if ($gt_dt['PROFILEID'] == 'Staff')
@@ -50,7 +50,7 @@ if ($_REQUEST['func'] == 'Basic') {
             $num_teacher = $gt_dt['TOTAL_USER'];
     }
 
-    $num_parent = DBGet(DBQuery('SELECT COUNT(distinct p.STAFF_ID) as TOTAL_PARENTS FROM people p,students_join_people sjp WHERE sjp.PERSON_ID=p.STAFF_ID AND sjp.STUDENT_ID IN (SELECT DISTINCT STUDENT_ID FROM student_enrollment WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserSchool() . ')'));
+    $num_parent = DBGet(DBQuery('SELECT COUNT(distinct p.STAFF_ID) as TOTAL_PARENTS FROM people p,students_join_people sjp WHERE sjp.PERSON_ID=p.STAFF_ID AND sjp.STUDENT_ID IN (SELECT DISTINCT STUDENT_ID FROM student_enrollment WHERE SYEAR=' . UserSyear() . ' AND SCHOOL_ID=' . UserCollege() . ')'));
     if ($num_parent[1]['TOTAL_PARENTS'] == '')
         $num_parent = 0;
     else
@@ -62,9 +62,9 @@ if ($_REQUEST['func'] == 'Basic') {
     echo '<div class="row">';
     echo '<div class="col-md-4">';
     echo ' <div class="well m-b-15">';
-    echo '<div class="media-left media-middle"><span class="institute-report-icon icon-school"></span></div>';
+    echo '<div class="media-left media-middle"><span class="institute-report-icon icon-college"></span></div>';
     echo '<div class="media-left">';
-    echo '<h6 class="text-semibold no-margin">Institutions<span class="display-block no-margin text-success">'.$num_schools.'</span></h6>';
+    echo '<h6 class="text-semibold no-margin">Institutions<span class="display-block no-margin text-success">'.$num_colleges.'</span></h6>';
     echo '</div>';
     echo '</div>'; //.well
     echo '</div>'; //.col-md-4
@@ -104,7 +104,7 @@ if ($_REQUEST['func'] == 'Basic') {
     echo '</div>'; //.col-md-4
     echo '</div>'; //.row
 //    echo '<div id="d"><TABLE align=center cellpadding=5 cellspacing=5>';
-//    echo '<tr><td><b>Number of Institutions</b></td><td>:</td><td>&nbsp ' . $num_schools . ' &nbsp </td></tr>';
+//    echo '<tr><td><b>Number of Institutions</b></td><td>:</td><td>&nbsp ' . $num_colleges . ' &nbsp </td></tr>';
 //    echo '<tr><td><b>Number of Students</b></td><td>:</td><td>&nbsp ' . $num_students . ' &nbsp </td><td> &nbsp Male : ' . $male . ' &nbsp| &nbspFemale : ' . $female . '</td></tr>';
 //    echo '<tr><td><b>Number of Teachers</b></td><td>:</td><td colspan=2>&nbsp ' . $num_teacher . '</td></tr>';
 //    echo '<tr><td><b>Number of Staff</b></td><td>:</td><td colspan=2>&nbsp ' . $num_staff . '</td></tr>';
@@ -137,7 +137,7 @@ if ($_REQUEST['func'] == 'Ins_r') {
                 if ($m == 'E_MAIL')
                     $arr[$m] = 'Email';
                 elseif ($m == 'TITLE')
-                    $arr[$m] = 'School Name';
+                    $arr[$m] = 'College Name';
                 elseif ($m == 'REPORTING_GP_SCALE')
                     $arr[$m] = 'Base Grading Scale';
                 elseif ($m == 'MAIL_ADDRESS')
@@ -153,7 +153,7 @@ if ($_REQUEST['func'] == 'Ins_r') {
                 else {
                     $col = explode('_', $m);
                     if ($col[0] == 'CUSTOM' && $col[1] != '')
-                        $get_field_name = DBGet(DBQuery('SELECT TITLE FROM school_custom_fields WHERE ID=' . $col[1]));
+                        $get_field_name = DBGet(DBQuery('SELECT TITLE FROM college_custom_fields WHERE ID=' . $col[1]));
                     foreach ($col as $col_i => $col_d) {
 
                         $f_c = substr($col_d, 0, 1);
@@ -178,39 +178,39 @@ if ($_REQUEST['func'] == 'Ins_r') {
             }
             echo '<br>';
             // print_r($arr);print_r($arr);
-            // echo 'SELECT ID,' . $columns . ' FROM schools';
-            $get_school_info = DBGet(DBQuery('SELECT ID,' . $columns . ' FROM schools'));
+            // echo 'SELECT ID,' . $columns . ' FROM colleges';
+            $get_college_info = DBGet(DBQuery('SELECT ID,' . $columns . ' FROM colleges'));
 
             echo '<br>';
-            foreach ($get_school_info as $key => $value) {
+            foreach ($get_college_info as $key => $value) {
 
                 foreach ($value as $i => $j) {
 
 
                     $column_check = explode('_', $i);
                     if ($column_check[0] == 'CUSTOM') {
-                        $check_validity = DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM school_custom_fields WHERE ID=' . $column_check[1] . ' AND (SCHOOL_ID=' . $get_school_info[$key]['ID'].' OR SCHOOL_ID=0)'));
+                        $check_validity = DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM college_custom_fields WHERE ID=' . $column_check[1] . ' AND (SCHOOL_ID=' . $get_college_info[$key]['ID'].' OR SCHOOL_ID=0)'));
                         if ($check_validity[1]['REC_EX'] == 0)
                             $j = 'NOT_AVAILABLE_FOR';
                     }
-                    $get_school_info[$key][$i] = trim($j);
+                    $get_college_info[$key][$i] = trim($j);
                 }
             }
             $show_legend = 'no';
-            foreach ($get_school_info as $key => $value) {
+            foreach ($get_college_info as $key => $value) {
 
                 foreach ($value as $i => $j) {
 
                     if ($j == 'NOT_AVAILABLE_FOR') {
                         $show_legend = 'yes';
-                        $get_school_info[$key][$i] = "<img src='assets/not_available.png' title='Not Applicable'/>";
+                        $get_college_info[$key][$i] = "<img src='assets/not_available.png' title='Not Applicable'/>";
                     }
                 }
             }
-            // print_r($get_school_info);
+            // print_r($get_college_info);
 
             echo "<html><link rel='stylesheet' type='text/css' href='styles/Export.css'><body style=\" font-family:Arial; font-size:12px;\">";
-            ListOutputPrint_Institute_Report($get_school_info, $arr);
+            ListOutputPrint_Institute_Report($get_college_info, $arr);
 
             echo "</body></html>";
         }
@@ -219,11 +219,11 @@ if ($_REQUEST['func'] == 'Ins_r') {
         echo '<DIV id=fields_div></DIV>';
         echo '<br/>';
 
-        $fields_list['Available School Fields'] = array('TITLE' => 'School Name', 'ADDRESS' => 'Address', 'CITY' => 'City', 'STATE' => 'State', 'ZIPCODE' => 'Zipcode', 'PHONE' => 'Telephone', 'PRINCIPAL' => 'Principal', 'REPORTING_GP_SCALE' => 'Base Grading Scale', 'E_MAIL' => 'Email', 'WWW_ADDRESS' => 'Website');
-        $get_schools_cf = DBGet(DBQuery('SELECT * FROM school_custom_fields'));
-        if (count($get_schools_cf) > 0) {
-            foreach ($get_schools_cf as $gsc) {
-                $fields_list['Available School Fields']['CUSTOM_' . $gsc[ID]] = $gsc['TITLE'];
+        $fields_list['Available College Fields'] = array('TITLE' => 'College Name', 'ADDRESS' => 'Address', 'CITY' => 'City', 'STATE' => 'State', 'ZIPCODE' => 'Zipcode', 'PHONE' => 'Telephone', 'PRINCIPAL' => 'Principal', 'REPORTING_GP_SCALE' => 'Base Grading Scale', 'E_MAIL' => 'Email', 'WWW_ADDRESS' => 'Website');
+        $get_colleges_cf = DBGet(DBQuery('SELECT * FROM college_custom_fields'));
+        if (count($get_colleges_cf) > 0) {
+            foreach ($get_colleges_cf as $gsc) {
+                $fields_list['Available College Fields']['CUSTOM_' . $gsc[ID]] = $gsc['TITLE'];
             }
         }        
 	echo '<div class="row">';
@@ -270,14 +270,14 @@ if ($_REQUEST['func'] == 'Ins_r') {
     }
 }
 if ($_REQUEST['func'] == 'Ins_cf') {
-    $get_schools_cf = DBGet(DBQuery('SELECT s.TITLE AS SCHOOL,s.ID,sc.* FROM schools s,school_custom_fields sc WHERE s.ID=sc.SCHOOL_ID ORDER BY sc.SCHOOL_ID'));
-    foreach ($get_schools_cf as $cf_i => $cf_d) {
+    $get_colleges_cf = DBGet(DBQuery('SELECT s.TITLE AS SCHOOL,s.ID,sc.* FROM colleges s,college_custom_fields sc WHERE s.ID=sc.SCHOOL_ID ORDER BY sc.SCHOOL_ID'));
+    foreach ($get_colleges_cf as $cf_i => $cf_d) {
         foreach ($cf_d as $cfd_i => $cfd_d) {
             if ($cfd_i == 'TYPE') {
                 $fc = substr($cfd_d, 0, 1);
                 $lc = substr($cfd_d, 1);
                 $cfd_d = strtoupper($fc) . $lc;
-                $get_schools_cf[$cf_i][$cfd_i] = $cfd_d;
+                $get_colleges_cf[$cf_i][$cfd_i] = $cfd_d;
                 unset($fc);
                 unset($lc);
             }
@@ -291,29 +291,29 @@ if ($_REQUEST['func'] == 'Ins_cf') {
                 }
 
                 $cfd_d = implode('', $new_char);
-                $get_schools_cf[$cf_i][$cfd_i] = $cfd_d;
+                $get_colleges_cf[$cf_i][$cfd_i] = $cfd_d;
                 unset($char);
                 unset($new_char);
             }
             if ($cfd_i == 'SYSTEM_FIELD' || $cfd_i == 'REQUIRED') {
                 if ($cfd_d == 'N')
-                    $get_schools_cf[$cf_i][$cfd_i] = 'No';
+                    $get_colleges_cf[$cf_i][$cfd_i] = 'No';
                 if ($cfd_d == 'Y')
-                    $get_schools_cf[$cf_i][$cfd_i] = 'Yes';
+                    $get_colleges_cf[$cf_i][$cfd_i] = 'Yes';
             }
         }
         unset($cfd_i);
         unset($cfd_d);
     }
-    foreach ($get_schools_cf as $g_i => $gd) {
-        $gt_fld_v = DBGet(DBQuery('SELECT CUSTOM_' . $gd['ID'] . ' as FIELD from schools WHERE ID=' . $gd['SCHOOL_ID']));
-        $get_schools_cf[$g_i]['C_VALUE'] = $gt_fld_v[1]['FIELD'];
+    foreach ($get_colleges_cf as $g_i => $gd) {
+        $gt_fld_v = DBGet(DBQuery('SELECT CUSTOM_' . $gd['ID'] . ' as FIELD from colleges WHERE ID=' . $gd['SCHOOL_ID']));
+        $get_colleges_cf[$g_i]['C_VALUE'] = $gt_fld_v[1]['FIELD'];
     }
 
-    $column = array('SCHOOL' => 'School', 'TYPE' => 'Custom Field Type', 'TITLE' => 'Custom Field Name', 'SELECT_OPTIONS' => 'Options', 'SYSTEM_FIELD' => 'System Field', 'REQUIRED' => 'Required Field');
+    $column = array('SCHOOL' => 'College', 'TYPE' => 'Custom Field Type', 'TITLE' => 'Custom Field Name', 'SELECT_OPTIONS' => 'Options', 'SYSTEM_FIELD' => 'System Field', 'REQUIRED' => 'Required Field');
 
     echo '<div class="panel panel-default">';
-    ListOutput($get_schools_cf, $column, 'Custom Field', 'Custom Fields');
+    ListOutput($get_colleges_cf, $column, 'Custom Field', 'Custom Fields');
     echo '</div>';
 }
 ?>

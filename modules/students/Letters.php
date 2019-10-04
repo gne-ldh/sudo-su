@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -97,7 +97,7 @@ if (!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) {
 
     echo '<div class="row" id="resp_table">';
     echo '<div class="col-md-4">';
-    $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+    $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
     $QI = DBQuery($sql);
     $subjects_RET = DBGet($QI);
 
@@ -135,7 +135,7 @@ if (!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) {
 
     echo '<div class = "row" id = "resp_table">';
     echo '<div class = "col-md-6">';
-    $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
+    $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserCollege() . "' AND SYEAR='" . UserSyear() . "' ORDER BY TITLE";
     $QI = DBQuery($sql);
     $subjects_RET = DBGet($QI);
 
@@ -170,7 +170,7 @@ if (!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) {
             if ($_REQUEST['mailing_labels'] == 'Y') {
                 echo "<tr><td colspan = 2 style = \"height:18px\"></td></tr>";
                 echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-                echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">Student Letter</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetCollege(UserCollege()) . "<div style=\"font-size:12px;\">Student Letter</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                 echo '<table border=0 style=\" font-family:Arial; font-size:12px;\">';
                 echo '<tr>';
                 echo '<td>' . $student['FULL_NAME'] . ', #' . $student['STUDENT_ID'] . '</td></tr>';
@@ -199,7 +199,7 @@ if (!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) {
 
                 echo "<tr><td colspan=2 style=\"height:18px\"></td></tr>";
                 echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-                echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">Student Letter</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br \>Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetCollege(UserCollege()) . "<div style=\"font-size:12px;\">Student Letter</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br \>Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                 echo '<table border=0 style=\" font-family:Arial; font-size:12px;\">';
                 echo '<tr>';
                 echo '<td>' . $student['FULL_NAME'] . ', #' . $student['STUDENT_ID'] . '</td></tr>';

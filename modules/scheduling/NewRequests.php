@@ -1,7 +1,7 @@
 <?php
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -35,7 +35,7 @@ if(!$_REQUEST['modfunc'] && UserStudentID())
 	$_REQUEST['modfunc'] = 'choose';
 if($_REQUEST['modfunc']=='verify')
 {
-	$QI = DBQuery('SELECT TITLE,COURSE_ID,SUBJECT_ID FROM courses WHERE SCHOOL_ID=\''.UserSchool().'\' AND SYEAR=\''.UserSyear().'\'');
+	$QI = DBQuery('SELECT TITLE,COURSE_ID,SUBJECT_ID FROM courses WHERE SCHOOL_ID=\''.UserCollege().'\' AND SYEAR=\''.UserSyear().'\'');
 	$courses_RET = DBGet($QI,array(),array('COURSE_ID'));
 	DBQuery('DELETE FROM schedule_requests WHERE STUDENT_ID=\''.UserStudentID().'\' AND SYEAR=\''.UserSyear().'\'');
 	foreach($_REQUEST['courses'] as $subject=>$courses)
@@ -47,7 +47,7 @@ if($_REQUEST['modfunc']=='verify')
 			if(!$course)
 				continue;
 			$sql = 'INSERT INTO schedule_requests (SYEAR,SCHOOL_ID,STUDENT_ID,SUBJECT_ID,COURSE_ID,MARKING_PERIOD_ID,WITH_TEACHER_ID,NOT_TEACHER_ID,WITH_PERIOD_ID,NOT_PERIOD_ID)
-						values(\''.UserSyear().'\',\''.UserSchool().'\',\''.UserStudentID().'\',\''.$courses_RET[$course][1]['SUBJECT_ID'].'\',\''.$course.'\',NULL,\''.$_REQUEST['with_teacher'][$subject][$i].'\',\''.$_REQUEST['without_teacher'][$subject][$i].'\',\''.$_REQUEST['with_period'][$subject][$i].'\',\''.$_REQUEST['without_period'][$subject][$i].'\')';
+						values(\''.UserSyear().'\',\''.UserCollege().'\',\''.UserStudentID().'\',\''.$courses_RET[$course][1]['SUBJECT_ID'].'\',\''.$course.'\',NULL,\''.$_REQUEST['with_teacher'][$subject][$i].'\',\''.$_REQUEST['without_teacher'][$subject][$i].'\',\''.$_REQUEST['with_period'][$subject][$i].'\',\''.$_REQUEST['without_period'][$subject][$i].'\')';
 			DBQuery($sql);
 		}
 	}

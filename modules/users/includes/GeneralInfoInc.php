@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -139,13 +139,13 @@ if (basename($_SERVER['PHP_SELF']) != 'index.php') {
     echo '</div>'; //.form-group
     echo '</div>'; //.col-md-4
 
-    $schools_RET = DBGet(DBQuery('SELECT s.ID,s.TITLE FROM schools s,staff st INNER JOIN staff_school_relationship ssr USING(staff_id) WHERE s.id=ssr.school_id AND ssr.syear=' . UserSyear() . ' AND st.staff_id=' . User('STAFF_ID')));
+    $colleges_RET = DBGet(DBQuery('SELECT s.ID,s.TITLE FROM colleges s,staff st INNER JOIN staff_college_relationship ssr USING(staff_id) WHERE s.id=ssr.college_id AND ssr.syear=' . UserSyear() . ' AND st.staff_id=' . User('STAFF_ID')));
     unset($options);
-    if (count($schools_RET) && User('PROFILE') == 'admin') {
+    if (count($colleges_RET) && User('PROFILE') == 'admin') {
         $i = 0;
-        $_SESSION[staff_school_chkbox_id] = 0;
+        $_SESSION[staff_college_chkbox_id] = 0;
         if ($staff['STAFF_ID'])
-            $schools = GetUserSchools($staff['STAFF_ID']);
+            $colleges = GetUserColleges($staff['STAFF_ID']);
     }
 }
 echo '</div>'; //.row
@@ -224,13 +224,13 @@ if (in_array($staff['PROFILE'], $parent_profs_arr)) {
     echo '<div class="row">';
     echo '<div class="col-md-12">';
     echo '<h5>Associated Students </h5>';
-    $sql = 'SELECT s.STUDENT_ID,CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME,\' \',COALESCE(s.MIDDLE_NAME,\' \')) AS FULL_NAME,gr.TITLE AS GRADE ,sc.TITLE AS SCHOOL FROM students s,student_enrollment ssm,school_gradelevels gr,schools sc,students_join_people sjp WHERE s.STUDENT_ID=ssm.STUDENT_ID AND s.STUDENT_ID=sjp.STUDENT_ID AND sjp.PERSON_ID=' . $staff['STAFF_ID'] . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SCHOOL_ID=' . UserSchool() . ' AND ssm.GRADE_ID=gr.ID AND ssm.SCHOOL_ID=sc.ID AND (ssm.END_DATE IS NULL OR ssm.END_DATE =  \'0000-00-00\' OR ssm.END_DATE >=  \'' . date('Y-m-d') . '\')';
+    $sql = 'SELECT s.STUDENT_ID,CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME,\' \',COALESCE(s.MIDDLE_NAME,\' \')) AS FULL_NAME,gr.TITLE AS GRADE ,sc.TITLE AS SCHOOL FROM students s,student_enrollment ssm,college_gradelevels gr,colleges sc,students_join_people sjp WHERE s.STUDENT_ID=ssm.STUDENT_ID AND s.STUDENT_ID=sjp.STUDENT_ID AND sjp.PERSON_ID=' . $staff['STAFF_ID'] . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.SCHOOL_ID=' . UserCollege() . ' AND ssm.GRADE_ID=gr.ID AND ssm.SCHOOL_ID=sc.ID AND (ssm.END_DATE IS NULL OR ssm.END_DATE =  \'0000-00-00\' OR ssm.END_DATE >=  \'' . date('Y-m-d') . '\')';
     $students = DBGet(DBQuery($sql));
     foreach ($students as $sti => $std) {
         $get_relation = DBGet(DBQuery('SELECT RELATIONSHIP FROM students_join_people WHERE STUDENT_ID=' . $std['STUDENT_ID'] . ' AND PERSON_ID=' . $staff['STAFF_ID']));
         $students[$sti]['RELATIONSHIP'] = $get_relation[1]['RELATIONSHIP'];
     }
-    $columns = array('FULL_NAME' => 'Name', 'RELATIONSHIP' => 'Relationship', 'GRADE' => 'Grade Level', 'SCHOOL' => 'School Name');
+    $columns = array('FULL_NAME' => 'Name', 'RELATIONSHIP' => 'Relationship', 'GRADE' => 'Grade Level', 'SCHOOL' => 'College Name');
 
 
     if (User('PROFILE_ID') == 0 || User('PROFILE_ID') == 1) {
@@ -253,12 +253,12 @@ function _makeStartInputDate($value, $column) {
         $date_value = '';
     } else {
 
-        $sql = 'SELECT ssr.START_DATE FROM staff s,staff_school_relationship ssr  WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_school_relationship WHERE SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ')';
-        $user_exist_school = DBGet(DBQuery($sql));
-        if ($user_exist_school[1]['START_DATE'] == '0000-00-00' || $user_exist_school[1]['START_DATE'] == '')
+        $sql = 'SELECT ssr.START_DATE FROM staff s,staff_college_relationship ssr  WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_college_relationship WHERE SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ')';
+        $user_exist_college = DBGet(DBQuery($sql));
+        if ($user_exist_college[1]['START_DATE'] == '0000-00-00' || $user_exist_college[1]['START_DATE'] == '')
             $date_value = '';
         else
-            $date_value = $user_exist_school[1]['START_DATE'];
+            $date_value = $user_exist_college[1]['START_DATE'];
     }
     return '<TABLE class=LO_field><TR>' . '<TD>' . DateInput2($date_value, 'values[START_DATE][' . $THIS_RET['ID'] . ']', '1' . $THIS_RET['ID'], '') . '</TD></TR></TABLE>';
 }
@@ -269,7 +269,7 @@ function _makeUserProfile($value, $column) {
         $profile_value = '';
     } else {
 
-        $sql = 'SELECT up.TITLE FROM staff s,staff_school_relationship ssr,user_profiles up  WHERE ssr.STAFF_ID=s.STAFF_ID AND up.ID=s.PROFILE_ID AND ssr.SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_school_relationship WHERE SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ')';
+        $sql = 'SELECT up.TITLE FROM staff s,staff_college_relationship ssr,user_profiles up  WHERE ssr.STAFF_ID=s.STAFF_ID AND up.ID=s.PROFILE_ID AND ssr.SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_college_relationship WHERE SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ')';
         $user_profile = DBGet(DBQuery($sql));
         $profile_value = $user_profile[1]['TITLE'];
     }
@@ -282,12 +282,12 @@ function _makeEndInputDate($value, $column) {
         $date_value = '';
     } else {
 
-        $sql = 'SELECT ssr.END_DATE FROM staff s,staff_school_relationship ssr  WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_school_relationship WHERE SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ')';
-        $user_exist_school = DBGet(DBQuery($sql));
-        if ($user_exist_school[1]['END_DATE'] == '0000-00-00' || $user_exist_school[1]['END_DATE'] == '')
+        $sql = 'SELECT ssr.END_DATE FROM staff s,staff_college_relationship ssr  WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_college_relationship WHERE SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ')';
+        $user_exist_college = DBGet(DBQuery($sql));
+        if ($user_exist_college[1]['END_DATE'] == '0000-00-00' || $user_exist_college[1]['END_DATE'] == '')
             $date_value = '';
         else
-            $date_value = $user_exist_school[1]['END_DATE'];
+            $date_value = $user_exist_college[1]['END_DATE'];
     }
     return '<TABLE class=LO_field><TR>' . '<TD>' . DateInput2($date_value, 'values[END_DATE][' . $THIS_RET['ID'] . ']', '2' . $THIS_RET['ID'] . '', '') . '</TD></TR></TABLE>';
 }
@@ -295,19 +295,19 @@ function _makeEndInputDate($value, $column) {
 function _makeCheckBoxInput_gen($value, $column) {
     global $THIS_RET;
 
-    $_SESSION[staff_school_chkbox_id] ++;
-    $staff_school_chkbox_id = $_SESSION[staff_school_chkbox_id];
+    $_SESSION[staff_college_chkbox_id] ++;
+    $staff_college_chkbox_id = $_SESSION[staff_college_chkbox_id];
     if ($_REQUEST['staff_id'] == 'new') {
-        return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('', 'values[SCHOOLS][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_SCHOOLS' . $staff_school_chkbox_id) . '</TD></TR></TABLE>';
+        return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('', 'values[SCHOOLS][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_SCHOOLS' . $staff_college_chkbox_id) . '</TD></TR></TABLE>';
     } else {
 
-        $sql = 'SELECT SCHOOL_ID FROM staff s,staff_school_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_school_relationship WHERE SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ') AND (ssr.END_DATE>=CURDATE() OR ssr.END_DATE=\'0000-00-00\')  ';
+        $sql = 'SELECT SCHOOL_ID FROM staff s,staff_college_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_college_relationship WHERE SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ') AND (ssr.END_DATE>=CURDATE() OR ssr.END_DATE=\'0000-00-00\')  ';
 
-        $user_exist_school = DBGet(DBQuery($sql));
-        if (!empty($user_exist_school))
-            return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('Y', 'values[SCHOOLS][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_SCHOOLS' . $staff_school_chkbox_id) . '</TD></TR></TABLE>';
+        $user_exist_college = DBGet(DBQuery($sql));
+        if (!empty($user_exist_college))
+            return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('Y', 'values[SCHOOLS][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_SCHOOLS' . $staff_college_chkbox_id) . '</TD></TR></TABLE>';
         else
-            return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('', 'values[SCHOOLS][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_SCHOOLS' . $staff_school_chkbox_id) . '</TD></TR></TABLE>';
+            return '<TABLE class=LO_field><TR>' . '<TD>' . CheckboxInput('', 'values[SCHOOLS][' . $THIS_RET['ID'] . ']', '', '', true, '<IMG SRC=assets/check.gif width=15>', '<IMG SRC=assets/x.gif width=15>', true, 'id=staff_SCHOOLS' . $staff_college_chkbox_id) . '</TD></TR></TABLE>';
     }
 }
 
@@ -317,14 +317,14 @@ function _makeStatus($value, $column) {
         $status_value = '';
     else {
 
-        $sql = 'SELECT SCHOOL_ID FROM staff s,staff_school_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_school_relationship WHERE SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ') AND (ssr.END_DATE>=CURDATE() OR ssr.END_DATE=\'0000-00-00\') ';
+        $sql = 'SELECT SCHOOL_ID FROM staff s,staff_college_relationship ssr WHERE ssr.STAFF_ID=s.STAFF_ID AND ssr.SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND ssr.STAFF_ID=' . $_SESSION['staff_selected'] . ' AND ssr.SYEAR=(SELECT MAX(SYEAR) FROM  staff_college_relationship WHERE SCHOOL_ID=' . $THIS_RET['SCHOOL_ID'] . ' AND STAFF_ID=' . $_SESSION['staff_selected'] . ') AND (ssr.END_DATE>=CURDATE() OR ssr.END_DATE=\'0000-00-00\') ';
 
-        $user_exist_school = DBGet(DBQuery($sql));
-        if (!empty($user_exist_school))
+        $user_exist_college = DBGet(DBQuery($sql));
+        if (!empty($user_exist_college))
             $status_value = 'Active';
         else {
-            $get_prev_schools = DBGet(DBQuery('SELECT COUNT(1) as TOTAL FROM staff_school_relationship WHERE STAFF_ID=\'' . $_SESSION['staff_selected'] . '\' AND  SCHOOL_ID=\'' . $THIS_RET['SCHOOL_ID'] . '\' '));
-            if ($get_prev_schools[1]['TOTAL'] != 0)
+            $get_prev_colleges = DBGet(DBQuery('SELECT COUNT(1) as TOTAL FROM staff_college_relationship WHERE STAFF_ID=\'' . $_SESSION['staff_selected'] . '\' AND  SCHOOL_ID=\'' . $THIS_RET['SCHOOL_ID'] . '\' '));
+            if ($get_prev_colleges[1]['TOTAL'] != 0)
                 $status_value = 'Inactive';
             else
                 $status_value = '';

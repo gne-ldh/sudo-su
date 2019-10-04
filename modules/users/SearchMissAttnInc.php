@@ -2,7 +2,7 @@
 
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
-#  schools from Open Solutions for Education, Inc. web: www.os4ed.com
+#  colleges from Open Solutions for Education, Inc. web: www.os4ed.com
 #
 #  openSIS is  web-based, open source, and comes packed with features that 
 #  include student demographic info, scheduling, grade book, attendance, 
@@ -34,7 +34,7 @@ if ($_REQUEST['From'] && $_REQUEST['to']) {
     $_REQUEST['placed_From'] = $_REQUEST['day_From'] . '-' . $_REQUEST['month_From'] . '-' . $_REQUEST['year_From'];
     $From = (date('Y-m-d', strtotime($_REQUEST['placed_From'])));
 } elseif (!$_REQUEST['month_From'] && !$_REQUEST['day_From'] && !$_REQUEST['year_From']) {
-    $missing_date= DBGet(DBQuery('SELECT MIN(SCHOOL_DATE) AS SCHOOL_DATE FROM missing_attendance WHERE SCHOOL_ID='.UserSchool().' AND SYEAR='.UserSyear()));
+    $missing_date= DBGet(DBQuery('SELECT MIN(SCHOOL_DATE) AS SCHOOL_DATE FROM missing_attendance WHERE SCHOOL_ID='.UserCollege().' AND SYEAR='.UserSyear()));
     
     if(count($missing_date) > 0 && $missing_date[1]['SCHOOL_DATE']!="")
     {
@@ -52,14 +52,14 @@ if ($_REQUEST['month_to'] && $_REQUEST['day_to'] && $_REQUEST['year_to']) {
     $to = date('Y-m-d', strtotime(DBDate()));
 
 
-$extra['WHERE2'] = ' AND mi.school_date>=\'' . $From . '\' AND mi.school_date<\'' . $to . '\' AND mi.SYEAR=' . UserSyear();
+$extra['WHERE2'] = ' AND mi.college_date>=\'' . $From . '\' AND mi.college_date<\'' . $to . '\' AND mi.SYEAR=' . UserSyear();
 
 if (User('PROFILE') == 'admin') {
     
     echo '<div class="panel panel-default">';
 
-    $qr = DBGet(DBQuery('select START_DATE from school_years where SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear()));
-//    $qr=  DBGet(DBQuery('select START_DATE from school_years where SCHOOL_ID='.UserSchool()));	
+    $qr = DBGet(DBQuery('select START_DATE from college_years where SCHOOL_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear()));
+//    $qr=  DBGet(DBQuery('select START_DATE from college_years where SCHOOL_ID='.UserCollege()));	
     $start_date = strtotime($qr[1]['START_DATE']);
 
     $date = strtotime($_REQUEST['placed_From']);
@@ -72,7 +72,7 @@ if (User('PROFILE') == 'admin') {
     if ($_REQUEST['day_From'] == '' && $_REQUEST['day_to'])
         $ERR = "please select from date";
     if ($date < $start_date) {
-        $ERR = " From date cannot be before school start date.";
+        $ERR = " From date cannot be before college start date.";
     } else if (($_REQUEST['day_From'] && $_REQUEST['day_to']) || ($From && $to))
         $staff_RET = GetStaffList_Miss_Atn($extra);
 

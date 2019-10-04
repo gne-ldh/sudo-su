@@ -251,7 +251,7 @@ body {
     background-size: 18px;
 }
 
-.school-logo {
+.college-logo {
     padding-top: 20px;
 }
 
@@ -1003,11 +1003,11 @@ footer a:hove {
     .panel {
         width: 50vw;
     }
-    .school-logo {
+    .college-logo {
         padding-top: 0;
         padding-bottom: 20px;
     }
-    .school-logo img {
+    .college-logo img {
         max-height: 120px;
         width: auto;
     }
