@@ -27,13 +27,13 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 $menu['collegesetup']['admin'] = array(
-						'collegesetup/PortalNotes.php'=>'Portal Notes',
-						'collegesetup/MarkingPeriods.php'=>'Marking Periods',
+						'collegesetup/PortalNotes.php'=>'Notice',
+						'collegesetup/MarkingPeriods.php'=>'Sessions',
 						'collegesetup/Calendar.php'=>'Calendars',
 						'collegesetup/Periods.php'=>'Periods',
-						'collegesetup/GradeLevels.php'=>'Grade Levels',
+						'collegesetup/GradeLevels.php'=>'Years',
                                                 'collegesetup/Sections.php'=>'Sections',
-                                                'collegesetup/Rooms.php'=>'Rooms',
+                                                //'collegesetup/Rooms.php'=>'Rooms',
                          1=>'College',
                         'collegesetup/Colleges.php'=>'College Information',
 						'collegesetup/Colleges.php?new_college=true'=>'Add a College',

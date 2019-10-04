@@ -198,7 +198,7 @@ switch (User('PROFILE')) {
 
                 $percent = ($width / 420) * 100;
 
-                echo '<div class="panel panel-flat">
+/*                echo '<div class="panel panel-flat">
                         <div class="panel-heading">
                             <h6 class="panel-title">Please complete the setup before using the system. The following components need to be set:</h6>
                             <div class="heading-elements">
@@ -227,12 +227,12 @@ switch (User('PROFILE')) {
                                         <div class="media-left media-middle">' . (AllowUse('collegesetup/MarkingPeriods.php') == true ? '<a href="javascript:void(0);" class="btn border-indigo-400 text-indigo-400 btn-flat btn-rounded btn-xs btn-icon" onClick="check_content(\'Ajax.php?modname=collegesetup/MarkingPeriods.php\');">' : '') . '<i class="icon-tree7"></i>' . (AllowUse('collegesetup/MarkingPeriods.php') == true ? '</a>' : '') . '</div>
 
                                         <div class="media-left">
-                                            <h6 class="text-semibold no-margin">' . (AllowUse('collegesetup/MarkingPeriods.php') == true ? '<a href="javascript:void(0);" onClick="check_content(\'Ajax.php?modname=collegesetup/MarkingPeriods.php\');">' : '') . 'Marking Period Setup</a> ' . ($mp_setup[1]['REC'] > 1 ? '<small class="display-block no-margin text-success"><i class="icon-checkmark2"></i> Complete</small>' : '<small class="display-block no-margin text-danger"><i class="icon-cross3"></i> Incomplete</small>') . (AllowUse('collegesetup/MarkingPeriods.php') == true ? '</a>' : '') . '</h6>
+                                            <h6 class="text-semibold no-margin">' . (AllowUse('collegesetup/MarkingPeriods.php') == true ? '<a href="javascript:void(0);" onClick="check_content(\'Ajax.php?modname=collegesetup/MarkingPeriods.php\');">' : '') . 'Session Setup</a> ' . ($mp_setup[1]['REC'] > 1 ? '<small class="display-block no-margin text-success"><i class="icon-checkmark2"></i> Complete</small>' : '<small class="display-block no-margin text-danger"><i class="icon-cross3"></i> Incomplete</small>') . (AllowUse('collegesetup/MarkingPeriods.php') == true ? '</a>' : '') . '</h6>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 mb-15">
+								<div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 mb-15">
                                     <div class="well">
                                         <div class="media-left media-middle">' . (AllowUse('attendance/AttendanceCodes.php') == true ? '<a href="javascript:void(0);" class="btn border-indigo-400 text-indigo-400 btn-flat btn-rounded btn-xs btn-icon" onClick="check_content(\'Ajax.php?modname=attendance/AttendanceCodes.php\');">' : '') . '<i class="icon-clipboard5"></i>' . (AllowUse('attendance/AttendanceCodes.php') == true ? '</a>' : '') . '</div>
 
@@ -295,7 +295,7 @@ switch (User('PROFILE')) {
                         </div><!-- //.panel-body -->
                                                
 
-                    </div>';
+						</div>';*/
             }
         }
 
