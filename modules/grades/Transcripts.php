@@ -293,7 +293,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                         <h2 class="m-0"><?php echo $sinfo['LAST_NAME'] . ', ' . $sinfo['FIRST_NAME'] . ' ' . $sinfo['MIDDLE_NAME']; ?></h2>
                         <p class="m-t-5 m-b-0"><?php echo (($sinfo['ADDRESS'] != '') ? $sinfo['ADDRESS'] : '') . (($sinfo['CITY'] != '') ? ', ' . $sinfo['CITY'] : '') . (($sinfo['STATE'] != '') ? ', ' . $sinfo['STATE'] : '') . (($sinfo['ZIPCODE'] != '') ? ', ' . $sinfo['ZIPCODE'] : ''); ?></p>
                         <p class="m-t-5 m-b-0"><b>Date of Birth :</b> <?php echo str_replace('-', '/', $sinfo['BIRTHDATE']); ?></p>
-                        <p class="m-t-5 m-b-0"><b>Student ID :</b><?php echo $student_id ?></p>
+                        <p class="m-t-5 m-b-0"><b>College Roll No :</b><?php echo $student_id ?></p>
                         <p class="m-t-5 m-b-0"><b>Grade Level :</b> <?php echo $sinfo['GRADE_SHORT']; ?></p>
                     </div>
                     <div class="transcript-student-overview">

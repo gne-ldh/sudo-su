@@ -71,7 +71,7 @@ if (!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) {
                     echo "</table >";
                     echo '<BR><BR>';
                     echo '<table border=0>';
-                    echo "<tr><td>Student ID:</td>";
+                    echo "<tr><td>College Roll No:</td>";
                     echo "<td>" . $address[1]['STUDENT_ID'] . "</td></tr>";
                     echo "<tr><td>Student Name:</td>";
                     echo "<td>" . $address[1]['FULL_NAME'] . "</td></tr>";
@@ -94,7 +94,7 @@ if (!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) {
                 echo "</table >";
                 echo '<BR><BR>';
                 echo '<table border=0>';
-                echo "<tr><td>Student ID:</td>";
+                echo "<tr><td>College Roll No:</td>";
                 echo "<td>" . $courses[1]['STUDENT_ID'] . "</td></tr>";
                 echo "<tr><td>Student Name:</td>";
                 echo "<td>" . $courses[1]['FULL_NAME'] . "</td></tr>";

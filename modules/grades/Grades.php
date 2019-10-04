@@ -103,7 +103,7 @@ if (clean_param($_REQUEST['student_id'], PARAM_INT)) {
 } else {
     $LO_columns = array('FULL_NAME' => 'Student');
     if ($_REQUEST['assignment_id'] != 'all')
-        $LO_columns += array('STUDENT_ID' => 'Student ID');
+        $LO_columns += array('STUDENT_ID' => 'College Roll No');
     if ($_REQUEST['include_inactive'] == 'Y')
         $LO_columns += array('ACTIVE' => 'College Status', 'ACTIVE_SCHEDULE' => 'Course Status');
     $item = 'Student';
