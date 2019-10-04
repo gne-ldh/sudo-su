@@ -1049,7 +1049,7 @@ if ($_REQUEST['action'] != 'delete' && $_REQUEST['action'] != 'delete_goal') {
                         if ($_REQUEST['assign_student_id']) {
                             $student_id = $_REQUEST['assign_student_id'];
                             if (count(DBGet(DBQuery("SELECT STUDENT_ID FROM students WHERE STUDENT_ID='$student_id'"))))
-                                BackPrompt('That Student ID is already taken. Please select a different one.');
+                                BackPrompt('That College Roll No is already taken. Please select a different one.');
                         }
                         else {
                             do {

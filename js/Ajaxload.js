@@ -310,7 +310,7 @@ function usercheck_error_student_Mod(err) {
 }
 // ------------------------------------------------------ Student ------------------------------------------------------------------------------ //
 
-// ------------------------------------------------------ Student ID------------------------------------------------------------------------------ //
+// ------------------------------------------------------ College Roll No------------------------------------------------------------------------------ //
 
 function usercheck_student_id(i) {
     var obj = document.getElementById('ajax_output_stid');
@@ -321,7 +321,7 @@ function usercheck_student_id(i) {
 
     var err = new Array();
     if (i.value.match(/[^0-9_]/))
-        err[err.length] = 'Student ID can only contain numbers';
+        err[err.length] = 'College Roll No can only contain numbers';
 
     if (err != '') {
         obj.style.color = '#ff0000';
@@ -336,14 +336,14 @@ function usercheck_callback_student_id(data) {
 
     var obj = document.getElementById('ajax_output_stid');
     obj.style.color = (response) ? '#008800' : '#ff0000';
-    obj.innerHTML = (response == '1') ? 'Student ID OK' : 'Student ID already taken';
+    obj.innerHTML = (response == '1') ? 'College Roll No OK' : 'College Roll No already taken';
 }
 
 function usercheck_error_student_id(err) {
     alert("Error: " + err);
 }
 
-// ------------------------------------------------------ Student ID------------------------------------------------------------------------------ //
+// ------------------------------------------------------ College Roll No------------------------------------------------------------------------------ //
 
 
 //-----------------Take attn depends on period------------------------------------------------------
@@ -1370,7 +1370,7 @@ function pick_collegename(data) {
 
 // ------------------------------------------------------ Student ------------------------------------------------------------------------------ //
 
-// ------------------------------------------------------ Student ID------------------------------------------------------------------------------ //
+// ------------------------------------------------------ College Roll No------------------------------------------------------------------------------ //
 
 function GetCollege(i) {
     var obj = document.getElementById('COLLEGE_NAME');

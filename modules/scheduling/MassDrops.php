@@ -123,7 +123,7 @@ if (!$_REQUEST['modfunc']) {
         echo '<input type="hidden" name="marking_period_id" value=' . strip_tags(trim($_REQUEST['marking_period_id'])) . ' >';
         $students_RET = GetStuList($extra);
 
-        $LO_columns = array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'Student ID', 'ALT_ID' => 'Alternate ID', 'GRADE_ID' => 'Grade', 'PHONE' => 'Phone');
+        $LO_columns = array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'College Roll No', 'ALT_ID' => 'Alternate ID', 'GRADE_ID' => 'Grade', 'PHONE' => 'Phone');
 
 
         if (is_array($extra['columns_before'])) {

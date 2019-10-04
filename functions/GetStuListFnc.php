@@ -677,13 +677,13 @@ function appendSQL($sql, & $extra) {
     if ($_REQUEST['stuid']) {
         $sql .= ' AND ssm.STUDENT_ID = \'' . singleQuoteReplace("'", "\'", $_REQUEST[stuid]) . '\' ';
         if (!$extra['NoSearchTerms'])
-            $_openSIS['SearchTerms'] .= '<font color=gray><b>Student ID: </b></font>' . $_REQUEST['stuid'] . '<BR>';
+            $_openSIS['SearchTerms'] .= '<font color=gray><b>College Roll No: </b></font>' . $_REQUEST['stuid'] . '<BR>';
     }
     if ($_REQUEST['altid']) {
 
         $sql .= ' AND LOWER(s.ALT_ID) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['altid']))) . '%\' ';
         if (!$extra['NoSearchTerms'])
-            $_openSIS['SearchTerms'] .= '<font color=gray><b>Student ID: </b></font>' . $_REQUEST['stuid'] . '<BR>';
+            $_openSIS['SearchTerms'] .= '<font color=gray><b>College Roll No: </b></font>' . $_REQUEST['stuid'] . '<BR>';
     }
     if ($_REQUEST['last']) {
         $sql .= ' AND LOWER(s.LAST_NAME) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['last']))) . '%\' ';
@@ -1391,14 +1391,14 @@ function appendSQL_Absence_Summary($sql, & $extra) {
         $sql .= ' AND ssm.STUDENT_ID = \'' . singleQuoteReplace("'", "\'", $_REQUEST[stuid]) . '\' ';
         $_SESSION['newsql1'].= ' AND ssm.STUDENT_ID = \'' . singleQuoteReplace("'", "\'", $_REQUEST[stuid]) . '\' ';
         if (!$extra['NoSearchTerms'])
-            $_openSIS['SearchTerms'] .= '<font color=gray><b>Student ID: </b></font>' . $_REQUEST['stuid'] . '<BR>';
+            $_openSIS['SearchTerms'] .= '<font color=gray><b>College Roll No: </b></font>' . $_REQUEST['stuid'] . '<BR>';
     }
     if ($_REQUEST['altid']) {
 
         $sql .= ' AND LOWER(s.ALT_ID) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['altid']))) . '%\' ';
         $_SESSION['newsql1'].= ' AND LOWER(s.ALT_ID) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['altid']))) . '%\' ';
         if (!$extra['NoSearchTerms'])
-            $_openSIS['SearchTerms'] .= '<font color=gray><b>Student ID: </b></font>' . $_REQUEST['stuid'] . '<BR>';
+            $_openSIS['SearchTerms'] .= '<font color=gray><b>College Roll No: </b></font>' . $_REQUEST['stuid'] . '<BR>';
     }
     if ($_REQUEST['last']) {
         $sql .= ' AND LOWER(s.LAST_NAME) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['last']))) . '%\' ';

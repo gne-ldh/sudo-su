@@ -136,7 +136,7 @@ else {
         else
             $students_RET = $extra['array_function']($students_RET);
 
-    $LO_columns = array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'Student ID', 'GRADE_ID' => 'Grade', 'SECTION_ID' => 'Section');
+    $LO_columns = array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'College Roll No', 'GRADE_ID' => 'Grade', 'SECTION_ID' => 'Section');
     $name_link['FULL_NAME']['link'] = "Modules.php?modname=$_REQUEST[next_modname]";
     $name_link['FULL_NAME']['variables'] = array('student_id' => 'STUDENT_ID');
     if ($_REQUEST['_search_all_colleges'])

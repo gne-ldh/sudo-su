@@ -183,7 +183,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                 unset($_openSIS['DrawHeader']);
                 echo '<br>';
                 echo '<table  border=0>';
-                echo '<tr><td>Student ID:</td>';
+                echo '<tr><td>College Roll No:</td>';
                 echo '<td>' . $courses[1]['STUDENT_ID'] . '</td></tr>';
                 echo '<tr><td>Student Name:</td>';
                 echo '<td>' . $courses[1]['FULL_NAME'] . '</td></tr>';
