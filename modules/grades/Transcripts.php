@@ -141,7 +141,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
 
                     if ($firstrec['COLLEGE_ID'] != '' && $firstrec['SYEAR'] != '') {
-                        $gradelevel = DBGet(DBQuery('SELECT sg.TITLE FROM college_gradelevels sg,student_enrollment se WHERE se.STUDENT_ID=' . $firstrec['STUDENT_ID'] . ' AND se.COLLEGE_ID=' . $firstrec['COLLEGE_ID'] . ' AND se.SYEAR=' . $firstrec['SYEAR'] . ' AND se.GRADE_ID=sg.ID ORDER BY se.ID DESC LIMIT 0,1'));
+                        $gradelevel = DBGet(DBQuery('SELECT sg.TITLE FROM college_gradelevels sg,student_enrollment se WHERE se.COLLEGE_ROLL_NO=' . $firstrec['COLLEGE_ROLL_NO'] . ' AND se.COLLEGE_ID=' . $firstrec['COLLEGE_ID'] . ' AND se.SYEAR=' . $firstrec['SYEAR'] . ' AND se.GRADE_ID=sg.ID ORDER BY se.ID DESC LIMIT 0,1'));
                         $gradelevel = $gradelevel[1]['TITLE'];
                     }
                     if ($gradelevel == '' && $firstrec['MP_SOURCE'] == 'History')
@@ -458,7 +458,7 @@ if (!$_REQUEST['modfunc']) {
         $extra['extra_header_left'] .= '</div>';
     }
     $extra['link'] = array('FULL_NAME' => false);
-    $extra['SELECT'] = ",s.STUDENT_ID AS CHECKBOX";
+    $extra['SELECT'] = ",s.COLLEGE_ROLL_NO AS CHECKBOX";
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
 //    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller checked onclick="checkAll(this.form,this.form.controller.checked,\'st_arr\');"><A>');
 //    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'unused\');"><A>');
@@ -534,9 +534,9 @@ if (!$_REQUEST['modfunc']) {
 function _makeChooseCheckbox($value, $title) {
     global $THIS_RET;
 //    return '<INPUT type=checkbox name=st_arr[] value=' . $value . ' checked>';
-//    return "<input name=unused[$THIS_RET[STUDENT_ID]]  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckbox(\"values[STUDENTS][$THIS_RET[STUDENT_ID]]\",this,$THIS_RET[STUDENT_ID]);' />";
+//    return "<input name=unused[$THIS_RET[COLLEGE_ROLL_NO]]  type='checkbox' id=$THIS_RET[COLLEGE_ROLL_NO] onClick='setHiddenCheckbox(\"values[STUDENTS][$THIS_RET[COLLEGE_ROLL_NO]]\",this,$THIS_RET[COLLEGE_ROLL_NO]);' />";
 
-    return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
+    return "<input name=unused[$THIS_RET[COLLEGE_ROLL_NO]] value=" . $THIS_RET[COLLEGE_ROLL_NO] . "  type='checkbox' id=$THIS_RET[COLLEGE_ROLL_NO] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[COLLEGE_ROLL_NO]);' />";
 }
 
 function _convertlinefeed($string) {

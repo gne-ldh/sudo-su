@@ -300,7 +300,7 @@ function Search($type, $extra = array(), $search_from_grade = '') {
                     echo "<OPTION value=\"---\">---</OPTION>";
                     $options['---'] = true;
                     // add values found in current and previous year
-                    $options_RET = DBGet(DBQuery("SELECT DISTINCT s.$column[COLUMN_NAME],upper(s.$column[COLUMN_NAME]) AS KEEY FROM students s,student_enrollment sse WHERE sse.STUDENT_ID=s.STUDENT_ID AND (sse.SYEAR='" . UserSyear() . "' OR sse.SYEAR='" . (UserSyear() - 1) . "') AND $column[COLUMN_NAME] IS NOT NULL ORDER BY KEEY"));
+                    $options_RET = DBGet(DBQuery("SELECT DISTINCT s.$column[COLUMN_NAME],upper(s.$column[COLUMN_NAME]) AS KEEY FROM students s,student_enrollment sse WHERE sse.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND (sse.SYEAR='" . UserSyear() . "' OR sse.SYEAR='" . (UserSyear() - 1) . "') AND $column[COLUMN_NAME] IS NOT NULL ORDER BY KEEY"));
                     foreach ($options_RET as $option)
                         if ($option[$column['COLUMN_NAME']] != '' && !$options[$option[$column['COLUMN_NAME']]]) {
                             echo "<OPTION value=\"" . $option[$column['COLUMN_NAME']] . "\">" . $option[$column['COLUMN_NAME']] . "</OPTION>";
@@ -572,7 +572,7 @@ function Search_GroupSchedule($type, $extra = array()) {
                     echo "<OPTION value=\"---\">---</OPTION>";
                     $options['---'] = true;
                     // add values found in current and previous year
-                    $options_RET = DBGet(DBQuery('SELECT DISTINCT s.' . $column[COLUMN_NAME] . ',upper(s.' . $column[COLUMN_NAME] . ') AS KEEY FROM students s,student_enrollment sse WHERE sse.STUDENT_ID=s.STUDENT_ID AND (sse.SYEAR=\'' . UserSyear() . '\' OR sse.SYEAR=\'' . (UserSyear() - 1) . '\') AND ' . $column[COLUMN_NAME] . ' IS NOT NULL ORDER BY KEEY'));
+                    $options_RET = DBGet(DBQuery('SELECT DISTINCT s.' . $column[COLUMN_NAME] . ',upper(s.' . $column[COLUMN_NAME] . ') AS KEEY FROM students s,student_enrollment sse WHERE sse.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND (sse.SYEAR=\'' . UserSyear() . '\' OR sse.SYEAR=\'' . (UserSyear() - 1) . '\') AND ' . $column[COLUMN_NAME] . ' IS NOT NULL ORDER BY KEEY'));
                     foreach ($options_RET as $option)
                         if ($option[$column['COLUMN_NAME']] != '' && !$options[$option[$column['COLUMN_NAME']]]) {
                             echo "<OPTION value=\"" . $option[$column['COLUMN_NAME']] . "\">" . $option[$column['COLUMN_NAME']] . "</OPTION>";
@@ -786,7 +786,7 @@ function Search_absence_summary($type, $extra = array(), $search_from_grade = ''
                     echo "<OPTION value=\"---\">---</OPTION>";
                     $options['---'] = true;
                     // add values found in current and previous year
-                    $options_RET = DBGet(DBQuery('SELECT DISTINCT s.' . $column[COLUMN_NAME] . ',upper(s.' . $column[COLUMN_NAME] . ') AS KEEY FROM students s,student_enrollment sse WHERE sse.STUDENT_ID=s.STUDENT_ID AND (sse.SYEAR=\'' . UserSyear() . '\' OR sse.SYEAR=\'' . (UserSyear() - 1) . '\') AND ' . $column[COLUMN_NAME] . ' IS NOT NULL ORDER BY KEEY'));
+                    $options_RET = DBGet(DBQuery('SELECT DISTINCT s.' . $column[COLUMN_NAME] . ',upper(s.' . $column[COLUMN_NAME] . ') AS KEEY FROM students s,student_enrollment sse WHERE sse.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND (sse.SYEAR=\'' . UserSyear() . '\' OR sse.SYEAR=\'' . (UserSyear() - 1) . '\') AND ' . $column[COLUMN_NAME] . ' IS NOT NULL ORDER BY KEEY'));
                     foreach ($options_RET as $option)
                         if ($option[$column['COLUMN_NAME']] != '' && !$options[$option[$column['COLUMN_NAME']]]) {
                             echo "<OPTION value=\"" . $option[$column['COLUMN_NAME']] . "\">" . $option[$column['COLUMN_NAME']] . "</OPTION>";
@@ -1024,7 +1024,7 @@ function SearchStaff($type, $extra = array()) {
                     echo "<OPTION value=\"---\">---</OPTION>";
                     $options['---'] = true;
                     // add values found in current and previous year
-                    $options_RET = DBGet(DBQuery("SELECT DISTINCT s.$column[COLUMN_NAME],upper(s.$column[COLUMN_NAME]) AS KEEY FROM students s,student_enrollment sse WHERE sse.STUDENT_ID=s.STUDENT_ID AND (sse.SYEAR='" . UserSyear() . "' OR sse.SYEAR='" . (UserSyear() - 1) . "') AND $column[COLUMN_NAME] IS NOT NULL ORDER BY KEEY"));
+                    $options_RET = DBGet(DBQuery("SELECT DISTINCT s.$column[COLUMN_NAME],upper(s.$column[COLUMN_NAME]) AS KEEY FROM students s,student_enrollment sse WHERE sse.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND (sse.SYEAR='" . UserSyear() . "' OR sse.SYEAR='" . (UserSyear() - 1) . "') AND $column[COLUMN_NAME] IS NOT NULL ORDER BY KEEY"));
                     foreach ($options_RET as $option)
                         if ($option[$column['COLUMN_NAME']] != '' && !$options[$option[$column['COLUMN_NAME']]]) {
                             echo "<OPTION value=\"" . $option[$column['COLUMN_NAME']] . "\">" . $option[$column['COLUMN_NAME']] . "</OPTION>";

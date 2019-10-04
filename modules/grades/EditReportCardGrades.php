@@ -33,7 +33,7 @@ Search('student_id');
 echo '<style type="text/css">#div_margin { margin-top:-20px; _margin-top:-1px; }</style>';
 
 if (isset($_REQUEST['student_id'])) {
-    $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,COLLEGE_ID FROM students,student_enrollment WHERE students.STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND student_enrollment.STUDENT_ID = students.STUDENT_ID '));
+    $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,COLLEGE_ID FROM students,student_enrollment WHERE students.COLLEGE_ROLL_NO=\'' . $_REQUEST['student_id'] . '\' AND student_enrollment.COLLEGE_ROLL_NO = students.COLLEGE_ROLL_NO '));
 
     $count_student_RET = DBGet(DBQuery('SELECT COUNT(*) AS NUM FROM students'));
     if ($count_student_RET[1]['NUM'] > 1) {
@@ -119,7 +119,7 @@ if (UserStudentID()) {
             }
             else {
                 $sql = 'INSERT INTO student_report_card_grades ';
-                $fields = 'COLLEGE_ID, SYEAR, STUDENT_ID, MARKING_PERIOD_ID, ';
+                $fields = 'COLLEGE_ID, SYEAR, COLLEGE_ROLL_NO, MARKING_PERIOD_ID, ';
                 $values = UserCollege() . ", " . UserSyear() . ", $student_id, $mp_id, ";
 
                 $go = false;
@@ -159,7 +159,7 @@ if (UserStudentID()) {
         }
     }
     if (!$_REQUEST['modfunc']) {
-        $stuRET = DBGet(DBQuery('SELECT LAST_NAME, FIRST_NAME, MIDDLE_NAME, NAME_SUFFIX from students where STUDENT_ID = ' . $student_id . ''));
+        $stuRET = DBGet(DBQuery('SELECT LAST_NAME, FIRST_NAME, MIDDLE_NAME, NAME_SUFFIX from students where COLLEGE_ROLL_NO = ' . $student_id . ''));
         $stuRET = $stuRET[1];
         $displayname = $stuRET['LAST_NAME'] . (($stuRET['NAME_SUFFIX']) ? $stuRET['suffix'] . ' ' : '') . ', ' . $stuRET['FIRST_NAME'] . ' ' . $stuRET['MIDDLE_NAME'];
 
@@ -302,7 +302,7 @@ if (UserStudentID()) {
             $sql = 'SELECT ID,COURSE_TITLE,GRADE_PERCENT,GRADE_LETTER,
                     IF(ISNULL(UNWEIGHTED_GP),  WEIGHTED_GP,UNWEIGHTED_GP ) AS GP,WEIGHTED_GP as WEIGHTED_GP,
                     GP_SCALE,CREDIT_ATTEMPTED,CREDIT_EARNED,CREDIT_CATEGORY
-                       FROM student_report_card_grades WHERE STUDENT_ID = ' . $student_id . ' AND MARKING_PERIOD_ID = ' . $mp_id . ' ORDER BY ID';
+                       FROM student_report_card_grades WHERE COLLEGE_ROLL_NO = ' . $student_id . ' AND MARKING_PERIOD_ID = ' . $mp_id . ' ORDER BY ID';
 
             //build forms based on tab selected
             if ($_REQUEST['tab_id'] == 'grades' || $_REQUEST['tab_id'] == '') {

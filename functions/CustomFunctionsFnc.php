@@ -530,8 +530,8 @@ function GetStuListAttn(& $extra) {
         if (!count($view_fields_RET) && !isset($view_address_RET) && !isset($view_other_RET['CONTACT_INFO'])) {
             $extra['columns_after'] = array('CONTACT_INFO' => '<IMG SRC=assets/down_phone_button.gif border=0>', 'gender' => 'Gender', 'ethnicity' => 'Ethnicity', 'ADDRESS' => 'Mailing Address', 'CITY' => 'City', 'STATE' => 'State', 'ZIPCODE' => 'Zipcode') + $extra['columns_after'];
 
-            $select = ',s.STUDENT_ID AS CONTACT_INFO,s.GENDER,s.ETHNICITY,a.STREET_ADDRESS_1 as ADDRESS,a.CITY,a.STATE,a.ZIPCODE';
-            $extra['FROM'] = ' LEFT OUTER JOIN student_address a ON (ssm.STUDENT_ID=a.STUDENT_ID AND a.TYPE=\'Mail\')  ' . $extra['FROM'];
+            $select = ',s.COLLEGE_ROLL_NO AS CONTACT_INFO,s.GENDER,s.ETHNICITY,a.STREET_ADDRESS_1 as ADDRESS,a.CITY,a.STATE,a.ZIPCODE';
+            $extra['FROM'] = ' LEFT OUTER JOIN student_address a ON (ssm.COLLEGE_ROLL_NO=a.COLLEGE_ROLL_NO AND a.TYPE=\'Mail\')  ' . $extra['FROM'];
 
             $functions['CONTACT_INFO'] = 'makeContactInfo';
             // if gender is converted to codeds type
@@ -542,11 +542,11 @@ function GetStuListAttn(& $extra) {
             $extra2['NoSearchTerms'] = true;
 
 
-            $extra2['SELECT_ONLY'] = 'ssm.STUDENT_ID,p.STAFF_ID AS PERSON_ID,p.FIRST_NAME,p.LAST_NAME,sjp.RELATIONSHIP as STUDENT_RELATION,p.TITLE,s.PHONE,a.ID AS ADDRESS_ID ';
-            $extra2['FROM'] .= ',student_address a LEFT OUTER JOIN students_join_people sjp ON (a.STUDENT_ID=sjp.STUDENT_ID AND (p.CUSTODY=\'Y\' OR sjp.IS_EMERGENCY=\'Y\')) LEFT OUTER JOIN people p ON (p.STAFF_ID=sjp.PERSON_ID) ';
-            $extra2['WHERE'] .= ' AND a.STUDENT_ID=sjp.STUDENT_ID AND sjp.STUDENT_ID=ssm.STUDENT_ID ';
+            $extra2['SELECT_ONLY'] = 'ssm.COLLEGE_ROLL_NO,p.STAFF_ID AS PERSON_ID,p.FIRST_NAME,p.LAST_NAME,sjp.RELATIONSHIP as STUDENT_RELATION,p.TITLE,s.PHONE,a.ID AS ADDRESS_ID ';
+            $extra2['FROM'] .= ',student_address a LEFT OUTER JOIN students_join_people sjp ON (a.COLLEGE_ROLL_NO=sjp.COLLEGE_ROLL_NO AND (p.CUSTODY=\'Y\' OR sjp.IS_EMERGENCY=\'Y\')) LEFT OUTER JOIN people p ON (p.STAFF_ID=sjp.PERSON_ID) ';
+            $extra2['WHERE'] .= ' AND a.COLLEGE_ROLL_NO=sjp.COLLEGE_ROLL_NO AND sjp.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO ';
             $extra2['ORDER_BY'] .= 'COALESCE(p.CUSTODY,\'N\') DESC';
-            $extra2['group'] = array('STUDENT_ID', 'PERSON_ID');
+            $extra2['group'] = array('COLLEGE_ROLL_NO', 'PERSON_ID');
 
 
             // EXPANDED VIEW AND ADDR BREAKS THIS QUERY ... SO, TURN 'EM OFF
@@ -571,12 +571,12 @@ function GetStuListAttn(& $extra) {
                 $extra2['NoSearchTerms'] = true;
                 $extra2['SELECT'] = '';
 
-                $extra2['SELECT_ONLY'] = 'ssm.STUDENT_ID,p.STAFF_ID AS PERSON_ID,p.FIRST_NAME,p.LAST_NAME,sjp.RELATIONSHIP AS STUDENT_RELATION,p.TITLE,s.PHONE,a.ID AS ADDRESS_ID,COALESCE(p.CUSTODY,\'N\') ';
-                $extra2['FROM'] .= ',student_address a LEFT OUTER JOIN students_join_people sjp ON (a.STUDENT_ID=sjp.STUDENT_ID AND (p.CUSTODY=\'Y\' OR sjp.IS_EMERGENCY=\'Y\')) LEFT OUTER JOIN people p ON (p.STAFF_ID=sjp.PERSON_ID)  ';
-                $extra2['WHERE'] .= ' AND a.STUDENT_ID=sjp.STUDENT_ID AND sjp.STUDENT_ID=ssm.STUDENT_ID ';
+                $extra2['SELECT_ONLY'] = 'ssm.COLLEGE_ROLL_NO,p.STAFF_ID AS PERSON_ID,p.FIRST_NAME,p.LAST_NAME,sjp.RELATIONSHIP AS STUDENT_RELATION,p.TITLE,s.PHONE,a.ID AS ADDRESS_ID,COALESCE(p.CUSTODY,\'N\') ';
+                $extra2['FROM'] .= ',student_address a LEFT OUTER JOIN students_join_people sjp ON (a.COLLEGE_ROLL_NO=sjp.COLLEGE_ROLL_NO AND (p.CUSTODY=\'Y\' OR sjp.IS_EMERGENCY=\'Y\')) LEFT OUTER JOIN people p ON (p.STAFF_ID=sjp.PERSON_ID)  ';
+                $extra2['WHERE'] .= ' AND a.COLLEGE_ROLL_NO=sjp.COLLEGE_ROLL_NO AND sjp.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO ';
                 $extra2['ORDER_BY'] .= 'COALESCE(p.CUSTODY,\'N\') DESC';
 
-                $extra2['group'] = array('STUDENT_ID', 'PERSON_ID');
+                $extra2['group'] = array('COLLEGE_ROLL_NO', 'PERSON_ID');
                 $extra2['functions'] = array();
                 $extra2['link'] = array();
 
@@ -601,18 +601,18 @@ function GetStuListAttn(& $extra) {
             }
             if ($view_address_RET) {
                 if ($view_address_RET == 'RESIDENCE')
-                    $extra['FROM'] = ' LEFT OUTER JOIN student_address a ON (ssm.STUDENT_ID=a.STUDENT_ID AND a.TYPE=\'Home Address\')  ' . $extra['FROM'];
+                    $extra['FROM'] = ' LEFT OUTER JOIN student_address a ON (ssm.COLLEGE_ROLL_NO=a.COLLEGE_ROLL_NO AND a.TYPE=\'Home Address\')  ' . $extra['FROM'];
                 elseif ($view_address_RET == 'MAILING')
-                    $extra['FROM'] = ' LEFT OUTER JOIN student_address a ON (ssm.STUDENT_ID=a.STUDENT_ID AND a.TYPE=\'Mail\') ' . $extra['FROM'];
+                    $extra['FROM'] = ' LEFT OUTER JOIN student_address a ON (ssm.COLLEGE_ROLL_NO=a.COLLEGE_ROLL_NO AND a.TYPE=\'Mail\') ' . $extra['FROM'];
                 elseif ($view_address_RET == 'BUS_PICKUP')
-                    $extra['FROM'] = ' LEFT OUTER JOIN student_address a ON (a.STUDENT_ID=a.STUDENT_ID AND a.BUS_PICKUP=\'Y\') ' . $extra['FROM'];
+                    $extra['FROM'] = ' LEFT OUTER JOIN student_address a ON (a.COLLEGE_ROLL_NO=a.COLLEGE_ROLL_NO AND a.BUS_PICKUP=\'Y\') ' . $extra['FROM'];
                 else
-                    $extra['FROM'] = ' LEFT OUTER JOIN student_address a ON (a.STUDENT_ID=a.STUDENT_ID AND a.BUS_DROPOFF=\'Y\') ' . $extra['FROM'];
+                    $extra['FROM'] = ' LEFT OUTER JOIN student_address a ON (a.COLLEGE_ROLL_NO=a.COLLEGE_ROLL_NO AND a.BUS_DROPOFF=\'Y\') ' . $extra['FROM'];
 
 
                 $extra['columns_after'] += array('ADDRESS' => ucwords(strtolower(str_replace('_', ' ', $view_address_RET))) . ' Address', 'CITY' => 'City', 'STATE' => 'State', 'ZIPCODE' => 'Zipcode');
 
-                $select .= ',a.ID AS ADDRESS_ID,a.STREET_ADDRESS_1 as ADDRESS,a.CITY,a.STATE,a.ZIPCODE,s.PHONE,ssm.STUDENT_ID AS PARENTS';
+                $select .= ',a.ID AS ADDRESS_ID,a.STREET_ADDRESS_1 as ADDRESS,a.CITY,a.STATE,a.ZIPCODE,s.PHONE,ssm.COLLEGE_ROLL_NO AS PARENTS';
                 $extra['singular'] = 'Student Address';
                 $extra['plural'] = 'Student Addresses';
 
@@ -629,13 +629,13 @@ function GetStuListAttn(& $extra) {
                 }
             }
             elseif ($_REQUEST['addr'] || $extra['addr']) {
-                $extra['FROM'] = ' LEFT OUTER JOIN student_address a ON (ssm.STUDENT_ID=a.STUDENT_ID) ' . $extra['FROM'];
+                $extra['FROM'] = ' LEFT OUTER JOIN student_address a ON (ssm.COLLEGE_ROLL_NO=a.COLLEGE_ROLL_NO) ' . $extra['FROM'];
                 $distinct = 'DISTINCT ';
             }
         }
         $extra['SELECT'] .= $select;
     } elseif ($_REQUEST['addr'] || $extra['addr']) {
-        $extra['FROM'] = ' LEFT OUTER JOIN student_address a ON (ssm.STUDENT_ID=a.STUDENT_ID) ' . $extra['FROM'];
+        $extra['FROM'] = ' LEFT OUTER JOIN student_address a ON (ssm.COLLEGE_ROLL_NO=a.COLLEGE_ROLL_NO) ' . $extra['FROM'];
         $distinct = 'DISTINCT ';
     }
 
@@ -649,14 +649,14 @@ function GetStuListAttn(& $extra) {
                     $sql .= 'CONCAT(s.LAST_NAME,\', \',coalesce(s.COMMON_NAME,s.FIRST_NAME)) AS FULL_NAME,';
                 else
                     $sql .= 'CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME,\' \',COALESCE(s.MIDDLE_NAME,\' \')) AS FULL_NAME,';
-                $sql .= 's.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,ssm.COLLEGE_ID AS LIST_COLLEGE_ID,ssm.GRADE_ID ' . $extra['SELECT'];
+                $sql .= 's.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.COLLEGE_ROLL_NO,ssm.COLLEGE_ID AS LIST_COLLEGE_ID,ssm.GRADE_ID ' . $extra['SELECT'];
                 if ($_REQUEST['include_inactive'] == 'Y')
                     $sql .= ',' . db_case(array('(ssm.SYEAR=\'' . UserSyear() . '\' AND (ssm.START_DATE IS NOT NULL AND (\'' . date('Y-m-d', strtotime($extra['DATE'])) . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL)))', 'true', "'<FONT color=green>Active</FONT>'", "'<FONT color=red>Inactive</FONT>'")) . ' AS ACTIVE ';
             }
 
-            $sql .= ' FROM students s,student_enrollment ssm ' . $extra['FROM'] . ' WHERE ssm.STUDENT_ID=s.STUDENT_ID ';
+            $sql .= ' FROM students s,student_enrollment ssm ' . $extra['FROM'] . ' WHERE ssm.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO ';
             if ($_REQUEST['include_inactive'] == 'Y')
-                $sql .= ' AND ssm.ID=(SELECT ID FROM student_enrollment WHERE STUDENT_ID=ssm.STUDENT_ID AND SYEAR<=\'' . UserSyear() . '\' ORDER BY START_DATE DESC LIMIT 1)';
+                $sql .= ' AND ssm.ID=(SELECT ID FROM student_enrollment WHERE COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND SYEAR<=\'' . UserSyear() . '\' ORDER BY START_DATE DESC LIMIT 1)';
             else
                 $sql .= ' AND ssm.SYEAR=\'' . UserSyear() . '\' AND (ssm.START_DATE IS NOT NULL AND (\'' . date('Y-m-d', strtotime($extra['DATE'])) . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL)) ';
 
@@ -682,19 +682,19 @@ function GetStuListAttn(& $extra) {
                     $sql .= 'CONCAT(s.LAST_NAME,\', \',coalesce(s.COMMON_NAME,s.FIRST_NAME)) AS FULL_NAME,';
                 else
                     $sql .= 'CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME,\' \',COALESCE(s.MIDDLE_NAME,\' \')) AS FULL_NAME,';
-                $sql .= 's.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,ssm.COLLEGE_ID,ssm.GRADE_ID ' . $extra['SELECT'];
+                $sql .= 's.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.COLLEGE_ROLL_NO,ssm.COLLEGE_ID,ssm.GRADE_ID ' . $extra['SELECT'];
                 if ($_REQUEST['include_inactive'] == 'Y') {
                     $sql .= ',' . db_case(array('(ssm.START_DATE IS NOT NULL AND  (\'' . $extra['DATE'] . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL))', 'true', "'<FONT color=green>Active</FONT>'", "'<FONT color=red>Inactive</FONT>'")) . ' AS ACTIVE';
                     $sql .= ',' . db_case(array('(\'' . $extra['DATE'] . '\'>=ss.START_DATE AND (\'' . $extra['DATE'] . '\'<=ss.END_DATE OR ss.END_DATE IS NULL))', 'true', "'<FONT color=green>Active</FONT>'", "'<FONT color=red>Inactive</FONT>'")) . ' AS ACTIVE_SCHEDULE';
                 }
             }
 
-            $sql .= ' FROM students s,course_periods cp,schedule ss,student_enrollment ssm,course_period_var cpv ' . $extra['FROM'] . ' WHERE ssm.STUDENT_ID=s.STUDENT_ID AND cpv.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cpv.ID="' . $extra['ID'] . '" AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.COLLEGE_ID=\'' . UserCollege() . '\' AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND ' . db_case(array(User('STAFF_ID'), 'cp.teacher_id', ' cp.teacher_id=' . User('STAFF_ID'), 'cp.secondary_teacher_id', ' cp.secondary_teacher_id=' . User('STAFF_ID'), 'cp.course_period_id IN(SELECT course_period_id from teacher_reassignment tra WHERE cp.course_period_id=tra.course_period_id AND tra.pre_teacher_id=' . User('STAFF_ID') . ')')) . ' AND cp.COURSE_PERIOD_ID=\'' . (isset($_REQUEST['cp_id_miss_attn']) ? $_REQUEST['cp_id_miss_attn'] : UserCoursePeriod()) . '\' AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID';
+            $sql .= ' FROM students s,course_periods cp,schedule ss,student_enrollment ssm,course_period_var cpv ' . $extra['FROM'] . ' WHERE ssm.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND cpv.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cpv.ID="' . $extra['ID'] . '" AND ssm.COLLEGE_ROLL_NO=ss.COLLEGE_ROLL_NO AND ssm.COLLEGE_ID=\'' . UserCollege() . '\' AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND ' . db_case(array(User('STAFF_ID'), 'cp.teacher_id', ' cp.teacher_id=' . User('STAFF_ID'), 'cp.secondary_teacher_id', ' cp.secondary_teacher_id=' . User('STAFF_ID'), 'cp.course_period_id IN(SELECT course_period_id from teacher_reassignment tra WHERE cp.course_period_id=tra.course_period_id AND tra.pre_teacher_id=' . User('STAFF_ID') . ')')) . ' AND cp.COURSE_PERIOD_ID=\'' . (isset($_REQUEST['cp_id_miss_attn']) ? $_REQUEST['cp_id_miss_attn'] : UserCoursePeriod()) . '\' AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID';
             if ($extra['cpvdate'] != '')
                 $sql .= $extra['cpvdate'];
             if ($_REQUEST['include_inactive'] == 'Y') {
-                $sql .= ' AND ssm.ID=(SELECT ID FROM student_enrollment WHERE STUDENT_ID=ssm.STUDENT_ID AND SYEAR=ssm.SYEAR ORDER BY START_DATE DESC LIMIT 1)';
-                $sql .= ' AND ss.START_DATE=(SELECT START_DATE FROM schedule WHERE STUDENT_ID=ssm.STUDENT_ID AND SYEAR=ssm.SYEAR AND MARKING_PERIOD_ID IN (' . GetAllMP('', $queryMP) . ') AND COURSE_ID=cp.COURSE_ID AND COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID ORDER BY START_DATE DESC LIMIT 1)';
+                $sql .= ' AND ssm.ID=(SELECT ID FROM student_enrollment WHERE COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND SYEAR=ssm.SYEAR ORDER BY START_DATE DESC LIMIT 1)';
+                $sql .= ' AND ss.START_DATE=(SELECT START_DATE FROM schedule WHERE COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND SYEAR=ssm.SYEAR AND MARKING_PERIOD_ID IN (' . GetAllMP('', $queryMP) . ') AND COURSE_ID=cp.COURSE_ID AND COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID ORDER BY START_DATE DESC LIMIT 1)';
             } else {
                 $sql .= ' AND (ssm.START_DATE IS NOT NULL  AND \'' . $extra['DATE'] . '\'>=ssm.START_DATE AND (\'' . $extra['DATE'] . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL))';
                 $sql .= ' AND (\'' . $extra['DATE'] . '\'>=ss.START_DATE AND (\'' . $extra['DATE'] . '\'<=ss.END_DATE OR ss.END_DATE IS NULL))';
@@ -716,10 +716,10 @@ function GetStuListAttn(& $extra) {
                     $sql .= 'CONCAT(s.LAST_NAME,\', \',coalesce(s.COMMON_NAME,s.FIRST_NAME)) AS FULL_NAME,';
                 else
                     $sql .= 'CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME,\' \',COALESCE(s.MIDDLE_NAME,\' \')) AS FULL_NAME,';
-                $sql .= 's.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,ssm.COLLEGE_ID,ssm.GRADE_ID ' . $extra['SELECT'];
+                $sql .= 's.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.COLLEGE_ROLL_NO,ssm.COLLEGE_ID,ssm.GRADE_ID ' . $extra['SELECT'];
             }
             $sql .= ' FROM students s,student_enrollment ssm ' . $extra['FROM'] . '
-					WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.COLLEGE_ID=\'' . UserCollege() . '\' AND (\'' . DBDate() . '\' BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND \'' . DBDate() . '\'>ssm.START_DATE)) AND ssm.STUDENT_ID' . ($extra['ASSOCIATED'] ? ' IN (SELECT STUDENT_ID FROM students_join_users WHERE STAFF_ID=\'' . $extra['ASSOCIATED'] . '\')' : '=\'' . UserStudentID() . '\'');
+					WHERE ssm.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.COLLEGE_ID=\'' . UserCollege() . '\' AND (\'' . DBDate() . '\' BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND \'' . DBDate() . '\'>ssm.START_DATE)) AND ssm.COLLEGE_ROLL_NO' . ($extra['ASSOCIATED'] ? ' IN (SELECT COLLEGE_ROLL_NO FROM students_join_users WHERE STAFF_ID=\'' . $extra['ASSOCIATED'] . '\')' : '=\'' . UserStudentID() . '\'');
             break;
         default:
             exit('Error');

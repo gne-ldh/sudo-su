@@ -28,10 +28,10 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save' && AllowEdit()) {
-    $current_RET = DBGet(DBQuery('SELECT STAFF_ID FROM students_join_users WHERE STUDENT_ID=\'' . UserStudentID() . '\''), array(), array('STAFF_ID'));
+    $current_RET = DBGet(DBQuery('SELECT STAFF_ID FROM students_join_users WHERE COLLEGE_ROLL_NO=\'' . UserStudentID() . '\''), array(), array('STAFF_ID'));
     foreach ($_REQUEST['staff'] as $staff_id => $yes) {
         if (!$current_RET[$staff_id]) {
-            $sql = 'INSERT INTO students_join_users (STAFF_ID,STUDENT_ID) values(\'' . $staff_id . '\',\'' . UserStudentID() . '\')';
+            $sql = 'INSERT INTO students_join_users (STAFF_ID,COLLEGE_ROLL_NO) values(\'' . $staff_id . '\',\'' . UserStudentID() . '\')';
             DBQuery($sql);
         }
     }
@@ -46,7 +46,7 @@ if (isset($_REQUEST['student_id']) && $_REQUEST['student_id'] != 'new' || UserSt
         $stu_id = $_REQUEST['student_id'];
     else
         $stu_id = UserStudentID();
-    $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,COLLEGE_ID FROM students,student_enrollment WHERE students.STUDENT_ID=\'' . $stu_id . '\' AND student_enrollment.STUDENT_ID = students.STUDENT_ID '));
+    $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,COLLEGE_ID FROM students,student_enrollment WHERE students.COLLEGE_ROLL_NO=\'' . $stu_id . '\' AND student_enrollment.COLLEGE_ROLL_NO = students.COLLEGE_ROLL_NO '));
 
     $count_student_RET = DBGet(DBQuery('SELECT COUNT(*) AS NUM FROM students'));
     if ($count_student_RET[1]['NUM'] > 1) {
@@ -61,14 +61,14 @@ if (isset($_REQUEST['student_id']) && $_REQUEST['student_id'] != 'new' || UserSt
 }
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'delete' && AllowEdit()) {
     if (DeletePromptCommon('student from that user', 'remove access to')) {
-        DBQuery('DELETE FROM students_join_users WHERE STAFF_ID=\'' . $_REQUEST[staff_id] . '\' AND STUDENT_ID=\'' . UserStudentID() . '\'');
+        DBQuery('DELETE FROM students_join_users WHERE STAFF_ID=\'' . $_REQUEST[staff_id] . '\' AND COLLEGE_ROLL_NO=\'' . UserStudentID() . '\'');
         unset($_REQUEST['modfunc']);
     }
 }
 if ($note)
     DrawHeader('<IMG SRC=assets/check.gif>' . $note);
 if ($_REQUEST['modfunc'] != 'delete') {
-    $extra['SELECT'] = ',(SELECT count(distinct u.PERSON_ID) FROM students_join_people u,people p WHERE u.STUDENT_ID=s.STUDENT_ID AND p.STAFF_ID=u.PERSON_ID) AS ASSOCIATED';
+    $extra['SELECT'] = ',(SELECT count(distinct u.PERSON_ID) FROM students_join_people u,people p WHERE u.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND p.STAFF_ID=u.PERSON_ID) AS ASSOCIATED';
     $extra['columns_after'] = array('ASSOCIATED' => '# Associated');
     Search('student_id', $extra);
     if (UserStudentID()) {
@@ -80,7 +80,7 @@ if ($_REQUEST['modfunc'] != 'delete') {
         echo '<div class="row">';
         echo '<div class="col-md-8">';
 
-        $current_RET = DBGet(DBQuery('SELECT DISTINCT u.PERSON_ID AS STAFF_ID,CONCAT(p.LAST_NAME,\', \',p.FIRST_NAME) AS FULL_NAME,la.LAST_LOGIN FROM people p INNER JOIN students_join_people u ON ( p.STAFF_ID=u.PERSON_ID ) LEFT JOIN login_authentication la ON (la.PROFILE_ID=p.PROFILE_ID AND p.STAFF_ID=la.USER_ID) WHERE u.STUDENT_ID=\'' . UserStudentID() . '\' group by (p.staff_id) order by la.LAST_LOGIN desc'), array('LAST_LOGIN' => '_makeLogin'));
+        $current_RET = DBGet(DBQuery('SELECT DISTINCT u.PERSON_ID AS STAFF_ID,CONCAT(p.LAST_NAME,\', \',p.FIRST_NAME) AS FULL_NAME,la.LAST_LOGIN FROM people p INNER JOIN students_join_people u ON ( p.STAFF_ID=u.PERSON_ID ) LEFT JOIN login_authentication la ON (la.PROFILE_ID=p.PROFILE_ID AND p.STAFF_ID=la.USER_ID) WHERE u.COLLEGE_ROLL_NO=\'' . UserStudentID() . '\' group by (p.staff_id) order by la.LAST_LOGIN desc'), array('LAST_LOGIN' => '_makeLogin'));
         $link['remove'] = array('link' => "Modules.php?modname=$_REQUEST[modname]&modfunc=delete", 'variables' => array('staff_id' => 'STAFF_ID'));
         echo '<div class="panel panel-default">';
         ListOutput($current_RET, array('FULL_NAME' => 'Parents', 'LAST_LOGIN' => 'Last Login'), '', '', $link, array(), array('search' => false));

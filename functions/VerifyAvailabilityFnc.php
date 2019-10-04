@@ -480,7 +480,7 @@ function VerifyStudentSchedule($course_RET,$student_id='')
     $check_parent_schedule=DBGet(DBQuery('SELECT PARENT_ID FROM course_periods WHERE COURSE_PERIOD_ID='.$course_RET[1]['COURSE_PERIOD_ID']));
     if($check_parent_schedule[1]['PARENT_ID']!='' && $check_parent_schedule[1]['PARENT_ID']!=$course_RET[1]['COURSE_PERIOD_ID'])
     {
-        $check_stu_schedule=DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM schedule WHERE COURSE_PERIOD_ID='.$check_parent_schedule[1]['PARENT_ID'].' AND STUDENT_ID='.$student_id.' AND (END_DATE>="'.date('Y-m-d').'" OR END_DATE IS NULL OR END_DATE="0000-00-00")'));
+        $check_stu_schedule=DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM schedule WHERE COURSE_PERIOD_ID='.$check_parent_schedule[1]['PARENT_ID'].' AND COLLEGE_ROLL_NO='.$student_id.' AND (END_DATE>="'.date('Y-m-d').'" OR END_DATE IS NULL OR END_DATE="0000-00-00")'));
         if($check_stu_schedule[1]['REC_EX']==0)
             return 'Course period has parent course restriction';
 
@@ -489,7 +489,7 @@ function VerifyStudentSchedule($course_RET,$student_id='')
     {
         return 'Seat not available';
     }
-    $student_RET=DBGet(DBQuery("SELECT LEFT(GENDER,1) AS GENDER FROM students WHERE STUDENT_ID='".$student_id."'"));
+    $student_RET=DBGet(DBQuery("SELECT LEFT(GENDER,1) AS GENDER FROM students WHERE COLLEGE_ROLL_NO='".$student_id."'"));
     $student=$student_RET[1];
     if($course_RET[1]['GENDER_RESTRICTION']!='N' && $course_RET[1]['GENDER_RESTRICTION']!=$student['GENDER'])
     {

@@ -78,8 +78,8 @@ if ($category == 'student') {
 //        print_r($arr_data);
 
         $id = DBGet(DBQuery("SHOW TABLE STATUS LIKE 'students'"));
-        $student_id[1]['STUDENT_ID'] = $id[1]['AUTO_INCREMENT'];
-        $student_id = $student_id[1]['STUDENT_ID'];
+        $student_id[1]['COLLEGE_ROLL_NO'] = $id[1]['AUTO_INCREMENT'];
+        $student_id = $student_id[1]['COLLEGE_ROLL_NO'];
         $accepted = 0;
         $rejected = 0;
         $records = 0;
@@ -92,7 +92,7 @@ if ($category == 'student') {
             if ($arr_i > 0) {
 
 
-                $student_columns = array('STUDENT_ID');
+                $student_columns = array('COLLEGE_ROLL_NO');
                 $student_values = array($student_id);
                 $check_query = array();
                 $check_query_alt_id = array();
@@ -196,7 +196,7 @@ if ($category == 'student') {
                     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     ///////////////////////////For Student Enrollment////////////////////////////////////////////////////////////
                     $enrollment_code = DBGet(DBQuery('SELECT ID FROM  student_enrollment_codes WHERE SYEAR=' . UserSyear() . '  AND TITLE=\'New\''));
-                    $enrollment_columns = array('SYEAR', 'COLLEGE_ID', 'STUDENT_ID', 'ENROLLMENT_CODE');
+                    $enrollment_columns = array('SYEAR', 'COLLEGE_ID', 'COLLEGE_ROLL_NO', 'ENROLLMENT_CODE');
                     $enrollment_values = array(UserSyear(), UserCollege(), $student_id, $enrollment_code[1]['ID']);
                     $calendar_id = DBGet(DBQuery('SELECT CALENDAR_ID FROM college_calendars  WHERE SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege() . ' AND DEFAULT_CALENDAR=\'Y\' '));
                     if ($calendar_id[1]['CALENDAR_ID'] != '') {
@@ -252,7 +252,7 @@ if ($category == 'student') {
                     unset($la_values);
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     /////////////////////////For Student Address////////////////////////////////////////////////////////////
-                    $sa_columns = array('STUDENT_ID', 'SYEAR', 'COLLEGE_ID');
+                    $sa_columns = array('COLLEGE_ROLL_NO', 'SYEAR', 'COLLEGE_ID');
                     $sa_values = array($student_id, UserSyear(), UserCollege());
 
                     foreach ($student_address as $student_address_v) {
@@ -287,8 +287,8 @@ if ($category == 'student') {
                         DBQuery('INSERT INTO people (' . implode(',', $primary_columns) . ') VALUES (' . implode(',', $primary_values) . ')');
                         $people_id = DBGet(DBQuery('SELECT MAX(STAFF_ID) as PEOPLE_ID FROM people'));
                         $people_id = $people_id[1]['PEOPLE_ID'];
-                        DBQuery('UPDATE student_address SET PEOPLE_ID=' . $people_id . ' WHERE STUDENT_ID=' . $student_id . ' AND TYPE=\'Primary\' ');
-                        DBQuery('INSERT INTO students_join_people (STUDENT_ID,PERSON_ID,EMERGENCY_TYPE,RELATIONSHIP) VALUES (' . $student_id . ',' . $people_id . ',\'Primary\',\'' . $relationship . '\')');
+                        DBQuery('UPDATE student_address SET PEOPLE_ID=' . $people_id . ' WHERE COLLEGE_ROLL_NO=' . $student_id . ' AND TYPE=\'Primary\' ');
+                        DBQuery('INSERT INTO students_join_people (COLLEGE_ROLL_NO,PERSON_ID,EMERGENCY_TYPE,RELATIONSHIP) VALUES (' . $student_id . ',' . $people_id . ',\'Primary\',\'' . $relationship . '\')');
                     }
                     unset($primary_columns);
                     unset($primary_values);
@@ -312,8 +312,8 @@ if ($category == 'student') {
                         DBQuery('INSERT INTO people (' . implode(',', $secondary_columns) . ') VALUES (' . implode(',', $secondary_values) . ')');
                         $people_id = DBGet(DBQuery('SELECT MAX(STAFF_ID) as PEOPLE_ID FROM people'));
                         $people_id = $people_id[1]['PEOPLE_ID'];
-                        DBQuery('UPDATE student_address SET PEOPLE_ID=' . $people_id . ' WHERE STUDENT_ID=' . $student_id . ' AND TYPE=\'Secondary\' ');
-                        DBQuery('INSERT INTO students_join_people (STUDENT_ID,PERSON_ID,EMERGENCY_TYPE,RELATIONSHIP) VALUES (' . $student_id . ',' . $people_id . ',\'Secondary\',\'' . $relationship . '\')');
+                        DBQuery('UPDATE student_address SET PEOPLE_ID=' . $people_id . ' WHERE COLLEGE_ROLL_NO=' . $student_id . ' AND TYPE=\'Secondary\' ');
+                        DBQuery('INSERT INTO students_join_people (COLLEGE_ROLL_NO,PERSON_ID,EMERGENCY_TYPE,RELATIONSHIP) VALUES (' . $student_id . ',' . $people_id . ',\'Secondary\',\'' . $relationship . '\')');
                     }
                     unset($secondary_columns);
                     unset($secondary_values);

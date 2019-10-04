@@ -321,7 +321,7 @@ if(optional_param('modfunc','',PARAM_SPCL)=='update' && $_POST)
 
 
 if(!$_SESSION['student_id'] && User('PROFILE')=='student')
-	$_SESSION['student_id'] = $_SESSION['STUDENT_ID'];
+	$_SESSION['student_id'] = $_SESSION['COLLEGE_ROLL_NO'];
 
 if(!$_SESSION['UserCollege'])
 {
@@ -442,7 +442,7 @@ if(1)
 if(User('PROFILE')!='student')
 	$sql = "SELECT DISTINCT sy.SYEAR FROM college_years sy,staff s,staff_college_relationship ssr, login_authentication la WHERE s.STAFF_ID=la.USER_ID AND s.PROFILE_ID=la.PROFILE_ID AND ssr.SYEAR=sy.SYEAR AND s.STAFF_ID=ssr.STAFF_ID AND la.USERNAME=(SELECT USERNAME FROM login_authentication WHERE USER_ID='$_SESSION[STAFF_ID]' AND PROFILE_ID='$_SESSION[PROFILE_ID]')";
 else
-	$sql = "SELECT DISTINCT sy.SYEAR FROM college_years sy,student_enrollment se WHERE se.SYEAR=sy.SYEAR AND se.STUDENT_ID='$_SESSION[STUDENT_ID]'";
+	$sql = "SELECT DISTINCT sy.SYEAR FROM college_years sy,student_enrollment se WHERE se.SYEAR=sy.SYEAR AND se.COLLEGE_ROLL_NO='$_SESSION[COLLEGE_ROLL_NO]'";
 $years_RET = DBGet(DBQuery($sql));
 }
 else
@@ -455,18 +455,18 @@ echo '</SELECT><BR>';
 
 if(User('PROFILE')=='parent')
 {
-	$RET = DBGet(DBQuery("SELECT sju.STUDENT_ID, CONCAT(s.LAST_NAME,', ',s.FIRST_NAME) AS FULL_NAME,se.COLLEGE_ID FROM students s,students_join_people sju, student_enrollment se WHERE s.STUDENT_ID=sju.STUDENT_ID AND sju.PERSON_ID='".User('STAFF_ID')."' AND se.SYEAR=".UserSyear()." AND se.STUDENT_ID=sju.STUDENT_ID AND (('".DBDate()."' BETWEEN se.START_DATE AND se.END_DATE OR se.END_DATE IS NULL) AND '".DBDate()."'>=se.START_DATE)"));
+	$RET = DBGet(DBQuery("SELECT sju.COLLEGE_ROLL_NO, CONCAT(s.LAST_NAME,', ',s.FIRST_NAME) AS FULL_NAME,se.COLLEGE_ID FROM students s,students_join_people sju, student_enrollment se WHERE s.COLLEGE_ROLL_NO=sju.COLLEGE_ROLL_NO AND sju.PERSON_ID='".User('STAFF_ID')."' AND se.SYEAR=".UserSyear()." AND se.COLLEGE_ROLL_NO=sju.COLLEGE_ROLL_NO AND (('".DBDate()."' BETWEEN se.START_DATE AND se.END_DATE OR se.END_DATE IS NULL) AND '".DBDate()."'>=se.START_DATE)"));
 
 	if(!UserStudentID())
-		$_SESSION['student_id'] = $RET[1]['STUDENT_ID'];
+		$_SESSION['student_id'] = $RET[1]['COLLEGE_ROLL_NO'];
 
 	echo "<SELECT name=student_id onChange='document.forms[0].submit();'>";
 	if(count($RET))
 	{
 		foreach($RET as $student)
 		{
-			echo "<OPTION value=$student[STUDENT_ID]".((UserStudentID()==$student['STUDENT_ID'])?' SELECTED':'').">".$student['FULL_NAME']."</OPTION>";
-			if(UserStudentID()==$student['STUDENT_ID'])
+			echo "<OPTION value=$student[COLLEGE_ROLL_NO]".((UserStudentID()==$student['COLLEGE_ROLL_NO'])?' SELECTED':'').">".$student['FULL_NAME']."</OPTION>";
+			if(UserStudentID()==$student['COLLEGE_ROLL_NO'])
 				$_SESSION['UserCollege'] = $student['COLLEGE_ID'];
 		}
 	}
@@ -492,7 +492,7 @@ echo "</SELECT>";
 echo '</FORM>';
 if(UserStudentID() && User('PROFILE')!='parent' && User('PROFILE')!='student')
 {
-	$RET = DBGet(DBQuery("SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX FROM students WHERE STUDENT_ID='".UserStudentID()."'"));
+	$RET = DBGet(DBQuery("SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX FROM students WHERE COLLEGE_ROLL_NO='".UserStudentID()."'"));
 	
 	
 	echo '<TABLE border=0 cellpadding=0 cellspacing=0 width=100%><TR><TD width=19 valign=middle><A HREF=Side.php?student_id=new&modcat='.optional_param('modcat','',PARAM_SPCL).'><IMG SRC=assets/x.gif height=17 border=0></A></TD><TD ><B><A HREF=Modules.php?modname=students/Student.php&student_id='.UserStudentID().' target=body><font color=#FFFFFF size=-2>'.$RET[1]['FIRST_NAME'].'&nbsp;'.($RET[1]['MIDDLE_NAME']?$RET[1]['MIDDLE_NAME'].' ':'').$RET[1]['LAST_NAME'].'&nbsp;'.$RET[1]['NAME_SUFFIX'].'</font></A></B></TD></TR></TABLE>';

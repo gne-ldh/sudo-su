@@ -38,11 +38,11 @@ if (User('PROFILE') == 'admin') {
 if (optional_param('modfunc', '', PARAM_NOTAGS) == 'save') {
     if ($_REQUEST['activity_id']) {
         if (count($_REQUEST['student']) != 0) {
-            $current_RET = DBGet(DBQuery('SELECT STUDENT_ID FROM student_eligibility_activities WHERE ACTIVITY_ID=\'' . $_REQUEST['activity_id'] . '\' AND SYEAR=\'' . UserSyear() . '\''), array(), array('STUDENT_ID'));
+            $current_RET = DBGet(DBQuery('SELECT COLLEGE_ROLL_NO FROM student_eligibility_activities WHERE ACTIVITY_ID=\'' . $_REQUEST['activity_id'] . '\' AND SYEAR=\'' . UserSyear() . '\''), array(), array('COLLEGE_ROLL_NO'));
 
             foreach ($_REQUEST['student'] as $student_id => $yes) {
                 if (!$current_RET[$student_id]) {
-                    $sql = 'INSERT INTO student_eligibility_activities (SYEAR,STUDENT_ID,ACTIVITY_ID)
+                    $sql = 'INSERT INTO student_eligibility_activities (SYEAR,COLLEGE_ROLL_NO,ACTIVITY_ID)
 							values(\'' . UserSyear() . '\',\'' . $student_id . '\',\'' . optional_param('activity_id', '', PARAM_SPCL) . '\')';
                     DBQuery($sql);
                 }
@@ -151,7 +151,7 @@ if ($_REQUEST['search_modfunc'] == 'list') {
 function _makeChooseCheckbox($value, $title) {
     global $THIS_RET;
 
-    return "<INPUT type=checkbox name=student[" . $THIS_RET['STUDENT_ID'] . "] value=Y>";
+    return "<INPUT type=checkbox name=student[" . $THIS_RET['COLLEGE_ROLL_NO'] . "] value=Y>";
 }
 
 ?>

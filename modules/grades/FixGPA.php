@@ -73,7 +73,7 @@ if(!$_REQUEST['modfunc'])
 	$extra['functions'] = array('CHECKBOX'=>'_makeChooseCheckbox');
 	$extra['columns_before'] = array('CHECKBOX'=>'</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'student\');"><A>');
 	$extra['new'] = true;
-        $extra['GROUP']="STUDENT_ID";
+        $extra['GROUP']="COLLEGE_ROLL_NO";
         
         Search('student_id',$extra);
 	if($_REQUEST['search_modfunc']=='list')
@@ -88,6 +88,6 @@ if(!$_REQUEST['modfunc'])
 function _makeChooseCheckbox()
 {	global $THIS_RET;
 
-		return "<INPUT type=checkbox name=student[".$THIS_RET['STUDENT_ID']."] value=Y>";
+		return "<INPUT type=checkbox name=student[".$THIS_RET['COLLEGE_ROLL_NO']."] value=Y>";
 }
 ?>

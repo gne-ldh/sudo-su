@@ -45,16 +45,16 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
                 $rolling_ret = 1;
             else
                 $rolling_ret = 0;
-            $qr = DBGet(DBQuery('SELECT END_DATE FROM student_enrollment WHERE ID=(SELECT max(ID) FROM student_enrollment where STUDENT_ID=' . $student_id . ')'));
+            $qr = DBGet(DBQuery('SELECT END_DATE FROM student_enrollment WHERE ID=(SELECT max(ID) FROM student_enrollment where COLLEGE_ROLL_NO=' . $student_id . ')'));
             $end_date = $qr[1]['END_DATE'];
             //echo $start_date; exit;
             if (strtotime($start_date) > strtotime($end_date)) {
-                DBQuery('INSERT INTO student_enrollment (SYEAR,COLLEGE_ID,STUDENT_ID,GRADE_ID,START_DATE,ENROLLMENT_CODE,NEXT_COLLEGE,CALENDAR_ID) VALUES (\'' . UserSyear() . '\',\'' . UserCollege() . '\',' . $student_id . ',\'' . $_REQUEST['grade_id'] . '\',\'' . $start_date . '\',\'' . $_REQUEST['en_code'] . '\',\'' . $rolling_ret . '\',\'' . $_REQUEST['cal_id'] . '\')');
+                DBQuery('INSERT INTO student_enrollment (SYEAR,COLLEGE_ID,COLLEGE_ROLL_NO,GRADE_ID,START_DATE,ENROLLMENT_CODE,NEXT_COLLEGE,CALENDAR_ID) VALUES (\'' . UserSyear() . '\',\'' . UserCollege() . '\',' . $student_id . ',\'' . $_REQUEST['grade_id'] . '\',\'' . $start_date . '\',\'' . $_REQUEST['en_code'] . '\',\'' . $rolling_ret . '\',\'' . $_REQUEST['cal_id'] . '\')');
 
                 $enroll_msg = "Selected students are successfully re enrolled.";
                 $count = 1;
             } else {
-                $name = DBGet(DBQuery('SELECT * FROM students WHERE STUDENT_ID=' . $student_id . ''));
+                $name = DBGet(DBQuery('SELECT * FROM students WHERE COLLEGE_ROLL_NO=' . $student_id . ''));
                 $title_nm = $name[1]['FIRST_NAME'] . " " . $name[1]['LAST_NAME'];
                 $id_array[] = $title_nm;
             }
@@ -122,8 +122,8 @@ if (!$_REQUEST['modfunc']) {
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
     $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'student\');"><A>');
     $extra['new'] = true;
-    $extra['GROUP'] = "STUDENT_ID";
-    $extra['WHERE'] = ' AND  ssm.STUDENT_ID NOT IN (SELECT STUDENT_ID FROM student_enrollment WHERE SYEAR =\'' . UserSyear() . '\' AND END_DATE IS NULL)';
+    $extra['GROUP'] = "COLLEGE_ROLL_NO";
+    $extra['WHERE'] = ' AND  ssm.COLLEGE_ROLL_NO NOT IN (SELECT COLLEGE_ROLL_NO FROM student_enrollment WHERE SYEAR =\'' . UserSyear() . '\' AND END_DATE IS NULL)';
 
     Search('student_id', $extra);
 
@@ -140,7 +140,7 @@ if (!$_REQUEST['modfunc']) {
 function _makeChooseCheckbox() {
     global $THIS_RET;
 
-    return "<INPUT type=checkbox name=student[" . $THIS_RET['STUDENT_ID'] . "] value=Y>";
+    return "<INPUT type=checkbox name=student[" . $THIS_RET['COLLEGE_ROLL_NO'] . "] value=Y>";
 }
 
 ?>

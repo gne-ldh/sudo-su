@@ -413,7 +413,7 @@ function _makeStartInputDate($value, $column) {//student enrollment info tab
     else
         $div = true;
 
-    $maxyear = DBGet(DBQuery('SELECT max(syear) AS SYEAR FROM student_enrollment WHERE STUDENT_ID=\'' . UserStudentID() . '\''));
+    $maxyear = DBGet(DBQuery('SELECT max(syear) AS SYEAR FROM student_enrollment WHERE COLLEGE_ROLL_NO=\'' . UserStudentID() . '\''));
 //          
     if ($THIS_RET['SYEAR'] == $maxyear[1]['SYEAR']) {
         if ($_REQUEST['student_id'] != 'new')
@@ -475,7 +475,7 @@ function _makeStartInputCode($value, $column) {
         foreach ($options_RET as $option)
             $add_codes[$option['ID']] = $option['TITLE'];
     }
-    $maxyear = DBGet(DBQuery('SELECT max(syear) AS SYEAR FROM student_enrollment WHERE STUDENT_ID=\'' . UserStudentID() . '\''));
+    $maxyear = DBGet(DBQuery('SELECT max(syear) AS SYEAR FROM student_enrollment WHERE COLLEGE_ROLL_NO=\'' . UserStudentID() . '\''));
     if ($THIS_RET['SYEAR'] == $maxyear[1]['SYEAR'])
         return '<TABLE class=LO_field><TR><TD>' . SelectInput($THIS_RET['ENROLLMENT_CODE'], 'values[student_enrollment][' . $id . '][ENROLLMENT_CODE]', '', $add_codes, 'N/A', 'style="max-width:150;"') . '</TD></TR></TABLE>';
     else {
@@ -494,7 +494,7 @@ function _makeEndInputDate($value, $column) {//not used
         $id = 'new';
 
 // student_enrollment select create here
-    $maxyear = DBGet(DBQuery('SELECT max(syear) AS SYEAR FROM student_enrollment WHERE STUDENT_ID=\'' . UserStudentID() . '\''));
+    $maxyear = DBGet(DBQuery('SELECT max(syear) AS SYEAR FROM student_enrollment WHERE COLLEGE_ROLL_NO=\'' . UserStudentID() . '\''));
     if ($THIS_RET['SYEAR'] == $maxyear[1]['SYEAR'])
         return '<TABLE class=LO_field><TR><TD>' . DateInput($value, 'values[student_enrollment][' . $id . '][' . $column . ']') . '</TD></TR></TABLE>';
     else {
@@ -526,7 +526,7 @@ function _makeEndInputCode($value, $column) {
     if (count($type_RET) > 0)
         $type_id = $type_RET[1]['ID'];
 // student_enrollment select create here
-    $maxyear = DBGet(DBQuery('SELECT max(syear) AS SYEAR FROM student_enrollment WHERE STUDENT_ID=\'' . UserStudentID() . '\''));
+    $maxyear = DBGet(DBQuery('SELECT max(syear) AS SYEAR FROM student_enrollment WHERE COLLEGE_ROLL_NO=\'' . UserStudentID() . '\''));
     if ($THIS_RET['SYEAR'] == $maxyear[1]['SYEAR'])
         return '<TABLE class=LO_field><TR><TD>' . SelectInput_for_EndInput($THIS_RET['DROP_CODE'], 'values[student_enrollment][' . $id . '][DROP_CODE]', '', $drop_codes, $type_id, 'N/A', 'style="max-width:150;"') . '</TD></TR></TABLE>';
     else {

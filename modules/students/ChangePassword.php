@@ -28,7 +28,7 @@
 include('../../RedirectModulesInc.php');
 DrawBC("College Setup > " . ProgramTitle());
 if ((clean_param($_REQUEST['action'], PARAM_ALPHAMOD) == 'update') && (clean_param($_REQUEST['button'], PARAM_ALPHAMOD) == 'Save') && (User('PROFILE') == 'parent' || User('PROFILE') == 'student')) {
-    $stu_PASS = DBGet(DBQuery('SELECT la.PASSWORD FROM login_authentication la, students s WHERE s.STUDENT_ID=\'' . UserStudentId() . '\' AND la.USER_ID=s.STUDENT_ID AND la.PROFILE_ID=3'));
+    $stu_PASS = DBGet(DBQuery('SELECT la.PASSWORD FROM login_authentication la, students s WHERE s.COLLEGE_ROLL_NO=\'' . UserStudentId() . '\' AND la.USER_ID=s.COLLEGE_ROLL_NO AND la.PROFILE_ID=3'));
     $pass_old = $_REQUEST['old'];
     if ($pass_old == "") {
         $error[] = "Please Type The Password";

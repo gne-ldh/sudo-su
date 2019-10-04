@@ -50,12 +50,12 @@ if($_REQUEST['attendance'] && ($_POST['attendance'] || $_REQUEST['ajax']) && All
 			foreach($columns as $column=>$value)
 				$sql .= $column.'=\''.str_replace("\'","''",$value).'\',';
 
-			$sql = substr($sql,0,-1) . ' WHERE COLLEGE_DATE=\''.$college_date.'\' AND PERIOD_ID=\''.$_REQUEST['period_id'].'\' AND STUDENT_ID=\''.$student_id.'\'';
+			$sql = substr($sql,0,-1) . ' WHERE COLLEGE_DATE=\''.$college_date.'\' AND PERIOD_ID=\''.$_REQUEST['period_id'].'\' AND COLLEGE_ROLL_NO=\''.$student_id.'\'';
 			DBQuery($sql);
 			UpdateAttendanceDaily($student_id,$college_date);
 		}
 	}
-	$current_RET = DBGet(DBQuery('SELECT ATTENDANCE_TEACHER_CODE,ATTENDANCE_CODE,ATTENDANCE_REASON,STUDENT_ID,ADMIN,COURSE_PERIOD_ID FROM attendance_period WHERE COLLEGE_DATE=\''.$date.'\''),array(),array('STUDENT_ID','COURSE_PERIOD_ID'));
+	$current_RET = DBGet(DBQuery('SELECT ATTENDANCE_TEACHER_CODE,ATTENDANCE_CODE,ATTENDANCE_REASON,COLLEGE_ROLL_NO,ADMIN,COURSE_PERIOD_ID FROM attendance_period WHERE COLLEGE_DATE=\''.$date.'\''),array(),array('COLLEGE_ROLL_NO','COURSE_PERIOD_ID'));
 	unset($_REQUEST['attendance']);
 }
 
@@ -109,19 +109,19 @@ if(UserStudentID() || $_REQUEST['student_id'] || User('PROFILE')=='parent')
 				s.COURSE_ID = c.COURSE_ID AND s.COURSE_ID = cp.COURSE_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID
 				AND s.COURSE_PERIOD_ID = cp.COURSE_PERIOD_ID AND cpv.PERIOD_ID = sp.PERIOD_ID AND cpv.DOES_ATTENDANCE=\'Y\'
 				AND s.SYEAR = c.SYEAR AND cp.MARKING_PERIOD_ID IN ('.GetAllMP('QTR',UserMP()).')
-				AND s.STUDENT_ID=\''.UserStudentID().'\' AND s.SYEAR=\''.UserSyear().'\'
+				AND s.COLLEGE_ROLL_NO=\''.UserStudentID().'\' AND s.SYEAR=\''.UserSyear().'\'
 				AND (\''.DBDate().'\' BETWEEN s.START_DATE AND s.END_DATE OR s.END_DATE IS NULL)
 			ORDER BY sp.SORT_ORDER
 			';
 		$schedule_RET = DBGet(DBQuery($sql));
 
-		$sql = 'SELECT ap.COLLEGE_DATE,ap.PERIOD_ID,ac.SHORT_NAME,ac.STATE_CODE,ac.DEFAULT_CODE FROM attendance_period ap,attendance_codes ac WHERE ap.COLLEGE_DATE BETWEEN \''.$start_date.'\' AND \''.$end_date.'\' AND ap.ATTENDANCE_CODE=ac.ID AND ap.STUDENT_ID=\''.UserStudentID().'\'';
+		$sql = 'SELECT ap.COLLEGE_DATE,ap.PERIOD_ID,ac.SHORT_NAME,ac.STATE_CODE,ac.DEFAULT_CODE FROM attendance_period ap,attendance_codes ac WHERE ap.COLLEGE_DATE BETWEEN \''.$start_date.'\' AND \''.$end_date.'\' AND ap.ATTENDANCE_CODE=ac.ID AND ap.COLLEGE_ROLL_NO=\''.UserStudentID().'\'';
 		$attendance_RET = DBGet(DBQuery($sql),array(),array('COLLEGE_DATE','PERIOD_ID'));
 	}
 	else
 	{
 		$schedule_RET[1] = array('COURSE_PERIOD'=>'Daily Attendance','PERIOD_ID'=>'0');
-		$attendance_RET = DBGet(DBQuery('SELECT ad.COLLEGE_DATE,\'0\' AS PERIOD_ID,ad.STATE_VALUE AS STATE_CODE,'.db_case(array('ad.STATE_VALUE',"'0.0'","'A'","'1.0'","'P'","'H'")).' AS SHORT_NAME FROM attendance_day ad WHERE ad.COLLEGE_DATE BETWEEN \''.$start_date.'\' AND \''.$end_date.'\' AND ad.STUDENT_ID=\''.UserStudentID().'\''),array(),array('COLLEGE_DATE','PERIOD_ID'));
+		$attendance_RET = DBGet(DBQuery('SELECT ad.COLLEGE_DATE,\'0\' AS PERIOD_ID,ad.STATE_VALUE AS STATE_CODE,'.db_case(array('ad.STATE_VALUE',"'0.0'","'A'","'1.0'","'P'","'H'")).' AS SHORT_NAME FROM attendance_day ad WHERE ad.COLLEGE_DATE BETWEEN \''.$start_date.'\' AND \''.$end_date.'\' AND ad.COLLEGE_ROLL_NO=\''.UserStudentID().'\''),array(),array('COLLEGE_DATE','PERIOD_ID'));
 	}
 	
 	$i = 0;
@@ -150,18 +150,18 @@ else
 {
 	if(!$_REQUEST['period_id'])
 	{
-			$sql = 'SELECT ad.STATE_VALUE,ad.STUDENT_ID,COLLEGE_DATE,CONCAT(\'_\',DATE_FORMAT(ad.COLLEGE_DATE,\'%y%b%d\')) AS SHORT_DATE FROM attendance_day ad,student_enrollment ssm WHERE ad.STUDENT_ID=ssm.STUDENT_ID AND ((\''.DBDate().'\' BETWEEN ssm.START_DATE AND ssm.END_DATE OR ssm.END_DATE IS NULL) AND \''.DBDate().'\'>=ssm.START_DATE) AND ssm.COLLEGE_ID=\''.UserCollege().'\' AND COLLEGE_DATE BETWEEN  \''.date('Y-m-d',strtotime($start_date)).'\' AND \''.date('Y-m-d',strtotime($end_date)).'\'';
-		$RET = DBGet(DBQuery($sql),array(),array('STUDENT_ID','SHORT_DATE'));
+			$sql = 'SELECT ad.STATE_VALUE,ad.COLLEGE_ROLL_NO,COLLEGE_DATE,CONCAT(\'_\',DATE_FORMAT(ad.COLLEGE_DATE,\'%y%b%d\')) AS SHORT_DATE FROM attendance_day ad,student_enrollment ssm WHERE ad.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND ((\''.DBDate().'\' BETWEEN ssm.START_DATE AND ssm.END_DATE OR ssm.END_DATE IS NULL) AND \''.DBDate().'\'>=ssm.START_DATE) AND ssm.COLLEGE_ID=\''.UserCollege().'\' AND COLLEGE_DATE BETWEEN  \''.date('Y-m-d',strtotime($start_date)).'\' AND \''.date('Y-m-d',strtotime($end_date)).'\'';
+		$RET = DBGet(DBQuery($sql),array(),array('COLLEGE_ROLL_NO','SHORT_DATE'));
 	}
 	else
 	{
-		$sql = 'SELECT ap.ATTENDANCE_CODE,ap.STUDENT_ID,ap.COLLEGE_DATE,CONCAT(\'_\',DATE_FORMAT(ap.COLLEGE_DATE,\'%y%b%d\')) AS SHORT_DATE FROM attendance_period ap,student_enrollment ssm,students s WHERE s.STUDENT_ID=ssm.STUDENT_ID AND ap.STUDENT_ID=ssm.STUDENT_ID AND ap.COLLEGE_DATE BETWEEN  \''.date('Y-m-d',strtotime($start_date)).'\' AND \''.date('Y-m-d',strtotime($end_date)).'\'';
+		$sql = 'SELECT ap.ATTENDANCE_CODE,ap.COLLEGE_ROLL_NO,ap.COLLEGE_DATE,CONCAT(\'_\',DATE_FORMAT(ap.COLLEGE_DATE,\'%y%b%d\')) AS SHORT_DATE FROM attendance_period ap,student_enrollment ssm,students s WHERE s.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND ap.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND ap.COLLEGE_DATE BETWEEN  \''.date('Y-m-d',strtotime($start_date)).'\' AND \''.date('Y-m-d',strtotime($end_date)).'\'';
 		if($_REQUEST['include_inactive']!='Y')
 			$sql .= ' AND ((\''.DBDate().'\' BETWEEN ssm.START_DATE AND ssm.END_DATE OR ssm.END_DATE IS NULL) AND \''.DBDate().'\'>=ssm.START_DATE) ';
 		if($_REQUEST['_search_all_colleges']!='Y')
 			$sql .= ' AND ssm.COLLEGE_ID=\''.UserCollege().'\' ';
 		$sql = appendSQL($sql,$tmp_extra=array('NoSearchTerms'=>true)); // extra must be lvalue
-		$RET = DBGet(DBQuery($sql),array(),array('STUDENT_ID','SHORT_DATE'));
+		$RET = DBGet(DBQuery($sql),array(),array('COLLEGE_ROLL_NO','SHORT_DATE'));
 		
 	}
 
@@ -173,7 +173,7 @@ else
 			$extra['columns_after']['_'.str_replace('-','',$value['COLLEGE_DATE'])] = ShortDate($value['COLLEGE_DATE']);
 			$extra['functions']['_'.str_replace('-','',$value['COLLEGE_DATE'])] = '_makeColor';
 			$extra['link']['FULL_NAME']['link'] = "Modules.php?modname=$_REQUEST[next_modname]&day_start=$_REQUEST[day_start]&day_end=$_REQUEST[day_end]&month_start=$_REQUEST[month_start]&month_end=$_REQUEST[month_end]&year_start=$_REQUEST[year_start]&year_end=$_REQUEST[year_end]&period_id=$_REQUEST[period_id]";
-			$extra['link']['FULL_NAME']['variables'] = array('student_id'=>'STUDENT_ID');
+			$extra['link']['FULL_NAME']['variables'] = array('student_id'=>'COLLEGE_ROLL_NO');
 			
 		}
 	}
@@ -196,20 +196,20 @@ function _makeColor($value,$column)
 		if(!$attendance_codes)
 			$attendance_codes = DBGet(DBQuery('SELECT ID,DEFAULT_CODE,STATE_CODE,SHORT_NAME FROM attendance_codes WHERE SYEAR=\''.UserSyear().'\' AND COLLEGE_ID=\''.UserCollege().'\' AND TABLE_NAME=\'0\''),array(),array('ID'));
 
-		if($attendance_codes[$RET[$THIS_RET['STUDENT_ID']][$column][1]['ATTENDANCE_CODE']][1]['DEFAULT_CODE']=='Y')
-			return "<TABLE bgcolor=#00FF00 cellpadding=0 cellspacing=0 width=10 class=LO_field><TR><TD>".makeCodePulldown($RET[$THIS_RET['STUDENT_ID']][$column][1]['ATTENDANCE_CODE'],$THIS_RET['STUDENT_ID'],$column)."</TD></TR></TABLE>";
-		elseif($attendance_codes[$RET[$THIS_RET['STUDENT_ID']][$column][1]['ATTENDANCE_CODE']][1]['STATE_CODE']=='P')
-			return "<TABLE bgcolor=#FFCC00 cellpadding=0 cellspacing=0 width=10 class=LO_field><TR><TD>".makeCodePulldown($RET[$THIS_RET['STUDENT_ID']][$column][1]['ATTENDANCE_CODE'],$THIS_RET['STUDENT_ID'],$column)."</TD></TR></TABLE>";
-		elseif($attendance_codes[$RET[$THIS_RET['STUDENT_ID']][$column][1]['ATTENDANCE_CODE']][1]['STATE_CODE']=='A')
-			return "<TABLE bgcolor=#FF0000 cellpadding=0 cellspacing=0 width=10 class=LO_field><TR><TD>".makeCodePulldown($RET[$THIS_RET['STUDENT_ID']][$column][1]['ATTENDANCE_CODE'],$THIS_RET['STUDENT_ID'],$column)."</TD></TR></TABLE>";
+		if($attendance_codes[$RET[$THIS_RET['COLLEGE_ROLL_NO']][$column][1]['ATTENDANCE_CODE']][1]['DEFAULT_CODE']=='Y')
+			return "<TABLE bgcolor=#00FF00 cellpadding=0 cellspacing=0 width=10 class=LO_field><TR><TD>".makeCodePulldown($RET[$THIS_RET['COLLEGE_ROLL_NO']][$column][1]['ATTENDANCE_CODE'],$THIS_RET['COLLEGE_ROLL_NO'],$column)."</TD></TR></TABLE>";
+		elseif($attendance_codes[$RET[$THIS_RET['COLLEGE_ROLL_NO']][$column][1]['ATTENDANCE_CODE']][1]['STATE_CODE']=='P')
+			return "<TABLE bgcolor=#FFCC00 cellpadding=0 cellspacing=0 width=10 class=LO_field><TR><TD>".makeCodePulldown($RET[$THIS_RET['COLLEGE_ROLL_NO']][$column][1]['ATTENDANCE_CODE'],$THIS_RET['COLLEGE_ROLL_NO'],$column)."</TD></TR></TABLE>";
+		elseif($attendance_codes[$RET[$THIS_RET['COLLEGE_ROLL_NO']][$column][1]['ATTENDANCE_CODE']][1]['STATE_CODE']=='A')
+			return "<TABLE bgcolor=#FF0000 cellpadding=0 cellspacing=0 width=10 class=LO_field><TR><TD>".makeCodePulldown($RET[$THIS_RET['COLLEGE_ROLL_NO']][$column][1]['ATTENDANCE_CODE'],$THIS_RET['COLLEGE_ROLL_NO'],$column)."</TD></TR></TABLE>";
 	}
 	else
 	{
-		if($RET[$THIS_RET['STUDENT_ID']][$column][1]['STATE_VALUE']=='0.0')
+		if($RET[$THIS_RET['COLLEGE_ROLL_NO']][$column][1]['STATE_VALUE']=='0.0')
 			return "<TABLE bgcolor=#FF0000 cellpadding=0 cellspacing=0 width=10 class=LO_field><TR><TD>A</TD></TR></TABLE>";
-		elseif($RET[$THIS_RET['STUDENT_ID']][$column][1]['STATE_VALUE'] > 0 && $RET[$THIS_RET['STUDENT_ID']][$column][1]['STATE_VALUE'] < 1)
+		elseif($RET[$THIS_RET['COLLEGE_ROLL_NO']][$column][1]['STATE_VALUE'] > 0 && $RET[$THIS_RET['COLLEGE_ROLL_NO']][$column][1]['STATE_VALUE'] < 1)
 			return "<TABLE bgcolor=#FFCC00 cellpadding=0 cellspacing=0 width=10 class=LO_field><TR><TD>H</TD></TR></TABLE>";
-		elseif($RET[$THIS_RET['STUDENT_ID']][$column][1]['STATE_VALUE'] == 1)
+		elseif($RET[$THIS_RET['COLLEGE_ROLL_NO']][$column][1]['STATE_VALUE'] == 1)
 			return "<TABLE bgcolor=#00FF00 cellpadding=0 cellspacing=0 width=10 class=LO_field><TR><TD>P</TD></TR></TABLE>";
 	}
 }

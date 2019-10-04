@@ -48,10 +48,10 @@ if (!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) {
     $columns = array('COURSE_TITLE' => 'Course', 'MARKING_PERIOD_ID' => 'Marking Period', 'WITH_TEACHER_ID' => 'With Teacher', 'WITH_PERIOD_ID' => 'In Period', 'NOT_TEACHER_ID' => 'Not with Teacher', 'NOT_PERIOD_ID' => 'Not in Period');
     $extra['SELECT'] .= ',c.TITLE AS COURSE_TITLE,c.COURSE_ID,srp.PRIORITY,srp.MARKING_PERIOD_ID,srp.WITH_TEACHER_ID,srp.NOT_TEACHER_ID,srp.WITH_PERIOD_ID,srp.NOT_PERIOD_ID';
     $extra['FROM'] .= ',courses c,schedule_requests srp';
-    $extra['WHERE'] .= ' AND ssm.STUDENT_ID=srp.STUDENT_ID AND ssm.SYEAR=srp.SYEAR AND srp.COURSE_ID = c.COURSE_ID';
+    $extra['WHERE'] .= ' AND ssm.COLLEGE_ROLL_NO=srp.COLLEGE_ROLL_NO AND ssm.SYEAR=srp.SYEAR AND srp.COURSE_ID = c.COURSE_ID';
 
     $extra['functions'] += array('WITH_FULL_NAME' => '_makeExtra', 'MARKING_PERIOD_ID' => '_makeMpName');
-    $extra['group'] = array('STUDENT_ID');
+    $extra['group'] = array('COLLEGE_ROLL_NO');
     if ($_REQUEST['mailing_labels'] == 'Y') {
         $extra['group'][] = 'ADDRESS_ID';
     }
@@ -72,7 +72,7 @@ if (!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) {
                     echo '<BR><BR>';
                     echo '<table border=0>';
                     echo "<tr><td>College Roll No:</td>";
-                    echo "<td>" . $address[1]['STUDENT_ID'] . "</td></tr>";
+                    echo "<td>" . $address[1]['COLLEGE_ROLL_NO'] . "</td></tr>";
                     echo "<tr><td>Student Name:</td>";
                     echo "<td>" . $address[1]['FULL_NAME'] . "</td></tr>";
                     echo "<tr><td>Student Grade:</td>";
@@ -95,7 +95,7 @@ if (!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) {
                 echo '<BR><BR>';
                 echo '<table border=0>';
                 echo "<tr><td>College Roll No:</td>";
-                echo "<td>" . $courses[1]['STUDENT_ID'] . "</td></tr>";
+                echo "<td>" . $courses[1]['COLLEGE_ROLL_NO'] . "</td></tr>";
                 echo "<tr><td>Student Name:</td>";
                 echo "<td>" . $courses[1]['FULL_NAME'] . "</td></tr>";
                 echo "<tr><td>Student Grade:</td>";

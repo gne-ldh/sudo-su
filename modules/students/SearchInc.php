@@ -242,9 +242,9 @@ else {
 
             //  if($_REQUEST['modname']=='students/AdvancedReport.php')
             if ($_REQUEST['w_course_period_id'] != '')
-                $extra['FROM'] .= ' INNER JOIN students_join_people sam ON (sam.STUDENT_ID=ssm.STUDENT_ID) INNER JOIN schedule w_ss ON (w_ss.STUDENT_ID=ssm.STUDENT_ID) ';
+                $extra['FROM'] .= ' INNER JOIN students_join_people sam ON (sam.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO) INNER JOIN schedule w_ss ON (w_ss.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO) ';
             else
-                $extra['FROM'] .= ' INNER JOIN students_join_people sam ON (sam.STUDENT_ID=ssm.STUDENT_ID) ';
+                $extra['FROM'] .= ' INNER JOIN students_join_people sam ON (sam.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO) ';
 
 
 
@@ -257,11 +257,11 @@ else {
         $course = DBGet(DBQuery('SELECT c.TITLE FROM courses c WHERE c.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\''));
         if (!$_REQUEST['not_request_course']) {
             $extra['FROM'] .= ',schedule_requests sch_r';
-            $extra['WHERE'] = ' AND sch_r.STUDENT_ID=s.STUDENT_ID AND sch_r.SYEAR=ssm.SYEAR AND sch_r.COLLEGE_ID=ssm.COLLEGE_ID AND sch_r.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\'';
+            $extra['WHERE'] = ' AND sch_r.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND sch_r.SYEAR=ssm.SYEAR AND sch_r.COLLEGE_ID=ssm.COLLEGE_ID AND sch_r.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\'';
 
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Request: </b></font>' . $course[1]['TITLE'] . '<BR>';
         } else {
-            $extra['WHERE'] .= ' AND NOT EXISTS (SELECT \'\' FROM schedule_requests sch_r WHERE sch_r.STUDENT_ID=ssm.STUDENT_ID AND sch_r.SYEAR=ssm.SYEAR AND sch_r.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\') ';
+            $extra['WHERE'] .= ' AND NOT EXISTS (SELECT \'\' FROM schedule_requests sch_r WHERE sch_r.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND sch_r.SYEAR=ssm.SYEAR AND sch_r.COURSE_ID=\'' . $_REQUEST['request_course_id'] . '\') ';
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Missing Request: </b></font>' . $course[1]['TITLE'] . '<BR>';
         }
     }
@@ -270,7 +270,7 @@ else {
        if($_REQUEST['modname'] !='scheduling/PrintSchedules.php')
        {
             $extra['FROM'] .=',schedule sr '; 
-                 $extra['WHERE'] .=' AND sr.STUDENT_ID=ssm.STUDENT_ID AND s.student_id=ssm.student_id'; 
+                 $extra['WHERE'] .=' AND sr.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND s.student_id=ssm.student_id'; 
        }
        $extra['WHERE'] .= ' AND sr.SYEAR=ssm.SYEAR AND sr.COLLEGE_ID=ssm.COLLEGE_ID AND sr.COURSE_PERIOD_ID=\'' . $_SESSION['MassDrops.php']['course_period_id'] . '\'';
         unset($_SESSION['MassDrops.php']['course_period_id']);
@@ -303,9 +303,9 @@ else {
     if ($extra['array_function'] && function_exists($extra['array_function']))
         $students_RET = $extra['array_function']($students_RET);
 
-    $LO_columns = array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'College Roll No', 'ALT_ID' => 'Alternate ID', 'GRADE_ID' => 'Grade', 'SECTION_ID' => 'Section', 'PHONE' => 'Phone');
+    $LO_columns = array('FULL_NAME' => 'Student', 'COLLEGE_ROLL_NO' => 'College Roll No', 'ALT_ID' => 'Alternate ID', 'GRADE_ID' => 'Grade', 'SECTION_ID' => 'Section', 'PHONE' => 'Phone');
     $name_link['FULL_NAME']['link'] = "Modules.php?modname=$_REQUEST[next_modname]";
-    $name_link['FULL_NAME']['variables'] = array('student_id' => 'STUDENT_ID');
+    $name_link['FULL_NAME']['variables'] = array('student_id' => 'COLLEGE_ROLL_NO');
     if ($_REQUEST['_search_all_colleges'])
         $name_link['FULL_NAME']['variables'] += array('college_id' => 'COLLEGE_ID');
 
@@ -350,7 +350,7 @@ else {
         if ($_REQUEST['modname'] == 'grades/GPARankList.php') {
             $class_rank = array();
             foreach ($students_RET as $sr => $sd) {
-                $class_rank[$sd['STUDENT_ID']] = $sd['GPA'];
+                $class_rank[$sd['COLLEGE_ROLL_NO']] = $sd['GPA'];
             }
 
             $new_class_rank = array_unique($class_rank);
@@ -366,7 +366,7 @@ else {
             unset($sr);
             unset($sd);
             foreach ($students_RET as $sr => $sd) {
-                $students_RET[$sr]['CLASS_RANK'] = $final_class_rank[$sd['STUDENT_ID']];
+                $students_RET[$sr]['CLASS_RANK'] = $final_class_rank[$sd['COLLEGE_ROLL_NO']];
             }
             unset($class_rank);
             unset($new_class_rank);
@@ -389,7 +389,7 @@ else {
             echo '<div id="hidden_checkboxes"></div>';
             $check_all_arr = array();
             foreach ($students_RET as $xy) {
-                $check_all_arr[] = $xy['STUDENT_ID'];
+                $check_all_arr[] = $xy['COLLEGE_ROLL_NO'];
             }
             $check_all_stu_list = implode(',', $check_all_arr);
             echo '<input type=hidden name=res_length id=res_length value="' . count($check_all_arr) . '">';
@@ -411,7 +411,7 @@ else {
             echo '<div id="hidden_checkboxes"></div>';
             $check_all_arr = array();
             foreach ($students_RET as $xy) {
-                $check_all_arr[] = $xy['STUDENT_ID'];
+                $check_all_arr[] = $xy['COLLEGE_ROLL_NO'];
             }
             $check_all_stu_list = implode(',', $check_all_arr);
             echo'<input type=hidden name=res_length id=res_length value=\'' . count($check_all_arr) . '\'>';
@@ -432,8 +432,8 @@ else {
             foreach ($link['FULL_NAME']['variables'] as $var => $val)
                 $_REQUEST[$var] = $students_RET['1'][$val];
         }
-        if (!is_array($students_RET[1]['STUDENT_ID'])) {
-            $_SESSION['student_id'] = $students_RET[1]['STUDENT_ID'];
+        if (!is_array($students_RET[1]['COLLEGE_ROLL_NO'])) {
+            $_SESSION['student_id'] = $students_RET[1]['COLLEGE_ROLL_NO'];
 
 
 

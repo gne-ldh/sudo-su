@@ -407,64 +407,64 @@ if(count($validate) > 0)
             $sch_name=DBGet(DBQuery('SELECT TITLE FROM colleges WHERE ID='.$value['COLLEGE_ID']));
             
             
-            $stu_enroll=DBGet(DBQuery('SELECT DISTINCT STUDENT_ID AS STUDENT_ID FROM student_enrollment WHERE SYEAR='.$syear.' AND COLLEGE_ID='.$value['COLLEGE_ID']));
+            $stu_enroll=DBGet(DBQuery('SELECT DISTINCT COLLEGE_ROLL_NO AS COLLEGE_ROLL_NO FROM student_enrollment WHERE SYEAR='.$syear.' AND COLLEGE_ID='.$value['COLLEGE_ID']));
             foreach($stu_enroll as $stu_key=>$stu_val)
             {
 
-                $stuinfo= DBGet(DBQuery('SELECT * FROM students WHERE STUDENT_ID='.$stu_val['STUDENT_ID']));
+                $stuinfo= DBGet(DBQuery('SELECT * FROM students WHERE COLLEGE_ROLL_NO='.$stu_val['COLLEGE_ROLL_NO']));
 
-//                $data[$syear][$sch_name[1]['TITLE']][$stu_val['STUDENT_ID']]=$stuinfo[1];
-                $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['STUDENT_ID']]['STUDENT_ID']=($stuinfo[1]['STUDENT_ID']==''?'':$stuinfo[1]['STUDENT_ID']);
-                $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['STUDENT_ID']]['ALT_ID']=($stuinfo[1]['ALT_ID']==''?'':$stuinfo[1]['ALT_ID']);
-                $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['STUDENT_ID']]['FIRST_NAME']=($stuinfo[1]['FIRST_NAME']==''?'':$stuinfo[1]['FIRST_NAME']);
-                $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['STUDENT_ID']]['MIDDLE_NAME']=($stuinfo[1]['MIDDLE_NAME']==''?'':$stuinfo[1]['MIDDLE_NAME']);
-                $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['STUDENT_ID']]['LAST_NAME']=($stuinfo[1]['LAST_NAME']==''?'':$stuinfo[1]['LAST_NAME']);
-                $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['STUDENT_ID']]['COMMON_NAME']=($stuinfo[1]['COMMON_NAME']==''?'':$stuinfo[1]['COMMON_NAME']);
-                $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['STUDENT_ID']]['ESTIMATED_GRAD_DATE']=($stuinfo[1]['ESTIMATED_GRAD_DATE']==''?'':$stuinfo[1]['ESTIMATED_GRAD_DATE']);
+//                $data[$syear][$sch_name[1]['TITLE']][$stu_val['COLLEGE_ROLL_NO']]=$stuinfo[1];
+                $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['COLLEGE_ROLL_NO']]['COLLEGE_ROLL_NO']=($stuinfo[1]['COLLEGE_ROLL_NO']==''?'':$stuinfo[1]['COLLEGE_ROLL_NO']);
+                $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['COLLEGE_ROLL_NO']]['ALT_ID']=($stuinfo[1]['ALT_ID']==''?'':$stuinfo[1]['ALT_ID']);
+                $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['COLLEGE_ROLL_NO']]['FIRST_NAME']=($stuinfo[1]['FIRST_NAME']==''?'':$stuinfo[1]['FIRST_NAME']);
+                $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['COLLEGE_ROLL_NO']]['MIDDLE_NAME']=($stuinfo[1]['MIDDLE_NAME']==''?'':$stuinfo[1]['MIDDLE_NAME']);
+                $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['COLLEGE_ROLL_NO']]['LAST_NAME']=($stuinfo[1]['LAST_NAME']==''?'':$stuinfo[1]['LAST_NAME']);
+                $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['COLLEGE_ROLL_NO']]['COMMON_NAME']=($stuinfo[1]['COMMON_NAME']==''?'':$stuinfo[1]['COMMON_NAME']);
+                $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['COLLEGE_ROLL_NO']]['ESTIMATED_GRAD_DATE']=($stuinfo[1]['ESTIMATED_GRAD_DATE']==''?'':$stuinfo[1]['ESTIMATED_GRAD_DATE']);
                 
                 
-                $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['STUDENT_ID']]['EMAIL']=($stuinfo[1]['EMAIL']==''?'':$stuinfo[1]['EMAIL']);
-                $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['STUDENT_ID']]['PHONE']=($stuinfo[1]['PHONE']==''?'':$stuinfo[1]['PHONE']);
-                $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['STUDENT_ID']]['GENDER']=($stuinfo[1]['GENDER']==''?'':$stuinfo[1]['GENDER']);
-                $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['STUDENT_ID']]['DOB']=($stuinfo[1]['BIRTHDATE']==''?'':$stuinfo[1]['BIRTHDATE']);
-                $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['STUDENT_ID']]['ETHNICITY']=($stuinfo[1]['ETHNICITY']==''?'':$stuinfo[1]['ETHNICITY']);
-                $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['STUDENT_ID']]['LANGUAGE']=($stuinfo[1]['LANGUAGE']==''?'':$stuinfo[1]['LANGUAGE']);
+                $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['COLLEGE_ROLL_NO']]['EMAIL']=($stuinfo[1]['EMAIL']==''?'':$stuinfo[1]['EMAIL']);
+                $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['COLLEGE_ROLL_NO']]['PHONE']=($stuinfo[1]['PHONE']==''?'':$stuinfo[1]['PHONE']);
+                $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['COLLEGE_ROLL_NO']]['GENDER']=($stuinfo[1]['GENDER']==''?'':$stuinfo[1]['GENDER']);
+                $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['COLLEGE_ROLL_NO']]['DOB']=($stuinfo[1]['BIRTHDATE']==''?'':$stuinfo[1]['BIRTHDATE']);
+                $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['COLLEGE_ROLL_NO']]['ETHNICITY']=($stuinfo[1]['ETHNICITY']==''?'':$stuinfo[1]['ETHNICITY']);
+                $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['COLLEGE_ROLL_NO']]['LANGUAGE']=($stuinfo[1]['LANGUAGE']==''?'':$stuinfo[1]['LANGUAGE']);
                 
-                $stu_ern_info=DBGet(DBQuery('SELECT * FROM student_enrollment WHERE SYEAR='.$syear.' AND COLLEGE_ID='.$value['COLLEGE_ID'].' AND STUDENT_ID='.$stu_val['STUDENT_ID']));
+                $stu_ern_info=DBGet(DBQuery('SELECT * FROM student_enrollment WHERE SYEAR='.$syear.' AND COLLEGE_ID='.$value['COLLEGE_ID'].' AND COLLEGE_ROLL_NO='.$stu_val['COLLEGE_ROLL_NO']));
                 $i=1;
                 foreach($stu_ern_info as $skey=>$sval)
                 {
-                  $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['STUDENT_ID']]['ENROLLMENT_INFO'][$i]['COLLEGE_ID']=$sval['COLLEGE_ID'];  
+                  $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['COLLEGE_ROLL_NO']]['ENROLLMENT_INFO'][$i]['COLLEGE_ID']=$sval['COLLEGE_ID'];  
                   if($sval['CALENDAR_ID']!='')
-                    $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['STUDENT_ID']]['ENROLLMENT_INFO'][$i]['CALENDAR']=$stu_cal_arr[$sval['CALENDAR_ID']];
+                    $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['COLLEGE_ROLL_NO']]['ENROLLMENT_INFO'][$i]['CALENDAR']=$stu_cal_arr[$sval['CALENDAR_ID']];
                 else
-                    $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['STUDENT_ID']]['ENROLLMENT_INFO'][$i]['CALENDAR']='';    
+                    $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['COLLEGE_ROLL_NO']]['ENROLLMENT_INFO'][$i]['CALENDAR']='';    
                     
                     
                 if($sval['GRADE_ID']!='')
-                    $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['STUDENT_ID']]['ENROLLMENT_INFO'][$i]['GRADE']=$stu_grade_arr[$sval['GRADE_ID']];
+                    $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['COLLEGE_ROLL_NO']]['ENROLLMENT_INFO'][$i]['GRADE']=$stu_grade_arr[$sval['GRADE_ID']];
                 else
-                    $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['STUDENT_ID']]['ENROLLMENT_INFO'][$i]['GRADE']='';
+                    $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['COLLEGE_ROLL_NO']]['ENROLLMENT_INFO'][$i]['GRADE']='';
 
                 if($sval['SECTION_ID']!='')
-                    $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['STUDENT_ID']]['ENROLLMENT_INFO'][$i]['SECTION']=$stu_sec_arr[$sval['SECTION_ID']];
+                    $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['COLLEGE_ROLL_NO']]['ENROLLMENT_INFO'][$i]['SECTION']=$stu_sec_arr[$sval['SECTION_ID']];
                 else
-                    $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['STUDENT_ID']]['ENROLLMENT_INFO'][$i]['SECTION']='';
+                    $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['COLLEGE_ROLL_NO']]['ENROLLMENT_INFO'][$i]['SECTION']='';
                 
                 
-                $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['STUDENT_ID']]['ENROLLMENT_INFO'][$i]['START_DATE']=$sval['START_DATE'];
-                $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['STUDENT_ID']]['ENROLLMENT_INFO'][$i]['DROP_DATE']=$sval['END_DATE'];
+                $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['COLLEGE_ROLL_NO']]['ENROLLMENT_INFO'][$i]['START_DATE']=$sval['START_DATE'];
+                $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['COLLEGE_ROLL_NO']]['ENROLLMENT_INFO'][$i]['DROP_DATE']=$sval['END_DATE'];
 
               
 
                 if($sval['ENROLLMENT_CODE']!='')
-                    $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['STUDENT_ID']]['ENROLLMENT_INFO'][$i]['ENROLLMENT_CODE']=$stu_enr_arr[$sval['ENROLLMENT_CODE']];
+                    $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['COLLEGE_ROLL_NO']]['ENROLLMENT_INFO'][$i]['ENROLLMENT_CODE']=$stu_enr_arr[$sval['ENROLLMENT_CODE']];
                 else
-                    $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['STUDENT_ID']]['ENROLLMENT_INFO'][$i]['ENROLLMENT_CODE']='';
+                    $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['COLLEGE_ROLL_NO']]['ENROLLMENT_INFO'][$i]['ENROLLMENT_CODE']='';
                 if($sval['DROP_CODE']!='')
-                    $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['STUDENT_ID']]['ENROLLMENT_INFO'][$i]['DROP_CODE']=$stu_enr_arr[$sval['DROP_CODE']];
+                    $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['COLLEGE_ROLL_NO']]['ENROLLMENT_INFO'][$i]['DROP_CODE']=$stu_enr_arr[$sval['DROP_CODE']];
                 else
-                    $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['STUDENT_ID']]['ENROLLMENT_INFO'][$i]['DROP_CODE']='';
+                    $data['data'][$syear][$sch_name[1]['TITLE']][$stu_val['COLLEGE_ROLL_NO']]['ENROLLMENT_INFO'][$i]['DROP_CODE']='';
 //                
                 $i++;
                 
@@ -503,7 +503,7 @@ if(count($validate) > 0)
                 echo '<COLLEGE_NAME>'.htmlentities($vkey).'</COLLEGE_NAME>';
                 foreach ($value as $value_key => $value_arr) {
                     echo '<STUDENT>';
-                    echo '<STUDENT_ID>'.htmlentities($value_key).'</STUDENT_ID>';
+                    echo '<COLLEGE_ROLL_NO>'.htmlentities($value_key).'</COLLEGE_ROLL_NO>';
                     echo '<ALT_ID>'.htmlentities($value_arr['ALT_ID']).'</ALT_ID>';
                     echo '<FIRST_NAME>'.htmlentities($value_arr['FIRST_NAME']).'</FIRST_NAME>';
                     echo '<MIDDLE_NAME>'.htmlentities($value_arr['MIDDLE_NAME']).'</MIDDLE_NAME>';

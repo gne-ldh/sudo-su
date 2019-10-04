@@ -40,13 +40,13 @@ function User($item)
                     $sql = 'SELECT p.STAFF_ID,la.USERNAME,CONCAT(p.FIRST_NAME,\' \',p.LAST_NAME) AS NAME,p.PROFILE,p.PROFILE_ID,p.CURRENT_COLLEGE_ID,p.EMAIL FROM people p ,login_authentication la WHERE la.USER_ID=p.STAFF_ID AND la.PROFILE_ID <> 3  AND la.PROFILE_ID=p.PROFILE_ID AND STAFF_ID='.$_SESSION[STAFF_ID];
                     $_openSIS['User'] = DBGet(DBQuery($sql));
 		}
-		elseif($_SESSION['STUDENT_ID'])
+		elseif($_SESSION['COLLEGE_ROLL_NO'])
 		{
-			$sql = 'SELECT USERNAME,CONCAT(s.FIRST_NAME,\' \',s.LAST_NAME) AS NAME,\'student\' AS PROFILE,\'3\' AS PROFILE_ID,CONCAT(\',\',se.COLLEGE_ID,\',\') AS COLLEGES,se.SYEAR,se.COLLEGE_ID FROM students s,student_enrollment se,login_authentication la WHERE la.USER_ID=s.STUDENT_ID AND la.PROFILE_ID = 3 AND s.STUDENT_ID='.$_SESSION[STUDENT_ID].' AND se.SYEAR=\''.$_SESSION[UserSyear].'\'  AND (se.END_DATE IS NULL OR se.END_DATE=\'0000-00-00\' OR se.END_DATE>=\''.date('Y-m-d').'\' ) AND se.STUDENT_ID=s.STUDENT_ID ORDER BY se.END_DATE DESC LIMIT 1';
+			$sql = 'SELECT USERNAME,CONCAT(s.FIRST_NAME,\' \',s.LAST_NAME) AS NAME,\'student\' AS PROFILE,\'3\' AS PROFILE_ID,CONCAT(\',\',se.COLLEGE_ID,\',\') AS COLLEGES,se.SYEAR,se.COLLEGE_ID FROM students s,student_enrollment se,login_authentication la WHERE la.USER_ID=s.COLLEGE_ROLL_NO AND la.PROFILE_ID = 3 AND s.COLLEGE_ROLL_NO='.$_SESSION[COLLEGE_ROLL_NO].' AND se.SYEAR=\''.$_SESSION[UserSyear].'\'  AND (se.END_DATE IS NULL OR se.END_DATE=\'0000-00-00\' OR se.END_DATE>=\''.date('Y-m-d').'\' ) AND se.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO ORDER BY se.END_DATE DESC LIMIT 1';
                         $_openSIS['User'] = DBGet(DBQuery($sql));
                         if(count($_openSIS['User'])==0)
                         {
-                            $sql = 'SELECT USERNAME,CONCAT(s.FIRST_NAME,\' \',s.LAST_NAME) AS NAME,\'student\' AS PROFILE,\'3\' AS PROFILE_ID,CONCAT(\',\',se.COLLEGE_ID,\',\') AS COLLEGES,se.SYEAR,se.COLLEGE_ID FROM students s,student_enrollment se,login_authentication la WHERE la.USER_ID=s.STUDENT_ID AND la.PROFILE_ID = 3 AND s.STUDENT_ID='.$_SESSION[STUDENT_ID].' AND se.SYEAR=\''.$_SESSION[UserSyear].'\'   AND se.STUDENT_ID=s.STUDENT_ID ORDER BY se.END_DATE DESC LIMIT 1';
+                            $sql = 'SELECT USERNAME,CONCAT(s.FIRST_NAME,\' \',s.LAST_NAME) AS NAME,\'student\' AS PROFILE,\'3\' AS PROFILE_ID,CONCAT(\',\',se.COLLEGE_ID,\',\') AS COLLEGES,se.SYEAR,se.COLLEGE_ID FROM students s,student_enrollment se,login_authentication la WHERE la.USER_ID=s.COLLEGE_ROLL_NO AND la.PROFILE_ID = 3 AND s.COLLEGE_ROLL_NO='.$_SESSION[COLLEGE_ROLL_NO].' AND se.SYEAR=\''.$_SESSION[UserSyear].'\'   AND se.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO ORDER BY se.END_DATE DESC LIMIT 1';
                             $_openSIS['User'] = DBGet(DBQuery($sql));
 			$_SESSION['UserCollege'] = $_openSIS['User'][1]['COLLEGE_ID'];
 		}
@@ -105,7 +105,7 @@ function Preferences($item,$program='Preferences')
 	if(!isset($_openSIS['Preferences'][$program][$item][1]['VALUE']))
 		$_openSIS['Preferences'][$program][$item][1]['VALUE'] = $defaults[$item];
 
-	if($_SESSION['STAFF_ID'] && User('PROFILE')=='parent' || $_SESSION['STUDENT_ID'])
+	if($_SESSION['STAFF_ID'] && User('PROFILE')=='parent' || $_SESSION['COLLEGE_ROLL_NO'])
 		$_openSIS['Preferences'][$program]['SEARCH'][1]['VALUE'] = 'N';
         if($program=='Gradebook')
         {

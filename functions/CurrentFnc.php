@@ -69,7 +69,7 @@ function UserCourse()
 function UserStudentID()
 {
 	if(User('PROFILE')=='student')
-	return $_SESSION['STUDENT_ID'];
+	return $_SESSION['COLLEGE_ROLL_NO'];
 	else
 	return $_SESSION['student_id'];
 }

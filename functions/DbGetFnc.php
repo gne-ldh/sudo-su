@@ -39,7 +39,7 @@
 	Furthermore, the third parameter can be used to change the array index to a column in the
 	result.  For instance, if you selected student_id from students, and chose to index by student_id,
 	you would get a result similar to this :
-	$array[1031806][1] = array('STUDENT_ID'=>'1031806');
+	$array[1031806][1] = array('COLLEGE_ROLL_NO'=>'1031806');
 
 	The third parameter should be an array -- ordered by the importance of the index.  So, if you select
 	COURSE_ID,COURSE_WEIGHT,COURSE_PERIOD_ID from course_periods, and choose to index by

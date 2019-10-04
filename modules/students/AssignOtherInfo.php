@@ -130,27 +130,27 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
 
         if ($values_count && $students_count)
             if (trim($update) != '')
-                DBQuery('UPDATE students SET ' . substr($update, 1) . ' WHERE STUDENT_ID IN (' . substr($students, 1) . ')');
+                DBQuery('UPDATE students SET ' . substr($update, 1) . ' WHERE COLLEGE_ROLL_NO IN (' . substr($students, 1) . ')');
             else {
                 foreach ($students_m_id as $stu_k => $stu_id) {
 
                     if (in_array($stu_id, $med_stu_id)) {
                         if ($values[1] . trim() != '')
-                            DBQuery('UPDATE medical_info SET ' . $fields[1] . '=\'' . $values[1] . '\' WHERE STUDENT_ID =' . $stu_id);
+                            DBQuery('UPDATE medical_info SET ' . $fields[1] . '=\'' . $values[1] . '\' WHERE COLLEGE_ROLL_NO =' . $stu_id);
                         if ($values[2] . trim() != '')
-                            DBQuery('UPDATE medical_info SET ' . $fields[2] . '=\'' . $values[2] . '\' WHERE STUDENT_ID  =' . $stu_id);
+                            DBQuery('UPDATE medical_info SET ' . $fields[2] . '=\'' . $values[2] . '\' WHERE COLLEGE_ROLL_NO  =' . $stu_id);
                         if ($values[3] . trim() != '')
-                            DBQuery('UPDATE medical_info SET ' . $fields[3] . '=\'' . $values[3] . '\' WHERE STUDENT_ID =' . $stu_id);
+                            DBQuery('UPDATE medical_info SET ' . $fields[3] . '=\'' . $values[3] . '\' WHERE COLLEGE_ROLL_NO =' . $stu_id);
                     }
                     else {
-                        DBQuery('INSERT INTO medical_info (STUDENT_ID,SYEAR,COLLEGE_ID) VALUES (' . $stu_id . ',' . UserSyear() . ',' . UserCollege() . ')');
+                        DBQuery('INSERT INTO medical_info (COLLEGE_ROLL_NO,SYEAR,COLLEGE_ID) VALUES (' . $stu_id . ',' . UserSyear() . ',' . UserCollege() . ')');
 
                         if ($values[1] . trim() != '')
-                            DBQuery('UPDATE medical_info SET ' . $fields[1] . '=\'' . $values[1] . '\' WHERE STUDENT_ID =' . $stu_id);
+                            DBQuery('UPDATE medical_info SET ' . $fields[1] . '=\'' . $values[1] . '\' WHERE COLLEGE_ROLL_NO =' . $stu_id);
                         if ($values[2] . trim() != '')
-                            DBQuery('UPDATE medical_info SET ' . $fields[2] . '=\'' . $values[2] . '\' WHERE STUDENT_ID  =' . $stu_id);
+                            DBQuery('UPDATE medical_info SET ' . $fields[2] . '=\'' . $values[2] . '\' WHERE COLLEGE_ROLL_NO  =' . $stu_id);
                         if ($values[3] . trim() != '')
-                            DBQuery('UPDATE medical_info SET ' . $fields[3] . '=\'' . $values[3] . '\' WHERE STUDENT_ID =' . $stu_id);
+                            DBQuery('UPDATE medical_info SET ' . $fields[3] . '=\'' . $values[3] . '\' WHERE COLLEGE_ROLL_NO =' . $stu_id);
                     }
                 }
             }
@@ -159,22 +159,22 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
         elseif ($next_college == '' && !$calendar && $str_date=='' && $end_date=='')
             $note = '<div class="alert bg-danger alert-styled-left">No data was entered.</div>';
         if ($sec_id != '')
-            DBQuery('UPDATE student_enrollment SET SECTION_ID=' . $sec_id . ' WHERE SYEAR=' . UserSyear() . ' AND STUDENT_ID IN (' . substr($students, 1) . ') ');
+            DBQuery('UPDATE student_enrollment SET SECTION_ID=' . $sec_id . ' WHERE SYEAR=' . UserSyear() . ' AND COLLEGE_ROLL_NO IN (' . substr($students, 1) . ') ');
         if ($next_college != '')
-            DBQuery('UPDATE student_enrollment SET NEXT_COLLEGE=' . $next_college . ' WHERE SYEAR=' . UserSyear() . ' AND STUDENT_ID IN (' . substr($students, 1) . ') ');
+            DBQuery('UPDATE student_enrollment SET NEXT_COLLEGE=' . $next_college . ' WHERE SYEAR=' . UserSyear() . ' AND COLLEGE_ROLL_NO IN (' . substr($students, 1) . ') ');
         if ($calendar)
-            DBQuery('UPDATE student_enrollment SET CALENDAR_ID=' . $calendar . ' WHERE SYEAR=' . UserSyear() . ' AND STUDENT_ID IN (' . substr($students, 1) . ') ');
+            DBQuery('UPDATE student_enrollment SET CALENDAR_ID=' . $calendar . ' WHERE SYEAR=' . UserSyear() . ' AND COLLEGE_ROLL_NO IN (' . substr($students, 1) . ') ');
         if ($grade)
-            DBQuery('UPDATE student_enrollment SET GRADE_ID=' . $grade . ' WHERE SYEAR=' . UserSyear() . ' AND STUDENT_ID IN (' . substr($students, 1) . ') ');
+            DBQuery('UPDATE student_enrollment SET GRADE_ID=' . $grade . ' WHERE SYEAR=' . UserSyear() . ' AND COLLEGE_ROLL_NO IN (' . substr($students, 1) . ') ');
         if($str_date)
         {
             $enroll_code= DBGet(DBQuery('SELECT * FROM student_enrollment_codes WHERE SYEAR=' . UserSyear() . ' AND TYPE=\'Add\''));
-           DBQuery('UPDATE student_enrollment SET START_DATE=\''.$str_date.'\',ENROLLMENT_CODE='.$enroll_code[1]['ID'].' WHERE SYEAR=' . UserSyear() . ' AND STUDENT_ID IN (' . substr($students, 1) . ') ');
+           DBQuery('UPDATE student_enrollment SET START_DATE=\''.$str_date.'\',ENROLLMENT_CODE='.$enroll_code[1]['ID'].' WHERE SYEAR=' . UserSyear() . ' AND COLLEGE_ROLL_NO IN (' . substr($students, 1) . ') ');
         }
         if($end_date)
         {
             $drop_code= DBGet(DBQuery('SELECT * FROM student_enrollment_codes WHERE SYEAR=' . UserSyear() . ' AND TYPE=\'Drop\''));
-           DBQuery('UPDATE student_enrollment SET END_DATE=\''.$end_date.'\',DROP_CODE='.$drop_code[1]['ID'].' WHERE SYEAR=' . UserSyear() . ' AND STUDENT_ID IN (' . substr($students, 1) . ') ');
+           DBQuery('UPDATE student_enrollment SET END_DATE=\''.$end_date.'\',DROP_CODE='.$drop_code[1]['ID'].' WHERE SYEAR=' . UserSyear() . ' AND COLLEGE_ROLL_NO IN (' . substr($students, 1) . ') ');
         }
         
         if (!$note)
@@ -642,7 +642,7 @@ if (!$_REQUEST['modfunc']) {
 function _makeChooseCheckbox($value, $title = '') {
     global $THIS_RET;
 
-    return "<INPUT type=checkbox name=student[" . $THIS_RET['STUDENT_ID'] . "] value=Y id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);'>";
+    return "<INPUT type=checkbox name=student[" . $THIS_RET['COLLEGE_ROLL_NO'] . "] value=Y id=$THIS_RET[COLLEGE_ROLL_NO] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[COLLEGE_ROLL_NO]);'>";
 }
 
 function _makeTextInput($column, $numeric = false) {

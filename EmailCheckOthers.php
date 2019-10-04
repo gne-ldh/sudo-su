@@ -36,7 +36,7 @@ include('RedirectRootInc.php');
                 if($_REQUEST['id']==0)
                 $result_stu=DBGet(DBQuery('SELECT COUNT(1) as EMAIL_EX FROM students WHERE EMAIL=\''.$_REQUEST['email'].'\''));
                 else
-                $result_stu=DBGet(DBQuery('SELECT COUNT(1) as EMAIL_EX FROM students WHERE EMAIL=\''.$_REQUEST['email'].'\' AND STUDENT_ID!='.$_REQUEST['id']));    
+                $result_stu=DBGet(DBQuery('SELECT COUNT(1) as EMAIL_EX FROM students WHERE EMAIL=\''.$_REQUEST['email'].'\' AND COLLEGE_ROLL_NO!='.$_REQUEST['id']));    
 
                 $result_pe=DBGet(DBQuery('SELECT COUNT(1) as EMAIL_EX FROM people WHERE EMAIL=\''.$_REQUEST['email'].'\''));
                 $result_stf=DBGet(DBQuery('SELECT COUNT(1) as EMAIL_EX FROM staff WHERE EMAIL=\''.$_REQUEST['email'].'\''));
