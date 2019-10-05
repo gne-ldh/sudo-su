@@ -421,16 +421,16 @@ foreach ($res as $v) {
             # ---   Advanced Search End ----------------------------------------------------------- #
 
 
-            echo '<div class="row">';
-            echo '<div class="col-md-12">';
-            if (User('PROFILE') == 'admin') {
-                echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=address_group value=Y' . (Preferences('DEFAULT_FAMILIES') == 'Y' ? ' CHECKED' : '') . '> Group by Family</label>';
-                echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=_search_all_colleges value=Y' . (Preferences('DEFAULT_ALL_COLLEGES') == 'Y' ? ' CHECKED' : '') . '> Search All Colleges</label>';
-            }
-            if ($_REQUEST['modname'] != 'students/StudentReenroll.php')
-                echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=include_inactive value=Y> Include Inactive Students</label>';
-            echo '</div>'; //.col-md-12
-            echo '</div>'; //.row
+            // echo '<div class="row">';
+            // echo '<div class="col-md-12">';
+            // if (User('PROFILE') == 'admin') {
+            //     echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=address_group value=Y' . (Preferences('DEFAULT_FAMILIES') == 'Y' ? ' CHECKED' : '') . '> Group by Family</label>';
+            //     echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=_search_all_colleges value=Y' . (Preferences('DEFAULT_ALL_COLLEGES') == 'Y' ? ' CHECKED' : '') . '> Search All Colleges</label>';
+            // }
+            // if ($_REQUEST['modname'] != 'students/StudentReenroll.php')
+            //     echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=include_inactive value=Y> Include Inactive Students</label>';
+            // echo '</div>'; //.col-md-12
+            // echo '</div>'; //.row
 
             echo '<hr/>';
             echo '<div class="text-right">';
