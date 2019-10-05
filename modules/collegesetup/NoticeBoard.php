@@ -47,7 +47,7 @@ if($_REQUEST['day_values'] && ($_POST['day_values'] || $_REQUEST['ajax']))
 $profiles_RET = DBGet(DBQuery("SELECT ID,TITLE FROM user_profiles ORDER BY ID"));
 if((($_REQUEST['profiles'] && ($_POST['profiles']  || $_REQUEST['ajax'])) || ($_REQUEST['values'] && ($_POST['values'] || $_REQUEST['ajax']))) && AllowEdit())
 {
-	$notes_RET = DBGet(DBQuery('SELECT ID FROM portal_notes WHERE (COLLEGE_ID=\''.UserCollege().'\' OR PUBLISHED_PROFILES LIKE \'%all%\') AND SYEAR=\''.UserSyear().'\''));
+	$notes_RET = DBGet(DBQuery('SELECT ID FROM notice_board WHERE (COLLEGE_ID=\''.UserCollege().'\' OR PUBLISHED_PROFILES LIKE \'%all%\') AND SYEAR=\''.UserSyear().'\''));
 
 	foreach($notes_RET as $note_id)
 	{
@@ -84,7 +84,7 @@ if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUE
                         {
 		if($id!='new')
 		{
-                                                    $portal_RET=DBGet(DBQuery('SELECT START_DATE,END_DATE FROM portal_notes WHERE ID=\''.$id.'\''));
+                                                    $portal_RET=DBGet(DBQuery('SELECT START_DATE,END_DATE FROM notice_board WHERE ID=\''.$id.'\''));
                                                     $portal_RET=$portal_RET[1];
                                                     $syear_RET=DBGet(DBQuery('SELECT START_DATE,END_DATE FROm college_years WHERE COLLEGE_ID='.UserCollege().' AND SYEAR='.UserSyear()));
                                                     $syear_RET=$syear_RET[1];
@@ -95,7 +95,7 @@ if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUE
                                                     }
                                                     else
                                                     {
-			$sql = 'UPDATE portal_notes SET ';
+			$sql = 'UPDATE notice_board SET ';
                            $sql.='COLLEGE_ID='.UserCollege().', ';
                             
 //                        }
@@ -124,10 +124,10 @@ if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUE
 			
 			# ----------------------- Start Date & End Date Fix Start During Update --------------------------------- #
 			
-			$sql_start_date_fix = 'UPDATE portal_notes set start_date=NULL WHERE `start_date`=\'0000-00-00\'';
+			$sql_start_date_fix = 'UPDATE notice_board set start_date=NULL WHERE `start_date`=\'0000-00-00\'';
 			DBQuery($sql_start_date_fix);
 			
-			$sql_end_date_fix = 'UPDATE portal_notes set end_date=NULL WHERE `end_date`=\'0000-00-00\'';
+			$sql_end_date_fix = 'UPDATE notice_board set end_date=NULL WHERE `end_date`=\'0000-00-00\'';
 			DBQuery($sql_end_date_fix);
 			
 			# ------------------------ Start Date & End Date Fix End During Update ---------------------------------- #
@@ -176,7 +176,7 @@ if(clean_param($_REQUEST['values'],PARAM_NOTAGS) && ($_POST['values'] || $_REQUE
 				$_REQUEST['values']['new']['PUBLISHED_PROFILES'] = '';
                                 $allcollege='';
                         }
-			$sql = 'INSERT INTO portal_notes ';
+			$sql = 'INSERT INTO notice_board ';
 
 			
 			
@@ -227,7 +227,7 @@ if(clean_param($_REQUEST['modfunc'],PARAM_ALPHAMOD)=='remove' && AllowEdit())
 	if(DeletePrompt_Portal('message'))
 	{
            
-		DBQuery('DELETE FROM portal_notes WHERE ID=\''.paramlib_validation($column=SORT_ORDER,$_REQUEST[id]).'\'');
+		DBQuery('DELETE FROM notice_board WHERE ID=\''.paramlib_validation($column=SORT_ORDER,$_REQUEST[id]).'\'');
 		unset($_REQUEST['modfunc']);
 	}
 }
@@ -235,7 +235,7 @@ if(clean_param($_REQUEST['modfunc'],PARAM_ALPHAMOD)=='remove' && AllowEdit())
 if($_REQUEST['modfunc']!='remove')
 {
 
-      $sql = 'SELECT ID,SORT_ORDER,TITLE,CONTENT,START_DATE,END_DATE,PUBLISHED_PROFILES,CASE WHEN END_DATE IS NOT NULL AND END_DATE < CURRENT_DATE THEN \'Y\' ELSE NULL END AS EXPIRED FROM portal_notes WHERE (COLLEGE_ID=\''.UserCollege().'\' OR PUBLISHED_PROFILES LIKE \'%all%\') AND SYEAR=\''.UserSyear().'\' ORDER BY EXPIRED DESC,SORT_ORDER,last_updated DESC';
+      $sql = 'SELECT ID,SORT_ORDER,TITLE,CONTENT,START_DATE,END_DATE,PUBLISHED_PROFILES,CASE WHEN END_DATE IS NOT NULL AND END_DATE < CURRENT_DATE THEN \'Y\' ELSE NULL END AS EXPIRED FROM notice_board WHERE (COLLEGE_ID=\''.UserCollege().'\' OR PUBLISHED_PROFILES LIKE \'%all%\') AND SYEAR=\''.UserSyear().'\' ORDER BY EXPIRED DESC,SORT_ORDER,last_updated DESC';
 	$QI = DBQuery($sql);
         $LO = DBGet(DBQuery($sql));
 $portal_id_arr=array();

@@ -369,7 +369,7 @@ switch (User('PROFILE')) {
 
 
         $notes_RET = DBGet(DBQuery('SELECT IF(pn.published_profiles like\'%all%\',\'All College\',(SELECT TITLE FROM colleges WHERE id=pn.college_id)) AS COLLEGE,pn.LAST_UPDATED,CONCAT(\'<b>\',pn.TITLE,\'</b>\') AS TITLE,pn.CONTENT 
-                                    FROM portal_notes pn
+                                    FROM notice_board pn
                                     WHERE pn.SYEAR=\'' . UserSyear() . '\' AND pn.START_DATE<=CURRENT_DATE AND 
                                         (pn.END_DATE>=CURRENT_DATE OR pn.END_DATE IS NULL)
                                         AND (pn.published_profiles like\'%all%\' OR pn.college_id IN(' . UserCollege() . '))
@@ -509,7 +509,7 @@ switch (User('PROFILE')) {
             }
         }
         $notes_RET = DBGet(DBQuery('SELECT IF(pn.college_id IS NULL,\'All College\',(SELECT TITLE FROM colleges WHERE id=pn.college_id)) AS COLLEGE,pn.LAST_UPDATED,CONCAT(\'<b>\',pn.TITLE,\'</b>\') AS TITLE,pn.CONTENT 
-                            FROM portal_notes pn
+                            FROM notice_board pn
                             WHERE pn.SYEAR=\'' . UserSyear() . '\' AND pn.START_DATE<=CURRENT_DATE AND 
                                 (pn.END_DATE>=CURRENT_DATE OR pn.END_DATE IS NULL)
                                 AND (pn.college_id IS NULL OR pn.college_id IN(' . GetUserColleges(UserID(), true) . '))
@@ -591,7 +591,7 @@ switch (User('PROFILE')) {
     case 'parent':
         DrawBC($welcome . ' | Role : Parent');
         $notes_RET = DBGet(DBQuery('SELECT IF(pn.college_id IS NULL,\'All College\',(SELECT TITLE FROM colleges WHERE id=pn.college_id)) AS COLLEGE,pn.LAST_UPDATED,pn.TITLE,pn.CONTENT 
-            FROM portal_notes pn
+            FROM notice_board pn
             WHERE pn.SYEAR=\'' . UserSyear() . '\' 
                 AND pn.START_DATE<=CURRENT_DATE AND (pn.END_DATE>=CURRENT_DATE OR pn.END_DATE IS NULL) 
                 AND (pn.college_id IS NULL OR pn.college_id IN(' . GetUserColleges(UserID(), true) . '))
@@ -703,7 +703,7 @@ switch (User('PROFILE')) {
         DrawBC($welcome . ' | Role : Student');
 
         $notes_RET = DBGet(DBQuery('SELECT IF(pn.college_id IS NULL,\'All College\',(SELECT TITLE FROM colleges WHERE id=pn.college_id)) AS COLLEGE,pn.LAST_UPDATED,pn.TITLE,pn.CONTENT 
-            FROM portal_notes pn
+            FROM notice_board pn
             WHERE pn.SYEAR=\'' . UserSyear() . '\' 
                 AND pn.START_DATE<=CURRENT_DATE AND (pn.END_DATE>=CURRENT_DATE OR pn.END_DATE IS NULL) 
                 AND (pn.college_id IS NULL OR pn.COLLEGE_ID=\'' . UserCollege() . '\') 

@@ -1607,10 +1607,10 @@ INSERT INTO `people_field_categories` (`id`, `title`, `sort_order`, `include`, `
 (2, 'Address Info', '2', NULL, 'Y', 'Y', 'Y', 'Y', '2015-07-28 15:26:33', NULL);
 
 --
--- Dumping data for table `portal_notes`
+-- Dumping data for table `notice_board`
 --
 
-INSERT INTO `portal_notes` (`id`, `college_id`, `syear`, `title`, `content`, `sort_order`, `published_user`, `last_updated`, `start_date`, `end_date`, `published_profiles`, `updated_by`) VALUES
+INSERT INTO `notice_board` (`id`, `college_id`, `syear`, `title`, `content`, `sort_order`, `published_user`, `last_updated`, `start_date`, `end_date`, `published_profiles`, `updated_by`) VALUES
 (1, NULL, '2019', 'Welcome', 'Welcome to the Student Information System of Peach State High College', '1', '1', '2019-08-04 22:04:01', '2019-08-01', '2020-05-31', ',all,admin,teacher,parent,0,1,2,3,4,5,', NULL);
 
 --

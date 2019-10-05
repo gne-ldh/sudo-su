@@ -842,8 +842,8 @@ while ($res_assoc1 = $staff_qr_assoc->fetch_assoc()) {
 
 //----------------------------New end---------------------------------------------------//
 //-------------------------------------Portal Notes start-------------------------------------//
-$qr_por = $dbconn->query("select * from portal_notes")  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 846</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
-$qr2_por = "CREATE TABLE portal_notes_new (
+$qr_por = $dbconn->query("select * from notice_board")  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 846</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
+$qr2_por = "CREATE TABLE notice_board_new (
     id int(8) not null auto_increment primary key,
     college_id numeric,
     syear numeric(4,0),
@@ -860,7 +860,7 @@ $qr2_por = "CREATE TABLE portal_notes_new (
 ;
 $dbconn->query($qr2_por)  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 862</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
 
-$qr3_por = "ALTER TABLE portal_notes_new AUTO_INCREMENT=1";
+$qr3_por = "ALTER TABLE notice_board_new AUTO_INCREMENT=1";
 $dbconn->query($qr3_por)  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 865</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
 while ($res_por = $qr_por->fetch_assoc()) {
     $id = $res_por['id'];
@@ -892,7 +892,7 @@ while ($res_por = $qr_por->fetch_assoc()) {
         $publish_user = implode(',', $final_arr);
     else
         $publish_user = '';
-    $res_por_insert = "insert into portal_notes_new(college_id,syear,title,content,sort_order,published_user,published_profiles,start_date,end_date)select college_id,syear,title,content,sort_order,published_user,'$publish_user',start_date,end_date from portal_notes where id='$id'";
+    $res_por_insert = "insert into notice_board_new(college_id,syear,title,content,sort_order,published_user,published_profiles,start_date,end_date)select college_id,syear,title,content,sort_order,published_user,'$publish_user',start_date,end_date from notice_board where id='$id'";
 
     $dbconn->query($res_por_insert)  or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 898</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
 }
@@ -1022,7 +1022,7 @@ $dbconn->query('DROP TABLE address') or die('<i class="fa fa-exclamation-triangl
 $dbconn->query('DROP TABLE address_fields') or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 1023</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
 $dbconn->query('DROP TABLE address_field_categories') or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 1024</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
 $dbconn->query('DROP TABLE people') or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 1025</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
-$dbconn->query('DROP TABLE portal_notes') or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 1026</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
+$dbconn->query('DROP TABLE notice_board') or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 1026</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
 $dbconn->query('DROP TABLE app') or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 1027</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
 $dbconn->query('DROP TABLE student_gpa_calculated') or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 1028</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
 $dbconn->query('DROP TABLE student_mp_stats') or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 1029</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
@@ -1043,7 +1043,7 @@ $dbconn->query("RENAME TABLE login_authentication_new TO login_authentication") 
 $dbconn->query("RENAME TABLE students_new TO students") or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 1044</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
 $dbconn->query("RENAME TABLE students_join_people_new TO students_join_people") or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 1045</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
 $dbconn->query("RENAME TABLE people_new TO people") or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 1046</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
-$dbconn->query("RENAME TABLE portal_notes_new TO portal_notes") or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 1047</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
+$dbconn->query("RENAME TABLE notice_board_new TO notice_board") or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 1047</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
 $dbconn->query("RENAME TABLE app_new TO app") or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 1048</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
 $dbconn->query("RENAME TABLE student_gpa_calculated_new TO student_gpa_calculated") or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 1049</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
 $dbconn->query("RENAME TABLE progress TO student_goal_progress") or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>'.$dbconn->error.' at line UPGRADE 6 1050</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');

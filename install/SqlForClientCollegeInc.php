@@ -118,7 +118,7 @@ INSERT INTO `app` (`name`, `value`) VALUES
 
 
 --
--- Dumping data for table `portal_notes`
+-- Dumping data for table `notice_board`
 --
 
 
