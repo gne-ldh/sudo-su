@@ -653,7 +653,7 @@ ALTER TABLE people_join_contacts AUTO_INCREMENT=1;
 ALTER TABLE people AUTO_INCREMENT=1;
 
 
-CREATE TABLE portal_notes (
+CREATE TABLE notice_board (
     id int(8) not null auto_increment primary key,
     college_id numeric,
     syear numeric(4,0),
@@ -667,7 +667,7 @@ CREATE TABLE portal_notes (
     published_profiles character varying(255)
 )ENGINE=InnoDB;
 
-ALTER TABLE portal_notes AUTO_INCREMENT=1;
+ALTER TABLE notice_board AUTO_INCREMENT=1;
 
 
 CREATE TABLE profile_exceptions (
