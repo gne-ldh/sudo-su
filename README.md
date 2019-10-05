@@ -33,3 +33,5 @@ So since OpenSIS and FormTools are two seperate applications, to use them togeth
 1. Follow the installation steps. Give the global read permission to upload and cache folders (if they show 'Fail' in fist step) using `chmod -R 777`.
 1. When you are asked for database name and database username, fill the same values as used when installing OpenSIS. The database name may be `opensis` since its default. Also leave the database prefix as default, i.e `ft_`. We are trying to keep all data in the same databse here and to stick to the defaults.
  
+ 
+For Proper Documentation go to the wiki page of this repository [sudo-su_wiki_page](https://github.com/gne-ldh/sudo-su/wiki)
