@@ -75,9 +75,9 @@ if (!$_REQUEST['modfunc']) {
     $table = 'student_medical_notes';
 
     $functions = array('DOCTORS_NOTE_COMMENTS' => '_makeAlertComments');
-    $med_RET = DBGet(DBQuery('SELECT ID,STUDENT_ID,DOCTORS_NOTE_DATE,DOCTORS_NOTE_COMMENTS
+    $med_RET = DBGet(DBQuery('SELECT ID,COLLEGE_ROLL_NO,DOCTORS_NOTE_DATE,DOCTORS_NOTE_COMMENTS
                     FROM student_medical_notes
-                    WHERE STUDENT_ID=\'' . UserStudentID() . '\''), $functions);
+                    WHERE COLLEGE_ROLL_NO=\'' . UserStudentID() . '\''), $functions);
     foreach ($med_RET as $mi => $md) {
         $med_RET[$mi]['DOCTORS_NOTE_DATE'] = _makeDate($md['DOCTORS_NOTE_DATE'], 'DOCTORS_NOTE_DATE', $mi, array('ID' => $md['ID'], 'TABLE' => 'student_medical_notes'));
     }
@@ -102,7 +102,7 @@ if (!$_REQUEST['modfunc']) {
     $table = 'student_immunization';
 
     $functions = array('TYPE' => '_makeType', 'COMMENTS' => '_makeAlertComments');
-    $med_RET = DBGet(DBQuery('SELECT ID,TYPE,MEDICAL_DATE,COMMENTS FROM student_immunization WHERE STUDENT_ID=\'' . UserStudentID() . '\' ORDER BY MEDICAL_DATE,TYPE'), $functions);
+    $med_RET = DBGet(DBQuery('SELECT ID,TYPE,MEDICAL_DATE,COMMENTS FROM student_immunization WHERE COLLEGE_ROLL_NO=\'' . UserStudentID() . '\' ORDER BY MEDICAL_DATE,TYPE'), $functions);
     $columns = array('TYPE' => 'Type', 'MEDICAL_DATE' => 'Date', 'COMMENTS' => 'Comments');
     foreach ($med_RET as $mi => $md) {
         $counter_for_date = $counter_for_date + 1;
@@ -131,7 +131,7 @@ if (!$_REQUEST['modfunc']) {
     $table = 'student_medical_alerts';
 
     $functions = array('TITLE' => '_makeAlertComments');
-    $med_RET = DBGet(DBQuery('SELECT ID,TITLE,ALERT_DATE FROM student_medical_alerts WHERE STUDENT_ID=\'' . UserStudentID() . '\' ORDER BY ID'), $functions);
+    $med_RET = DBGet(DBQuery('SELECT ID,TITLE,ALERT_DATE FROM student_medical_alerts WHERE COLLEGE_ROLL_NO=\'' . UserStudentID() . '\' ORDER BY ID'), $functions);
     $columns = array('ALERT_DATE' => 'Alert Date', 'TITLE' => 'Medical Alert');
     foreach ($med_RET as $mi => $md) {
         $counter_for_date = $counter_for_date + 1;
@@ -157,7 +157,7 @@ if (!$_REQUEST['modfunc']) {
     $table = 'student_medical_visits';
 
     $functions = array('TIME_IN' => '_makeComments', 'TIME_OUT' => '_makeComments', 'REASON' => '_makeComments', 'RESULT' => '_makeComments', 'COMMENTS' => '_makeLongComments');
-    $med_RET = DBGet(DBQuery('SELECT ID,COLLEGE_DATE,TIME_IN,TIME_OUT,REASON,RESULT,COMMENTS FROM student_medical_visits WHERE STUDENT_ID=\'' . UserStudentID() . '\' ORDER BY COLLEGE_DATE'), $functions);
+    $med_RET = DBGet(DBQuery('SELECT ID,COLLEGE_DATE,TIME_IN,TIME_OUT,REASON,RESULT,COMMENTS FROM student_medical_visits WHERE COLLEGE_ROLL_NO=\'' . UserStudentID() . '\' ORDER BY COLLEGE_DATE'), $functions);
     $columns = array('COLLEGE_DATE' => 'Date', 'TIME_IN' => 'Time In', 'TIME_OUT' => 'Time Out', 'REASON' => 'Reason', 'RESULT' => 'Result', 'COMMENTS' => 'Comments');
     foreach ($med_RET as $mi => $md) {
         $counter_for_date = $counter_for_date + 1;

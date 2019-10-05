@@ -556,7 +556,7 @@ if (!$_REQUEST['modfunc']) {
                 $arr = array('GoalInc Title', 'Begin Date', 'End Date', 'GoalInc Description');
                 break;
             case 6:
-                $arr = array('Student ID', 'Alternate ID', 'Grade', 'Calendar', 'Rolling/Retention Options', 'Username', 'Password', 'Last Login', 'Disable Student'
+                $arr = array('College Roll No', 'Alternate ID', 'Grade', 'Calendar', 'Rolling/Retention Options', 'Username', 'Password', 'Last Login', 'Disable Student'
                     , 'Start Date', 'Enrollment Code', 'Drop Date', 'Drop Code', 'College');
 
                 break;

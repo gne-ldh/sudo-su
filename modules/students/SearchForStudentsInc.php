@@ -37,8 +37,8 @@ if ($extra['skip_search'] == 'Y')
     $_REQUEST['search_modfunc'] = 'list';
 
 if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc']) {
-    if ($_SESSION['student_id'] && User('PROFILE') == 'admin' && $_REQUEST['student_id'] == 'new') {
-        unset($_SESSION['student_id']);
+    if ($_SESSION['college_roll_no'] && User('PROFILE') == 'admin' && $_REQUEST['college_roll_no'] == 'new') {
+        unset($_SESSION['college_roll_no']);
         //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
     }
 
@@ -504,7 +504,7 @@ else {
         $_REQUEST['next_modname'] = 'students/Student.php';
 
     if ($_REQUEST['address_group']) {
-        $extra['SELECT'] = $extra['SELECT'] . ',ssm.student_id AS CHILD';
+        $extra['SELECT'] = $extra['SELECT'] . ',ssm.college_roll_no AS CHILD';
         if (count($extra['functions']) > 0)
             $extra['functions']+=array('CHILD' => '_make_Parents');
         else
@@ -512,7 +512,7 @@ else {
 
         if (!($_REQUEST['expanded_view'] == 'true' || $_REQUEST['addr'] || $extra['addr'])) {
 
-            $extra['FROM'] = ' INNER JOIN students_join_people sam ON (sam.STUDENT_ID=ssm.STUDENT_ID) ';
+            $extra['FROM'] = ' INNER JOIN students_join_people sam ON (sam.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO) ';
 
             $extra['ORDER_BY'] = 'FULL_NAME';
             $extra['DISTINCT'] = 'DISTINCT';
@@ -547,9 +547,9 @@ else {
     if ($extra['array_function'] && function_exists($extra['array_function']))
         $students_RET = $extra['array_function']($students_RET);
 
-    $LO_columns = array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'Student ID', 'ALT_ID' => 'Alternate ID', 'GRADE_ID' => 'Grade', 'SECTION_ID' => 'Section', 'PHONE' => 'Phone');
+    $LO_columns = array('FULL_NAME' => 'Student', 'COLLEGE_ROLL_NO' => 'College Roll No', 'ALT_ID' => 'Alternate ID', 'GRADE_ID' => 'Grade', 'SECTION_ID' => 'Section', 'PHONE' => 'Phone');
     $name_link['FULL_NAME']['link'] = "Modules.php?modname=$_REQUEST[next_modname]";
-    $name_link['FULL_NAME']['variables'] = array('student_id' => 'STUDENT_ID');
+    $name_link['FULL_NAME']['variables'] = array('college_roll_no' => 'COLLEGE_ROLL_NO');
     if ($_REQUEST['_search_all_colleges'])
         $name_link['FULL_NAME']['variables'] += array('college_id' => 'COLLEGE_ID');
 
@@ -580,40 +580,41 @@ else {
         echo '<table class="table table-striped table-bordered table-xxs">';
         echo '<tbody>';
         echo '<tr>';
-        echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleLastName\');">Last Name</a></th>';
-        echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleFirstName\');">First Name</a></th>';
-        echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleStudentId\');">Student ID</a></th>';
-        echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleAltId\');">Alt ID</th>';
-        echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleAddress\');">Address</th>';
+        // echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleLastName\');">Last Name</a></th>';
+        // echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleFirstName\');">First Name</a></th>';
+        echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleStudentId\');">College Roll No</a></th>';
+        // echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleAltId\');">Alt ID</th>';
+        // echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleAddress\');">Address</th>';
         echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleGrade\');">Grade</th>';
+        echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleSection\');">Section</a></th>';
         echo '</tr>';
         echo '<tr>';
-        if($_REQUEST['filter_form']=='Y' && $_REQUEST['last']!='')
-        echo '<td><div  id="toggleLastName_element"><input type="text" id="last" name="last" class="form-control p-t-0 p-b-0 input-xs" placeholder="Last Name" value="'.$_REQUEST['last'].'"/></div></td>';
-        else
-        echo '<td><div onclick="divToggle(\'#toggleLastName\');" id="toggleLastName">Any</div><div style="display:none;" id="toggleLastName_element" class="hide-element"><input type="text" name="last" id="last" class="form-control p-t-0 p-b-0 input-xs" placeholder="Last Name" /></div></td>';
-        
-        if($_REQUEST['filter_form']=='Y' && $_REQUEST['first']!='')
-        echo '<td><div id="toggleFirstName_element"><input type="text" id="first" name="first" class="form-control p-t-0 p-b-0 input-xs" placeholder="First Name" value="'.$_REQUEST['first'].'"/></div></td>';
-        else
-        echo '<td><div onclick="divToggle(\'#toggleFirstName\');" id="toggleFirstName">Any</div><div style="display:none;" id="toggleFirstName_element" class="hide-element"><input type="text" id="first" name="first" class="form-control p-t-0 p-b-0 input-xs" placeholder="First Name" /></div></td>';
+        // if($_REQUEST['filter_form']=='Y' && $_REQUEST['last']!='')
+        // echo '<td><div  id="toggleLastName_element"><input type="text" id="last" name="last" class="form-control p-t-0 p-b-0 input-xs" placeholder="Last Name" value="'.$_REQUEST['last'].'"/></div></td>';
+        // else
+        // echo '<td><div onclick="divToggle(\'#toggleLastName\');" id="toggleLastName">Any</div><div style="display:none;" id="toggleLastName_element" class="hide-element"><input type="text" name="last" id="last" class="form-control p-t-0 p-b-0 input-xs" placeholder="Last Name" /></div></td>';
+        // 
+        // if($_REQUEST['filter_form']=='Y' && $_REQUEST['first']!='')
+        // echo '<td><div id="toggleFirstName_element"><input type="text" id="first" name="first" class="form-control p-t-0 p-b-0 input-xs" placeholder="First Name" value="'.$_REQUEST['first'].'"/></div></td>';
+        // else
+        // echo '<td><div onclick="divToggle(\'#toggleFirstName\');" id="toggleFirstName">Any</div><div style="display:none;" id="toggleFirstName_element" class="hide-element"><input type="text" id="first" name="first" class="form-control p-t-0 p-b-0 input-xs" placeholder="First Name" /></div></td>';
         
         
         if($_REQUEST['filter_form']=='Y' && $_REQUEST['stuid']!='')
-        echo '<td><div id="toggleStudentId_element"><input type="text" id="stuid" name="stuid" class="form-control p-t-0 p-b-0 input-xs" placeholder="Student ID" value="'.$_REQUEST['stuid'].'"/></div></td>';
+        echo '<td><div id="toggleStudentId_element"><input type="text" id="stuid" name="stuid" class="form-control p-t-0 p-b-0 input-xs" placeholder="College Roll No" value="'.$_REQUEST['stuid'].'"/></div></td>';
         else
-        echo '<td><div onclick="divToggle(\'#toggleStudentId\');" id="toggleStudentId">Any</div><div style="display:none;" id="toggleStudentId_element" class="hide-element"><input type="text" id="stuid" name="stuid" class="form-control p-t-0 p-b-0 input-xs" placeholder="Student ID" /></div></td>';
+        echo '<td><div onclick="divToggle(\'#toggleStudentId\');" id="toggleStudentId">Any</div><div style="display:none;" id="toggleStudentId_element" class="hide-element"><input type="text" id="stuid" name="stuid" class="form-control p-t-0 p-b-0 input-xs" placeholder="College Roll No" /></div></td>';
        
-        if($_REQUEST['filter_form']=='Y' && $_REQUEST['altid']!='')
-        echo '<td><div id="toggleAltId_element"><input type="text" id="altid" name="altid" class="form-control p-t-0 p-b-0 input-xs" placeholder="Alt ID" value="'.$_REQUEST['altid'].'"/></div></td>';
-        else
-        echo '<td><div onclick="divToggle(\'#toggleAltId\');" id="toggleAltId">Any</div><div style="display:none;" id="toggleAltId_element" class="hide-element"><input type="text" id="altid" name="altid" class="form-control p-t-0 p-b-0 input-xs" placeholder="Alt ID" /></div></td>';
+        // if($_REQUEST['filter_form']=='Y' && $_REQUEST['altid']!='')
+        // echo '<td><div id="toggleAltId_element"><input type="text" id="altid" name="altid" class="form-control p-t-0 p-b-0 input-xs" placeholder="Alt ID" value="'.$_REQUEST['altid'].'"/></div></td>';
+        // else
+        // echo '<td><div onclick="divToggle(\'#toggleAltId\');" id="toggleAltId">Any</div><div style="display:none;" id="toggleAltId_element" class="hide-element"><input type="text" id="altid" name="altid" class="form-control p-t-0 p-b-0 input-xs" placeholder="Alt ID" /></div></td>';
         
         
-        if($_REQUEST['filter_form']=='Y' && $_REQUEST['addr']!='')
-        echo '<td><div id="toggleAddress_element" class="hide-element"><input type="text" id="addr" name="addr" class="form-control p-t-0 p-b-0 input-xs" placeholder="Address" value="'.$_REQUEST['addr'].'"/></div></td>';    
-        else
-        echo '<td><div onclick="divToggle(\'#toggleAddress\');" id="toggleAddress">Any</div><div style="display:none;" id="toggleAddress_element" class="hide-element"><input type="text" id="addr" name="addr" class="form-control p-t-0 p-b-0 input-xs" placeholder="Address" /></div></td>';
+        // if($_REQUEST['filter_form']=='Y' && $_REQUEST['addr']!='')
+        // echo '<td><div id="toggleAddress_element" class="hide-element"><input type="text" id="addr" name="addr" class="form-control p-t-0 p-b-0 input-xs" placeholder="Address" value="'.$_REQUEST['addr'].'"/></div></td>';    
+        // else
+        // echo '<td><div onclick="divToggle(\'#toggleAddress\');" id="toggleAddress">Any</div><div style="display:none;" id="toggleAddress_element" class="hide-element"><input type="text" id="addr" name="addr" class="form-control p-t-0 p-b-0 input-xs" placeholder="Address" /></div></td>';
        
         
         $list = DBGet(DBQuery("SELECT DISTINCT TITLE,ID,SORT_ORDER FROM college_gradelevels WHERE COLLEGE_ID='" . UserCollege() . "' ORDER BY SORT_ORDER"));
@@ -632,18 +633,10 @@ else {
         foreach ($list as $value)
         echo '<option value="'. $value['TITLE'].'">'.$value['TITLE'].'</option>';
         echo '</select></div></td>';
-        echo '</tr>';
+        // echo '</tr>';
         }
-        echo '<tr>';
-        echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleSection\');">Section</a></th>';
-        echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleGrpByFamily\');">Group by Family</a></th>';
-        echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleSearchAllCollege\');">Search All Colleges</a></th>';
-        echo '<th colspan="3"><a href="javascript:void(0);" onclick="divToggle(\'#toggleIncludeInactive\');">Include Inactive Students</a></th>';
-        echo '</tr>';
-        
-        
+
         $list = DBGet(DBQuery("SELECT DISTINCT NAME,ID,SORT_ORDER FROM college_gradelevel_sections WHERE COLLEGE_ID='" . UserCollege() . "' ORDER BY SORT_ORDER"));
-        echo '<tr>';
         
         if($_REQUEST['filter_form']=='Y' && $_REQUEST['section']!='')
         {
@@ -661,21 +654,48 @@ else {
         echo '<option value='.$value['ID'].'>'.$value['NAME'].'</option>';
         echo '</select></div></td>';
         }
+        // echo '<tr>';
+        // echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleSection\');">Section</a></th>';
+        // echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleGrpByFamily\');">Group by Family</a></th>';
+        // echo '<th><a href="javascript:void(0);" onclick="divToggle(\'#toggleSearchAllCollege\');">Search All Colleges</a></th>';
+        // echo '<th colspan="3"><a href="javascript:void(0);" onclick="divToggle(\'#toggleIncludeInactive\');">Include Inactive Students</a></th>';
+        // echo '</tr>';
         
-        if($_REQUEST['filter_form']=='Y' && $_REQUEST['address_group']!='')
-        echo '<td><div id="toggleGrpByFamily_element"><div class="checkbox m-b-0"><label><input id="address_group" type="checkbox" name="address_group" value="Y" checked/></label></div></div></td>';
-        else
-        echo '<td><div onclick="divToggle(\'#toggleGrpByFamily\');" id="toggleGrpByFamily">No</div><div style="display:none;" id="toggleGrpByFamily_element" class="hide-element"><div class="checkbox m-b-0"><label><input type="checkbox" id="address_group" name="address_group" value="Y"/></label></div></div></td>';
         
-        if($_REQUEST['filter_form']=='Y' && $_REQUEST['_search_all_colleges']!='')
-        echo '<td><div id="toggleSearchAllCollege_element"><div class="checkbox m-b-0"><label><input type="checkbox" id="_search_all_colleges" name="_search_all_colleges" value="Y" checked/></label></div></div></td>';
-        else    
-        echo '<td><div onclick="divToggle(\'#toggleSearchAllCollege\');" id="toggleSearchAllCollege">No</div><div style="display:none;" id="toggleSearchAllCollege_element" class="hide-element"><div class="checkbox m-b-0"><label><input type="checkbox" id="_search_all_colleges" name="_search_all_colleges" value="Y"/></label></div></div></td>';
+        // $list = DBGet(DBQuery("SELECT DISTINCT NAME,ID,SORT_ORDER FROM college_gradelevel_sections WHERE COLLEGE_ID='" . UserCollege() . "' ORDER BY SORT_ORDER"));
+        // echo '<tr>';
+        // 
+        // if($_REQUEST['filter_form']=='Y' && $_REQUEST['section']!='')
+        // {
+        // echo '<td><div id="toggleSection_element">';
+        // echo '<select id="section" name=section class="form-control p-t-0 p-b-0 input-xs"><option value="">-- Select --</option>';
+        // foreach ($list as $value)
+        // echo '<option value="'.$value['ID'].'" '.($value['ID']==$_REQUEST['section']?'selected':'').'>'.$value['NAME'].'</option>';
+        // echo '</select></div></td>';
+        // }
+        // else
+        // {
+        // echo '<td><div onclick="divToggle(\'#toggleSection\');" id="toggleSection">Any</div><div style="display:none;" id="toggleSection_element" class="hide-element">';
+        // echo '<select id="section" name=section class="form-control p-t-0 p-b-0 input-xs"><option value="">-- Select --</option>';
+        // foreach ($list as $value)
+        // echo '<option value='.$value['ID'].'>'.$value['NAME'].'</option>';
+        // echo '</select></div></td>';
+        // }
         
-        if($_REQUEST['filter_form']=='Y' && $_REQUEST['include_inactive']!='')
-        echo '<td colspan="3"><div id="toggleIncludeInactive_element"><div class="checkbox m-b-0"><label><input type="checkbox" id="include_inactive" name="include_inactive" value="Y" checked/></label></div></div></td>';
-        else
-        echo '<td colspan="3"><div onclick="divToggle(\'#toggleIncludeInactive\');" id="toggleIncludeInactive">No</div><div style="display:none;" id="toggleIncludeInactive_element" class="hide-element"><div class="checkbox m-b-0"><label><input type="checkbox" id="include_inactive" name="include_inactive" value="Y"/></label></div></div></td>';
+        // if($_REQUEST['filter_form']=='Y' && $_REQUEST['address_group']!='')
+        // echo '<td><div id="toggleGrpByFamily_element"><div class="checkbox m-b-0"><label><input id="address_group" type="checkbox" name="address_group" value="Y" checked/></label></div></div></td>';
+        // else
+        // echo '<td><div onclick="divToggle(\'#toggleGrpByFamily\');" id="toggleGrpByFamily">No</div><div style="display:none;" id="toggleGrpByFamily_element" class="hide-element"><div class="checkbox m-b-0"><label><input type="checkbox" id="address_group" name="address_group" value="Y"/></label></div></div></td>';
+        
+        // if($_REQUEST['filter_form']=='Y' && $_REQUEST['_search_all_colleges']!='')
+        // echo '<td><div id="toggleSearchAllCollege_element"><div class="checkbox m-b-0"><label><input type="checkbox" id="_search_all_colleges" name="_search_all_colleges" value="Y" checked/></label></div></div></td>';
+        // else    
+        // echo '<td><div onclick="divToggle(\'#toggleSearchAllCollege\');" id="toggleSearchAllCollege">No</div><div style="display:none;" id="toggleSearchAllCollege_element" class="hide-element"><div class="checkbox m-b-0"><label><input type="checkbox" id="_search_all_colleges" name="_search_all_colleges" value="Y"/></label></div></div></td>';
+        
+        // if($_REQUEST['filter_form']=='Y' && $_REQUEST['include_inactive']!='')
+        // echo '<td colspan="3"><div id="toggleIncludeInactive_element"><div class="checkbox m-b-0"><label><input type="checkbox" id="include_inactive" name="include_inactive" value="Y" checked/></label></div></div></td>';
+        // else
+        // echo '<td colspan="3"><div onclick="divToggle(\'#toggleIncludeInactive\');" id="toggleIncludeInactive">No</div><div style="display:none;" id="toggleIncludeInactive_element" class="hide-element"><div class="checkbox m-b-0"><label><input type="checkbox" id="include_inactive" name="include_inactive" value="Y"/></label></div></div></td>';
         echo '</tr>';
         echo '</tbody>';
         echo '</table>';
@@ -938,7 +958,7 @@ else {
         $extra['plural'] = 'Students';
 
         foreach ($students_RET as $si => $sd)
-            $_SESSION['students_order'][$si] = $sd['STUDENT_ID'];
+            $_SESSION['students_order'][$si] = $sd['COLLEGE_ROLL_NO'];
 
 
         echo "<div id='students' class=\"table-responsive\">";
@@ -952,8 +972,8 @@ else {
             foreach ($link['FULL_NAME']['variables'] as $var => $val)
                 $_REQUEST[$var] = $students_RET['1'][$val];
         }
-        if (!is_array($students_RET[1]['STUDENT_ID'])) {
-            $_SESSION['student_id'] = $students_RET[1]['STUDENT_ID'];
+        if (!is_array($students_RET[1]['COLLEGE_ROLL_NO'])) {
+            $_SESSION['college_roll_no'] = $students_RET[1]['COLLEGE_ROLL_NO'];
 
 
 

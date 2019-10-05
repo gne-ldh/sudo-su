@@ -60,9 +60,9 @@ function GetStuList(& $extra) {
         if (!count($view_fields_RET) && !isset($view_address_RET) && !isset($view_other_RET['CONTACT_INFO'])) {
             $extra['columns_after'] = array('PHONE' => 'Phone', 'GENDER' => 'Gender', 'ETHNICITY' => 'Ethnicity', 'ADDRESS' => 'Mailing Address', 'CITY' => 'City', 'STATE' => 'State', 'ZIPCODE' => 'Zipcode') + $extra['columns_after'];
 
-            $select = ',s.PHONE,s.GENDER,s.ETHNICITY,COALESCE((SELECT STREET_ADDRESS_1 FROM student_address WHERE student_id=ssm.STUDENT_ID AND TYPE="Mail"),sa.STREET_ADDRESS_1) AS ADDRESS,COALESCE((SELECT CITY FROM student_address WHERE student_id=ssm.STUDENT_ID AND TYPE="Mail"),sa.CITY) AS CITY,COALESCE((SELECT STATE FROM student_address WHERE student_id=ssm.STUDENT_ID AND TYPE="Mail"),sa.STATE) AS STATE,COALESCE((SELECT ZIPCODE FROM student_address WHERE student_id=ssm.STUDENT_ID AND TYPE="Mail"),sa.ZIPCODE) AS ZIPCODE ';
+            $select = ',s.PHONE,s.GENDER,s.ETHNICITY,COALESCE((SELECT STREET_ADDRESS_1 FROM student_address WHERE college_roll_no=ssm.COLLEGE_ROLL_NO AND TYPE="Mail"),sa.STREET_ADDRESS_1) AS ADDRESS,COALESCE((SELECT CITY FROM student_address WHERE college_roll_no=ssm.COLLEGE_ROLL_NO AND TYPE="Mail"),sa.CITY) AS CITY,COALESCE((SELECT STATE FROM student_address WHERE college_roll_no=ssm.COLLEGE_ROLL_NO AND TYPE="Mail"),sa.STATE) AS STATE,COALESCE((SELECT ZIPCODE FROM student_address WHERE college_roll_no=ssm.COLLEGE_ROLL_NO AND TYPE="Mail"),sa.ZIPCODE) AS ZIPCODE ';
 
-            $extra['FROM'] = ' LEFT OUTER JOIN student_address sa ON (ssm.STUDENT_ID=sa.STUDENT_ID AND sa.TYPE=\'Home Address\' ) ' . $extra['FROM'];
+            $extra['FROM'] = ' LEFT OUTER JOIN student_address sa ON (ssm.COLLEGE_ROLL_NO=sa.COLLEGE_ROLL_NO AND sa.TYPE=\'Home Address\' ) ' . $extra['FROM'];
             $functions['CONTACT_INFO'] = 'makeContactInfo';
 
             // if gender is converted to codeds type
@@ -70,11 +70,11 @@ function GetStuList(& $extra) {
             $extra['singular'] = 'Student Address';
             $extra['plural'] = 'Student Addresses';
             $extra2['NoSearchTerms'] = true;
-            $extra2['SELECT_ONLY'] = 'ssm.STUDENT_ID,p.STAFF_ID AS PERSON_ID,p.FIRST_NAME,p.LAST_NAME,sjp.RELATIONSHIP AS STUDENT_RELATION,s.PHONE,sa.ID AS ADDRESS_ID ';
+            $extra2['SELECT_ONLY'] = 'ssm.COLLEGE_ROLL_NO,p.STAFF_ID AS PERSON_ID,p.FIRST_NAME,p.LAST_NAME,sjp.RELATIONSHIP AS STUDENT_RELATION,s.PHONE,sa.ID AS ADDRESS_ID ';
             $extra2['FROM'] .= ',student_address sa,students_join_people sjp,people p  ';
-            $extra2['WHERE'] .= ' AND sa.STUDENT_ID=sjp.STUDENT_ID AND sa.STUDENT_ID=sjp.STUDENT_ID AND (p.CUSTODY=\'Y\' OR sjp.IS_EMERGENCY=\'Y\') AND p.STAFF_ID=sjp.PERSON_ID  AND sa.STUDENT_ID=ssm.STUDENT_ID ';
+            $extra2['WHERE'] .= ' AND sa.COLLEGE_ROLL_NO=sjp.COLLEGE_ROLL_NO AND sa.COLLEGE_ROLL_NO=sjp.COLLEGE_ROLL_NO AND (p.CUSTODY=\'Y\' OR sjp.IS_EMERGENCY=\'Y\') AND p.STAFF_ID=sjp.PERSON_ID  AND sa.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO ';
             $extra2['ORDER_BY'] .= 'COALESCE(p.CUSTODY,\'N\') DESC';
-            $extra2['group'] = array('STUDENT_ID', 'PERSON_ID');
+            $extra2['group'] = array('COLLEGE_ROLL_NO', 'PERSON_ID');
 
             // EXPANDED VIEW AND ADDR BREAKS THIS QUERY ... SO, TURN 'EM OFF
             if (!$_REQUEST['_openSIS_PDF']) {
@@ -98,12 +98,12 @@ function GetStuList(& $extra) {
                 $extra2['NoSearchTerms'] = true;
                 $extra2['SELECT'] = '';
 
-                $extra2['SELECT_ONLY'] = 'ssm.STUDENT_ID,p.STAFF_ID AS PERSON_ID,p.FIRST_NAME,p.LAST_NAME,sjp.RELATIONSHIP AS STUDENT_RELATION,a.PHONE';
-                $extra2['FROM'] .= ',student_address a LEFT OUTER JOIN students_join_people sjp ON (a.STUDENT_ID=sjp.STUDENT_ID AND sjp.IS_EMERGENCY=\'Y\') LEFT OUTER JOIN people p ON (p.STAFF=sjp.PERSON_ID) ';
-                $extra2['WHERE'] .= ' AND a.STUDENT_ID=sjp.a.STUDENT_ID AND sjp.STUDENT_ID=ssm.STUDENT_ID ';
+                $extra2['SELECT_ONLY'] = 'ssm.COLLEGE_ROLL_NO,p.STAFF_ID AS PERSON_ID,p.FIRST_NAME,p.LAST_NAME,sjp.RELATIONSHIP AS STUDENT_RELATION,a.PHONE';
+                $extra2['FROM'] .= ',student_address a LEFT OUTER JOIN students_join_people sjp ON (a.COLLEGE_ROLL_NO=sjp.COLLEGE_ROLL_NO AND sjp.IS_EMERGENCY=\'Y\') LEFT OUTER JOIN people p ON (p.STAFF=sjp.PERSON_ID) ';
+                $extra2['WHERE'] .= ' AND a.COLLEGE_ROLL_NO=sjp.a.COLLEGE_ROLL_NO AND sjp.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO ';
                 $extra2['ORDER_BY'] .= 'COALESCE(p.CUSTODY,\'N\') DESC';
 
-                $extra2['group'] = array('STUDENT_ID', 'PERSON_ID');
+                $extra2['group'] = array('COLLEGE_ROLL_NO', 'PERSON_ID');
                 $extra2['functions'] = array();
                 $extra2['link'] = array();
 
@@ -146,17 +146,17 @@ function GetStuList(& $extra) {
             if ($view_address_RET) {
 //				
                 if ($view_address_RET == 'RESIDENCE')
-                    $extra['FROM'] = ' LEFT OUTER JOIN student_address sam ON (ssm.STUDENT_ID=sam.STUDENT_ID AND sam.TYPE=\'Home Address\')  ' . $extra['FROM'];
+                    $extra['FROM'] = ' LEFT OUTER JOIN student_address sam ON (ssm.COLLEGE_ROLL_NO=sam.COLLEGE_ROLL_NO AND sam.TYPE=\'Home Address\')  ' . $extra['FROM'];
                 elseif ($view_address_RET == 'MAILING')
-                    $extra['FROM'] = ' LEFT OUTER JOIN student_address sam ON (ssm.STUDENT_ID=sam.STUDENT_ID AND sam.TYPE=\'Mail\') ' . $extra['FROM'];
+                    $extra['FROM'] = ' LEFT OUTER JOIN student_address sam ON (ssm.COLLEGE_ROLL_NO=sam.COLLEGE_ROLL_NO AND sam.TYPE=\'Mail\') ' . $extra['FROM'];
                 elseif ($view_address_RET == 'BUS_PICKUP')
-                    $extra['FROM'] = ' LEFT OUTER JOIN student_address sam ON (ssm.STUDENT_ID=sam.STUDENT_ID AND sam.BUS_PICKUP=\'Y\') ' . $extra['FROM'];
+                    $extra['FROM'] = ' LEFT OUTER JOIN student_address sam ON (ssm.COLLEGE_ROLL_NO=sam.COLLEGE_ROLL_NO AND sam.BUS_PICKUP=\'Y\') ' . $extra['FROM'];
                 else
-                    $extra['FROM'] = ' LEFT OUTER JOIN student_address sam ON (ssm.STUDENT_ID=sam.STUDENT_ID AND sam.BUS_DROPOFF=\'Y\') ' . $extra['FROM'];
+                    $extra['FROM'] = ' LEFT OUTER JOIN student_address sam ON (ssm.COLLEGE_ROLL_NO=sam.COLLEGE_ROLL_NO AND sam.BUS_DROPOFF=\'Y\') ' . $extra['FROM'];
 
                 $extra['columns_after'] += array('ADDRESS' => ucwords(strtolower(str_replace('_', ' ', $view_address_RET))) . ' Address', 'CITY' => 'City', 'STATE' => 'State', 'ZIPCODE' => 'Zipcode');
 
-                $select .= ',sam.ID as ADDRESS_ID,sam.STREET_ADDRESS_1 as ADDRESS,sam.CITY,sam.STATE,sam.ZIPCODE,s.PHONE,ssm.STUDENT_ID AS PARENTS';
+                $select .= ',sam.ID as ADDRESS_ID,sam.STREET_ADDRESS_1 as ADDRESS,sam.CITY,sam.STATE,sam.ZIPCODE,s.PHONE,ssm.COLLEGE_ROLL_NO AS PARENTS';
 
                 $extra['singular'] = 'Student Address';
                 $extra['plural'] = 'Student Addresses';
@@ -174,28 +174,28 @@ function GetStuList(& $extra) {
                 }
             }
             elseif ($_REQUEST['addr'] || $extra['addr']) {
-                $extra['FROM'] = ' LEFT OUTER JOIN student_address sam ON (ssm.STUDENT_ID=sam.STUDENT_ID AND sam.TYPE=\'Home Address\' ) ' . $extra['FROM'];
+                $extra['FROM'] = ' LEFT OUTER JOIN student_address sam ON (ssm.COLLEGE_ROLL_NO=sam.COLLEGE_ROLL_NO AND sam.TYPE=\'Home Address\' ) ' . $extra['FROM'];
                 $distinct = 'DISTINCT ';
             }
         }
 
         $extra['SELECT'] .= $select;
     } elseif ($_REQUEST['addr'] || $extra['addr']) {
-        $extra['FROM'] = ' LEFT OUTER JOIN student_address sam ON (ssm.STUDENT_ID=sam.STUDENT_ID AND sam.TYPE=\'Home Address\' ) ' . $extra['FROM'];
+        $extra['FROM'] = ' LEFT OUTER JOIN student_address sam ON (ssm.COLLEGE_ROLL_NO=sam.COLLEGE_ROLL_NO AND sam.TYPE=\'Home Address\' ) ' . $extra['FROM'];
         $distinct = 'DISTINCT ';
     }
     $stu_arr=array();
     if(($_REQUEST['include_inactive'] == 'Y' && $_REQUEST['_search_all_colleges'] == 'Y') )
-        $tot_stu=DBGet(DBQuery('SELECT STUDENT_ID , ID FROM student_enrollment WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID IN (' . GetUserColleges(UserID(), true) . ') ORDER BY START_DATE DESC'));
+        $tot_stu=DBGet(DBQuery('SELECT COLLEGE_ROLL_NO , ID FROM student_enrollment WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID IN (' . GetUserColleges(UserID(), true) . ') ORDER BY START_DATE DESC'));
    if(($_REQUEST['include_inactive'] == 'Y' && $_REQUEST['_search_all_colleges'] != 'Y') ) 
-$tot_stu=DBGet(DBQuery('SELECT STUDENT_ID , ID FROM student_enrollment WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' ORDER BY START_DATE DESC'));
+$tot_stu=DBGet(DBQuery('SELECT COLLEGE_ROLL_NO , ID FROM student_enrollment WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' ORDER BY START_DATE DESC'));
 $tot_stu_id='';
 if(count($tot_stu)>0)
 {
     foreach ($tot_stu as $key => $value) {
-        if(in_array($value['STUDENT_ID'],$stu_arr)==false)
+        if(in_array($value['COLLEGE_ROLL_NO'],$stu_arr)==false)
         {
-            $stu_arr['STUDENT_ID']=$value['STUDENT_ID'];
+            $stu_arr['COLLEGE_ROLL_NO']=$value['COLLEGE_ROLL_NO'];
             $tot_stu_id.=$value['ID'].',';
         }
     }
@@ -216,7 +216,7 @@ switch (User('PROFILE')) {
                     $sql .= 'CONCAT(s.LAST_NAME,\', \',coalesce(s.COMMON_NAME,s.FIRST_NAME)) AS FULL_NAME,';
                 else
                 $sql .= 'CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME,\' \',COALESCE(s.MIDDLE_NAME,\' \')) AS FULL_NAME,';
-                $sql .='s.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,s.PHONE,ssm.COLLEGE_ID,s.ALT_ID,ssm.COLLEGE_ID AS LIST_COLLEGE_ID,ssm.GRADE_ID' . $extra['SELECT'];
+                $sql .='s.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.COLLEGE_ROLL_NO,s.PHONE,ssm.COLLEGE_ID,s.ALT_ID,ssm.COLLEGE_ID AS LIST_COLLEGE_ID,ssm.GRADE_ID' . $extra['SELECT'];
 
                 if ($_REQUEST['include_inactive'] == 'Y')
 //                    $sql .= ',' . db_case(array('(ssm.SYEAR=\'' . UserSyear() . '\'  AND (ssm.START_DATE IS NOT NULL AND s.IS_DISABLE IS NULL AND \'' . date('Y-m-d', strtotime($extra['DATE'])) . '\'>=ssm.START_DATE AND ((\'' . date('Y-m-d', strtotime($extra['DATE'])) . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL) ) OR ssm.DROP_CODE=' . $get_rollover_id . ' ) )', 'true', "'<FONT color=green>Active</FONT>'", "'<FONT color=red>Inactive</FONT>'")) . ' AS ACTIVE ';
@@ -254,17 +254,17 @@ switch (User('PROFILE')) {
             if(stripos($extra['FROM'], "student_enrollment ssm") === false)
                 $sql .=',student_enrollment ssm ';
             if($_REQUEST['modname'] =='scheduling/PrintSchedules.php' && $_REQUEST['search_modfunc'] =='list')
-                $sql .=$extra['FROM'] .',schedule sr '. ' WHERE sr.STUDENT_ID=ssm.STUDENT_ID AND s.student_id=ssm.student_id';          
+                $sql .=$extra['FROM'] .',schedule sr '. ' WHERE sr.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND s.college_roll_no=ssm.college_roll_no';          
             else
-            $sql.=$extra['FROM'] . ' WHERE ssm.STUDENT_ID=s.STUDENT_ID  ';
+            $sql.=$extra['FROM'] . ' WHERE ssm.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO  ';
 //            if($_REQUEST['modname'] =='scheduling/PrintSchedules.php' && $_REQUEST['search_modfunc'] =='list')
-//            $sql.=$extra['FROM'] . ' WHERE sr.STUDENT_ID=ssm.STUDENT_ID ';
+//            $sql.=$extra['FROM'] . ' WHERE sr.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO ';
             if ($_REQUEST['modname'] != 'students/StudentReenroll.php') {
                 if ($_REQUEST['include_inactive'] == 'Y' || $_REQUEST['_search_all_colleges'] == 'Y')
                 {
                     if($tot_stu_id!=0)
                     $sql .= ' AND ssm.ID IN ('.$tot_stu_id.')';
-                $sql .= ' AND ssm.ID=(SELECT ID FROM student_enrollment WHERE STUDENT_ID=ssm.STUDENT_ID AND SYEAR =\'' . UserSyear() . '\' ORDER BY START_DATE DESC LIMIT 1)';
+                $sql .= ' AND ssm.ID=(SELECT ID FROM student_enrollment WHERE COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND SYEAR =\'' . UserSyear() . '\' ORDER BY START_DATE DESC LIMIT 1)';
                 }
                 if (!$_REQUEST['include_inactive'])
                     //$sql .= $_SESSION['inactive_stu_filter'] = ' AND ssm.SYEAR=\'' . UserSyear() . '\' AND ((ssm.START_DATE IS NOT NULL AND (\'' . date('Y-m-d', strtotime($extra['DATE'])) . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL) AND \'' . date('Y-m-d', strtotime($extra['DATE'])) . '\'>=ssm.START_DATE) OR ssm.DROP_CODE=' . $get_rollover_id . ' ) ';
@@ -292,7 +292,7 @@ switch (User('PROFILE')) {
                 }
             }
             if($_REQUEST['modname'] =='scheduling/PrintSchedules.php' && $_REQUEST['search_modfunc'] =='list')
-            $extra['GROUP']='s.STUDENT_ID';
+            $extra['GROUP']='s.COLLEGE_ROLL_NO';
             break;
 
         case 'teacher':
@@ -305,7 +305,7 @@ switch (User('PROFILE')) {
                     $sql .= 'CONCAT(s.LAST_NAME,\', \',coalesce(s.COMMON_NAME,s.FIRST_NAME)) AS FULL_NAME,';
                 else
                     $sql .= 'CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME,\' \',COALESCE(s.MIDDLE_NAME,\' \')) AS FULL_NAME,';
-                $sql .='s.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,s.PHONE,s.ALT_ID,ssm.COLLEGE_ID,ssm.GRADE_ID ' . $extra['SELECT'];
+                $sql .='s.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.COLLEGE_ROLL_NO,s.PHONE,s.ALT_ID,ssm.COLLEGE_ID,ssm.GRADE_ID ' . $extra['SELECT'];
 
                 if ($_REQUEST['include_inactive'] == 'Y') {
                     
@@ -348,7 +348,7 @@ switch (User('PROFILE')) {
                 $sql .= ',student_medical_visits smv ';
             }
             $sql.=' ,student_enrollment ssm ';
-            $sql.=$extra['FROM'] . ' WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.STUDENT_ID=ss.STUDENT_ID
+            $sql.=$extra['FROM'] . ' WHERE ssm.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ssm.COLLEGE_ROLL_NO=ss.COLLEGE_ROLL_NO
 					AND ssm.COLLEGE_ID=\'' . UserCollege() . '\' AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR
 					AND (ss.MARKING_PERIOD_ID IN (' . GetAllMP_Mod('', $queryMP) . ')   OR (ss.START_DATE<=\'' . date('Y-m-d') . '\'   AND (ss.END_DATE>=\'' . date('Y-m-d') . '\'  OR ss.END_DATE IS NULL))  OR (ss.COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\' AND ss.MARKING_PERIOD_ID IS NULL))
 					AND (cp.TEACHER_ID=\'' . User('STAFF_ID') . '\' OR cp.SECONDARY_TEACHER_ID=\'' . User('STAFF_ID') . '\') AND cp.COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\'
@@ -357,8 +357,8 @@ switch (User('PROFILE')) {
             if ($_REQUEST['include_inactive'] == 'Y' && $_REQUEST['_search_all_colleges'] != 'Y') {
                if($tot_stu_id!=0)
                 $sql .= ' AND ssm.ID IN ('.$tot_stu_id.')';
-                $sql .= ' AND ssm.ID=(SELECT ID FROM student_enrollment WHERE STUDENT_ID=ssm.STUDENT_ID AND SYEAR =\'' . UserSyear() . '\' ORDER BY START_DATE DESC LIMIT 1)';
-                $sql .= ' AND ss.START_DATE=(SELECT START_DATE FROM schedule WHERE STUDENT_ID=ssm.STUDENT_ID AND SYEAR=ssm.SYEAR AND (MARKING_PERIOD_ID IN (' . GetAllMP('', $queryMP) . ') OR (COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\' AND MARKING_PERIOD_ID IS NULL))  AND COURSE_ID=cp.COURSE_ID AND COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID ORDER BY START_DATE DESC LIMIT 1)';
+                $sql .= ' AND ssm.ID=(SELECT ID FROM student_enrollment WHERE COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND SYEAR =\'' . UserSyear() . '\' ORDER BY START_DATE DESC LIMIT 1)';
+                $sql .= ' AND ss.START_DATE=(SELECT START_DATE FROM schedule WHERE COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND SYEAR=ssm.SYEAR AND (MARKING_PERIOD_ID IN (' . GetAllMP('', $queryMP) . ') OR (COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\' AND MARKING_PERIOD_ID IS NULL))  AND COURSE_ID=cp.COURSE_ID AND COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID ORDER BY START_DATE DESC LIMIT 1)';
             } else {
                 if ($_REQUEST['modname']=='users/TeacherPrograms.php?include=grades/InputFinalGrades.php' || $_REQUEST['modname'] == 'grades/InputFinalGrades.php' || $_REQUEST['modname'] =='scheduling/PrintClassLists.php' || $_REQUEST['modname'] =='scheduling/PrintSchedules.php' || $_REQUEST['modname'] =='grades/Grades.php' || $_REQUEST['modname'] =='users/TeacherPrograms.php?include=grades/Grades.php')
                 $sql .= $_SESSION['inactive_stu_filter'] = ' AND (ssm.START_DATE IS NOT NULL AND (\'' . $extra['DATE'] . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL OR ssm.DROP_CODE=' . $get_rollover_id . '))';
@@ -374,7 +374,7 @@ switch (User('PROFILE')) {
             {
                     if($tot_stu_id!=0)
                     $sql .= ' AND ssm.ID IN ('.$tot_stu_id.')';
-                     $sql .= ' AND ssm.ID=(SELECT ID FROM student_enrollment WHERE STUDENT_ID=ssm.STUDENT_ID AND SYEAR =\'' . UserSyear() . '\' ORDER BY START_DATE DESC LIMIT 1)';
+                     $sql .= ' AND ssm.ID=(SELECT ID FROM student_enrollment WHERE COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND SYEAR =\'' . UserSyear() . '\' ORDER BY START_DATE DESC LIMIT 1)';
             }
             if (!$extra['SELECT_ONLY'] && $_REQUEST['include_inactive'] == 'Y') {
                 $extra['columns_after']['ACTIVE'] = 'College Status';
@@ -393,15 +393,15 @@ switch (User('PROFILE')) {
                     $sql .= 'CONCAT(s.LAST_NAME,\', \',coalesce(s.COMMON_NAME,s.FIRST_NAME)) AS FULL_NAME,';
                 else
                     $sql .= 'CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME,\' \',COALESCE(s.MIDDLE_NAME,\' \')) AS FULL_NAME,';
-                $sql .='s.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,s.ALT_ID,ssm.COLLEGE_ID,ssm.GRADE_ID ' . $extra['SELECT'];
+                $sql .='s.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.COLLEGE_ROLL_NO,s.ALT_ID,ssm.COLLEGE_ID,ssm.GRADE_ID ' . $extra['SELECT'];
             }
 //if($_REQUEST['modname']=='grades/GPARankList.php' || $_REQUEST['modname']=='grades/FinalGrades.php' || $_REQUEST['modname']=='grades/ReportCards.php' || $_REQUEST['modname']=='grades/Transcripts.php' || $_REQUEST['modname']=='eligibility/StudentList.php' || $_REQUEST['modname']=='grades/ParentProgressReports.php')
 if($_REQUEST['modname']=='grades/GPARankList.php')
             $sql .= ' FROM students s,student_enrollment ssm ' . $extra['FROM'] . '
-					WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.COLLEGE_ID=\'' . UserCollege() . '\' AND (\'' . DBDate() . '\' BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND \'' . DBDate() . '\'>=ssm.START_DATE))';
+					WHERE ssm.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.COLLEGE_ID=\'' . UserCollege() . '\' AND (\'' . DBDate() . '\' BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND \'' . DBDate() . '\'>=ssm.START_DATE))';
 else
     $sql .= ' FROM students s,student_enrollment ssm ' . $extra['FROM'] . '
-					WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.COLLEGE_ID=\'' . UserCollege() . '\' AND (\'' . DBDate() . '\' BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND \'' . DBDate() . '\'>=ssm.START_DATE)) AND ssm.STUDENT_ID' . ($extra['ASSOCIATED'] ? ' IN (SELECT STUDENT_ID FROM students_join_people WHERE PERSON_ID=\'' . $extra['ASSOCIATED'] . '\')' : '=\'' . UserStudentID() . '\'');
+					WHERE ssm.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.COLLEGE_ID=\'' . UserCollege() . '\' AND (\'' . DBDate() . '\' BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND \'' . DBDate() . '\'>=ssm.START_DATE)) AND ssm.COLLEGE_ROLL_NO' . ($extra['ASSOCIATED'] ? ' IN (SELECT COLLEGE_ROLL_NO FROM students_join_people WHERE PERSON_ID=\'' . $extra['ASSOCIATED'] . '\')' : '=\'' . UserStudentID() . '\'');
             break;
         default:
             exit('Error');
@@ -436,9 +436,9 @@ else
         $sql_home_address[]='bus_dropoff=\''. singleQuoteReplace("","",$_REQUEST['home_bus_droppoff']).'\'';
     }
     if(count($sql_home_address)>0){
-        $ret_students=DBGet(DBQuery('SELECT GROUP_CONCAT(STUDENT_ID) as STUDENT_IDS FROM student_address WHERE TYPE=\'Home Address\' AND '.implode(' AND ',$sql_home_address)));
-        if($ret_students[1]['STUDENT_IDS']!='')
-       $student_contact_ids.=$ret_students[1]['STUDENT_IDS'];
+        $ret_students=DBGet(DBQuery('SELECT GROUP_CONCAT(COLLEGE_ROLL_NO) as COLLEGE_ROLL_NOS FROM student_address WHERE TYPE=\'Home Address\' AND '.implode(' AND ',$sql_home_address)));
+        if($ret_students[1]['COLLEGE_ROLL_NOS']!='')
+       $student_contact_ids.=$ret_students[1]['COLLEGE_ROLL_NOS'];
         else
           $student_contact_ids.=0;  
         
@@ -463,9 +463,9 @@ else
         $sql_mail_address[]='state=\''. singleQuoteReplace("","",$_REQUEST['mail_state']).'\'';
     }
     if(count($sql_mail_address)>0){
-        $ret_students=DBGet(DBQuery('SELECT GROUP_CONCAT(STUDENT_ID) as STUDENT_IDS FROM student_address WHERE TYPE=\'Mail\' AND '.implode(' AND ',$sql_mail_address)));
-        if($ret_students[1]['STUDENT_IDS']!='')
-       $student_contact_ids.=$ret_students[1]['STUDENT_IDS'];
+        $ret_students=DBGet(DBQuery('SELECT GROUP_CONCAT(COLLEGE_ROLL_NO) as COLLEGE_ROLL_NOS FROM student_address WHERE TYPE=\'Mail\' AND '.implode(' AND ',$sql_mail_address)));
+        if($ret_students[1]['COLLEGE_ROLL_NOS']!='')
+       $student_contact_ids.=$ret_students[1]['COLLEGE_ROLL_NOS'];
          else
           $student_contact_ids.=0;
         
@@ -495,9 +495,9 @@ else
         $sql_primary[]='email=\''. singleQuoteReplace("","",$_REQUEST['primary_email']).'\'';
     }
     if(count($sql_primary)>0){
-        $ret_students=DBGet(DBQuery('SELECT GROUP_CONCAT(sjp.STUDENT_ID) as STUDENT_IDS FROM students_join_people sjp,people p WHERE sjp.PERSON_ID=p.STAFF_ID AND sjp.EMERGENCY_TYPE=\'Primary\' AND '.implode(' AND ',$sql_primary)));
-        if($ret_students[1]['STUDENT_IDS']!='')
-       $student_contact_ids.=$ret_students[1]['STUDENT_IDS'];
+        $ret_students=DBGet(DBQuery('SELECT GROUP_CONCAT(sjp.COLLEGE_ROLL_NO) as COLLEGE_ROLL_NOS FROM students_join_people sjp,people p WHERE sjp.PERSON_ID=p.STAFF_ID AND sjp.EMERGENCY_TYPE=\'Primary\' AND '.implode(' AND ',$sql_primary)));
+        if($ret_students[1]['COLLEGE_ROLL_NOS']!='')
+       $student_contact_ids.=$ret_students[1]['COLLEGE_ROLL_NOS'];
          else
           $student_contact_ids.=0;
         
@@ -526,15 +526,15 @@ else
         $sql_secondary[]='email=\''. singleQuoteReplace("","",$_REQUEST['secondary_email']).'\'';
     }
     if(count($sql_secondary)>0){
-        $ret_students=DBGet(DBQuery('SELECT GROUP_CONCAT(sjp.STUDENT_ID) as STUDENT_IDS FROM students_join_people sjp,people p WHERE sjp.PERSON_ID=p.STAFF_ID AND sjp.EMERGENCY_TYPE=\'Secondary\' AND '.implode(' AND ',$sql_secondary)));
-        if($ret_students[1]['STUDENT_IDS']!='')
-       $student_contact_ids.=$ret_students[1]['STUDENT_IDS'];
+        $ret_students=DBGet(DBQuery('SELECT GROUP_CONCAT(sjp.COLLEGE_ROLL_NO) as COLLEGE_ROLL_NOS FROM students_join_people sjp,people p WHERE sjp.PERSON_ID=p.STAFF_ID AND sjp.EMERGENCY_TYPE=\'Secondary\' AND '.implode(' AND ',$sql_secondary)));
+        if($ret_students[1]['COLLEGE_ROLL_NOS']!='')
+       $student_contact_ids.=$ret_students[1]['COLLEGE_ROLL_NOS'];
          else
           $student_contact_ids.=0;
         
     }
     if($student_contact_ids!=''){
-       $sql .=' AND s.STUDENT_ID IN ('.$student_contact_ids.')';
+       $sql .=' AND s.COLLEGE_ROLL_NO IN ('.$student_contact_ids.')';
     }
         
     if ($expanded_view == true) {
@@ -593,11 +593,11 @@ else
     return $return;
 }
 
-function makeContactInfo($student_id, $column) {
+function makeContactInfo($college_roll_no, $column) {
     global $THIS_RET, $contacts_RET;
 
-    if (count($contacts_RET[$THIS_RET['STUDENT_ID']])) {
-        foreach ($contacts_RET[$THIS_RET['STUDENT_ID']] as $person) {
+    if (count($contacts_RET[$THIS_RET['COLLEGE_ROLL_NO']])) {
+        foreach ($contacts_RET[$THIS_RET['COLLEGE_ROLL_NO']] as $person) {
             if ($person[1]['FIRST_NAME'] || $person[1]['LAST_NAME'])
                 $tipmessage .= '' . $person[1]['STUDENT_RELATION'] . ': ' . $person[1]['FIRST_NAME'] . ' ' . $person[1]['LAST_NAME'] . ' | ';
             $tipmessage .= '';
@@ -631,10 +631,10 @@ function makePhone($phone, $column = '') {
     return $return;
 }
 
-function makeParents($student_id, $column = '') {
+function makeParents($college_roll_no, $column = '') {
     global $THIS_RET, $view_other_RET, $_openSIS;
 
-    if ($THIS_RET['PARENTS'] == $student_id) {
+    if ($THIS_RET['PARENTS'] == $college_roll_no) {
         if (!$THIS_RET['ADDRESS_ID'])
             $THIS_RET['ADDRESS_ID'] = 0;
 
@@ -647,7 +647,7 @@ function makeParents($student_id, $column = '') {
         else
             $constraint = 'AND p.CUSTODY=\'Y\'';
 
-        $people_RET = DBGet(DBQuery('SELECT p.STAFF_ID as PERSON_ID,p.FIRST_NAME,p.LAST_NAME,sa.ID AS ADDRESS_ID,p.CUSTODY,sjp.IS_EMERGENCY as EMERGENCY FROM students_join_people sjp,people p,student_address sa WHERE sjp.PERSON_ID=p.STAFF_ID AND sjp.STUDENT_ID=\'' . $student_id . '\' AND p.STAFF_ID=sa.PEOPLE_ID AND sa.STUDENT_ID=sjp.STUDENT_ID ' . $constraint . ' ORDER BY p.LAST_NAME,p.FIRST_NAME'));
+        $people_RET = DBGet(DBQuery('SELECT p.STAFF_ID as PERSON_ID,p.FIRST_NAME,p.LAST_NAME,sa.ID AS ADDRESS_ID,p.CUSTODY,sjp.IS_EMERGENCY as EMERGENCY FROM students_join_people sjp,people p,student_address sa WHERE sjp.PERSON_ID=p.STAFF_ID AND sjp.COLLEGE_ROLL_NO=\'' . $college_roll_no . '\' AND p.STAFF_ID=sa.PEOPLE_ID AND sa.COLLEGE_ROLL_NO=sjp.COLLEGE_ROLL_NO ' . $constraint . ' ORDER BY p.LAST_NAME,p.FIRST_NAME'));
         if (count($people_RET)) {
             foreach ($people_RET as $person) {
 
@@ -675,15 +675,15 @@ function appendSQL($sql, & $extra) {
     global $_openSIS;
 
     if ($_REQUEST['stuid']) {
-        $sql .= ' AND ssm.STUDENT_ID = \'' . singleQuoteReplace("'", "\'", $_REQUEST[stuid]) . '\' ';
+        $sql .= ' AND ssm.COLLEGE_ROLL_NO = \'' . singleQuoteReplace("'", "\'", $_REQUEST[stuid]) . '\' ';
         if (!$extra['NoSearchTerms'])
-            $_openSIS['SearchTerms'] .= '<font color=gray><b>Student ID: </b></font>' . $_REQUEST['stuid'] . '<BR>';
+            $_openSIS['SearchTerms'] .= '<font color=gray><b>College Roll No: </b></font>' . $_REQUEST['stuid'] . '<BR>';
     }
     if ($_REQUEST['altid']) {
 
         $sql .= ' AND LOWER(s.ALT_ID) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['altid']))) . '%\' ';
         if (!$extra['NoSearchTerms'])
-            $_openSIS['SearchTerms'] .= '<font color=gray><b>Student ID: </b></font>' . $_REQUEST['stuid'] . '<BR>';
+            $_openSIS['SearchTerms'] .= '<font color=gray><b>College Roll No: </b></font>' . $_REQUEST['stuid'] . '<BR>';
     }
     if ($_REQUEST['last']) {
         $sql .= ' AND LOWER(s.LAST_NAME) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['last']))) . '%\' ';
@@ -744,12 +744,12 @@ function appendSQL($sql, & $extra) {
  
          ////////////////////////extra search field end///////////////////////////
     if ($_REQUEST['mp_comment']) {
-        $sql .= ' AND LOWER(smc.COMMENT) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['mp_comment'])) . '%\' AND s.STUDENT_ID=smc.STUDENT_ID ';
+        $sql .= ' AND LOWER(smc.COMMENT) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['mp_comment'])) . '%\' AND s.COLLEGE_ROLL_NO=smc.COLLEGE_ROLL_NO ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Comments starts with: </b></font>' . $_REQUEST['mp_comment'] . '<BR>';
     }
     if ($_REQUEST['goal_title']) {
-        $sql .= ' AND LOWER(g.GOAL_TITLE) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['goal_title'])) . '%\' AND s.STUDENT_ID=g.STUDENT_ID ';
+        $sql .= ' AND LOWER(g.GOAL_TITLE) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['goal_title'])) . '%\' AND s.COLLEGE_ROLL_NO=g.COLLEGE_ROLL_NO ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>GoalInc Title starts with: </b></font>' . $_REQUEST['goal_title'] . '<BR>';
     }
@@ -759,55 +759,55 @@ function appendSQL($sql, & $extra) {
             
                                           
     if ($_REQUEST['username']) {
-        $sql .= ' AND LOWER(la.username) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['username']))) . '%\' and la.user_id=s.student_id ';
+        $sql .= ' AND LOWER(la.username) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['username']))) . '%\' and la.user_id=s.college_roll_no ';
         }
             //////////////extra field table end2////////////////////
     if ($_REQUEST['goal_description']) {
-        $sql .= ' AND LOWER(g.GOAL_DESCRIPTION) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['goal_description'])) . '%\' AND s.STUDENT_ID=g.STUDENT_ID ';
+        $sql .= ' AND LOWER(g.GOAL_DESCRIPTION) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['goal_description'])) . '%\' AND s.COLLEGE_ROLL_NO=g.COLLEGE_ROLL_NO ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>GoalInc Description starts with: </b></font>' . $_REQUEST['goal_description'] . '<BR>';
     }
     if ($_REQUEST['progress_name']) {
-        $sql .= ' AND LOWER(p.PROGRESS_NAME) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['progress_name'])) . '%\' AND s.STUDENT_ID=p.STUDENT_ID ';
+        $sql .= ' AND LOWER(p.PROGRESS_NAME) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['progress_name'])) . '%\' AND s.COLLEGE_ROLL_NO=p.COLLEGE_ROLL_NO ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Progress Period Name starts with: </b></font>' . $_REQUEST['progress_name'] . '<BR>';
     }
     if ($_REQUEST['progress_description']) {
-        $sql .= ' AND LOWER(p.PROGRESS_DESCRIPTION) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['progress_description'])) . '%\' AND s.STUDENT_ID=p.STUDENT_ID ';
+        $sql .= ' AND LOWER(p.PROGRESS_DESCRIPTION) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['progress_description'])) . '%\' AND s.COLLEGE_ROLL_NO=p.COLLEGE_ROLL_NO ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Progress Assessment starts with: </b></font>' . $_REQUEST['progress_description'] . '<BR>';
     }
     if ($_REQUEST['doctors_note_comments']) {
-        $sql .= ' AND LOWER(smn.DOCTORS_NOTE_COMMENTS) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['doctors_note_comments'])) . '%\' AND s.STUDENT_ID=smn.STUDENT_ID ';
+        $sql .= ' AND LOWER(smn.DOCTORS_NOTE_COMMENTS) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['doctors_note_comments'])) . '%\' AND s.COLLEGE_ROLL_NO=smn.COLLEGE_ROLL_NO ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Doctor\'s Note starts with: </b></font>' . $_REQUEST['doctors_note_comments'] . '<BR>';
     }
     if ($_REQUEST['type']) {
-        $sql .= ' AND LOWER(sm.TYPE) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['type'])) . '%\' AND s.STUDENT_ID=sm.STUDENT_ID ';
+        $sql .= ' AND LOWER(sm.TYPE) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['type'])) . '%\' AND s.COLLEGE_ROLL_NO=sm.COLLEGE_ROLL_NO ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Type starts with: </b></font>' . $_REQUEST['type'] . '<BR>';
     }
     if ($_REQUEST['imm_comments']) {
-        $sql .= ' AND LOWER(sm.COMMENTS) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['imm_comments'])) . '%\' AND s.STUDENT_ID=sm.STUDENT_ID ';
+        $sql .= ' AND LOWER(sm.COMMENTS) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['imm_comments'])) . '%\' AND s.COLLEGE_ROLL_NO=sm.COLLEGE_ROLL_NO ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Comments starts with: </b></font>' . $_REQUEST['imm_comments'] . '<BR>';
     }
     if ($_REQUEST['imm_day'] && $_REQUEST['imm_month'] && $_REQUEST['imm_year']) {
         $imm_date = $_REQUEST['imm_year'] . '-' . $_REQUEST['imm_month'] . '-' . $_REQUEST['imm_day'];
-        $sql .= ' AND sm.MEDICAL_DATE =\'' . date('Y-m-d', strtotime($imm_date)) . '\' AND s.STUDENT_ID=sm.STUDENT_ID ';
+        $sql .= ' AND sm.MEDICAL_DATE =\'' . date('Y-m-d', strtotime($imm_date)) . '\' AND s.COLLEGE_ROLL_NO=sm.COLLEGE_ROLL_NO ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Immunization Date: </b></font>' . $imm_date . '<BR>';
     }elseif ($_REQUEST['imm_day'] || $_REQUEST['imm_month'] || $_REQUEST['imm_year']) {
         if ($_REQUEST['imm_day']) {
-            $sql .= ' AND SUBSTR(sm.MEDICAL_DATE,9,2) =\'' . $_REQUEST['imm_day'] . '\' AND s.STUDENT_ID=sm.STUDENT_ID ';
+            $sql .= ' AND SUBSTR(sm.MEDICAL_DATE,9,2) =\'' . $_REQUEST['imm_day'] . '\' AND s.COLLEGE_ROLL_NO=sm.COLLEGE_ROLL_NO ';
             $imm_date.=" Day :" . $_REQUEST['imm_day'];
         }
         if ($_REQUEST['imm_month']) {
-            $sql .= ' AND SUBSTR(sm.MEDICAL_DATE,6,2) =\'' . $_REQUEST['imm_month'] . '\' AND s.STUDENT_ID=sm.STUDENT_ID ';
+            $sql .= ' AND SUBSTR(sm.MEDICAL_DATE,6,2) =\'' . $_REQUEST['imm_month'] . '\' AND s.COLLEGE_ROLL_NO=sm.COLLEGE_ROLL_NO ';
             $imm_date.=" Month :" . $_REQUEST['imm_month'];
         }
         if ($_REQUEST['imm_year']) {
-            $sql .= ' AND SUBSTR(sm.MEDICAL_DATE,1,4) =\'' . $_REQUEST['imm_year'] . '\' AND s.STUDENT_ID=sm.STUDENT_ID ';
+            $sql .= ' AND SUBSTR(sm.MEDICAL_DATE,1,4) =\'' . $_REQUEST['imm_year'] . '\' AND s.COLLEGE_ROLL_NO=sm.COLLEGE_ROLL_NO ';
             $imm_date.=" Year :" . $_REQUEST['imm_year'];
         }
         if (!$extra['NoSearchTerms'])
@@ -821,20 +821,20 @@ function appendSQL($sql, & $extra) {
 ////        echo strtotime($med_date);
 //        echo date('Y-m-d', strtotime($med_date));
 //        echo '<br>';
-        $sql .= ' AND smn.DOCTORS_NOTE_DATE =\'' . date('Y-m-d', strtotime($med_date)) . '\' AND s.STUDENT_ID=smn.STUDENT_ID ';
+        $sql .= ' AND smn.DOCTORS_NOTE_DATE =\'' . date('Y-m-d', strtotime($med_date)) . '\' AND s.COLLEGE_ROLL_NO=smn.COLLEGE_ROLL_NO ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Medical Date: </b></font>' . $med_date . '<BR>';
     }elseif ($_REQUEST['med_day'] || $_REQUEST['med_month'] || $_REQUEST['med_year']) {
         if ($_REQUEST['med_day']) {
-            $sql .= ' AND SUBSTR(smn.DOCTORS_NOTE_DATE,9,2) =\'' . $_REQUEST['med_day'] . '\' AND s.STUDENT_ID=smn.STUDENT_ID ';
+            $sql .= ' AND SUBSTR(smn.DOCTORS_NOTE_DATE,9,2) =\'' . $_REQUEST['med_day'] . '\' AND s.COLLEGE_ROLL_NO=smn.COLLEGE_ROLL_NO ';
             $med_date.=" Day :" . $_REQUEST['med_day'];
         }
         if ($_REQUEST['med_month']) {
-            $sql .= ' AND SUBSTR(smn.DOCTORS_NOTE_DATE,6,2) =\'' . $_REQUEST['med_month'] . '\' AND s.STUDENT_ID=smn.STUDENT_ID ';
+            $sql .= ' AND SUBSTR(smn.DOCTORS_NOTE_DATE,6,2) =\'' . $_REQUEST['med_month'] . '\' AND s.COLLEGE_ROLL_NO=smn.COLLEGE_ROLL_NO ';
             $med_date.=" Month :" . $_REQUEST['med_month'];
         }
         if ($_REQUEST['med_year']) {
-            $sql .= ' AND SUBSTR(smn.DOCTORS_NOTE_DATE,1,4) =\'' . $_REQUEST['med_year'] . '\' AND s.STUDENT_ID=smn.STUDENT_ID ';
+            $sql .= ' AND SUBSTR(smn.DOCTORS_NOTE_DATE,1,4) =\'' . $_REQUEST['med_year'] . '\' AND s.COLLEGE_ROLL_NO=smn.COLLEGE_ROLL_NO ';
             $med_date.=" Year :" . $_REQUEST['med_year'];
         }
         if (!$extra['NoSearchTerms'])
@@ -842,20 +842,20 @@ function appendSQL($sql, & $extra) {
     }
     if ($_REQUEST['ma_day'] && $_REQUEST['ma_month'] && $_REQUEST['ma_year']) {
         $ma_date = $_REQUEST['ma_year'] . '-' . $_REQUEST['ma_month'] . '-' . $_REQUEST['ma_day'];
-        $sql .= ' AND sma.ALERT_DATE =\'' . date('Y-m-d', strtotime($ma_date)) . '\' AND s.STUDENT_ID=sma.STUDENT_ID ';
+        $sql .= ' AND sma.ALERT_DATE =\'' . date('Y-m-d', strtotime($ma_date)) . '\' AND s.COLLEGE_ROLL_NO=sma.COLLEGE_ROLL_NO ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Medical Alert Date: </b></font>' . $ma_date . '<BR>';
     }elseif ($_REQUEST['ma_day'] || $_REQUEST['ma_month'] || $_REQUEST['ma_year']) {
         if ($_REQUEST['ma_day']) {
-            $sql .= ' AND SUBSTR(sma.ALERT_DATE,9,2) =\'' . $_REQUEST['ma_day'] . '\' AND s.STUDENT_ID=sma.STUDENT_ID ';
+            $sql .= ' AND SUBSTR(sma.ALERT_DATE,9,2) =\'' . $_REQUEST['ma_day'] . '\' AND s.COLLEGE_ROLL_NO=sma.COLLEGE_ROLL_NO ';
             $ma_date.=" Day :" . $_REQUEST['ma_day'];
         }
         if ($_REQUEST['ma_month']) {
-            $sql .= ' AND SUBSTR(sma.ALERT_DATE,6,2) =\'' . $_REQUEST['ma_month'] . '\' AND s.STUDENT_ID=sma.STUDENT_ID ';
+            $sql .= ' AND SUBSTR(sma.ALERT_DATE,6,2) =\'' . $_REQUEST['ma_month'] . '\' AND s.COLLEGE_ROLL_NO=sma.COLLEGE_ROLL_NO ';
             $ma_date.=" Month :" . $_REQUEST['ma_month'];
         }
         if ($_REQUEST['ma_year']) {
-            $sql .= ' AND SUBSTR(sma.ALERT_DATE,1,4) =\'' . $_REQUEST['ma_year'] . '\' AND s.STUDENT_ID=sma.STUDENT_ID ';
+            $sql .= ' AND SUBSTR(sma.ALERT_DATE,1,4) =\'' . $_REQUEST['ma_year'] . '\' AND s.COLLEGE_ROLL_NO=sma.COLLEGE_ROLL_NO ';
             $ma_date.=" Year :" . $_REQUEST['ma_year'];
         }
         if (!$extra['NoSearchTerms'])
@@ -863,20 +863,20 @@ function appendSQL($sql, & $extra) {
     }
     if ($_REQUEST['nv_day'] && $_REQUEST['nv_month'] && $_REQUEST['nv_year']) {
         $nv_date = $_REQUEST['nv_year'] . '-' . $_REQUEST['nv_month'] . '-' . $_REQUEST['nv_day'];
-        $sql .= ' AND smv.COLLEGE_DATE =\'' . date('Y-m-d', strtotime($nv_date)) . '\' AND s.STUDENT_ID=smv.STUDENT_ID ';
+        $sql .= ' AND smv.COLLEGE_DATE =\'' . date('Y-m-d', strtotime($nv_date)) . '\' AND s.COLLEGE_ROLL_NO=smv.COLLEGE_ROLL_NO ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Nurse Visit Date: </b></font>' . $nv_date . '<BR>';
     }elseif ($_REQUEST['nv_day'] || $_REQUEST['nv_month'] || $_REQUEST['nv_year']) {
         if ($_REQUEST['nv_day']) {
-            $sql .= ' AND SUBSTR(smv.COLLEGE_DATE,9,2) =\'' . $_REQUEST['nv_day'] . '\' AND s.STUDENT_ID=smv.STUDENT_ID ';
+            $sql .= ' AND SUBSTR(smv.COLLEGE_DATE,9,2) =\'' . $_REQUEST['nv_day'] . '\' AND s.COLLEGE_ROLL_NO=smv.COLLEGE_ROLL_NO ';
             $nv_date.=" Day :" . $_REQUEST['nv_day'];
         }
         if ($_REQUEST['nv_month']) {
-            $sql .= ' AND SUBSTR(smv.COLLEGE_DATE,6,2) =\'' . $_REQUEST['nv_month'] . '\' AND s.STUDENT_ID=smv.STUDENT_ID ';
+            $sql .= ' AND SUBSTR(smv.COLLEGE_DATE,6,2) =\'' . $_REQUEST['nv_month'] . '\' AND s.COLLEGE_ROLL_NO=smv.COLLEGE_ROLL_NO ';
             $nv_date.=" Month :" . $_REQUEST['nv_month'];
         }
         if ($_REQUEST['nv_year']) {
-            $sql .= ' AND SUBSTR(smv.COLLEGE_DATE,1,4) =\'' . $_REQUEST['nv_year'] . '\' AND s.STUDENT_ID=smv.STUDENT_ID ';
+            $sql .= ' AND SUBSTR(smv.COLLEGE_DATE,1,4) =\'' . $_REQUEST['nv_year'] . '\' AND s.COLLEGE_ROLL_NO=smv.COLLEGE_ROLL_NO ';
             $nv_date.=" Year :" . $_REQUEST['nv_year'];
         }
         if (!$extra['NoSearchTerms'])
@@ -885,22 +885,22 @@ function appendSQL($sql, & $extra) {
 
 
     if ($_REQUEST['med_alrt_title']) {
-        $sql .= ' AND LOWER(sma.TITLE) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['med_alrt_title'])) . '%\' AND s.STUDENT_ID=sma.STUDENT_ID ';
+        $sql .= ' AND LOWER(sma.TITLE) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['med_alrt_title'])) . '%\' AND s.COLLEGE_ROLL_NO=sma.COLLEGE_ROLL_NO ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Alert starts with: </b></font>' . $_REQUEST['med_alrt_title'] . '<BR>';
     }
     if ($_REQUEST['reason']) {
-        $sql .= ' AND LOWER(smv.REASON) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['reason'])) . '%\' AND s.STUDENT_ID=smv.STUDENT_ID ';
+        $sql .= ' AND LOWER(smv.REASON) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['reason'])) . '%\' AND s.COLLEGE_ROLL_NO=smv.COLLEGE_ROLL_NO ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Reason starts with: </b></font>' . $_REQUEST['reason'] . '<BR>';
     }
     if ($_REQUEST['result']) {
-        $sql .= ' AND LOWER(smv.RESULT) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['result'])) . '%\' AND s.STUDENT_ID=smv.STUDENT_ID ';
+        $sql .= ' AND LOWER(smv.RESULT) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['result'])) . '%\' AND s.COLLEGE_ROLL_NO=smv.COLLEGE_ROLL_NO ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Result starts with: </b></font>' . $_REQUEST['result'] . '<BR>';
     }
     if ($_REQUEST['med_vist_comments']) {
-        $sql .= ' AND LOWER(smv.COMMENTS) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['med_vist_comments'])) . '%\' AND s.STUDENT_ID=smv.STUDENT_ID ';
+        $sql .= ' AND LOWER(smv.COMMENTS) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['med_vist_comments'])) . '%\' AND s.COLLEGE_ROLL_NO=smv.COLLEGE_ROLL_NO ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Nurse Visit Comments starts with: </b></font>' . $_REQUEST['med_vist_comments'] . '<BR>';
     }
@@ -1027,7 +1027,7 @@ function GetStuList_Absence_Summary(& $extra) {
 
 
             $select = ',s.PHONE,s.GENDER,s.ETHNICITY,a.STREET_ADDRESS_1 as ADDRESS,a.CITY,a.STATE,a.ZIPCODE ';
-            $extra['FROM'] = '  LEFT OUTER JOIN student_address a ON (ssm.STUDENT_ID=a.STUDENT_ID AND a.TYPE=\'Home Address\') ' . $extra['FROM'];
+            $extra['FROM'] = '  LEFT OUTER JOIN student_address a ON (ssm.COLLEGE_ROLL_NO=a.COLLEGE_ROLL_NO AND a.TYPE=\'Home Address\') ' . $extra['FROM'];
             $functions['CONTACT_INFO'] = 'makeContactInfo';
             // if gender is converted to codeds type
 
@@ -1035,11 +1035,11 @@ function GetStuList_Absence_Summary(& $extra) {
             $extra['plural'] = 'Student Addresses';
 
             $extra2['NoSearchTerms'] = true;
-            $extra2['SELECT_ONLY'] = 'ssm.STUDENT_ID,p.STAFF_ID AS PERSON_ID,p.FIRST_NAME,p.LAST_NAME,sjp.RELATIONSHIP AS STUDENT_RELATION,p.TITLE,s.PHONE,a.ID AS ADDRESS_ID ';
-            $extra2['FROM'] .= ',student_address a LEFT OUTER JOIN students_join_people sjp ON (a.STUDENT_ID=sjp.STUDENT_ID  AND (sjp.IS_EMERGENCY=\'Y\')) LEFT OUTER JOIN people p ON (p.CUSTODY=\'Y\' OR p.STAFF_ID=sjp.PERSON_ID) ';
-            $extra2['WHERE'] .= ' AND a.STUDENT_ID=sjp.STUDENT_ID AND sjp.STUDENT_ID=ssm.STUDENT_ID ';
+            $extra2['SELECT_ONLY'] = 'ssm.COLLEGE_ROLL_NO,p.STAFF_ID AS PERSON_ID,p.FIRST_NAME,p.LAST_NAME,sjp.RELATIONSHIP AS STUDENT_RELATION,p.TITLE,s.PHONE,a.ID AS ADDRESS_ID ';
+            $extra2['FROM'] .= ',student_address a LEFT OUTER JOIN students_join_people sjp ON (a.COLLEGE_ROLL_NO=sjp.COLLEGE_ROLL_NO  AND (sjp.IS_EMERGENCY=\'Y\')) LEFT OUTER JOIN people p ON (p.CUSTODY=\'Y\' OR p.STAFF_ID=sjp.PERSON_ID) ';
+            $extra2['WHERE'] .= ' AND a.COLLEGE_ROLL_NO=sjp.COLLEGE_ROLL_NO AND sjp.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO ';
             $extra2['ORDER_BY'] .= 'COALESCE(p.CUSTODY,\'N\') DESC';
-            $extra2['group'] = array('STUDENT_ID', 'PERSON_ID');
+            $extra2['group'] = array('COLLEGE_ROLL_NO', 'PERSON_ID');
 
             // EXPANDED VIEW AND ADDR BREAKS THIS QUERY ... SO, TURN 'EM OFF
             if (!$_REQUEST['_openSIS_PDF']) {
@@ -1062,11 +1062,11 @@ function GetStuList_Absence_Summary(& $extra) {
                 $extra2 = $extra;
                 $extra2['NoSearchTerms'] = true;
                 $extra2['SELECT'] = '';
-                $extra2['SELECT_ONLY'] = 'ssm.STUDENT_ID,p.STAFF_ID AS PERSON_ID,p.FIRST_NAME,p.LAST_NAME,sjp.RELATIONSHIP AS STUDENT_RELATION,p.TITLE,s.PHONE,a.ID AS ADDRESS_ID,COALESCE(p.CUSTODY,\'N\') ';
-                $extra2['FROM'] .= ',student_address a LEFT OUTER JOIN students_join_people sjp ON (sjp.STUDENT_ID=a.STUDENT_ID  AND (p.CUSTODY=\'Y\' OR sjp.IS_EMERGENCY=\'Y\')) LEFT OUTER JOIN people p ON (p.STAFF_ID=sjp.PERSON_ID)  ';
-                $extra2['WHERE'] .= ' AND a.STUDENT_ID=sjp.STUDENT_ID AND sjp.STUDENT_ID=ssm.STUDENT_ID ';
+                $extra2['SELECT_ONLY'] = 'ssm.COLLEGE_ROLL_NO,p.STAFF_ID AS PERSON_ID,p.FIRST_NAME,p.LAST_NAME,sjp.RELATIONSHIP AS STUDENT_RELATION,p.TITLE,s.PHONE,a.ID AS ADDRESS_ID,COALESCE(p.CUSTODY,\'N\') ';
+                $extra2['FROM'] .= ',student_address a LEFT OUTER JOIN students_join_people sjp ON (sjp.COLLEGE_ROLL_NO=a.COLLEGE_ROLL_NO  AND (p.CUSTODY=\'Y\' OR sjp.IS_EMERGENCY=\'Y\')) LEFT OUTER JOIN people p ON (p.STAFF_ID=sjp.PERSON_ID)  ';
+                $extra2['WHERE'] .= ' AND a.COLLEGE_ROLL_NO=sjp.COLLEGE_ROLL_NO AND sjp.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO ';
                 $extra2['ORDER_BY'] .= 'COALESCE(p.CUSTODY,\'N\') DESC';
-                $extra2['group'] = array('STUDENT_ID', 'PERSON_ID');
+                $extra2['group'] = array('COLLEGE_ROLL_NO', 'PERSON_ID');
                 $extra2['functions'] = array();
                 $extra2['link'] = array();
 
@@ -1108,18 +1108,18 @@ function GetStuList_Absence_Summary(& $extra) {
             }
             if ($view_address_RET) {
                 if ($view_address_RET == 'RESIDENCE')
-                    $extra['FROM'] = ' LEFT OUTER JOIN student_address sam ON (ssm.STUDENT_ID=sam.STUDENT_ID AND sam.TYPE=\'Home Address\')  ' . $extra['FROM'];
+                    $extra['FROM'] = ' LEFT OUTER JOIN student_address sam ON (ssm.COLLEGE_ROLL_NO=sam.COLLEGE_ROLL_NO AND sam.TYPE=\'Home Address\')  ' . $extra['FROM'];
                 elseif ($view_address_RET == 'MAILING')
-                    $extra['FROM'] = ' LEFT OUTER JOIN student_address sam ON (ssm.STUDENT_ID=sam.STUDENT_ID AND sam.TYPE=\'Mail\') ' . $extra['FROM'];
+                    $extra['FROM'] = ' LEFT OUTER JOIN student_address sam ON (ssm.COLLEGE_ROLL_NO=sam.COLLEGE_ROLL_NO AND sam.TYPE=\'Mail\') ' . $extra['FROM'];
                 elseif ($view_address_RET == 'BUS_PICKUP')
-                    $extra['FROM'] = ' LEFT OUTER JOIN student_address sam ON (a.STUDENT_ID=sam.STUDENT_ID AND sam.BUS_PICKUP=\'Y\') ' . $extra['FROM'];
+                    $extra['FROM'] = ' LEFT OUTER JOIN student_address sam ON (a.COLLEGE_ROLL_NO=sam.COLLEGE_ROLL_NO AND sam.BUS_PICKUP=\'Y\') ' . $extra['FROM'];
                 else
-                    $extra['FROM'] = ' LEFT OUTER JOIN student_address sam ON (a.STUDENT_ID=sam.STUDENT_ID AND sam.BUS_DROPOFF=\'Y\') ' . $extra['FROM'];
+                    $extra['FROM'] = ' LEFT OUTER JOIN student_address sam ON (a.COLLEGE_ROLL_NO=sam.COLLEGE_ROLL_NO AND sam.BUS_DROPOFF=\'Y\') ' . $extra['FROM'];
 
 
                 $extra['columns_after'] += array('ADDRESS' => ucwords(strtolower(str_replace('_', ' ', $view_address_RET))) . ' Address', 'CITY' => 'City', 'STATE' => 'State', 'ZIPCODE' => 'Zipcode');
 
-                $select .= ',sam.ID AS ADDRESS_ID,sam.STREET_ADDRESS_1 as ADDRESS,sam.CITY,sam.STATE,sam.ZIPCODE,s.PHONE,ssm.STUDENT_ID AS PARENTS';
+                $select .= ',sam.ID AS ADDRESS_ID,sam.STREET_ADDRESS_1 as ADDRESS,sam.CITY,sam.STATE,sam.ZIPCODE,s.PHONE,ssm.COLLEGE_ROLL_NO AS PARENTS';
 
                 $extra['singular'] = 'Student Address';
                 $extra['plural'] = 'Student Addresses';
@@ -1137,13 +1137,13 @@ function GetStuList_Absence_Summary(& $extra) {
                 }
             }
             elseif ($_REQUEST['addr'] || $extra['addr']) {
-                $extra['FROM'] = ' LEFT OUTER JOIN student_address sam ON (ssm.STUDENT_ID=sam.STUDENT_ID) ' . $extra['FROM'];
+                $extra['FROM'] = ' LEFT OUTER JOIN student_address sam ON (ssm.COLLEGE_ROLL_NO=sam.COLLEGE_ROLL_NO) ' . $extra['FROM'];
                 $distinct = 'DISTINCT ';
             }
         }
         $extra['SELECT'] .= $select;
     } elseif ($_REQUEST['addr'] || $extra['addr']) {
-        $extra['FROM'] = ' LEFT OUTER JOIN student_address sam ON (ssm.STUDENT_ID=sam.STUDENT_ID) ' . $extra['FROM'];
+        $extra['FROM'] = ' LEFT OUTER JOIN student_address sam ON (ssm.COLLEGE_ROLL_NO=sam.COLLEGE_ROLL_NO) ' . $extra['FROM'];
         $distinct = 'DISTINCT ';
     }
     $_SESSION['new_customsql'] = $extra['SELECT'];
@@ -1158,8 +1158,8 @@ function GetStuList_Absence_Summary(& $extra) {
                 else
                     $sql .= 'CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME,\' \',COALESCE(s.MIDDLE_NAME,\' \')) AS FULL_NAME,';
                 $_SESSION['new_sql'] = $sql;
-                $sql .='s.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,s.PHONE,ssm.COLLEGE_ID,s.ALT_ID,ssm.COLLEGE_ID AS LIST_COLLEGE_ID,ssm.GRADE_ID' . $extra['SELECT'];
-                $_SESSION['new_sql'].='s.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,s.PHONE,ssm.COLLEGE_ID,s.ALT_ID,ssm.COLLEGE_ID AS LIST_COLLEGE_ID,ssm.GRADE_ID' . $_SESSION['new_customsql'];
+                $sql .='s.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.COLLEGE_ROLL_NO,s.PHONE,ssm.COLLEGE_ID,s.ALT_ID,ssm.COLLEGE_ID AS LIST_COLLEGE_ID,ssm.GRADE_ID' . $extra['SELECT'];
+                $_SESSION['new_sql'].='s.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.COLLEGE_ROLL_NO,s.PHONE,ssm.COLLEGE_ID,s.ALT_ID,ssm.COLLEGE_ID AS LIST_COLLEGE_ID,ssm.GRADE_ID' . $_SESSION['new_customsql'];
 //                if ($_REQUEST['include_inactive'] == 'Y')
 //                    $sql .= ',' . db_case(array('(ssm.SYEAR=\'' . UserSyear() . '\' AND ( (ssm.START_DATE IS NOT NULL AND \'' . date('Y-m-d', strtotime($extra['DATE'])) . '\'>=ssm.START_DATE) AND(\'' . date('Y-m-d', strtotime($extra['DATE'])) . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL)))', 'true', "'<FONT color=green>Active</FONT>'", "'<FONT color=red>Inactive</FONT>'")) . ' AS ACTIVE ';
 //                $_SESSION['new_sql'] .= ',' . db_case(array('(ssm.SYEAR=\'' . UserSyear() . '\' AND ( (ssm.START_DATE IS NOT NULL AND \'' . date('Y-m-d', strtotime($extra['DATE'])) . '\'>=ssm.START_DATE) AND(\'' . date('Y-m-d', strtotime($extra['DATE'])) . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL)))', 'true', "'<FONT color=green>Active</FONT>'", "'<FONT color=red>Inactive</FONT>'")) . ' AS ACTIVE ';
@@ -1204,11 +1204,11 @@ function GetStuList_Absence_Summary(& $extra) {
             $_SESSION['new_sql'].= $_SESSION['newsql'];
             $sql .=',student_enrollment ssm ';
             $_SESSION['new_sql'].=',student_enrollment ssm ';
-            $sql.=$extra['FROM'] . ' WHERE ssm.STUDENT_ID=s.STUDENT_ID ';
-            $_SESSION['new_sql'].=$extra['FROM'] . ' WHERE ssm.STUDENT_ID=s.STUDENT_ID ';
+            $sql.=$extra['FROM'] . ' WHERE ssm.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO ';
+            $_SESSION['new_sql'].=$extra['FROM'] . ' WHERE ssm.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO ';
             if ($_REQUEST['include_inactive'] == 'Y') {
-                $sql .= ' AND ssm.ID=(SELECT ID FROM student_enrollment WHERE STUDENT_ID=ssm.STUDENT_ID AND SYEAR =\'' . UserSyear() . '\' ORDER BY START_DATE DESC LIMIT 1)';
-                $_SESSION['new_sql'].= ' AND ssm.ID=(SELECT ID FROM student_enrollment WHERE STUDENT_ID=ssm.STUDENT_ID AND SYEAR =\'' . UserSyear() . '\' ORDER BY START_DATE DESC LIMIT 1)';
+                $sql .= ' AND ssm.ID=(SELECT ID FROM student_enrollment WHERE COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND SYEAR =\'' . UserSyear() . '\' ORDER BY START_DATE DESC LIMIT 1)';
+                $_SESSION['new_sql'].= ' AND ssm.ID=(SELECT ID FROM student_enrollment WHERE COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND SYEAR =\'' . UserSyear() . '\' ORDER BY START_DATE DESC LIMIT 1)';
             } else {
 //                $sql .= $_SESSION['inactive_stu_filter'] = ' AND ssm.SYEAR=\'' . UserSyear() . '\' AND ((ssm.START_DATE IS NOT NULL AND \'' . date('Y-m-d', strtotime($extra['DATE'])) . '\'>=ssm.START_DATE) AND (\'' . date('Y-m-d', strtotime($extra['DATE'])) . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL)) ';
 //
@@ -1247,8 +1247,8 @@ function GetStuList_Absence_Summary(& $extra) {
                 else
                     $sql .= 'CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME,\' \',COALESCE(s.MIDDLE_NAME,\' \')) AS FULL_NAME,';
                 $_SESSION['new_sql'] = $sql;
-                $sql .='s.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,s.PHONE,s.ALT_ID,ssm.COLLEGE_ID,ssm.GRADE_ID ' . $extra['SELECT'];
-                $_SESSION['new_sql'].='s.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,s.PHONE,s.ALT_ID,ssm.COLLEGE_ID,ssm.GRADE_ID ' . $_SESSION['new_customsql'];
+                $sql .='s.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.COLLEGE_ROLL_NO,s.PHONE,s.ALT_ID,ssm.COLLEGE_ID,ssm.GRADE_ID ' . $extra['SELECT'];
+                $_SESSION['new_sql'].='s.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.COLLEGE_ROLL_NO,s.PHONE,s.ALT_ID,ssm.COLLEGE_ID,ssm.GRADE_ID ' . $_SESSION['new_customsql'];
                 if ($_REQUEST['include_inactive'] == 'Y') {
                     $sql .= ',' . db_case(array('(ssm.START_DATE IS NOT NULL AND (\'' . $extra['DATE'] . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL))', 'true', "'<FONT color=green>Active</FONT>'", "'<FONT color=red>Inactive</FONT>'")) . ' AS ACTIVE';
                     $sql .= ',' . db_case(array('(ssm.START_DATE IS NOT NULL AND (\'' . $extra['DATE'] . '\'<=ss.END_DATE OR ss.END_DATE IS NULL))', 'true', "'<FONT color=green>Active</FONT>'", "'<FONT color=red>Inactive</FONT>'")) . ' AS ACTIVE_SCHEDULE';
@@ -1290,21 +1290,21 @@ function GetStuList_Absence_Summary(& $extra) {
             $_SESSION['new_sql'].= $_SESSION['newsql'];
             $sql.=' ,student_enrollment ssm ';
             $_SESSION['new_sql'].=' ,student_enrollment ssm ';
-            $sql.=$extra['FROM'] . ' WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.STUDENT_ID=ss.STUDENT_ID
+            $sql.=$extra['FROM'] . ' WHERE ssm.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ssm.COLLEGE_ROLL_NO=ss.COLLEGE_ROLL_NO
 					AND ssm.COLLEGE_ID=\'' . UserCollege() . '\' AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR
 					AND (ss.MARKING_PERIOD_ID IN (' . GetAllMP('', $queryMP) . ')  OR (ss.START_DATE<=\'' . date('Y-m-d') . '\'  AND (ss.END_DATE>=\'' . date('Y-m-d') . '\'  OR ss.END_DATE IS NULL)))
 					AND (cp.TEACHER_ID=\'' . User('STAFF_ID') . '\' OR cp.SECONDARY_TEACHER_ID=\'' . User('STAFF_ID') . '\') AND cp.COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\'
 					AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID';
-            $_SESSION['new_sql'].=$extra['FROM'] . ' WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.STUDENT_ID=ss.STUDENT_ID
+            $_SESSION['new_sql'].=$extra['FROM'] . ' WHERE ssm.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ssm.COLLEGE_ROLL_NO=ss.COLLEGE_ROLL_NO
 					AND ssm.COLLEGE_ID=\'' . UserCollege() . '\' AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR
 					AND (ss.MARKING_PERIOD_ID IN (' . GetAllMP('', $queryMP) . ')   OR (ss.START_DATE<=\'' . date('Y-m-d') . '\'  AND (ss.END_DATE>=\'' . date('Y-m-d') . '\'  OR ss.END_DATE IS NULL)))
 					AND (cp.TEACHER_ID=\'' . User('STAFF_ID') . '\' OR cp.SECONDARY_TEACHER_ID=\'' . User('STAFF_ID') . '\') AND cp.COURSE_PERIOD_ID=\'' . UserCoursePeriod() . '\'
 					AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID';
             if ($_REQUEST['include_inactive'] == 'Y') {
-                $sql .= ' AND ssm.ID=(SELECT ID FROM student_enrollment WHERE STUDENT_ID=ssm.STUDENT_ID AND SYEAR=ssm.SYEAR ORDER BY START_DATE DESC LIMIT 1)';
-                $sql .= ' AND ss.START_DATE=(SELECT START_DATE FROM schedule WHERE STUDENT_ID=ssm.STUDENT_ID AND SYEAR=ssm.SYEAR AND MARKING_PERIOD_ID IN (' . GetAllMP('', $queryMP) . ') AND COURSE_ID=cp.COURSE_ID AND COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID ORDER BY START_DATE DESC LIMIT 1)';
-                $_SESSION['new_sql'].= ' AND ssm.ID=(SELECT ID FROM student_enrollment WHERE STUDENT_ID=ssm.STUDENT_ID AND SYEAR=ssm.SYEAR ORDER BY START_DATE DESC LIMIT 1)';
-                $_SESSION['new_sql'].= ' AND ss.START_DATE=(SELECT START_DATE FROM schedule WHERE STUDENT_ID=ssm.STUDENT_ID AND SYEAR=ssm.SYEAR AND MARKING_PERIOD_ID IN (' . GetAllMP('', $queryMP) . ') AND COURSE_ID=cp.COURSE_ID AND COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID ORDER BY START_DATE DESC LIMIT 1)';
+                $sql .= ' AND ssm.ID=(SELECT ID FROM student_enrollment WHERE COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND SYEAR=ssm.SYEAR ORDER BY START_DATE DESC LIMIT 1)';
+                $sql .= ' AND ss.START_DATE=(SELECT START_DATE FROM schedule WHERE COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND SYEAR=ssm.SYEAR AND MARKING_PERIOD_ID IN (' . GetAllMP('', $queryMP) . ') AND COURSE_ID=cp.COURSE_ID AND COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID ORDER BY START_DATE DESC LIMIT 1)';
+                $_SESSION['new_sql'].= ' AND ssm.ID=(SELECT ID FROM student_enrollment WHERE COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND SYEAR=ssm.SYEAR ORDER BY START_DATE DESC LIMIT 1)';
+                $_SESSION['new_sql'].= ' AND ss.START_DATE=(SELECT START_DATE FROM schedule WHERE COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND SYEAR=ssm.SYEAR AND MARKING_PERIOD_ID IN (' . GetAllMP('', $queryMP) . ') AND COURSE_ID=cp.COURSE_ID AND COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID ORDER BY START_DATE DESC LIMIT 1)';
             } else {
                 $sql .= $_SESSION['inactive_stu_filter'] = ' AND (ssm.START_DATE IS NOT NULL AND (\'' . $extra['DATE'] . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL))';
                 $sql .= $_SESSION['inactive_stu_filter'] = ' AND (ssm.START_DATE IS NOT NULL AND (\'' . $extra['DATE'] . '\'<=ss.END_DATE OR ss.END_DATE IS NULL))';
@@ -1329,10 +1329,10 @@ function GetStuList_Absence_Summary(& $extra) {
                     $sql .= 'CONCAT(s.LAST_NAME,\', \',coalesce(s.COMMON_NAME,s.FIRST_NAME)) AS FULL_NAME,';
                 else
                     $sql .= 'CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME,\' \',COALESCE(s.MIDDLE_NAME,\' \')) AS FULL_NAME,';
-                $sql .='s.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,s.ALT_ID,ssm.COLLEGE_ID,ssm.GRADE_ID ' . $extra['SELECT'];
+                $sql .='s.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.COLLEGE_ROLL_NO,s.ALT_ID,ssm.COLLEGE_ID,ssm.GRADE_ID ' . $extra['SELECT'];
             }
             $sql .= ' FROM students s,student_enrollment ssm ' . $extra['FROM'] . '
-					WHERE ssm.STUDENT_ID=s.STUDENT_ID AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.COLLEGE_ID=\'' . UserCollege() . '\' AND (\'' . DBDate() . '\' BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND \'' . DBDate() . '\'>ssm.START_DATE)) AND ssm.STUDENT_ID' . ($extra['ASSOCIATED'] ? ' IN (SELECT STUDENT_ID FROM students_join_people WHERE PERSON_ID=\'' . $extra['ASSOCIATED'] . '\')' : '=\'' . UserStudentID() . '\'');
+					WHERE ssm.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.COLLEGE_ID=\'' . UserCollege() . '\' AND (\'' . DBDate() . '\' BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND \'' . DBDate() . '\'>ssm.START_DATE)) AND ssm.COLLEGE_ROLL_NO' . ($extra['ASSOCIATED'] ? ' IN (SELECT COLLEGE_ROLL_NO FROM students_join_people WHERE PERSON_ID=\'' . $extra['ASSOCIATED'] . '\')' : '=\'' . UserStudentID() . '\'');
             break;
         default:
             exit('Error');
@@ -1388,17 +1388,17 @@ function GetStuList_Absence_Summary(& $extra) {
 function appendSQL_Absence_Summary($sql, & $extra) {
     global $_openSIS;
     if ($_REQUEST['stuid']) {
-        $sql .= ' AND ssm.STUDENT_ID = \'' . singleQuoteReplace("'", "\'", $_REQUEST[stuid]) . '\' ';
-        $_SESSION['newsql1'].= ' AND ssm.STUDENT_ID = \'' . singleQuoteReplace("'", "\'", $_REQUEST[stuid]) . '\' ';
+        $sql .= ' AND ssm.COLLEGE_ROLL_NO = \'' . singleQuoteReplace("'", "\'", $_REQUEST[stuid]) . '\' ';
+        $_SESSION['newsql1'].= ' AND ssm.COLLEGE_ROLL_NO = \'' . singleQuoteReplace("'", "\'", $_REQUEST[stuid]) . '\' ';
         if (!$extra['NoSearchTerms'])
-            $_openSIS['SearchTerms'] .= '<font color=gray><b>Student ID: </b></font>' . $_REQUEST['stuid'] . '<BR>';
+            $_openSIS['SearchTerms'] .= '<font color=gray><b>College Roll No: </b></font>' . $_REQUEST['stuid'] . '<BR>';
     }
     if ($_REQUEST['altid']) {
 
         $sql .= ' AND LOWER(s.ALT_ID) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['altid']))) . '%\' ';
         $_SESSION['newsql1'].= ' AND LOWER(s.ALT_ID) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['altid']))) . '%\' ';
         if (!$extra['NoSearchTerms'])
-            $_openSIS['SearchTerms'] .= '<font color=gray><b>Student ID: </b></font>' . $_REQUEST['stuid'] . '<BR>';
+            $_openSIS['SearchTerms'] .= '<font color=gray><b>College Roll No: </b></font>' . $_REQUEST['stuid'] . '<BR>';
     }
     if ($_REQUEST['last']) {
         $sql .= ' AND LOWER(s.LAST_NAME) LIKE \'' . singleQuoteReplace("'", "\'", strtolower(trim($_REQUEST['last']))) . '%\' ';
@@ -1431,73 +1431,73 @@ function appendSQL_Absence_Summary($sql, & $extra) {
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Preferred Medical Facility starts with: </b></font>' . $_REQUEST['preferred_hospital'] . '<BR>';
     }
     if ($_REQUEST['mp_comment']) {
-        $sql .= ' AND LOWER(smc.COMMENT) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['mp_comment'])) . '%\' AND s.STUDENT_ID=smc.STUDENT_ID ';
-        $_SESSION['newsql1'].= ' AND LOWER(smc.COMMENT) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['mp_comment'])) . '%\' AND s.STUDENT_ID=smc.STUDENT_ID ';
+        $sql .= ' AND LOWER(smc.COMMENT) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['mp_comment'])) . '%\' AND s.COLLEGE_ROLL_NO=smc.COLLEGE_ROLL_NO ';
+        $_SESSION['newsql1'].= ' AND LOWER(smc.COMMENT) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['mp_comment'])) . '%\' AND s.COLLEGE_ROLL_NO=smc.COLLEGE_ROLL_NO ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Comments starts with: </b></font>' . $_REQUEST['mp_comment'] . '<BR>';
     }
     if ($_REQUEST['goal_title']) {
-        $sql .= ' AND LOWER(g.GOAL_TITLE) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['goal_title'])) . '%\' AND s.STUDENT_ID=g.STUDENT_ID ';
-        $_SESSION['newsql1'].= ' AND LOWER(g.GOAL_TITLE) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['goal_title'])) . '%\' AND s.STUDENT_ID=g.STUDENT_ID ';
+        $sql .= ' AND LOWER(g.GOAL_TITLE) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['goal_title'])) . '%\' AND s.COLLEGE_ROLL_NO=g.COLLEGE_ROLL_NO ';
+        $_SESSION['newsql1'].= ' AND LOWER(g.GOAL_TITLE) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['goal_title'])) . '%\' AND s.COLLEGE_ROLL_NO=g.COLLEGE_ROLL_NO ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>GoalInc Title starts with: </b></font>' . $_REQUEST['goal_title'] . '<BR>';
     }
     if ($_REQUEST['goal_description']) {
-        $sql .= ' AND LOWER(g.GOAL_DESCRIPTION) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['goal_description'])) . '%\' AND s.STUDENT_ID=g.STUDENT_ID ';
-        $_SESSION['newsql1'].= ' AND LOWER(g.GOAL_DESCRIPTION) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['goal_description'])) . '%\' AND s.STUDENT_ID=g.STUDENT_ID ';
+        $sql .= ' AND LOWER(g.GOAL_DESCRIPTION) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['goal_description'])) . '%\' AND s.COLLEGE_ROLL_NO=g.COLLEGE_ROLL_NO ';
+        $_SESSION['newsql1'].= ' AND LOWER(g.GOAL_DESCRIPTION) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['goal_description'])) . '%\' AND s.COLLEGE_ROLL_NO=g.COLLEGE_ROLL_NO ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>GoalInc Description starts with: </b></font>' . $_REQUEST['goal_description'] . '<BR>';
     }
     if ($_REQUEST['progress_name']) {
-        $sql .= ' AND LOWER(p.PROGRESS_NAME) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['progress_name'])) . '%\' AND s.STUDENT_ID=p.STUDENT_ID ';
-        $_SESSION['newsql1'].= ' AND LOWER(p.PROGRESS_NAME) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['progress_name'])) . '%\' AND s.STUDENT_ID=p.STUDENT_ID ';
+        $sql .= ' AND LOWER(p.PROGRESS_NAME) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['progress_name'])) . '%\' AND s.COLLEGE_ROLL_NO=p.COLLEGE_ROLL_NO ';
+        $_SESSION['newsql1'].= ' AND LOWER(p.PROGRESS_NAME) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['progress_name'])) . '%\' AND s.COLLEGE_ROLL_NO=p.COLLEGE_ROLL_NO ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Progress Period Name starts with: </b></font>' . $_REQUEST['progress_name'] . '<BR>';
     }
     if ($_REQUEST['progress_description']) {
-        $sql .= ' AND LOWER(p.PROGRESS_DESCRIPTION) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['progress_description'])) . '%\' AND s.STUDENT_ID=p.STUDENT_ID ';
-        $_SESSION['newsql1'].= ' AND LOWER(p.PROGRESS_DESCRIPTION) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['progress_description'])) . '%\' AND s.STUDENT_ID=p.STUDENT_ID ';
+        $sql .= ' AND LOWER(p.PROGRESS_DESCRIPTION) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['progress_description'])) . '%\' AND s.COLLEGE_ROLL_NO=p.COLLEGE_ROLL_NO ';
+        $_SESSION['newsql1'].= ' AND LOWER(p.PROGRESS_DESCRIPTION) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['progress_description'])) . '%\' AND s.COLLEGE_ROLL_NO=p.COLLEGE_ROLL_NO ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Progress Assessment starts with: </b></font>' . $_REQUEST['progress_description'] . '<BR>';
     }
     if ($_REQUEST['doctors_note_comments']) {
-        $sql .= ' AND LOWER(smn.DOCTORS_NOTE_COMMENTS) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['doctors_note_comments'])) . '%\' AND s.STUDENT_ID=smn.STUDENT_ID ';
-        $_SESSION['newsql1'].= ' AND LOWER(smn.DOCTORS_NOTE_COMMENTS) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['doctors_note_comments'])) . '%\' AND s.STUDENT_ID=smn.STUDENT_ID ';
+        $sql .= ' AND LOWER(smn.DOCTORS_NOTE_COMMENTS) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['doctors_note_comments'])) . '%\' AND s.COLLEGE_ROLL_NO=smn.COLLEGE_ROLL_NO ';
+        $_SESSION['newsql1'].= ' AND LOWER(smn.DOCTORS_NOTE_COMMENTS) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['doctors_note_comments'])) . '%\' AND s.COLLEGE_ROLL_NO=smn.COLLEGE_ROLL_NO ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Doctor\'s Note starts with: </b></font>' . $_REQUEST['doctors_note_comments'] . '<BR>';
     }
     if ($_REQUEST['type']) {
-        $sql .= ' AND LOWER(sm.TYPE) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['type'])) . '%\' AND s.STUDENT_ID=sm.STUDENT_ID ';
-        $_SESSION['newsql1'].= ' AND LOWER(sm.TYPE) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['type'])) . '%\' AND s.STUDENT_ID=sm.STUDENT_ID ';
+        $sql .= ' AND LOWER(sm.TYPE) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['type'])) . '%\' AND s.COLLEGE_ROLL_NO=sm.COLLEGE_ROLL_NO ';
+        $_SESSION['newsql1'].= ' AND LOWER(sm.TYPE) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['type'])) . '%\' AND s.COLLEGE_ROLL_NO=sm.COLLEGE_ROLL_NO ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Type starts with: </b></font>' . $_REQUEST['type'] . '<BR>';
     }
     if ($_REQUEST['imm_comments']) {
-        $sql .= ' AND LOWER(sm.COMMENTS) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['imm_comments'])) . '%\' AND s.STUDENT_ID=sm.STUDENT_ID ';
-        $_SESSION['newsql1'].= ' AND LOWER(sm.COMMENTS) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['imm_comments'])) . '%\' AND s.STUDENT_ID=sm.STUDENT_ID ';
+        $sql .= ' AND LOWER(sm.COMMENTS) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['imm_comments'])) . '%\' AND s.COLLEGE_ROLL_NO=sm.COLLEGE_ROLL_NO ';
+        $_SESSION['newsql1'].= ' AND LOWER(sm.COMMENTS) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['imm_comments'])) . '%\' AND s.COLLEGE_ROLL_NO=sm.COLLEGE_ROLL_NO ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Comments starts with: </b></font>' . $_REQUEST['imm_comments'] . '<BR>';
     }
     if ($_REQUEST['imm_day'] && $_REQUEST['imm_month'] && $_REQUEST['imm_year']) {
         $imm_date = $_REQUEST['imm_year'] . '-' . $_REQUEST['imm_month'] . '-' . $_REQUEST['imm_day'];
-        $sql .= ' AND sm.MEDICAL_DATE =\'' . date('Y-m-d', strtotime($imm_date)) . '\' AND s.STUDENT_ID=sm.STUDENT_ID ';
-        $_SESSION['newsql1'].= ' AND sm.MEDICAL_DATE =\'' . date('Y-m-d', strtotime($imm_date)) . '\' AND s.STUDENT_ID=sm.STUDENT_ID ';
+        $sql .= ' AND sm.MEDICAL_DATE =\'' . date('Y-m-d', strtotime($imm_date)) . '\' AND s.COLLEGE_ROLL_NO=sm.COLLEGE_ROLL_NO ';
+        $_SESSION['newsql1'].= ' AND sm.MEDICAL_DATE =\'' . date('Y-m-d', strtotime($imm_date)) . '\' AND s.COLLEGE_ROLL_NO=sm.COLLEGE_ROLL_NO ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Immunization Date: </b></font>' . $imm_date . '<BR>';
     }elseif ($_REQUEST['imm_day'] || $_REQUEST['imm_month'] || $_REQUEST['imm_year']) {
         if ($_REQUEST['imm_day']) {
-            $sql .= ' AND SUBSTR(sm.MEDICAL_DATE,9,2) =\'' . $_REQUEST['imm_day'] . '\' AND s.STUDENT_ID=sm.STUDENT_ID ';
-            $_SESSION['newsql1'].= ' AND SUBSTR(sm.MEDICAL_DATE,9,2) =\'' . $_REQUEST['imm_day'] . '\' AND s.STUDENT_ID=sm.STUDENT_ID ';
+            $sql .= ' AND SUBSTR(sm.MEDICAL_DATE,9,2) =\'' . $_REQUEST['imm_day'] . '\' AND s.COLLEGE_ROLL_NO=sm.COLLEGE_ROLL_NO ';
+            $_SESSION['newsql1'].= ' AND SUBSTR(sm.MEDICAL_DATE,9,2) =\'' . $_REQUEST['imm_day'] . '\' AND s.COLLEGE_ROLL_NO=sm.COLLEGE_ROLL_NO ';
             $imm_date.=" Day :" . $_REQUEST['imm_day'];
         }
         if ($_REQUEST['imm_month']) {
-            $sql .= ' AND SUBSTR(sm.MEDICAL_DATE,6,2) =\'' . $_REQUEST['imm_month'] . '\' AND s.STUDENT_ID=sm.STUDENT_ID ';
-            $_SESSION['newsql1'].= ' AND SUBSTR(sm.MEDICAL_DATE,6,2) =\'' . $_REQUEST['imm_month'] . '\' AND s.STUDENT_ID=sm.STUDENT_ID ';
+            $sql .= ' AND SUBSTR(sm.MEDICAL_DATE,6,2) =\'' . $_REQUEST['imm_month'] . '\' AND s.COLLEGE_ROLL_NO=sm.COLLEGE_ROLL_NO ';
+            $_SESSION['newsql1'].= ' AND SUBSTR(sm.MEDICAL_DATE,6,2) =\'' . $_REQUEST['imm_month'] . '\' AND s.COLLEGE_ROLL_NO=sm.COLLEGE_ROLL_NO ';
             $imm_date.=" Month :" . $_REQUEST['imm_month'];
         }
         if ($_REQUEST['imm_year']) {
-            $sql .= ' AND SUBSTR(sm.MEDICAL_DATE,1,4) =\'' . $_REQUEST['imm_year'] . '\' AND s.STUDENT_ID=sm.STUDENT_ID ';
-            $_SESSION['newsql1'].= ' AND SUBSTR(sm.MEDICAL_DATE,1,4) =\'' . $_REQUEST['imm_year'] . '\' AND s.STUDENT_ID=sm.STUDENT_ID ';
+            $sql .= ' AND SUBSTR(sm.MEDICAL_DATE,1,4) =\'' . $_REQUEST['imm_year'] . '\' AND s.COLLEGE_ROLL_NO=sm.COLLEGE_ROLL_NO ';
+            $_SESSION['newsql1'].= ' AND SUBSTR(sm.MEDICAL_DATE,1,4) =\'' . $_REQUEST['imm_year'] . '\' AND s.COLLEGE_ROLL_NO=sm.COLLEGE_ROLL_NO ';
             $imm_date.=" Year :" . $_REQUEST['imm_year'];
         }
         if (!$extra['NoSearchTerms'])
@@ -1505,24 +1505,24 @@ function appendSQL_Absence_Summary($sql, & $extra) {
     }
     if ($_REQUEST['med_day'] && $_REQUEST['med_month'] && $_REQUEST['med_year']) {
         $med_date = $_REQUEST['med_year'] . '-' . $_REQUEST['med_month'] . '-' . $_REQUEST['med_day'];
-        $sql .= ' AND smn.DOCTORS_NOTE_DATE=\'' . date('Y-m-d', strtotime($med_date)) . '\' AND s.STUDENT_ID=smn.STUDENT_ID ';
-        $_SESSION['newsql1'].= ' AND smn.DOCTORS_NOTE_DATE =\'' . date('Y-m-d', strtotime($med_date)) . '\' AND s.STUDENT_ID=smn.STUDENT_ID ';
+        $sql .= ' AND smn.DOCTORS_NOTE_DATE=\'' . date('Y-m-d', strtotime($med_date)) . '\' AND s.COLLEGE_ROLL_NO=smn.COLLEGE_ROLL_NO ';
+        $_SESSION['newsql1'].= ' AND smn.DOCTORS_NOTE_DATE =\'' . date('Y-m-d', strtotime($med_date)) . '\' AND s.COLLEGE_ROLL_NO=smn.COLLEGE_ROLL_NO ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Medical Date: </b></font>' . $med_date . '<BR>';
     }elseif ($_REQUEST['med_day'] || $_REQUEST['med_month'] || $_REQUEST['med_year']) {
         if ($_REQUEST['med_day']) {
-            $sql .= ' AND SUBSTR(smn.DOCTORS_NOTE_DATE,9,2) =\'' . $_REQUEST['med_day'] . '\' AND s.STUDENT_ID=smn.STUDENT_ID ';
-            $_SESSION['newsql1'].= ' AND SUBSTR(smn.DOCTORS_NOTE_DATE,9,2) =\'' . $_REQUEST['med_day'] . '\' AND s.STUDENT_ID=smn.STUDENT_ID ';
+            $sql .= ' AND SUBSTR(smn.DOCTORS_NOTE_DATE,9,2) =\'' . $_REQUEST['med_day'] . '\' AND s.COLLEGE_ROLL_NO=smn.COLLEGE_ROLL_NO ';
+            $_SESSION['newsql1'].= ' AND SUBSTR(smn.DOCTORS_NOTE_DATE,9,2) =\'' . $_REQUEST['med_day'] . '\' AND s.COLLEGE_ROLL_NO=smn.COLLEGE_ROLL_NO ';
             $med_date.=" Day :" . $_REQUEST['med_day'];
         }
         if ($_REQUEST['med_month']) {
-            $sql .= ' AND SUBSTR(smn.DOCTORS_NOTE_DATE,6,2) =\'' . $_REQUEST['med_month'] . '\' AND s.STUDENT_ID=smn.STUDENT_ID ';
-            $_SESSION['newsql1'].= ' AND SUBSTR(smn.DOCTORS_NOTE_DATE,6,2) =\'' . $_REQUEST['med_month'] . '\' AND s.STUDENT_ID=smn.STUDENT_ID ';
+            $sql .= ' AND SUBSTR(smn.DOCTORS_NOTE_DATE,6,2) =\'' . $_REQUEST['med_month'] . '\' AND s.COLLEGE_ROLL_NO=smn.COLLEGE_ROLL_NO ';
+            $_SESSION['newsql1'].= ' AND SUBSTR(smn.DOCTORS_NOTE_DATE,6,2) =\'' . $_REQUEST['med_month'] . '\' AND s.COLLEGE_ROLL_NO=smn.COLLEGE_ROLL_NO ';
             $med_date.=" Month :" . $_REQUEST['med_month'];
         }
         if ($_REQUEST['med_year']) {
-            $sql .= ' AND SUBSTR(smn.DOCTORS_NOTE_DATE,1,4) =\'' . $_REQUEST['med_year'] . '\' AND s.STUDENT_ID=smn.STUDENT_ID ';
-            $_SESSION['newsql1'].= ' AND SUBSTR(smn.DOCTORS_NOTE_DATE,1,4) =\'' . $_REQUEST['med_year'] . '\' AND s.STUDENT_ID=smn.STUDENT_ID ';
+            $sql .= ' AND SUBSTR(smn.DOCTORS_NOTE_DATE,1,4) =\'' . $_REQUEST['med_year'] . '\' AND s.COLLEGE_ROLL_NO=smn.COLLEGE_ROLL_NO ';
+            $_SESSION['newsql1'].= ' AND SUBSTR(smn.DOCTORS_NOTE_DATE,1,4) =\'' . $_REQUEST['med_year'] . '\' AND s.COLLEGE_ROLL_NO=smn.COLLEGE_ROLL_NO ';
             $med_date.=" Year :" . $_REQUEST['med_year'];
         }
         if (!$extra['NoSearchTerms'])
@@ -1530,24 +1530,24 @@ function appendSQL_Absence_Summary($sql, & $extra) {
     }
     if ($_REQUEST['ma_day'] && $_REQUEST['ma_month'] && $_REQUEST['ma_year']) {
         $ma_date = $_REQUEST['ma_year'] . '-' . $_REQUEST['ma_month'] . '-' . $_REQUEST['ma_day'];
-        $sql .= ' AND sma.ALERT_DATE =\'' . date('Y-m-d', strtotime($ma_date)) . '\' AND s.STUDENT_ID=sma.STUDENT_ID ';
-        $_SESSION['newsql1'].= ' AND sma.ALERT_DATE =\'' . date('Y-m-d', strtotime($ma_date)) . '\' AND s.STUDENT_ID=sma.STUDENT_ID ';
+        $sql .= ' AND sma.ALERT_DATE =\'' . date('Y-m-d', strtotime($ma_date)) . '\' AND s.COLLEGE_ROLL_NO=sma.COLLEGE_ROLL_NO ';
+        $_SESSION['newsql1'].= ' AND sma.ALERT_DATE =\'' . date('Y-m-d', strtotime($ma_date)) . '\' AND s.COLLEGE_ROLL_NO=sma.COLLEGE_ROLL_NO ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Medical Alert Date: </b></font>' . $ma_date . '<BR>';
     }elseif ($_REQUEST['ma_day'] || $_REQUEST['ma_month'] || $_REQUEST['ma_year']) {
         if ($_REQUEST['ma_day']) {
-            $sql .= ' AND SUBSTR(sma.ALERT_DATE,9,2) =\'' . $_REQUEST['ma_day'] . '\' AND s.STUDENT_ID=sma.STUDENT_ID ';
-            $_SESSION['newsql1'].= ' AND SUBSTR(sma.ALERT_DATE,9,2) =\'' . $_REQUEST['ma_day'] . '\' AND s.STUDENT_ID=sma.STUDENT_ID ';
+            $sql .= ' AND SUBSTR(sma.ALERT_DATE,9,2) =\'' . $_REQUEST['ma_day'] . '\' AND s.COLLEGE_ROLL_NO=sma.COLLEGE_ROLL_NO ';
+            $_SESSION['newsql1'].= ' AND SUBSTR(sma.ALERT_DATE,9,2) =\'' . $_REQUEST['ma_day'] . '\' AND s.COLLEGE_ROLL_NO=sma.COLLEGE_ROLL_NO ';
             $ma_date.=" Day :" . $_REQUEST['ma_day'];
         }
         if ($_REQUEST['ma_month']) {
-            $sql .= ' AND SUBSTR(sma.ALERT_DATE,6,2) =\'' . $_REQUEST['ma_month'] . '\' AND s.STUDENT_ID=sma.STUDENT_ID ';
-            $_SESSION['newsql1'].= ' AND SUBSTR(sma.ALERT_DATE,6,2) =\'' . $_REQUEST['ma_month'] . '\' AND s.STUDENT_ID=sma.STUDENT_ID ';
+            $sql .= ' AND SUBSTR(sma.ALERT_DATE,6,2) =\'' . $_REQUEST['ma_month'] . '\' AND s.COLLEGE_ROLL_NO=sma.COLLEGE_ROLL_NO ';
+            $_SESSION['newsql1'].= ' AND SUBSTR(sma.ALERT_DATE,6,2) =\'' . $_REQUEST['ma_month'] . '\' AND s.COLLEGE_ROLL_NO=sma.COLLEGE_ROLL_NO ';
             $ma_date.=" Month :" . $_REQUEST['ma_month'];
         }
         if ($_REQUEST['ma_year']) {
-            $sql .= ' AND SUBSTR(sma.ALERT_DATE,1,4) =\'' . $_REQUEST['ma_year'] . '\' AND s.STUDENT_ID=sma.STUDENT_ID ';
-            $_SESSION['newsql1'].= ' AND SUBSTR(sma.ALERT_DATE,1,4) =\'' . $_REQUEST['ma_year'] . '\' AND s.STUDENT_ID=sma.STUDENT_ID ';
+            $sql .= ' AND SUBSTR(sma.ALERT_DATE,1,4) =\'' . $_REQUEST['ma_year'] . '\' AND s.COLLEGE_ROLL_NO=sma.COLLEGE_ROLL_NO ';
+            $_SESSION['newsql1'].= ' AND SUBSTR(sma.ALERT_DATE,1,4) =\'' . $_REQUEST['ma_year'] . '\' AND s.COLLEGE_ROLL_NO=sma.COLLEGE_ROLL_NO ';
             $ma_date.=" Year :" . $_REQUEST['ma_year'];
         }
         if (!$extra['NoSearchTerms'])
@@ -1555,24 +1555,24 @@ function appendSQL_Absence_Summary($sql, & $extra) {
     }
     if ($_REQUEST['nv_day'] && $_REQUEST['nv_month'] && $_REQUEST['nv_year']) {
         $nv_date = $_REQUEST['nv_year'] . '-' . $_REQUEST['nv_month'] . '-' . $_REQUEST['nv_day'];
-        $sql .= ' AND smv.COLLEGE_DATE =\'' . date('Y-m-d', strtotime($nv_date)) . '\' AND s.STUDENT_ID=smv.STUDENT_ID ';
-        $_SESSION['newsql1'].= ' AND smv.COLLEGE_DATE =\'' . date('Y-m-d', strtotime($nv_date)) . '\' AND s.STUDENT_ID=smv.STUDENT_ID ';
+        $sql .= ' AND smv.COLLEGE_DATE =\'' . date('Y-m-d', strtotime($nv_date)) . '\' AND s.COLLEGE_ROLL_NO=smv.COLLEGE_ROLL_NO ';
+        $_SESSION['newsql1'].= ' AND smv.COLLEGE_DATE =\'' . date('Y-m-d', strtotime($nv_date)) . '\' AND s.COLLEGE_ROLL_NO=smv.COLLEGE_ROLL_NO ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Nurse Visit Date: </b></font>' . $nv_date . '<BR>';
     }elseif ($_REQUEST['nv_day'] || $_REQUEST['nv_month'] || $_REQUEST['nv_year']) {
         if ($_REQUEST['nv_day']) {
-            $sql .= ' AND SUBSTR(smv.COLLEGE_DATE,9,2) =\'' . $_REQUEST['nv_day'] . '\' AND s.STUDENT_ID=smv.STUDENT_ID ';
-            $_SESSION['newsql1'].= ' AND SUBSTR(smv.COLLEGE_DATE,9,2) =\'' . $_REQUEST['nv_day'] . '\' AND s.STUDENT_ID=smv.STUDENT_ID ';
+            $sql .= ' AND SUBSTR(smv.COLLEGE_DATE,9,2) =\'' . $_REQUEST['nv_day'] . '\' AND s.COLLEGE_ROLL_NO=smv.COLLEGE_ROLL_NO ';
+            $_SESSION['newsql1'].= ' AND SUBSTR(smv.COLLEGE_DATE,9,2) =\'' . $_REQUEST['nv_day'] . '\' AND s.COLLEGE_ROLL_NO=smv.COLLEGE_ROLL_NO ';
             $nv_date.=" Day :" . $_REQUEST['nv_day'];
         }
         if ($_REQUEST['nv_month']) {
-            $sql .= ' AND SUBSTR(smv.COLLEGE_DATE,6,2) =\'' . $_REQUEST['nv_month'] . '\' AND s.STUDENT_ID=smv.STUDENT_ID ';
-            $_SESSION['newsql1'].= ' AND SUBSTR(smv.COLLEGE_DATE,6,2) =\'' . $_REQUEST['nv_month'] . '\' AND s.STUDENT_ID=smv.STUDENT_ID ';
+            $sql .= ' AND SUBSTR(smv.COLLEGE_DATE,6,2) =\'' . $_REQUEST['nv_month'] . '\' AND s.COLLEGE_ROLL_NO=smv.COLLEGE_ROLL_NO ';
+            $_SESSION['newsql1'].= ' AND SUBSTR(smv.COLLEGE_DATE,6,2) =\'' . $_REQUEST['nv_month'] . '\' AND s.COLLEGE_ROLL_NO=smv.COLLEGE_ROLL_NO ';
             $nv_date.=" Month :" . $_REQUEST['nv_month'];
         }
         if ($_REQUEST['nv_year']) {
-            $sql .= ' AND SUBSTR(smv.COLLEGE_DATE,1,4) =\'' . $_REQUEST['nv_year'] . '\' AND s.STUDENT_ID=smv.STUDENT_ID ';
-            $_SESSION['newsql1'].= ' AND SUBSTR(smv.COLLEGE_DATE,1,4) =\'' . $_REQUEST['nv_year'] . '\' AND s.STUDENT_ID=smv.STUDENT_ID ';
+            $sql .= ' AND SUBSTR(smv.COLLEGE_DATE,1,4) =\'' . $_REQUEST['nv_year'] . '\' AND s.COLLEGE_ROLL_NO=smv.COLLEGE_ROLL_NO ';
+            $_SESSION['newsql1'].= ' AND SUBSTR(smv.COLLEGE_DATE,1,4) =\'' . $_REQUEST['nv_year'] . '\' AND s.COLLEGE_ROLL_NO=smv.COLLEGE_ROLL_NO ';
             $nv_date.=" Year :" . $_REQUEST['nv_year'];
         }
         if (!$extra['NoSearchTerms'])
@@ -1581,25 +1581,25 @@ function appendSQL_Absence_Summary($sql, & $extra) {
 
 
     if ($_REQUEST['med_alrt_title']) {
-        $sql .= ' AND LOWER(sma.TITLE) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['med_alrt_title'])) . '%\' AND s.STUDENT_ID=sma.STUDENT_ID ';
-        $_SESSION['newsql1'].= ' AND LOWER(sma.TITLE) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['med_alrt_title'])) . '%\' AND s.STUDENT_ID=sma.STUDENT_ID ';
+        $sql .= ' AND LOWER(sma.TITLE) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['med_alrt_title'])) . '%\' AND s.COLLEGE_ROLL_NO=sma.COLLEGE_ROLL_NO ';
+        $_SESSION['newsql1'].= ' AND LOWER(sma.TITLE) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['med_alrt_title'])) . '%\' AND s.COLLEGE_ROLL_NO=sma.COLLEGE_ROLL_NO ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Alert starts with: </b></font>' . $_REQUEST['med_alrt_title'] . '<BR>';
     }
     if ($_REQUEST['reason']) {
-        $sql .= ' AND LOWER(smv.REASON) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['reason'])) . '%\' AND s.STUDENT_ID=smv.STUDENT_ID ';
+        $sql .= ' AND LOWER(smv.REASON) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['reason'])) . '%\' AND s.COLLEGE_ROLL_NO=smv.COLLEGE_ROLL_NO ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Reason starts with: </b></font>' . $_REQUEST['reason'] . '<BR>';
     }
     if ($_REQUEST['result']) {
-        $sql .= ' AND LOWER(smv.RESULT) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['result'])) . '%\' AND s.STUDENT_ID=smv.STUDENT_ID ';
-        $_SESSION['newsql1'] .= ' AND LOWER(smv.RESULT) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['result'])) . '%\' AND s.STUDENT_ID=smv.STUDENT_ID ';
+        $sql .= ' AND LOWER(smv.RESULT) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['result'])) . '%\' AND s.COLLEGE_ROLL_NO=smv.COLLEGE_ROLL_NO ';
+        $_SESSION['newsql1'] .= ' AND LOWER(smv.RESULT) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['result'])) . '%\' AND s.COLLEGE_ROLL_NO=smv.COLLEGE_ROLL_NO ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Result starts with: </b></font>' . $_REQUEST['result'] . '<BR>';
     }
     if ($_REQUEST['med_vist_comments']) {
-        $sql .= ' AND LOWER(smv.COMMENTS) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['med_vist_comments'])) . '%\' AND s.STUDENT_ID=smv.STUDENT_ID ';
-        $_SESSION['newsql1'].= ' AND LOWER(smv.COMMENTS) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['med_vist_comments'])) . '%\' AND s.STUDENT_ID=smv.STUDENT_ID ';
+        $sql .= ' AND LOWER(smv.COMMENTS) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['med_vist_comments'])) . '%\' AND s.COLLEGE_ROLL_NO=smv.COLLEGE_ROLL_NO ';
+        $_SESSION['newsql1'].= ' AND LOWER(smv.COMMENTS) LIKE \'' . singleQuoteReplace("'", "\'", strtolower($_REQUEST['med_vist_comments'])) . '%\' AND s.COLLEGE_ROLL_NO=smv.COLLEGE_ROLL_NO ';
         if (!$extra['NoSearchTerms'])
             $_openSIS['SearchTerms'] .= '<font color=gray><b>Nurse Visit Comments starts with: </b></font>' . $_REQUEST['med_vist_comments'] . '<BR>';
     }
@@ -1643,7 +1643,7 @@ function appendSQL_Absence_Summary($sql, & $extra) {
 function _make_Parents($value, $column) {
     global $THIS_RET;
 
-    $sql = 'SELECT DISTINCT person_id AS STAFF_ID, CONCAT( people.LAST_NAME, \' \', people.FIRST_NAME ) AS PARENT FROM students_join_people sju, people, staff_college_relationship ssr WHERE people.staff_id = sju.person_id and sju.student_id=\'' . $value . '\' AND ssr.syear=\'' . UserSyear() . '\'';
+    $sql = 'SELECT DISTINCT person_id AS STAFF_ID, CONCAT( people.LAST_NAME, \' \', people.FIRST_NAME ) AS PARENT FROM students_join_people sju, people, staff_college_relationship ssr WHERE people.staff_id = sju.person_id and sju.college_roll_no=\'' . $value . '\' AND ssr.syear=\'' . UserSyear() . '\'';
     $parents_RET = DBGet(DBQuery($sql));
     foreach ($parents_RET AS $parent) {
         $parents .=$parent['PARENT'] . ',';

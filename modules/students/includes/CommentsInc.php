@@ -69,7 +69,7 @@ if(!$_REQUEST['modfunc'])
 
         $functions = array('COMMENT'=>'_makeCommentsn');
         if(User('PROFILE')=='admin' || User('PROFILE')=='teacher'|| User('PROFILE')=='parent' || User('PROFILE')=='student')
-	$comments_RET = DBGet(DBQuery("SELECT ID,COMMENT_DATE,COMMENT,CONCAT(s.FIRST_NAME,' ',s.LAST_NAME)AS USER_NAME,student_mp_comments.STAFF_ID FROM student_mp_comments,staff s WHERE STUDENT_ID='".UserStudentID()."'  AND s.STAFF_ID=student_mp_comments.STAFF_ID ORDER BY ID DESC"),$functions);
+	$comments_RET = DBGet(DBQuery("SELECT ID,COMMENT_DATE,COMMENT,CONCAT(s.FIRST_NAME,' ',s.LAST_NAME)AS USER_NAME,student_mp_comments.STAFF_ID FROM student_mp_comments,staff s WHERE COLLEGE_ROLL_NO='".UserStudentID()."'  AND s.STAFF_ID=student_mp_comments.STAFF_ID ORDER BY ID DESC"),$functions);
         $counter_for_date=0;
         foreach($comments_RET as $mi=>$md)
         {

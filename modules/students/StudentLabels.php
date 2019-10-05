@@ -33,7 +33,7 @@ $max_rows = 10;
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
     if (count($_REQUEST['st_arr'])) {
         $st_list = '\'' . implode('\',\'', $_REQUEST['st_arr']) . '\'';
-        $extra['WHERE'] = ' AND s.STUDENT_ID IN (' . $st_list . ')';
+        $extra['WHERE'] = ' AND s.COLLEGE_ROLL_NO IN (' . $st_list . ')';
         $qtr = GetAllMP('QTR', GetCurrentMP('QTR', DBDate(), false));
         $extra['SELECT'] .= ',coalesce(s.COMMON_NAME,s.FIRST_NAME) AS NICK_NAME';
         if (User('PROFILE') == 'admin') {
@@ -46,9 +46,9 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
             else {
 
                 if ($_REQUEST['teacher'])
-                    $extra['SELECT'] .= ',(SELECT CONCAT(st.FIRST_NAME,\'' . ' ' . '\',st.LAST_NAME) FROM staff st,course_periods cp,college_periods p,schedule ss,course_period_var cpv WHERE cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND st.STAFF_ID=cp.TEACHER_ID AND cpv.PERIOD_ID=p.PERIOD_ID AND p.ATTENDANCE=\'' . 'Y' . '\' AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND ss.STUDENT_ID=s.STUDENT_ID AND ss.SYEAR=\'' . UserSyear() . '\' ' . ($_REQUEST['_search_all_colleges'] != 'Y' ? ' AND ss.MARKING_PERIOD_ID IN(' . $qtr . ') ' : '') . ' AND (ss.START_DATE<=\'' . DBDate() . '\' AND (ss.END_DATE>=\'' . DBDate() . '\' OR ss.END_DATE IS NULL)) ORDER BY p.SORT_ORDER LIMIT 1) AS TEACHER';
+                    $extra['SELECT'] .= ',(SELECT CONCAT(st.FIRST_NAME,\'' . ' ' . '\',st.LAST_NAME) FROM staff st,course_periods cp,college_periods p,schedule ss,course_period_var cpv WHERE cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND st.STAFF_ID=cp.TEACHER_ID AND cpv.PERIOD_ID=p.PERIOD_ID AND p.ATTENDANCE=\'' . 'Y' . '\' AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND ss.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ss.SYEAR=\'' . UserSyear() . '\' ' . ($_REQUEST['_search_all_colleges'] != 'Y' ? ' AND ss.MARKING_PERIOD_ID IN(' . $qtr . ') ' : '') . ' AND (ss.START_DATE<=\'' . DBDate() . '\' AND (ss.END_DATE>=\'' . DBDate() . '\' OR ss.END_DATE IS NULL)) ORDER BY p.SORT_ORDER LIMIT 1) AS TEACHER';
                 if ($_REQUEST['room'])
-                    $extra['SELECT'] .= ',(SELECT GROUP_CONCAT(r.TITLE) AS ROOM   FROM course_periods cp,college_periods p,schedule ss,course_period_var cpv,rooms r WHERE cpv.ROOM_ID=r.ROOM_ID AND cpv.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cpv.PERIOD_ID=p.PERIOD_ID AND p.ATTENDANCE=\'' . 'Y' . '\' AND  cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND ss.STUDENT_ID=s.STUDENT_ID AND ss.SYEAR=\'' . UserSyear() . '\' ' . ($_REQUEST['_search_all_colleges'] != 'Y' ? ' AND ss.MARKING_PERIOD_ID IN(' . $qtr . ') ' : '') . ' AND (ss.START_DATE<=\'' . DBDate() . '\' AND (ss.END_DATE>=\'' . DBDate() . '\' OR ss.END_DATE IS NULL)) ORDER BY p.SORT_ORDER LIMIT 1) AS ROOM';
+                    $extra['SELECT'] .= ',(SELECT GROUP_CONCAT(r.TITLE) AS ROOM   FROM course_periods cp,college_periods p,schedule ss,course_period_var cpv,rooms r WHERE cpv.ROOM_ID=r.ROOM_ID AND cpv.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cpv.PERIOD_ID=p.PERIOD_ID AND p.ATTENDANCE=\'' . 'Y' . '\' AND  cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND ss.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ss.SYEAR=\'' . UserSyear() . '\' ' . ($_REQUEST['_search_all_colleges'] != 'Y' ? ' AND ss.MARKING_PERIOD_ID IN(' . $qtr . ') ' : '') . ' AND (ss.START_DATE<=\'' . DBDate() . '\' AND (ss.END_DATE>=\'' . DBDate() . '\' OR ss.END_DATE IS NULL)) ORDER BY p.SORT_ORDER LIMIT 1) AS ROOM';
             }
         }
         else {
@@ -197,13 +197,13 @@ if (!$_REQUEST['modfunc']) {
 
 
     $extra['link'] = array('FULL_NAME' => false);
-    $extra['SELECT'] = ",s.STUDENT_ID AS CHECKBOX";
+    $extra['SELECT'] = ",s.COLLEGE_ROLL_NO AS CHECKBOX";
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
     $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'unused\');"><A>');
     $extra['options']['search'] = false;
     $extra['new'] = true;
 
-    Search('student_id', $extra);
+    Search('college_roll_no', $extra);
     if ($_REQUEST['search_modfunc'] == 'list') {
         echo '<div class="text-right p-b-20 p-r-20"><INPUT type=submit class="btn btn-primary" value=\'Create Labels for Selected Students\'></div>';
         echo "</FORM>";
@@ -248,7 +248,7 @@ if (!$_REQUEST['modfunc']) {
 function _makeChooseCheckbox($value, $title) {
     //    return '<INPUT type=checkbox name=st_arr[] value=' . $value . ' checked>';
     global $THIS_RET;
-    return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
+    return "<input name=unused[$THIS_RET[COLLEGE_ROLL_NO]] value=" . $THIS_RET[COLLEGE_ROLL_NO] . "  type='checkbox' id=$THIS_RET[COLLEGE_ROLL_NO] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[COLLEGE_ROLL_NO]);' />";
 }
 
 ?>

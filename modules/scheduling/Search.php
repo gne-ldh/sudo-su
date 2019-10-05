@@ -27,8 +27,8 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-if ($_REQUEST['student_id'] == 'new') {
-    unset($_SESSION['student_id']);
+if ($_REQUEST['college_roll_no'] == 'new') {
+    unset($_SESSION['college_roll_no']);
     $_SESSION['unset_student'] = true;
 }
 if (User('PROFILE') == 'parent' || User('PROFILE') == 'student') {

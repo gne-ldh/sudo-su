@@ -28,22 +28,22 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 if (User('PROFILE') == 'admin') {
-    if (!$_REQUEST['student_id']) {
+    if (!$_REQUEST['college_roll_no']) {
         if (!$_REQUEST['include']) {
-            unset($_SESSION['student_id']);
-            unset($_SESSION['_REQUEST_vars']['student_id']);
+            unset($_SESSION['college_roll_no']);
+            unset($_SESSION['_REQUEST_vars']['college_roll_no']);
         }
     }
 }
 if (optional_param('modfunc', '', PARAM_NOTAGS) == 'save') {
     if ($_REQUEST['activity_id']) {
         if (count($_REQUEST['student']) != 0) {
-            $current_RET = DBGet(DBQuery('SELECT STUDENT_ID FROM student_eligibility_activities WHERE ACTIVITY_ID=\'' . $_REQUEST['activity_id'] . '\' AND SYEAR=\'' . UserSyear() . '\''), array(), array('STUDENT_ID'));
+            $current_RET = DBGet(DBQuery('SELECT COLLEGE_ROLL_NO FROM student_eligibility_activities WHERE ACTIVITY_ID=\'' . $_REQUEST['activity_id'] . '\' AND SYEAR=\'' . UserSyear() . '\''), array(), array('COLLEGE_ROLL_NO'));
 
-            foreach ($_REQUEST['student'] as $student_id => $yes) {
-                if (!$current_RET[$student_id]) {
-                    $sql = 'INSERT INTO student_eligibility_activities (SYEAR,STUDENT_ID,ACTIVITY_ID)
-							values(\'' . UserSyear() . '\',\'' . $student_id . '\',\'' . optional_param('activity_id', '', PARAM_SPCL) . '\')';
+            foreach ($_REQUEST['student'] as $college_roll_no => $yes) {
+                if (!$current_RET[$college_roll_no]) {
+                    $sql = 'INSERT INTO student_eligibility_activities (SYEAR,COLLEGE_ROLL_NO,ACTIVITY_ID)
+							values(\'' . UserSyear() . '\',\'' . $college_roll_no . '\',\'' . optional_param('activity_id', '', PARAM_SPCL) . '\')';
                     DBQuery($sql);
                 }
             }
@@ -110,7 +110,7 @@ $extra['search'] .= '</div>'; //.row
 if ($_REQUEST['search_modfunc'] == 'list') {
     $extra['footer'] = '<div class="panel-footer text-right p-r-20">' . SubmitButton('Add Activity to Selected Students', '', 'class="btn btn-primary"') . '</div>';
 }
-Search('student_id', $extra);
+Search('college_roll_no', $extra);
 echo '<div id="modal_default" class="modal fade">
 <div class="modal-dialog">
 <div class="modal-content">
@@ -151,7 +151,7 @@ if ($_REQUEST['search_modfunc'] == 'list') {
 function _makeChooseCheckbox($value, $title) {
     global $THIS_RET;
 
-    return "<INPUT type=checkbox name=student[" . $THIS_RET['STUDENT_ID'] . "] value=Y>";
+    return "<INPUT type=checkbox name=student[" . $THIS_RET['COLLEGE_ROLL_NO'] . "] value=Y>";
 }
 
 ?>

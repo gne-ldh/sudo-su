@@ -49,7 +49,7 @@ function _makeTextInputSchl($column, $name, $size, $request = 'values') {
 function _makeDateInputSchl($column, $name, $request = 'values') {
     global $value, $field;
 
-    if ($_REQUEST['student_id'] == 'new' && $field['DEFAULT_SELECTION']) {
+    if ($_REQUEST['college_roll_no'] == 'new' && $field['DEFAULT_SELECTION']) {
         $value[$column] = $field['DEFAULT_SELECTION'];
         $div = false;
         $req = $field['REQUIRED'] == 'Y' ? array('<FONT color=red>', '</FONT>') : array('', '');
@@ -65,7 +65,7 @@ function _makeDateInputSchl($column, $name, $request = 'values') {
 function _makeSelectInputSchl($column, $name, $request = 'values') {
     global $value, $field;
 
-    if ($_REQUEST['student_id'] == 'new' && $field['DEFAULT_SELECTION']) {
+    if ($_REQUEST['college_roll_no'] == 'new' && $field['DEFAULT_SELECTION']) {
         $value[$column] = $field['DEFAULT_SELECTION'];
         $div = false;
         $req = $field['REQUIRED'] == 'Y' ? array('<FONT color=red>', '</FONT>') : array('', '');
@@ -94,7 +94,7 @@ function _makeSelectInputSchl($column, $name, $request = 'values') {
 function _makeAutoSelectInputSchl($column, $name, $request = 'values') {
     global $value, $field;
 
-    if ($_REQUEST['student_id'] == 'new' && $field['DEFAULT_SELECTION']) {
+    if ($_REQUEST['college_roll_no'] == 'new' && $field['DEFAULT_SELECTION']) {
         $value[$column] = $field['DEFAULT_SELECTION'];
         $div = false;
         $req = $field['REQUIRED'] == 'Y' ? array('<FONT color=red>', '</FONT>') : array('', '');
@@ -134,19 +134,19 @@ function _makeAutoSelectInputSchl($column, $name, $request = 'values') {
 function _makeCheckboxInputSchl($column, $name, $request = 'values') {
     global $value, $field;
 
-    if ($_REQUEST['student_id'] == 'new' && $field['DEFAULT_SELECTION']) {
+    if ($_REQUEST['college_roll_no'] == 'new' && $field['DEFAULT_SELECTION']) {
         $value[$column] = $field['DEFAULT_SELECTION'];
         $div = false;
     } else
         $div = true;
 
-    return CheckboxInput($value[$column], $request . '[' . $column . ']', $name, '', ($_REQUEST['student_id'] == 'new'));
+    return CheckboxInput($value[$column], $request . '[' . $column . ']', $name, '', ($_REQUEST['college_roll_no'] == 'new'));
 }
 
 function _makeTextareaInputSchl($column, $name, $request = 'values') {
     global $value, $field;
 
-    if ($_REQUEST['student_id'] == 'new' && $field['DEFAULT_SELECTION']) {
+    if ($_REQUEST['college_roll_no'] == 'new' && $field['DEFAULT_SELECTION']) {
         $value[$column] = $field['DEFAULT_SELECTION'];
         $div = false;
     } else
@@ -249,7 +249,7 @@ function _makeDateInput_modSchl($column, $name, $request = 'values', $id='') {
     global $value, $field;
     $col_no = explode('_', $column);
     $counter = $col_no[1];
-    if ($_REQUEST['student_id'] == 'new' && $field['DEFAULT_SELECTION']) {
+    if ($_REQUEST['college_roll_no'] == 'new' && $field['DEFAULT_SELECTION']) {
         $value[$column] = $field['DEFAULT_SELECTION'];
         $div = false;
         $req = $field['REQUIRED'] == 'Y' ? array('<FONT color=red>', '</FONT>') : array('', '');

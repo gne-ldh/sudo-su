@@ -36,7 +36,7 @@ if ($_REQUEST['modfunc'] == 'save') {
             $_REQUEST['_search_all_colleges'] = 'Y';
         }
         $st_list = '\'' . implode('\',\'', $_REQUEST['st_arr']) . '\'';
-        $extra['WHERE'] = " AND s.STUDENT_ID IN ($st_list)";
+        $extra['WHERE'] = " AND s.COLLEGE_ROLL_NO IN ($st_list)";
 
         if ($_REQUEST['day_include_active_date'] && $_REQUEST['month_include_active_date'] && $_REQUEST['year_include_active_date']) {
             $date = $_REQUEST['day_include_active_date'] . '-' . $_REQUEST['month_include_active_date'] . '-' . $_REQUEST['year_include_active_date'];
@@ -55,7 +55,7 @@ if ($_REQUEST['modfunc'] == 'save') {
         $columns = array('COURSE' => 'Course', 'MARKING_PERIOD_ID' => 'Term', 'DAYS' => 'Days', 'PERIOD_TITLE' => 'Period - Teacher', 'DURATION' => 'Time', 'ROOM' => 'Room');
 
         $extra['SELECT'] .= ',p_cp.COURSE_PERIOD_ID,r.TITLE as ROOM,CONCAT(sp.START_TIME,\'' . ' to ' . '\', sp.END_TIME) AS DURATION,sp.TITLE AS PERIOD,cpv.DAYS,p_cp.SCHEDULE_TYPE,c.TITLE AS COURSE,p_cp.TITLE AS PERIOD_TITLE,sr.MARKING_PERIOD_ID';
-        $extra['FROM'] .= ' LEFT OUTER JOIN schedule sr ON (sr.STUDENT_ID=ssm.STUDENT_ID),courses c,course_periods p_cp,course_period_var cpv,college_periods sp,rooms r ';
+        $extra['FROM'] .= ' LEFT OUTER JOIN schedule sr ON (sr.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO),courses c,course_periods p_cp,course_period_var cpv,college_periods sp,rooms r ';
 
 //        if($_REQUEST['include_inactive']!='Y')
 //        {
@@ -99,7 +99,7 @@ if ($_REQUEST['modfunc'] == 'save') {
         $extra['functions'] = array('MARKING_PERIOD_ID' => 'GetMPAllCollege');
         else
             $extra['functions'] = array('MARKING_PERIOD_ID' => 'GetMP');
-        $extra['group'] = array('STUDENT_ID');
+        $extra['group'] = array('COLLEGE_ROLL_NO');
 //        $extra['order']=array('SORT_ORDER','MARKING_PERIOD_ID');
         $extra['ORDER'] .= ',p_cp.COURSE_PERIOD_ID,cpv.days';
         $RET = GetStuList($extra);
@@ -144,7 +144,7 @@ if ($_REQUEST['modfunc'] == 'save') {
             }
         }
 //      
-//        foreach($RET as $student_id =>$RET1)
+//        foreach($RET as $college_roll_no =>$RET1)
 //        {
 //            $ex_cp_arr=array();
 //            foreach($RET1 as $key => $val)
@@ -155,18 +155,18 @@ if ($_REQUEST['modfunc'] == 'save') {
 //                }
 // else {
 //
-//     unset($RET[$student_id][$key]);
+//     unset($RET[$college_roll_no][$key]);
 // }
 //            }
 //        }
 //        $RET_new=array();
-//        foreach($RET as $student_id =>$RET1)
+//        foreach($RET as $college_roll_no =>$RET1)
 //        {
 //            $k=1;
 //            $ex_cp_arr=array();
 //            foreach($RET1 as $key => $val)
 //            {
-//               $RET_new[$student_id][$k]=$val;
+//               $RET_new[$college_roll_no][$k]=$val;
 //               $k++;
 //
 //            }
@@ -176,21 +176,21 @@ if ($_REQUEST['modfunc'] == 'save') {
         if (count($RET)) {
             $handle = PDFStart();
 
-            foreach ($RET as $student_id => $courses) {
+            foreach ($RET as $college_roll_no => $courses) {
                 echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
                 echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetCollege(UserCollege()) . "<div style=\"font-size:12px;\">Student Schedules Report</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
 
                 unset($_openSIS['DrawHeader']);
                 echo '<br>';
                 echo '<table  border=0>';
-                echo '<tr><td>Student ID:</td>';
-                echo '<td>' . $courses[1]['STUDENT_ID'] . '</td></tr>';
+                echo '<tr><td>College Roll No:</td>';
+                echo '<td>' . $courses[1]['COLLEGE_ROLL_NO'] . '</td></tr>';
                 echo '<tr><td>Student Name:</td>';
                 echo '<td>' . $courses[1]['FULL_NAME'] . '</td></tr>';
                 echo '<tr><td>Student Grade:</td>';
                 echo '<td>' . $courses[1]['GRADE_ID'] . '</td></tr>';
                 if ($_REQUEST['mailing_labels'] == 'Y') {
-                    $mail_address = DBGet(DBQuery('SELECT STREET_ADDRESS_1,STREET_ADDRESS_2,CITY,STATE,ZIPCODE FROM student_address WHERE TYPE=\'Mail\' AND  STUDENT_ID=' . $courses[1]['STUDENT_ID']));
+                    $mail_address = DBGet(DBQuery('SELECT STREET_ADDRESS_1,STREET_ADDRESS_2,CITY,STATE,ZIPCODE FROM student_address WHERE TYPE=\'Mail\' AND  COLLEGE_ROLL_NO=' . $courses[1]['COLLEGE_ROLL_NO']));
                     $mail_address = $mail_address[1]['STREET_ADDRESS_1'] . ($mail_address[1]['STREET_ADDRESS_2'] != '' ? ' ' . $mail_address[1]['STREET_ADDRESS_2'] : ' ') . '<br>' . $mail_address[1]['CITY'] . ', ' . $mail_address[1]['STATE'] . ' ' . $mail_address[1]['ZIPCODE'];
                     echo '<tr><td>Mailing Details:</td>';
                     echo '<td>' . ($mail_address != '' ? $mail_address : 'N/A') . '</td></tr>';
@@ -230,7 +230,7 @@ if (!$_REQUEST['modfunc']) {
     }
 
     $extra['link'] = array('FULL_NAME' => false);
-    $extra['SELECT'] = ',s.STUDENT_ID AS CHECKBOX';
+    $extra['SELECT'] = ',s.COLLEGE_ROLL_NO AS CHECKBOX';
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
 //    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller checked onclick="checkAll(this.form,this.form.controller.checked,\'st_arr\');"><A>');
     $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'st_arr\');"><A>');
@@ -246,7 +246,7 @@ if (!$_REQUEST['modfunc']) {
     $extra['search'] .= '</div>'; //.col-lg-6
     $extra['search'] .= '</div>'; //.row
 
-    Search('student_id', $extra);
+    Search('college_roll_no', $extra);
 
     if ($_REQUEST['search_modfunc'] == 'list') {
         if ($_SESSION['count_stu'] != 0)
@@ -269,9 +269,9 @@ function _makeChooseCheckbox($value, $title) {
 
     return '<INPUT type=checkbox name=st_arr[] value=' . $value . '>';
     
-//   return "<input name=unused[$THIS_RET[STUDENT_ID]]  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckbox(\"values[STUDENTS][$THIS_RET[STUDENT_ID]]\",this,$THIS_RET[STUDENT_ID]);' />";
+//   return "<input name=unused[$THIS_RET[COLLEGE_ROLL_NO]]  type='checkbox' id=$THIS_RET[COLLEGE_ROLL_NO] onClick='setHiddenCheckbox(\"values[STUDENTS][$THIS_RET[COLLEGE_ROLL_NO]]\",this,$THIS_RET[COLLEGE_ROLL_NO]);' />";
 
-//   return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
+//   return "<input name=unused[$THIS_RET[COLLEGE_ROLL_NO]] value=" . $THIS_RET[COLLEGE_ROLL_NO] . "  type='checkbox' id=$THIS_RET[COLLEGE_ROLL_NO] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[COLLEGE_ROLL_NO]);' />";
    
 }
 

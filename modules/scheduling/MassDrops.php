@@ -37,13 +37,13 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
         for_error_sch();
     } else {
         $mp_table = GetMPTable(GetMP($_REQUEST['marking_period_id'], 'TABLE'));
-        $current_RET = DBGet(DBQuery('SELECT STUDENT_ID FROM schedule WHERE COURSE_PERIOD_ID=\'' . $_SESSION['MassDrops.php']['course_period_id'] . '\''));
+        $current_RET = DBGet(DBQuery('SELECT COLLEGE_ROLL_NO FROM schedule WHERE COURSE_PERIOD_ID=\'' . $_SESSION['MassDrops.php']['course_period_id'] . '\''));
         if (count($_REQUEST['student']) > 0) {
-            foreach ($_REQUEST['student'] as $student_id => $yes) {
-                $start_end_RET = DBGet(DBQuery('SELECT START_DATE,END_DATE,SCHEDULER_LOCK FROM schedule WHERE STUDENT_ID=\'' . $student_id . '\' AND COURSE_PERIOD_ID=\'' . $_SESSION['MassDrops.php']['course_period_id'] . '\''));
+            foreach ($_REQUEST['student'] as $college_roll_no => $yes) {
+                $start_end_RET = DBGet(DBQuery('SELECT START_DATE,END_DATE,SCHEDULER_LOCK FROM schedule WHERE COLLEGE_ROLL_NO=\'' . $college_roll_no . '\' AND COURSE_PERIOD_ID=\'' . $_SESSION['MassDrops.php']['course_period_id'] . '\''));
                 if (count($start_end_RET)) {
                     if ($start_end_RET[1]['SCHEDULER_LOCK'] == 'Y' || $start_end_RET[1]['START_DATE'] > $end_date_mod) {
-                        $select_stu = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME FROM students WHERE STUDENT_ID=\'' . $student_id . '\''));
+                        $select_stu = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME FROM students WHERE COLLEGE_ROLL_NO=\'' . $college_roll_no . '\''));
                         $select_stu = $select_stu[1]['FIRST_NAME'] . "&nbsp;" . $select_stu[1]['LAST_NAME'];
                         if ($start_end_RET[1]['SCHEDULER_LOCK'] == 'Y') {
                             $inactive_schedule2 .= $select_stu . "<br>";
@@ -54,7 +54,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
                             $inactive_schedule_found = 1;
                         }
                     } else {
-                        DBQuery('UPDATE schedule SET END_DATE=\'' . $end_date_mod . '\',MODIFIED_DATE=\'' . Date('Y-m-d') . '\',MODIFIED_BY=\'' . User('STAFF_ID') . '\'  WHERE STUDENT_ID=\'' . clean_param($student_id, PARAM_INT) . '\' AND COURSE_PERIOD_ID=\'' . clean_param($_SESSION['MassDrops.php']['course_period_id'], PARAM_INT) . '\'');
+                        DBQuery('UPDATE schedule SET END_DATE=\'' . $end_date_mod . '\',MODIFIED_DATE=\'' . Date('Y-m-d') . '\',MODIFIED_BY=\'' . User('STAFF_ID') . '\'  WHERE COLLEGE_ROLL_NO=\'' . clean_param($college_roll_no, PARAM_INT) . '\' AND COURSE_PERIOD_ID=\'' . clean_param($_SESSION['MassDrops.php']['course_period_id'], PARAM_INT) . '\'');
                         DBQuery('CALL SEAT_COUNT()');
                         $note = "Selected students have been dropped from the course period.";
                     }
@@ -90,7 +90,7 @@ if (!$_REQUEST['modfunc']) {
 
     if ($_SESSION['MassDrops.php']['course_period_id']) {
         $extra['FROM'] .= ',schedule w_ss';
-        $extra['WHERE'] .= ' AND w_ss.STUDENT_ID=s.STUDENT_ID AND w_ss.SYEAR=ssm.SYEAR AND w_ss.COLLEGE_ID=ssm.COLLEGE_ID AND w_ss.COURSE_PERIOD_ID=\'' . $_SESSION['MassDrops.php']['course_period_id'] . '\' AND (' . (($_REQUEST['include_inactive']) ? '' : 'w_ss.START_DATE <=\'' . DBDate() . '\' AND') . ' (w_ss.END_DATE>=\'' . DBDate() . '\' OR w_ss.END_DATE IS NULL))';
+        $extra['WHERE'] .= ' AND w_ss.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND w_ss.SYEAR=ssm.SYEAR AND w_ss.COLLEGE_ID=ssm.COLLEGE_ID AND w_ss.COURSE_PERIOD_ID=\'' . $_SESSION['MassDrops.php']['course_period_id'] . '\' AND (' . (($_REQUEST['include_inactive']) ? '' : 'w_ss.START_DATE <=\'' . DBDate() . '\' AND') . ' (w_ss.END_DATE>=\'' . DBDate() . '\' OR w_ss.END_DATE IS NULL))';
         $course = DBGet(DBQuery('SELECT c.TITLE AS COURSE_TITLE,cp.TITLE,cp.COURSE_ID FROM course_periods cp,courses c WHERE c.COURSE_ID=cp.COURSE_ID AND cp.COURSE_PERIOD_ID=\'' . $_SESSION['MassDrops.php']['course_period_id'] . '\''));
         $_openSIS['SearchTerms'] .= '<b>Course Period : </b>' . $course[1]['COURSE_TITLE'] . ' : ' . $course[1]['TITLE'];
     }
@@ -123,7 +123,7 @@ if (!$_REQUEST['modfunc']) {
         echo '<input type="hidden" name="marking_period_id" value=' . strip_tags(trim($_REQUEST['marking_period_id'])) . ' >';
         $students_RET = GetStuList($extra);
 
-        $LO_columns = array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'Student ID', 'ALT_ID' => 'Alternate ID', 'GRADE_ID' => 'Grade', 'PHONE' => 'Phone');
+        $LO_columns = array('FULL_NAME' => 'Student', 'COLLEGE_ROLL_NO' => 'College Roll No', 'ALT_ID' => 'Alternate ID', 'GRADE_ID' => 'Grade', 'PHONE' => 'Phone');
 
 
         if (is_array($extra['columns_before'])) {
@@ -244,7 +244,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAEXT) == 'choose_course') {
 
 function _makeChooseCheckbox($value, $title) {
     global $THIS_RET;
-    return "<INPUT type=checkbox name=student[" . $THIS_RET['STUDENT_ID'] . "] value=Y>";
+    return "<INPUT type=checkbox name=student[" . $THIS_RET['COLLEGE_ROLL_NO'] . "] value=Y>";
 }
 
 ?>

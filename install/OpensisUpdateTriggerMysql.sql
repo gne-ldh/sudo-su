@@ -3,7 +3,7 @@ DELIMITER $$
 CREATE TRIGGER `td_student_report_card_grades`
     AFTER DELETE ON student_report_card_grades
     FOR EACH ROW
-	SELECT CALC_GPA_MP(OLD.student_id, OLD.marking_period_id) INTO @return$$
+	SELECT CALC_GPA_MP(OLD.college_roll_no, OLD.marking_period_id) INTO @return$$
 DELIMITER ;
 
 DROP TRIGGER IF EXISTS `ti_student_report_card_grades`;
@@ -11,7 +11,7 @@ DELIMITER $$
 CREATE TRIGGER `ti_student_report_card_grades`
     AFTER INSERT ON student_report_card_grades
     FOR EACH ROW
-	SELECT CALC_GPA_MP(NEW.student_id, NEW.marking_period_id) INTO @return$$
+	SELECT CALC_GPA_MP(NEW.college_roll_no, NEW.marking_period_id) INTO @return$$
 DELIMITER ;
 
 DROP TRIGGER IF EXISTS `tu_student_report_card_grades`;
@@ -19,7 +19,7 @@ DELIMITER $$
 CREATE TRIGGER `tu_student_report_card_grades`
     AFTER UPDATE ON student_report_card_grades
     FOR EACH ROW
-	SELECT CALC_GPA_MP(NEW.student_id, NEW.marking_period_id) INTO @return$$
+	SELECT CALC_GPA_MP(NEW.college_roll_no, NEW.marking_period_id) INTO @return$$
 DELIMITER ;
 
 

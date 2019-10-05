@@ -100,39 +100,39 @@ if (!$_REQUEST['modfunc']) {
         $search_stu = 0;
 
         if ($_REQUEST['last'] != '' || $_REQUEST['first'] != '' || $_REQUEST['stuid'] != '' || $_REQUEST['altid'] != '') {
-            $stu_q = 'SELECT GROUP_CONCAT(STUDENT_ID) as STUDENT_ID FROM students WHERE ';
+            $stu_q = 'SELECT GROUP_CONCAT(COLLEGE_ROLL_NO) as COLLEGE_ROLL_NO FROM students WHERE ';
             $stu_q.=($_REQUEST['last'] != '' ? ' LAST_NAME=\'' . $_REQUEST['last'] . '\' OR ' : '');
             $stu_q.=($_REQUEST['first'] != '' ? ' FIRST_NAME=\'' . $_REQUEST['first'] . '\' OR ' : '');
-            $stu_q.=($_REQUEST['stuid'] != '' ? ' STUDENT_ID=\'' . $_REQUEST['stuid'] . '\' OR ' : '');
+            $stu_q.=($_REQUEST['stuid'] != '' ? ' COLLEGE_ROLL_NO=\'' . $_REQUEST['stuid'] . '\' OR ' : '');
             $stu_q.=($_REQUEST['altid'] != '' ? ' ALT_ID=\'' . $_REQUEST['altid'] . '\' OR ' : '');
             $stu_q = preg_replace('/ OR $/', '', $stu_q);
             $stu_q = DBGet(DBQuery($stu_q));
-            $search_stu = $stu_q[1]['STUDENT_ID'];
+            $search_stu = $stu_q[1]['COLLEGE_ROLL_NO'];
         }
         if ($_REQUEST['addr'] != '') {
-            $stu_q = DBGet(DBQuery('SELECT GROUP_CONAT(STUDENT_ID) as STUDENT_ID FROM student_address WHERE address like \'%' . $_REQUEST['addr'] . '%\''));
-            $search_stu.=$stu_q[1]['STUDENT_ID'];
+            $stu_q = DBGet(DBQuery('SELECT GROUP_CONAT(COLLEGE_ROLL_NO) as COLLEGE_ROLL_NO FROM student_address WHERE address like \'%' . $_REQUEST['addr'] . '%\''));
+            $search_stu.=$stu_q[1]['COLLEGE_ROLL_NO'];
         }
 
         if ($_REQUEST['grade'] == '')
-            $student_days_possible = DBGet(DBQuery('SELECT ac.COLLEGE_ID,ac.COLLEGE_DATE,ac.COLLEGE_DATE as SC_DATE,ssm.GRADE_ID as GRADE,ssm.GRADE_ID,\'0\' AS DAYS_POSSIBLE,0 AS ATTENDANCE_POSSIBLE,count(DISTINCT ssm.STUDENT_ID) AS STUDENTS,\'0\' AS PRESENT,\'0\' AS ABSENT,\'0\' AS OTHERS,\'0\' AS ADA,\'0\' AS AVERAGE_ATTENDANCE,\'0\' AS AVERAGE_ABSENT FROM student_enrollment ssm,attendance_calendar ac,students s WHERE s.STUDENT_ID=ssm.STUDENT_ID AND ssm.SYEAR=\'' . UserSyear() . '\' AND ac.SYEAR=ssm.SYEAR AND ssm.COLLEGE_ID=ac.COLLEGE_ID  AND ssm.COLLEGE_ID=ac.COLLEGE_ID AND (ssm.GRADE_ID IS NOT NULL OR ssm.GRADE_ID<>\'\') AND (ac.COLLEGE_DATE BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND ssm.START_DATE <= ac.COLLEGE_DATE)) AND ac.COLLEGE_DATE BETWEEN \'' . date('Y-m-d', strtotime($start_date)) . '\' AND \'' . date('Y-m-d', strtotime($end_date)) . '\' ' . ($_REQUEST['_search_all_colleges'] != 'Y' ? ' AND ac.COLLEGE_ID=\'' . UserCollege() . '\' ' : '') . ($search_stu != '0' ? ' AND ssm.STUDENT_ID IN (\'' . $search_stu . '\') ' : '') . ' GROUP BY ac.COLLEGE_DATE,ssm.GRADE_ID'), array('COLLEGE_DATE' => 'ProperDate', 'GRADE_ID' => 'GetGrade', 'DAYS_POSSIBLE' => '_makeByDay'));
+            $student_days_possible = DBGet(DBQuery('SELECT ac.COLLEGE_ID,ac.COLLEGE_DATE,ac.COLLEGE_DATE as SC_DATE,ssm.GRADE_ID as GRADE,ssm.GRADE_ID,\'0\' AS DAYS_POSSIBLE,0 AS ATTENDANCE_POSSIBLE,count(DISTINCT ssm.COLLEGE_ROLL_NO) AS STUDENTS,\'0\' AS PRESENT,\'0\' AS ABSENT,\'0\' AS OTHERS,\'0\' AS ADA,\'0\' AS AVERAGE_ATTENDANCE,\'0\' AS AVERAGE_ABSENT FROM student_enrollment ssm,attendance_calendar ac,students s WHERE s.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND ssm.SYEAR=\'' . UserSyear() . '\' AND ac.SYEAR=ssm.SYEAR AND ssm.COLLEGE_ID=ac.COLLEGE_ID  AND ssm.COLLEGE_ID=ac.COLLEGE_ID AND (ssm.GRADE_ID IS NOT NULL OR ssm.GRADE_ID<>\'\') AND (ac.COLLEGE_DATE BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND ssm.START_DATE <= ac.COLLEGE_DATE)) AND ac.COLLEGE_DATE BETWEEN \'' . date('Y-m-d', strtotime($start_date)) . '\' AND \'' . date('Y-m-d', strtotime($end_date)) . '\' ' . ($_REQUEST['_search_all_colleges'] != 'Y' ? ' AND ac.COLLEGE_ID=\'' . UserCollege() . '\' ' : '') . ($search_stu != '0' ? ' AND ssm.COLLEGE_ROLL_NO IN (\'' . $search_stu . '\') ' : '') . ' GROUP BY ac.COLLEGE_DATE,ssm.GRADE_ID'), array('COLLEGE_DATE' => 'ProperDate', 'GRADE_ID' => 'GetGrade', 'DAYS_POSSIBLE' => '_makeByDay'));
         if ($_REQUEST['grade'] != '')
-            $student_days_possible = DBGet(DBQuery('SELECT ac.COLLEGE_ID,ac.COLLEGE_DATE,ac.COLLEGE_DATE as SC_DATE,ssm.GRADE_ID as GRADE,ssm.GRADE_ID,\'0\' AS DAYS_POSSIBLE,0 AS ATTENDANCE_POSSIBLE,count(DISTINCT ssm.STUDENT_ID) AS STUDENTS,\'0\' AS PRESENT,\'0\' AS ABSENT,\'0\' AS OTHERS,\'0\' AS ADA,\'0\' AS AVERAGE_ATTENDANCE,\'0\' AS AVERAGE_ABSENT FROM student_enrollment ssm,attendance_calendar ac,students s WHERE ssm.GRADE_ID IN (SELECT ID FROM college_gradelevels WHERE TITLE=\'' . $_REQUEST['grade'] . '\') AND s.STUDENT_ID=ssm.STUDENT_ID AND ssm.SYEAR=\'' . UserSyear() . '\' AND ac.SYEAR=ssm.SYEAR AND ssm.COLLEGE_ID=ac.COLLEGE_ID AND (ssm.GRADE_ID IS NOT NULL OR ssm.GRADE_ID<>\'\') AND ssm.COLLEGE_ID=ac.COLLEGE_ID AND (ac.COLLEGE_DATE BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND ssm.START_DATE <= ac.COLLEGE_DATE)) AND ac.COLLEGE_DATE BETWEEN \'' . date('Y-m-d', strtotime($start_date)) . '\' AND \'' . date('Y-m-d', strtotime($end_date)) . '\' ' . ($_REQUEST['_search_all_colleges'] != 'Y' ? ' AND ac.COLLEGE_ID=\'' . UserCollege() . '\' ' : '') . ($search_stu != '0' ? ' AND ssm.STUDENT_ID IN (\'' . $search_stu . '\') ' : '') . ' GROUP BY ac.COLLEGE_DATE'), array('COLLEGE_DATE' => 'ProperDate', 'GRADE_ID' => 'GetGrade', 'DAYS_POSSIBLE' => '_makeByDay'));
+            $student_days_possible = DBGet(DBQuery('SELECT ac.COLLEGE_ID,ac.COLLEGE_DATE,ac.COLLEGE_DATE as SC_DATE,ssm.GRADE_ID as GRADE,ssm.GRADE_ID,\'0\' AS DAYS_POSSIBLE,0 AS ATTENDANCE_POSSIBLE,count(DISTINCT ssm.COLLEGE_ROLL_NO) AS STUDENTS,\'0\' AS PRESENT,\'0\' AS ABSENT,\'0\' AS OTHERS,\'0\' AS ADA,\'0\' AS AVERAGE_ATTENDANCE,\'0\' AS AVERAGE_ABSENT FROM student_enrollment ssm,attendance_calendar ac,students s WHERE ssm.GRADE_ID IN (SELECT ID FROM college_gradelevels WHERE TITLE=\'' . $_REQUEST['grade'] . '\') AND s.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND ssm.SYEAR=\'' . UserSyear() . '\' AND ac.SYEAR=ssm.SYEAR AND ssm.COLLEGE_ID=ac.COLLEGE_ID AND (ssm.GRADE_ID IS NOT NULL OR ssm.GRADE_ID<>\'\') AND ssm.COLLEGE_ID=ac.COLLEGE_ID AND (ac.COLLEGE_DATE BETWEEN ssm.START_DATE AND ssm.END_DATE OR (ssm.END_DATE IS NULL AND ssm.START_DATE <= ac.COLLEGE_DATE)) AND ac.COLLEGE_DATE BETWEEN \'' . date('Y-m-d', strtotime($start_date)) . '\' AND \'' . date('Y-m-d', strtotime($end_date)) . '\' ' . ($_REQUEST['_search_all_colleges'] != 'Y' ? ' AND ac.COLLEGE_ID=\'' . UserCollege() . '\' ' : '') . ($search_stu != '0' ? ' AND ssm.COLLEGE_ROLL_NO IN (\'' . $search_stu . '\') ' : '') . ' GROUP BY ac.COLLEGE_DATE'), array('COLLEGE_DATE' => 'ProperDate', 'GRADE_ID' => 'GetGrade', 'DAYS_POSSIBLE' => '_makeByDay'));
 
         foreach ($student_days_possible as $si => $sd) {
-            $present = DBGet(DBQuery('SELECT COUNT(*) AS PRESENT_BY_GRADE FROM `attendance_period` AP,student_enrollment SE WHERE AP.ATTENDANCE_CODE IN (SELECT ID FROM attendance_codes WHERE STATE_CODE=\'P\') AND SE.COLLEGE_ID=\'' . $sd['COLLEGE_ID'] . '\' AND AP.COLLEGE_DATE=\'' . $sd['SC_DATE'] . '\' AND AP.STUDENT_ID=SE.STUDENT_ID AND SE.GRADE_ID=' . $sd['GRADE'] . ($search_stu != '0' ? ' AND ssm.STUDENT_ID IN (\'' . $search_stu . '\') ' : '')));
-            $absent = DBGet(DBQuery('SELECT COUNT(*) AS ABSENT_BY_GRADE FROM `attendance_period` AP,student_enrollment SE WHERE AP.ATTENDANCE_CODE IN (SELECT ID FROM attendance_codes WHERE STATE_CODE=\'A\') AND SE.COLLEGE_ID=\'' . $sd['COLLEGE_ID'] . '\' AND AP.COLLEGE_DATE=\'' . $sd['SC_DATE'] . '\' AND AP.STUDENT_ID=SE.STUDENT_ID AND SE.GRADE_ID=' . $sd['GRADE'] . ($search_stu != '0' ? ' AND ssm.STUDENT_ID IN (\'' . $search_stu . '\') ' : '')));
-            $others = DBGet(DBQuery('SELECT COUNT(*) AS OTHERS_BY_GRADE FROM `attendance_period` AP,student_enrollment SE WHERE AP.ATTENDANCE_CODE IN (SELECT ID FROM attendance_codes WHERE STATE_CODE=\'H\') AND SE.COLLEGE_ID=\'' . $sd['COLLEGE_ID'] . '\' AND AP.COLLEGE_DATE=\'' . $sd['SC_DATE'] . '\' AND AP.STUDENT_ID=SE.STUDENT_ID AND SE.GRADE_ID=' . $sd['GRADE'] . ($search_stu != '0' ? ' AND ssm.STUDENT_ID IN (\'' . $search_stu . '\') ' : '')));
+            $present = DBGet(DBQuery('SELECT COUNT(*) AS PRESENT_BY_GRADE FROM `attendance_period` AP,student_enrollment SE WHERE AP.ATTENDANCE_CODE IN (SELECT ID FROM attendance_codes WHERE STATE_CODE=\'P\') AND SE.COLLEGE_ID=\'' . $sd['COLLEGE_ID'] . '\' AND AP.COLLEGE_DATE=\'' . $sd['SC_DATE'] . '\' AND AP.COLLEGE_ROLL_NO=SE.COLLEGE_ROLL_NO AND SE.GRADE_ID=' . $sd['GRADE'] . ($search_stu != '0' ? ' AND ssm.COLLEGE_ROLL_NO IN (\'' . $search_stu . '\') ' : '')));
+            $absent = DBGet(DBQuery('SELECT COUNT(*) AS ABSENT_BY_GRADE FROM `attendance_period` AP,student_enrollment SE WHERE AP.ATTENDANCE_CODE IN (SELECT ID FROM attendance_codes WHERE STATE_CODE=\'A\') AND SE.COLLEGE_ID=\'' . $sd['COLLEGE_ID'] . '\' AND AP.COLLEGE_DATE=\'' . $sd['SC_DATE'] . '\' AND AP.COLLEGE_ROLL_NO=SE.COLLEGE_ROLL_NO AND SE.GRADE_ID=' . $sd['GRADE'] . ($search_stu != '0' ? ' AND ssm.COLLEGE_ROLL_NO IN (\'' . $search_stu . '\') ' : '')));
+            $others = DBGet(DBQuery('SELECT COUNT(*) AS OTHERS_BY_GRADE FROM `attendance_period` AP,student_enrollment SE WHERE AP.ATTENDANCE_CODE IN (SELECT ID FROM attendance_codes WHERE STATE_CODE=\'H\') AND SE.COLLEGE_ID=\'' . $sd['COLLEGE_ID'] . '\' AND AP.COLLEGE_DATE=\'' . $sd['SC_DATE'] . '\' AND AP.COLLEGE_ROLL_NO=SE.COLLEGE_ROLL_NO AND SE.GRADE_ID=' . $sd['GRADE'] . ($search_stu != '0' ? ' AND ssm.COLLEGE_ROLL_NO IN (\'' . $search_stu . '\') ' : '')));
             $student_days_possible[$si]['PRESENT'] = $present[1]['PRESENT_BY_GRADE'];
             $student_days_possible[$si]['ABSENT'] = $absent[1]['ABSENT_BY_GRADE'];
             $student_days_possible[$si]['OTHERS'] = $others[1]['OTHERS_BY_GRADE'];
 
-            $get_cps = DBGet(DBQuery('SELECT DISTINCT s.COURSE_PERIOD_ID,cp.SCHEDULE_TYPE,cp.MARKING_PERIOD_ID,cp.BEGIN_DATE,cp.END_DATE  FROM schedule s,student_enrollment se,course_periods cp,course_period_var cpv WHERE  se.SYEAR=' . UserSyear() . ' AND se.STUDENT_ID=s.STUDENT_ID AND ( 
-                    s.START_DATE<=\'' . $sd['SC_DATE'] . '\' AND (s.END_DATE>=\'' . $sd['SC_DATE'] . '\' OR s.END_DATE IS NULL OR s.END_DATE=\'0000-00-00\')) AND se.GRADE_ID=' . $sd['GRADE'] . ' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=s.COURSE_PERIOD_ID AND cpv.DOES_ATTENDANCE=\'Y\' ' . ($search_stu != '0' ? ' AND ssm.STUDENT_ID IN (\'' . $search_stu . '\') ' : '')));
+            $get_cps = DBGet(DBQuery('SELECT DISTINCT s.COURSE_PERIOD_ID,cp.SCHEDULE_TYPE,cp.MARKING_PERIOD_ID,cp.BEGIN_DATE,cp.END_DATE  FROM schedule s,student_enrollment se,course_periods cp,course_period_var cpv WHERE  se.SYEAR=' . UserSyear() . ' AND se.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ( 
+                    s.START_DATE<=\'' . $sd['SC_DATE'] . '\' AND (s.END_DATE>=\'' . $sd['SC_DATE'] . '\' OR s.END_DATE IS NULL OR s.END_DATE=\'0000-00-00\')) AND se.GRADE_ID=' . $sd['GRADE'] . ' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=s.COURSE_PERIOD_ID AND cpv.DOES_ATTENDANCE=\'Y\' ' . ($search_stu != '0' ? ' AND ssm.COLLEGE_ROLL_NO IN (\'' . $search_stu . '\') ' : '')));
 
             foreach ($get_cps as $gi => $gd) {
-                $get_stu_num = DBGet(DBQuery('SELECT COUNT(s.STUDENT_ID) as ENROLLED_STU  FROM schedule s,student_enrollment se WHERE  se.SYEAR=' . UserSyear() . ' AND se.STUDENT_ID=s.STUDENT_ID AND ( 
-                        s.START_DATE<=\'' . $sd['SC_DATE'] . '\' AND (s.END_DATE>=\'' . $sd['SC_DATE'] . '\' OR s.END_DATE IS NULL OR s.END_DATE=\'0000-00-00\')) AND se.GRADE_ID=' . $sd['GRADE'] . ' AND s.COURSE_PERIOD_ID=' . $gd['COURSE_PERIOD_ID'] . ($search_stu != '0' ? ' AND ssm.STUDENT_ID IN (\'' . $search_stu . '\') ' : '')));
+                $get_stu_num = DBGet(DBQuery('SELECT COUNT(s.COLLEGE_ROLL_NO) as ENROLLED_STU  FROM schedule s,student_enrollment se WHERE  se.SYEAR=' . UserSyear() . ' AND se.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ( 
+                        s.START_DATE<=\'' . $sd['SC_DATE'] . '\' AND (s.END_DATE>=\'' . $sd['SC_DATE'] . '\' OR s.END_DATE IS NULL OR s.END_DATE=\'0000-00-00\')) AND se.GRADE_ID=' . $sd['GRADE'] . ' AND s.COURSE_PERIOD_ID=' . $gd['COURSE_PERIOD_ID'] . ($search_stu != '0' ? ' AND ssm.COLLEGE_ROLL_NO IN (\'' . $search_stu . '\') ' : '')));
 
 
                 if ($gd['SCHEDULE_TYPE'] == 'FIXED') {
@@ -214,18 +214,18 @@ if (!$_REQUEST['modfunc']) {
         $search_stu = '';
 
         if ($_REQUEST['last'] != '' || $_REQUEST['first'] != '' || $_REQUEST['stuid'] != '' || $_REQUEST['altid'] != '') {
-            $stu_q = 'SELECT GROUP_CONCAT(STUDENT_ID) as STUDENT_ID FROM students WHERE ';
+            $stu_q = 'SELECT GROUP_CONCAT(COLLEGE_ROLL_NO) as COLLEGE_ROLL_NO FROM students WHERE ';
             $stu_q.=($_REQUEST['last'] != '' ? ' LAST_NAME=\'' . $_REQUEST['last'] . '\' OR ' : '');
             $stu_q.=($_REQUEST['first'] != '' ? ' FIRST_NAME=\'' . $_REQUEST['first'] . '\' OR ' : '');
-            $stu_q.=($_REQUEST['stuid'] != '' ? ' STUDENT_ID=\'' . $_REQUEST['stuid'] . '\' OR ' : '');
+            $stu_q.=($_REQUEST['stuid'] != '' ? ' COLLEGE_ROLL_NO=\'' . $_REQUEST['stuid'] . '\' OR ' : '');
             $stu_q.=($_REQUEST['altid'] != '' ? ' ALT_ID=\'' . $_REQUEST['altid'] . '\' OR ' : '');
             $stu_q = preg_replace('/ OR $/', '', $stu_q);
             $stu_q = DBGet(DBQuery($stu_q));
-            $search_stu = $stu_q[1]['STUDENT_ID'];
+            $search_stu = $stu_q[1]['COLLEGE_ROLL_NO'];
         }
         if ($_REQUEST['addr'] != '') {
-            $stu_q = DBGet(DBQuery('SELECT GROUP_CONAT(STUDENT_ID) as STUDENT_ID FROM student_address WHERE address like \'%' . $_REQUEST['addr'] . '%\''));
-            $search_stu.=$stu_q[1]['STUDENT_ID'];
+            $stu_q = DBGet(DBQuery('SELECT GROUP_CONAT(COLLEGE_ROLL_NO) as COLLEGE_ROLL_NO FROM student_address WHERE address like \'%' . $_REQUEST['addr'] . '%\''));
+            $search_stu.=$stu_q[1]['COLLEGE_ROLL_NO'];
         }
         $columns = array('GRADE_ID' => 'Grade', 'STUDENTS' => 'Students', 'DAYS_POSSIBLE' => 'Days Possible', 'ATTENDANCE_POSSIBLE' => 'Attendance Possible', 'PRESENT' => 'Present', 'ABSENT' => 'Absent', 'OTHERS' => 'Others', 'NOT_TAKEN' => 'Not Taken', 'ADA' => 'ADA', 'AVERAGE_ATTENDANCE' => 'Avg Attendance', 'AVERAGE_ABSENT' => 'Avg Absent');
         if ($_REQUEST['grade'] == '')
@@ -235,29 +235,29 @@ if (!$_REQUEST['modfunc']) {
         foreach ($ada as $ai => $ad) {
 
             if ($search_stu == '')
-                $total_students = DBGet(DBQuery('SELECT count(STUDENT_ID) as STUDENTS FROM student_enrollment  WHERE GRADE_ID=' . $ad['GRADE'] . ' AND SYEAR=\'' . UserSyear() . '\' AND ( 
+                $total_students = DBGet(DBQuery('SELECT count(COLLEGE_ROLL_NO) as STUDENTS FROM student_enrollment  WHERE GRADE_ID=' . $ad['GRADE'] . ' AND SYEAR=\'' . UserSyear() . '\' AND ( 
                     (START_DATE BETWEEN \'' . $start_date_mod . '\' AND \'' . $end_date_mod . '\') OR (END_DATE BETWEEN \'' . $start_date_mod . '\' AND \'' . $end_date_mod . '\') OR ( (START_DATE <= \'' . $start_date_mod . '\') AND ((END_DATE IS NULL) OR (END_DATE >= \'' . $start_date_mod . '\'))))'));
             else
-                $total_students = DBGet(DBQuery('SELECT count(STUDENT_ID) as STUDENTS FROM student_enrollment  WHERE GRADE_ID=' . $ad['GRADE'] . ' AND SYEAR=\'' . UserSyear() . '\' AND ( 
-                    (START_DATE BETWEEN \'' . $start_date_mod . '\' AND \'' . $end_date_mod . '\') OR (END_DATE BETWEEN \'' . $start_date_mod . '\' AND \'' . $end_date_mod . '\') OR ( (START_DATE <= \'' . $start_date_mod . '\') AND ((END_DATE IS NULL) OR (END_DATE >= \'' . $start_date_mod . '\')))) AND STUDENT_ID IN (' . $search_stu . ')'));
+                $total_students = DBGet(DBQuery('SELECT count(COLLEGE_ROLL_NO) as STUDENTS FROM student_enrollment  WHERE GRADE_ID=' . $ad['GRADE'] . ' AND SYEAR=\'' . UserSyear() . '\' AND ( 
+                    (START_DATE BETWEEN \'' . $start_date_mod . '\' AND \'' . $end_date_mod . '\') OR (END_DATE BETWEEN \'' . $start_date_mod . '\' AND \'' . $end_date_mod . '\') OR ( (START_DATE <= \'' . $start_date_mod . '\') AND ((END_DATE IS NULL) OR (END_DATE >= \'' . $start_date_mod . '\')))) AND COLLEGE_ROLL_NO IN (' . $search_stu . ')'));
 
             $ada[$ai]['STUDENTS'] = $total_students[1]['STUDENTS'];
             $ada[$ai]['DAYS_POSSIBLE'] = count($days_possible);
 
             if ($search_stu == '')
-                $get_cps = DBGet(DBQuery('SELECT DISTINCT s.COURSE_PERIOD_ID,cp.SCHEDULE_TYPE,cp.CALENDAR_ID,cp.MARKING_PERIOD_ID,cp.BEGIN_DATE,cp.END_DATE  FROM schedule s,student_enrollment se,course_periods cp,course_period_var cpv WHERE  se.SYEAR=' . UserSyear() . ' AND se.STUDENT_ID=s.STUDENT_ID AND ( 
+                $get_cps = DBGet(DBQuery('SELECT DISTINCT s.COURSE_PERIOD_ID,cp.SCHEDULE_TYPE,cp.CALENDAR_ID,cp.MARKING_PERIOD_ID,cp.BEGIN_DATE,cp.END_DATE  FROM schedule s,student_enrollment se,course_periods cp,course_period_var cpv WHERE  se.SYEAR=' . UserSyear() . ' AND se.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ( 
                     (s.START_DATE BETWEEN \'' . $start_date_mod . '\' AND \'' . $end_date_mod . '\') OR (s.END_DATE BETWEEN \'' . $start_date_mod . '\' AND \'' . $end_date_mod . '\') OR ( (s.START_DATE <= \'' . $start_date_mod . '\') AND ((s.END_DATE IS NULL) OR (s.END_DATE >= \'' . $start_date_mod . '\')))) AND se.GRADE_ID=' . $ad['GRADE'] . ' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=s.COURSE_PERIOD_ID AND cpv.DOES_ATTENDANCE=\'Y\' '));
             else
-                $get_cps = DBGet(DBQuery('SELECT DISTINCT s.COURSE_PERIOD_ID,cp.SCHEDULE_TYPE,cp.CALENDAR_ID,cp.MARKING_PERIOD_ID,cp.BEGIN_DATE,cp.END_DATE  FROM schedule s,student_enrollment se,course_periods cp,course_period_var cpv WHERE  se.SYEAR=' . UserSyear() . ' AND se.STUDENT_ID=s.STUDENT_ID AND ( 
-                    (s.START_DATE BETWEEN \'' . $start_date_mod . '\' AND \'' . $end_date_mod . '\') OR (s.END_DATE BETWEEN \'' . $start_date_mod . '\' AND \'' . $end_date_mod . '\') OR ( (s.START_DATE <= \'' . $start_date_mod . '\') AND ((s.END_DATE IS NULL) OR (s.END_DATE >= \'' . $start_date_mod . '\')))) AND se.GRADE_ID=' . $ad['GRADE'] . ' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=s.COURSE_PERIOD_ID AND cpv.DOES_ATTENDANCE=\'Y\' AND s.STUDENT_ID IN (' . $search_stu . ')'));
+                $get_cps = DBGet(DBQuery('SELECT DISTINCT s.COURSE_PERIOD_ID,cp.SCHEDULE_TYPE,cp.CALENDAR_ID,cp.MARKING_PERIOD_ID,cp.BEGIN_DATE,cp.END_DATE  FROM schedule s,student_enrollment se,course_periods cp,course_period_var cpv WHERE  se.SYEAR=' . UserSyear() . ' AND se.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ( 
+                    (s.START_DATE BETWEEN \'' . $start_date_mod . '\' AND \'' . $end_date_mod . '\') OR (s.END_DATE BETWEEN \'' . $start_date_mod . '\' AND \'' . $end_date_mod . '\') OR ( (s.START_DATE <= \'' . $start_date_mod . '\') AND ((s.END_DATE IS NULL) OR (s.END_DATE >= \'' . $start_date_mod . '\')))) AND se.GRADE_ID=' . $ad['GRADE'] . ' AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=s.COURSE_PERIOD_ID AND cpv.DOES_ATTENDANCE=\'Y\' AND s.COLLEGE_ROLL_NO IN (' . $search_stu . ')'));
 
             foreach ($get_cps as $gi => $gd) {
                 if ($search_stu == '')
-                    $get_stu_num = DBGet(DBQuery('SELECT s.STUDENT_ID as ENROLLED_STU,s.START_DATE  FROM schedule s,student_enrollment se WHERE  se.SYEAR=' . UserSyear() . ' AND se.STUDENT_ID=s.STUDENT_ID AND ( 
+                    $get_stu_num = DBGet(DBQuery('SELECT s.COLLEGE_ROLL_NO as ENROLLED_STU,s.START_DATE  FROM schedule s,student_enrollment se WHERE  se.SYEAR=' . UserSyear() . ' AND se.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ( 
                         (s.START_DATE BETWEEN \'' . $start_date_mod . '\' AND \'' . $end_date_mod . '\') OR (s.END_DATE BETWEEN \'' . $start_date_mod . '\' AND \'' . $end_date_mod . '\') OR ( (s.START_DATE <= \'' . $start_date_mod . '\') AND ((s.END_DATE IS NULL) OR (s.END_DATE >= \'' . $start_date_mod . '\')))) AND se.GRADE_ID=' . $ad['GRADE'] . ' AND s.COURSE_PERIOD_ID=' . $gd['COURSE_PERIOD_ID']));
                 else
-                    $get_stu_num = DBGet(DBQuery('SELECT s.STUDENT_ID as ENROLLED_STU,s.START_DATE  FROM schedule s,student_enrollment se WHERE  se.SYEAR=' . UserSyear() . ' AND se.STUDENT_ID=s.STUDENT_ID AND ( 
-                        (s.START_DATE BETWEEN \'' . $start_date_mod . '\' AND \'' . $end_date_mod . '\') OR (s.END_DATE BETWEEN \'' . $start_date_mod . '\' AND \'' . $end_date_mod . '\') OR ( (s.START_DATE <= \'' . $start_date_mod . '\') AND ((s.END_DATE IS NULL) OR (s.END_DATE >= \'' . $start_date_mod . '\')))) AND se.GRADE_ID=' . $ad['GRADE'] . ' AND s.COURSE_PERIOD_ID=' . $gd['COURSE_PERIOD_ID'] . ' AND s.STUDENT_ID IN (' . $search_stu . ')'));
+                    $get_stu_num = DBGet(DBQuery('SELECT s.COLLEGE_ROLL_NO as ENROLLED_STU,s.START_DATE  FROM schedule s,student_enrollment se WHERE  se.SYEAR=' . UserSyear() . ' AND se.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ( 
+                        (s.START_DATE BETWEEN \'' . $start_date_mod . '\' AND \'' . $end_date_mod . '\') OR (s.END_DATE BETWEEN \'' . $start_date_mod . '\' AND \'' . $end_date_mod . '\') OR ( (s.START_DATE <= \'' . $start_date_mod . '\') AND ((s.END_DATE IS NULL) OR (s.END_DATE >= \'' . $start_date_mod . '\')))) AND se.GRADE_ID=' . $ad['GRADE'] . ' AND s.COURSE_PERIOD_ID=' . $gd['COURSE_PERIOD_ID'] . ' AND s.COLLEGE_ROLL_NO IN (' . $search_stu . ')'));
 
                 if ($gd['SCHEDULE_TYPE'] == 'FIXED') {
                     $get_day = DBGet(DBQuery('SELECT DAYS FROM course_period_var WHERE COURSE_PERIOD_ID=' . $gd['COURSE_PERIOD_ID'] . ' AND DOES_ATTENDANCE=\'Y\' '));
@@ -355,29 +355,29 @@ if (!$_REQUEST['modfunc']) {
 
                 if ($search_stu == '') {
                     if ($present_ids != '')
-                        $present_st = DBGet(DBQuery('SELECT COUNT(ap.STUDENT_ID) as PRESENT_STU FROM attendance_period ap,student_enrollment se WHERE ap.STUDENT_ID=se.STUDENT_ID and se.SYEAR=' . UserSyear() . ' and se.COLLEGE_ID=' . UserCollege() . ' and se.GRADE_ID=\'' . $ad['GRADE'] . '\' and ap.COLLEGE_DATE BETWEEN \'' . $start_date_mod . '\' AND \'' . $end_date_mod . '\' AND ap.COURSE_PERIOD_ID=' . $gd['COURSE_PERIOD_ID'] . ' AND ap.ATTENDANCE_CODE IN (' . $present_ids . ')'));
+                        $present_st = DBGet(DBQuery('SELECT COUNT(ap.COLLEGE_ROLL_NO) as PRESENT_STU FROM attendance_period ap,student_enrollment se WHERE ap.COLLEGE_ROLL_NO=se.COLLEGE_ROLL_NO and se.SYEAR=' . UserSyear() . ' and se.COLLEGE_ID=' . UserCollege() . ' and se.GRADE_ID=\'' . $ad['GRADE'] . '\' and ap.COLLEGE_DATE BETWEEN \'' . $start_date_mod . '\' AND \'' . $end_date_mod . '\' AND ap.COURSE_PERIOD_ID=' . $gd['COURSE_PERIOD_ID'] . ' AND ap.ATTENDANCE_CODE IN (' . $present_ids . ')'));
                     else
                         $present_st[1]['PRESENT_STU'] = 0;
                     if ($absent_ids != '')
-                        $absent_st = DBGet(DBQuery('SELECT COUNT(ap.STUDENT_ID) as ABSENT_STU FROM attendance_period ap,student_enrollment se  WHERE ap.STUDENT_ID=se.STUDENT_ID and se.SYEAR=' . UserSyear() . ' and se.COLLEGE_ID=' . UserCollege() . ' AND se.GRADE_ID=\'' . $ad['GRADE'] . '\' and ap.COLLEGE_DATE BETWEEN \'' . $start_date_mod . '\' AND \'' . $end_date_mod . '\' AND ap.COURSE_PERIOD_ID=' . $gd['COURSE_PERIOD_ID'] . ' AND ap.ATTENDANCE_CODE IN (' . $absent_ids . ')'));
+                        $absent_st = DBGet(DBQuery('SELECT COUNT(ap.COLLEGE_ROLL_NO) as ABSENT_STU FROM attendance_period ap,student_enrollment se  WHERE ap.COLLEGE_ROLL_NO=se.COLLEGE_ROLL_NO and se.SYEAR=' . UserSyear() . ' and se.COLLEGE_ID=' . UserCollege() . ' AND se.GRADE_ID=\'' . $ad['GRADE'] . '\' and ap.COLLEGE_DATE BETWEEN \'' . $start_date_mod . '\' AND \'' . $end_date_mod . '\' AND ap.COURSE_PERIOD_ID=' . $gd['COURSE_PERIOD_ID'] . ' AND ap.ATTENDANCE_CODE IN (' . $absent_ids . ')'));
                     else
                         $absent_st[1]['ABSENT_STU'] = 0;
                     if ($others_ids != '')
-                        $others_st = DBGet(DBQuery('SELECT COUNT(ap.STUDENT_ID) as OTHERS_STU FROM attendance_period ap,student_enrollment se WHERE ap.STUDENT_ID=se.STUDENT_ID and se.SYEAR=' . UserSyear() . ' and se.COLLEGE_ID=' . UserCollege() . ' AND se.GRADE_ID=\'' . $ad['GRADE'] . '\' AND ap.COLLEGE_DATE BETWEEN \'' . $start_date_mod . '\' AND \'' . $end_date_mod . '\' AND ap.COURSE_PERIOD_ID=' . $gd['COURSE_PERIOD_ID'] . ' AND ap.ATTENDANCE_CODE IN (' . $others_ids . ')'));
+                        $others_st = DBGet(DBQuery('SELECT COUNT(ap.COLLEGE_ROLL_NO) as OTHERS_STU FROM attendance_period ap,student_enrollment se WHERE ap.COLLEGE_ROLL_NO=se.COLLEGE_ROLL_NO and se.SYEAR=' . UserSyear() . ' and se.COLLEGE_ID=' . UserCollege() . ' AND se.GRADE_ID=\'' . $ad['GRADE'] . '\' AND ap.COLLEGE_DATE BETWEEN \'' . $start_date_mod . '\' AND \'' . $end_date_mod . '\' AND ap.COURSE_PERIOD_ID=' . $gd['COURSE_PERIOD_ID'] . ' AND ap.ATTENDANCE_CODE IN (' . $others_ids . ')'));
                     else
                         $others_st[1]['OTHERS_STU'] = 0;
                 }
                 else {
                     if ($present_ids != '')
-                        $present_st = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) as PRESENT_STU FROM attendance_period WHERE  COLLEGE_DATE BETWEEN \'' . $start_date_mod . '\' AND \'' . $end_date_mod . '\' AND COURSE_PERIOD_ID=' . $gd['COURSE_PERIOD_ID'] . ' AND ATTENDANCE_CODE IN (' . $present_ids . ') AND STUDENT_ID IN (' . $search_stu . ')'));
+                        $present_st = DBGet(DBQuery('SELECT COUNT(COLLEGE_ROLL_NO) as PRESENT_STU FROM attendance_period WHERE  COLLEGE_DATE BETWEEN \'' . $start_date_mod . '\' AND \'' . $end_date_mod . '\' AND COURSE_PERIOD_ID=' . $gd['COURSE_PERIOD_ID'] . ' AND ATTENDANCE_CODE IN (' . $present_ids . ') AND COLLEGE_ROLL_NO IN (' . $search_stu . ')'));
                     else
                         $present_st[1]['PRESENT_STU'] = 0;
                     if ($absent_ids != '')
-                        $absent_st = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) as ABSENT_STU FROM attendance_period WHERE COLLEGE_DATE BETWEEN \'' . $start_date_mod . '\' AND \'' . $end_date_mod . '\' AND COURSE_PERIOD_ID=' . $gd['COURSE_PERIOD_ID'] . ' AND ATTENDANCE_CODE IN (' . $absent_ids . ') AND STUDENT_ID IN (' . $search_stu . ')'));
+                        $absent_st = DBGet(DBQuery('SELECT COUNT(COLLEGE_ROLL_NO) as ABSENT_STU FROM attendance_period WHERE COLLEGE_DATE BETWEEN \'' . $start_date_mod . '\' AND \'' . $end_date_mod . '\' AND COURSE_PERIOD_ID=' . $gd['COURSE_PERIOD_ID'] . ' AND ATTENDANCE_CODE IN (' . $absent_ids . ') AND COLLEGE_ROLL_NO IN (' . $search_stu . ')'));
                     else
                         $absent_st[1]['ABSENT_STU'] = 0;
                     if ($others_ids != '')
-                        $others_st = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) as OTHERS_STU FROM attendance_period WHERE COLLEGE_DATE BETWEEN \'' . $start_date_mod . '\' AND \'' . $end_date_mod . '\' AND COURSE_PERIOD_ID=' . $gd['COURSE_PERIOD_ID'] . ' AND ATTENDANCE_CODE IN (' . $others_ids . ')'));
+                        $others_st = DBGet(DBQuery('SELECT COUNT(COLLEGE_ROLL_NO) as OTHERS_STU FROM attendance_period WHERE COLLEGE_DATE BETWEEN \'' . $start_date_mod . '\' AND \'' . $end_date_mod . '\' AND COURSE_PERIOD_ID=' . $gd['COURSE_PERIOD_ID'] . ' AND ATTENDANCE_CODE IN (' . $others_ids . ')'));
                     else
                         $others_st[1]['OTHERS_STU'] = 0;
                 }

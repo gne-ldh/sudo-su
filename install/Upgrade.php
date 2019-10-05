@@ -261,14 +261,14 @@
                                        $stu_lang = $dbconn->query('SELECT * FROM language WHERE UPPER(language_name)=UPPER(\'' . $fetch['language'] . '\')') or die($dbconn->error); 
                                        $fetchlang=$stu_lang->fetch_assoc();
                                        if(count($fetchlang)>0)
-                                        $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE student_id='.$fetch['student_id']) or die($dbconn->error);
+                                        $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE college_roll_no='.$fetch['college_roll_no']) or die($dbconn->error);
                                        else
                                        {
                                             $dbconn->query('INSERT INTO language (language_name) VALUES (\'' . $fetch['language'] . '\')') or die($dbconn->error);
                                             $stu_lang = $dbconn->query('SELECT * FROM language WHERE UPPER(language_name)=UPPER(\'' . $fetch['language'] . '\')') or die($dbconn->error); 
                                             $fetchlang=$stu_lang->fetch_assoc();
                                             if(count($fetchlang)>0)
-                                              $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE student_id='.$fetch['student_id']) or die($dbconn->error);
+                                              $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE college_roll_no='.$fetch['college_roll_no']) or die($dbconn->error);
                                        }
                                 }
 $dbconn->query('ALTER TABLE `filters` ADD PRIMARY KEY (`filter_id`)');
@@ -308,14 +308,14 @@ $stu_info = $dbconn->query('SELECT * FROM students WHERE language !=\'\'') or di
            $stu_lang = $dbconn->query('SELECT * FROM language WHERE UPPER(language_name)=UPPER(\'' . $fetch['language'] . '\')') or die($dbconn->error); 
            $fetchlang=$stu_lang->fetch_assoc();
            if(count($fetchlang)>0)
-            $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE student_id='.$fetch['student_id']) or die($dbconn->error);
+            $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE college_roll_no='.$fetch['college_roll_no']) or die($dbconn->error);
            else
            {
                 $dbconn->query('INSERT INTO language (language_name) VALUES (\'' . $fetch['language'] . '\')') or die($dbconn->error);
                 $stu_lang = $dbconn->query('SELECT * FROM language WHERE UPPER(language_name)=UPPER(\'' . $fetch['language'] . '\')') or die($dbconn->error); 
                 $fetchlang=$stu_lang->fetch_assoc();
                 if(count($fetchlang)>0)
-                  $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE student_id='.$fetch['student_id']) or die($dbconn->error);
+                  $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE college_roll_no='.$fetch['college_roll_no']) or die($dbconn->error);
            }
     }
                                 
@@ -344,14 +344,14 @@ $_SESSION['mod'] = 'upgrade';
            $stu_lang = $dbconn->query('SELECT * FROM language WHERE UPPER(language_name)=UPPER(\'' . $fetch['language'] . '\')') or die($dbconn->error); 
            $fetchlang=$stu_lang->fetch_assoc();
            if(count($fetchlang)>0)
-            $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE student_id='.$fetch['student_id']) or die($dbconn->error);
+            $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE college_roll_no='.$fetch['college_roll_no']) or die($dbconn->error);
            else
            {
                 $dbconn->query('INSERT INTO language (language_name) VALUES (\'' . $fetch['language'] . '\')') or die($dbconn->error);
                 $stu_lang = $dbconn->query('SELECT * FROM language WHERE UPPER(language_name)=UPPER(\'' . $fetch['language'] . '\')') or die($dbconn->error); 
                 $fetchlang=$stu_lang->fetch_assoc();
                 if(count($fetchlang)>0)
-                  $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE student_id='.$fetch['student_id']) or die($dbconn->error);
+                  $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE college_roll_no='.$fetch['college_roll_no']) or die($dbconn->error);
            }
     }
                                 

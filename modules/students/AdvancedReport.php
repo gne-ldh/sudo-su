@@ -30,7 +30,7 @@ include('../../RedirectModulesInc.php');
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
     if (count($_SESSION['st_arr'])) {
         $st_list = '\'' . implode('\',\'', $_SESSION['st_arr']) . '\'';
-        $extra['WHERE'] = ' AND s.STUDENT_ID IN (' . $st_list . ')';
+        $extra['WHERE'] = ' AND s.COLLEGE_ROLL_NO IN (' . $st_list . ')';
         if ($_REQUEST['ADDRESS_ID']) {
             $extra['singular'] = 'Family';
             $extra['plural'] = 'Families';
@@ -154,9 +154,9 @@ if (!$_REQUEST['modfunc']) {
         $_REQUEST['search_modfunc'] = 'select';
 
         $extra['link'] = array('FULL_NAME' => false);
-        $extra['SELECT'] = ",s.STUDENT_ID AS CHECKBOX";
+        $extra['SELECT'] = ",s.COLLEGE_ROLL_NO AS CHECKBOX";
         $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
-//        $extra['SELECT'] = ",CONCAT('<INPUT type=checkbox name=st_arr[] value=',s.STUDENT_ID,' checked>') AS CHECKBOX";
+//        $extra['SELECT'] = ",CONCAT('<INPUT type=checkbox name=st_arr[] value=',s.COLLEGE_ROLL_NO,' checked>') AS CHECKBOX";
 
         $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'st_arr\');"><A>');
         $extra['options']['search'] = false;
@@ -185,7 +185,7 @@ if (!$_REQUEST['modfunc']) {
 
         $extra['new'] = true;
 
-        Search('student_id', $extra);
+        Search('college_roll_no', $extra);
 
         if ($_SESSION['count_stu'] != '0') {
             unset($_SESSION['count_stu']);
@@ -224,7 +224,7 @@ if (!$_REQUEST['modfunc']) {
 
         $extra['new'] = true;
 
-        Search('student_id', $extra);
+        Search('college_roll_no', $extra);
     }
 }
 
@@ -232,6 +232,6 @@ function _makeChooseCheckbox($value, $title) {
     global $THIS_RET;
 //    return '<INPUT type=checkbox name=st_arr[] value=' . $value . ' checked>';
     
-    return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
+    return "<input name=unused[$THIS_RET[COLLEGE_ROLL_NO]] value=" . $THIS_RET[COLLEGE_ROLL_NO] . "  type='checkbox' id=$THIS_RET[COLLEGE_ROLL_NO] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[COLLEGE_ROLL_NO]);' />";
 }
 ?>

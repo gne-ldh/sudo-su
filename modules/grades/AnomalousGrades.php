@@ -39,17 +39,17 @@ $max_allowed = Preferences('ANOMALOUS_MAX','Gradebook')/100;
 $full_year_mp=DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM college_years WHERE COLLEGE_ID='.UserCollege().' AND SYEAR='.UserSyear()));
 $full_year_mp=$full_year_mp[1]['MARKING_PERIOD_ID'];
 $extra['SELECT'] = ',ga.ASSIGNMENT_ID,gt.TITLE AS TYPE_TITLE,ga.TITLE,ga.POINTS AS TOTAL_POINTS,\'\' AS LETTER_GRADE';
-$extra['SELECT'] .= ',(SELECT POINTS FROM gradebook_grades WHERE STUDENT_ID=s.STUDENT_ID AND ASSIGNMENT_ID=ga.ASSIGNMENT_ID) AS POINTS';
-$extra['SELECT'] .= ',(SELECT COMMENT FROM gradebook_grades WHERE STUDENT_ID=s.STUDENT_ID AND ASSIGNMENT_ID=ga.ASSIGNMENT_ID) AS COMMENT';
+$extra['SELECT'] .= ',(SELECT POINTS FROM gradebook_grades WHERE COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ASSIGNMENT_ID=ga.ASSIGNMENT_ID) AS POINTS';
+$extra['SELECT'] .= ',(SELECT COMMENT FROM gradebook_grades WHERE COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ASSIGNMENT_ID=ga.ASSIGNMENT_ID) AS COMMENT';
 $extra['FROM'] = ',gradebook_assignments ga,gradebook_assignment_types gt';
-$extra['WHERE'] = 'AND ((SELECT POINTS FROM gradebook_grades WHERE STUDENT_ID=s.STUDENT_ID AND ASSIGNMENT_ID=ga.ASSIGNMENT_ID) IS NULL AND (ga.ASSIGNED_DATE IS NULL OR CURRENT_DATE>=ga.ASSIGNED_DATE) AND (ga.DUE_DATE IS NULL OR CURRENT_DATE>=ga.DUE_DATE) OR (SELECT POINTS FROM gradebook_grades WHERE STUDENT_ID=s.STUDENT_ID AND ASSIGNMENT_ID=ga.ASSIGNMENT_ID)<0 OR (SELECT POINTS FROM gradebook_grades WHERE STUDENT_ID=s.STUDENT_ID AND ASSIGNMENT_ID=ga.ASSIGNMENT_ID)>ga.POINTS*'.$max_allowed.') AND ((ga.COURSE_ID=\''.$course_id.'\' AND ga.STAFF_ID=\''.User('STAFF_ID').'\') OR ga.COURSE_PERIOD_ID=\''.$course_period_id.'\') AND (ga.MARKING_PERIOD_ID=\''.UserMP().'\' OR ga.MARKING_PERIOD_ID=\''.$full_year_mp.'\') AND ga.COURSE_PERIOD_ID=\''.$course_period_id.'\' AND gt.ASSIGNMENT_TYPE_ID=ga.ASSIGNMENT_TYPE_ID';
+$extra['WHERE'] = 'AND ((SELECT POINTS FROM gradebook_grades WHERE COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ASSIGNMENT_ID=ga.ASSIGNMENT_ID) IS NULL AND (ga.ASSIGNED_DATE IS NULL OR CURRENT_DATE>=ga.ASSIGNED_DATE) AND (ga.DUE_DATE IS NULL OR CURRENT_DATE>=ga.DUE_DATE) OR (SELECT POINTS FROM gradebook_grades WHERE COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ASSIGNMENT_ID=ga.ASSIGNMENT_ID)<0 OR (SELECT POINTS FROM gradebook_grades WHERE COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ASSIGNMENT_ID=ga.ASSIGNMENT_ID)>ga.POINTS*'.$max_allowed.') AND ((ga.COURSE_ID=\''.$course_id.'\' AND ga.STAFF_ID=\''.User('STAFF_ID').'\') OR ga.COURSE_PERIOD_ID=\''.$course_period_id.'\') AND (ga.MARKING_PERIOD_ID=\''.UserMP().'\' OR ga.MARKING_PERIOD_ID=\''.$full_year_mp.'\') AND ga.COURSE_PERIOD_ID=\''.$course_period_id.'\' AND gt.ASSIGNMENT_TYPE_ID=ga.ASSIGNMENT_TYPE_ID';
 
 $extra['functions'] = array('POINTS'=>'_makePoints');
 $students_RET = GetStuList($extra);
 
 if(AllowUse('grades/Grades.php'))
-	$link = array('FULL_NAME'=>array('link'=>"Modules.php?modname=grades/Grades.php&include_ianctive=$_REQUEST[include_inactive]&assignment_id=all",'variables'=>array('student_id'=>'STUDENT_ID')),'TITLE'=>array('link'=>"Modules.php?modname=grades/Grades.php&include_inactive=$_REQUEST[include_inactive]",'variables'=>array('assignment_id'=>'ASSIGNMENT_ID','student_id'=>'STUDENT_ID')));
-$columns = array('FULL_NAME'=>'Name','STUDENT_ID'=>'Student ID','POINTS'=>'Problem','TYPE_TITLE'=>'Category','TITLE'=>'Assignment','COMMENT'=>'Comment');
+	$link = array('FULL_NAME'=>array('link'=>"Modules.php?modname=grades/Grades.php&include_ianctive=$_REQUEST[include_inactive]&assignment_id=all",'variables'=>array('college_roll_no'=>'COLLEGE_ROLL_NO')),'TITLE'=>array('link'=>"Modules.php?modname=grades/Grades.php&include_inactive=$_REQUEST[include_inactive]",'variables'=>array('assignment_id'=>'ASSIGNMENT_ID','college_roll_no'=>'COLLEGE_ROLL_NO')));
+$columns = array('FULL_NAME'=>'Name','COLLEGE_ROLL_NO'=>'College Roll No','POINTS'=>'Problem','TYPE_TITLE'=>'Category','TITLE'=>'Assignment','COMMENT'=>'Comment');
 ListOutput($students_RET,$columns,'Anomalous Grade','Anomalous grades',$link,array(),array('center'=>false,'save'=>false,'search'=>false));
 
 function _makePoints($value,$column)

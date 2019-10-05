@@ -90,7 +90,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
 //                    {
 //                        DBQuery("CALL SEAT_FILL()");
 //                        DBQuery("UPDATE course_periods SET filled_seats=filled_seats-1 WHERE COURSE_PERIOD_ID IN (SELECT COURSE_PERIOD_ID FROM schedule WHERE end_date IS NOT NULL AND END_DATE  <'".date("Y-m-d")."' AND  DROPPED='N' AND COURSE_PERIOD_ID='".$value[COURSE_PERIOD_ID]."')");
-//			DBQuery(" UPDATE schedule SET  DROPPED='Y' WHERE END_DATE  IS NOT NULL AND COURSE_PERIOD_ID='".$value[COURSE_PERIOD_ID]."' AND END_DATE  <'".date("Y-m-d")."'AND   DROPPED =  'N' AND  STUDENT_ID='".$course_count[$i][STUDENT_ID]."'");
+//			DBQuery(" UPDATE schedule SET  DROPPED='Y' WHERE END_DATE  IS NOT NULL AND COURSE_PERIOD_ID='".$value[COURSE_PERIOD_ID]."' AND END_DATE  <'".date("Y-m-d")."'AND   DROPPED =  'N' AND  COLLEGE_ROLL_NO='".$course_count[$i][COLLEGE_ROLL_NO]."'");
 //                    }
 //         }
     # ---------------------------- Seat Count Update End ------------------------------------------- #
@@ -122,11 +122,11 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
         $usr_prof = DBGet(DBQuery('SELECT * FROM user_profiles WHERE ID=' . $login_uniform['PROFILE_ID']));
         $usr_prof = $usr_prof[1]['PROFILE'];
         if ($usr_prof == 'student') {
-            $check_enrollment = DBGet(DBQuery('SELECT COUNT(*) AS REC_EX FROM student_enrollment WHERE STUDENT_ID=' . $login_uniform['USER_ID'] . ' AND END_DATE<\'' . date('Y-m-d') . '\' ORDER BY ID DESC LIMIT 0,1'));
+            $check_enrollment = DBGet(DBQuery('SELECT COUNT(*) AS REC_EX FROM student_enrollment WHERE COLLEGE_ROLL_NO=' . $login_uniform['USER_ID'] . ' AND END_DATE<\'' . date('Y-m-d') . '\' ORDER BY ID DESC LIMIT 0,1'));
             if ($check_enrollment[1]['REC_EX'] == 0) {
-                $student_disable_storeproc_RET = DBGet(DBQuery("SELECT s.STUDENT_ID FROM students s,student_enrollment se WHERE  s.STUDENT_ID=" . $login_uniform['USER_ID'] . " AND se.STUDENT_ID=s.STUDENT_ID LIMIT 1"));
-                if ($student_disable_storeproc_RET[1]['STUDENT_ID']) {
-                    DBQuery("SELECT STUDENT_DISABLE('" . $student_disable_storeproc_RET[1]['STUDENT_ID'] . "')");
+                $student_disable_storeproc_RET = DBGet(DBQuery("SELECT s.COLLEGE_ROLL_NO FROM students s,student_enrollment se WHERE  s.COLLEGE_ROLL_NO=" . $login_uniform['USER_ID'] . " AND se.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO LIMIT 1"));
+                if ($student_disable_storeproc_RET[1]['COLLEGE_ROLL_NO']) {
+                    DBQuery("SELECT STUDENT_DISABLE('" . $student_disable_storeproc_RET[1]['COLLEGE_ROLL_NO'] . "')");
                 }
             }
         }
@@ -190,7 +190,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
 
             if ($login_Check[1]['STAFF_ID'] != '') {
 
-                $max_syear = DBGet(DBQuery('SELECT MAX(SYEAR) as SYEAR FROM student_enrollment se,students_join_people sjp WHERE se.STUDENT_ID=sjp.STUDENT_ID AND sjp.PERSON_ID=' . $login_uniform['USER_ID']));
+                $max_syear = DBGet(DBQuery('SELECT MAX(SYEAR) as SYEAR FROM student_enrollment se,students_join_people sjp WHERE se.COLLEGE_ROLL_NO=sjp.COLLEGE_ROLL_NO AND sjp.PERSON_ID=' . $login_uniform['USER_ID']));
                 $max_syear = $max_syear[1]['SYEAR'];
                 if ($max_syear == '') {
                     $error[] = "No student is associated with the parent. Please contact the college administration.";
@@ -212,7 +212,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
                     $error[] = " Incorrect username or password. Please try again.";
             }
             $loged_staff_id = $login_RET[1]['STAFF_ID'];
-            $is_inactive = DBGet(DBQuery("SELECT se.ID FROM student_enrollment se,students_join_people sju WHERE sju.STUDENT_ID= se.STUDENT_ID AND sju.PERSON_ID=$loged_staff_id AND se.SYEAR=(SELECT MAX(SYEAR) FROM student_enrollment WHERE STUDENT_ID=sju.STUDENT_ID) AND CURRENT_DATE>=se.START_DATE AND (CURRENT_DATE<=se.END_DATE OR se.END_DATE IS NULL)"));
+            $is_inactive = DBGet(DBQuery("SELECT se.ID FROM student_enrollment se,students_join_people sju WHERE sju.COLLEGE_ROLL_NO= se.COLLEGE_ROLL_NO AND sju.PERSON_ID=$loged_staff_id AND se.SYEAR=(SELECT MAX(SYEAR) FROM student_enrollment WHERE COLLEGE_ROLL_NO=sju.COLLEGE_ROLL_NO) AND CURRENT_DATE>=se.START_DATE AND (CURRENT_DATE<=se.END_DATE OR se.END_DATE IS NULL)"));
             if (!$is_inactive) {
                 session_destroy();
                 header("location:index.php?modfunc=logout&dis=assoc_mis");
@@ -221,7 +221,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
 
 
         if ($usr_prof == 'student') {
-            $student_RET = DBGet(DBQuery("SELECT s.STUDENT_ID,s.FIRST_NAME,s.LAST_NAME,s.IS_DISABLE,se.SYEAR,se.COLLEGE_ID FROM students s,student_enrollment se WHERE s.STUDENT_ID=" . $login_uniform['USER_ID'] . " AND se.STUDENT_ID=s.STUDENT_ID AND se.SYEAR=(SELECT MAX(SYEAR) FROM student_enrollment WHERE STUDENT_ID=s.STUDENT_ID) AND CURRENT_DATE>=se.START_DATE AND (CURRENT_DATE<=se.END_DATE OR se.END_DATE IS NULL)"));
+            $student_RET = DBGet(DBQuery("SELECT s.COLLEGE_ROLL_NO,s.FIRST_NAME,s.LAST_NAME,s.IS_DISABLE,se.SYEAR,se.COLLEGE_ID FROM students s,student_enrollment se WHERE s.COLLEGE_ROLL_NO=" . $login_uniform['USER_ID'] . " AND se.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND se.SYEAR=(SELECT MAX(SYEAR) FROM student_enrollment WHERE COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO) AND CURRENT_DATE>=se.START_DATE AND (CURRENT_DATE<=se.END_DATE OR se.END_DATE IS NULL)"));
             if (count($student_RET) > 0) {
                 $student_RET[1]['USERNAME'] = $login_uniform['USERNAME'];
                 $student_RET[1]['LAST_LOGIN'] = $login_uniform['LAST_LOGIN'];
@@ -278,7 +278,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
                             }
                         }
                         if ($usr_prof == 'student') {
-                            $student_RET = DBGet(DBQuery("SELECT s.STUDENT_ID,s.FIRST_NAME,s.LAST_NAME,s.IS_DISABLE,se.SYEAR,se.COLLEGE_ID FROM students s,student_enrollment se WHERE s.STUDENT_ID=" . $login_unchk['USER_ID'] . " AND se.STUDENT_ID=s.STUDENT_ID AND se.SYEAR=(SELECT MAX(SYEAR) FROM student_enrollment WHERE STUDENT_ID=" . $login_unchk['USER_ID'] . ") AND CURRENT_DATE>=se.START_DATE AND (CURRENT_DATE<=se.END_DATE OR se.END_DATE IS NULL)"));
+                            $student_RET = DBGet(DBQuery("SELECT s.COLLEGE_ROLL_NO,s.FIRST_NAME,s.LAST_NAME,s.IS_DISABLE,se.SYEAR,se.COLLEGE_ID FROM students s,student_enrollment se WHERE s.COLLEGE_ROLL_NO=" . $login_unchk['USER_ID'] . " AND se.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND se.SYEAR=(SELECT MAX(SYEAR) FROM student_enrollment WHERE COLLEGE_ROLL_NO=" . $login_unchk['USER_ID'] . ") AND CURRENT_DATE>=se.START_DATE AND (CURRENT_DATE<=se.END_DATE OR se.END_DATE IS NULL)"));
                             if (count($student_RET) > 0) {
                                 $student_RET[1]['USERNAME'] = $login_unchk['USERNAME'];
                                 $student_RET[1]['LAST_LOGIN'] = $login_unchk['LAST_LOGIN'];
@@ -453,23 +453,23 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
 
 
         $date = date("Y-m-d H:i:s");
-        DBQuery("INSERT INTO login_records (SYEAR,STAFF_ID,FIRST_NAME,LAST_NAME,PROFILE,USER_NAME,LOGIN_TIME,FAILLOG_COUNT,IP_ADDRESS,STATUS,COLLEGE_ID) values('" . $_SESSION['UserSyear'] . "','" . $student_RET[1][STUDENT_ID] . "','" . singleQuoteReplace("'", "''", $student_RET[1][FIRST_NAME]) . "','" . singleQuoteReplace("'", "''", $student_RET[1][LAST_NAME]) . "','Student','" . $student_RET[1][USERNAME] . "','$date','" . $student_RET[1][FAILED_LOGIN] . "','$ip','Success','" . $student_RET[1][COLLEGE_ID] . "')");
+        DBQuery("INSERT INTO login_records (SYEAR,STAFF_ID,FIRST_NAME,LAST_NAME,PROFILE,USER_NAME,LOGIN_TIME,FAILLOG_COUNT,IP_ADDRESS,STATUS,COLLEGE_ID) values('" . $_SESSION['UserSyear'] . "','" . $student_RET[1][COLLEGE_ROLL_NO] . "','" . singleQuoteReplace("'", "''", $student_RET[1][FIRST_NAME]) . "','" . singleQuoteReplace("'", "''", $student_RET[1][LAST_NAME]) . "','Student','" . $student_RET[1][USERNAME] . "','$date','" . $student_RET[1][FAILED_LOGIN] . "','$ip','Success','" . $student_RET[1][COLLEGE_ID] . "')");
         $failed_login = $student_RET[1]['FAILED_LOGIN'];
 
         $admin_failed_count = DBGet(DBQuery("SELECT FAIL_COUNT FROM system_preference_misc"));
         $ad_f_cnt = $admin_failed_count[1]['FAIL_COUNT'];
 
         if ($ad_f_cnt && $ad_f_cnt != 0 && $failed_login > $ad_f_cnt) {
-            $check_enrollment = DBGet(DBQuery('SELECT COUNT(*) AS REC_EX FROM student_enrollment WHERE STUDENT_ID=' . $student_RET[1]['STUDENT_ID'] . ' AND END_DATE<\'' . date('Y-m-d') . '\' ORDER BY ID DESC LIMIT 0,1'));
+            $check_enrollment = DBGet(DBQuery('SELECT COUNT(*) AS REC_EX FROM student_enrollment WHERE COLLEGE_ROLL_NO=' . $student_RET[1]['COLLEGE_ROLL_NO'] . ' AND END_DATE<\'' . date('Y-m-d') . '\' ORDER BY ID DESC LIMIT 0,1'));
             if ($check_enrollment[1]['REC_EX'] == 0)
-                DBQuery("UPDATE students SET IS_DISABLE='Y' WHERE STUDENT_ID='" . $student_RET[1]['STUDENT_ID'] . "' ");
+                DBQuery("UPDATE students SET IS_DISABLE='Y' WHERE COLLEGE_ROLL_NO='" . $student_RET[1]['COLLEGE_ROLL_NO'] . "' ");
 
             session_destroy();
 
             header("location:index.php?modfunc=logout&dis=fl_count");
         }
 
-        $_SESSION['STUDENT_ID'] = $student_RET[1]['STUDENT_ID'];
+        $_SESSION['COLLEGE_ROLL_NO'] = $student_RET[1]['COLLEGE_ROLL_NO'];
         $_SESSION['LAST_LOGIN'] = $student_RET[1]['LAST_LOGIN'];
         $_SESSION['UserSyear'] = $student_RET[1]['SYEAR'];
         $_SESSION['PROFILE'] = 'student';
@@ -482,9 +482,9 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
         $days = (strtotime($date1) - strtotime($date2)) / (60 * 60 * 24);
         if ($activity && $activity != 0 && $days > $activity && ($check_profile_id != 1 && $check_profile_id != 0) && $last_login) {
 
-//                  $check_enrollment=DBGet(DBQuery('SELECT COUNT(*) AS REC_EX FROM student_enrollment WHERE STUDENT_ID='.$student_RET[1]['STUDENT_ID'].' AND END_DATE<\''.date('Y-m-d').'\' ORDER BY ID DESC LIMIT 0,1'));
+//                  $check_enrollment=DBGet(DBQuery('SELECT COUNT(*) AS REC_EX FROM student_enrollment WHERE COLLEGE_ROLL_NO='.$student_RET[1]['COLLEGE_ROLL_NO'].' AND END_DATE<\''.date('Y-m-d').'\' ORDER BY ID DESC LIMIT 0,1'));
 //		  if($check_enrollment[1]['REC_EX']==0)  
-            DBQuery("UPDATE students SET IS_DISABLE='Y' WHERE STUDENT_ID='" . $student_RET[1]['STUDENT_ID'] . "' ");
+            DBQuery("UPDATE students SET IS_DISABLE='Y' WHERE COLLEGE_ROLL_NO='" . $student_RET[1]['COLLEGE_ROLL_NO'] . "' ");
 
             session_destroy();
 
@@ -495,7 +495,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
         if ($admin_RET)
             DBQuery("UPDATE login_authentication SET LAST_LOGIN=CURRENT_TIMESTAMP WHERE USER_ID='" . $admin_RET[1]['STAFF_ID'] . "' AND PROFILE_ID='" . $admin_RET[1]['PROFILE_ID'] . "' AND USERNAME='" . $admin_RET[1]['USERNAME'] . "'");
         else
-            DBQuery("UPDATE login_authentication SET LAST_LOGIN=CURRENT_TIMESTAMP,FAILED_LOGIN=0 WHERE USER_ID='" . $student_RET[1]['STUDENT_ID'] . "' AND PROFILE_ID='" . $student_RET[1]['PROFILE_ID'] . "' AND USERNAME='" . $student_RET[1]['USERNAME'] . "'");
+            DBQuery("UPDATE login_authentication SET LAST_LOGIN=CURRENT_TIMESTAMP,FAILED_LOGIN=0 WHERE USER_ID='" . $student_RET[1]['COLLEGE_ROLL_NO'] . "' AND PROFILE_ID='" . $student_RET[1]['PROFILE_ID'] . "' AND USERNAME='" . $student_RET[1]['USERNAME'] . "'");
     }
     else {
 
@@ -527,9 +527,9 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
         $failed_login_stu = $res[1]['FAILED_LOGIN'];
         if ($failed_login_stu != '' && $res[1]['PROFILE'] == 'student') {
             if ($ad_f_cnt && $ad_f_cnt != 0 && $failed_login_stu >= $ad_f_cnt) {
-                $check_enrollment = DBGet(DBQuery('SELECT COUNT(*) AS REC_EX FROM student_enrollment WHERE STUDENT_ID=' . $res[1]['USER_ID'] . ' AND END_DATE<\'' . date('Y-m-d') . '\' ORDER BY ID DESC LIMIT 0,1'));
+                $check_enrollment = DBGet(DBQuery('SELECT COUNT(*) AS REC_EX FROM student_enrollment WHERE COLLEGE_ROLL_NO=' . $res[1]['USER_ID'] . ' AND END_DATE<\'' . date('Y-m-d') . '\' ORDER BY ID DESC LIMIT 0,1'));
                 if ($check_enrollment[1]['REC_EX'] == 0)
-                    DBQuery("UPDATE students SET IS_DISABLE='Y' WHERE STUDENT_ID='" . $res[1]['USER_ID'] . "'");
+                    DBQuery("UPDATE students SET IS_DISABLE='Y' WHERE COLLEGE_ROLL_NO='" . $res[1]['USER_ID'] . "'");
                 if ($failed_login_stu == $ad_f_cnt)
                     $error[] = " Incorrect username or password. Please try again.";
                 else
@@ -538,7 +538,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
                 $error[] = " Incorrect username or password. Please try again.";
 
 
-            $get_rec = DBGet(DBQuery("SELECT COUNT(1) as RECORD FROM students s,student_enrollment se WHERE s.STUDENT_ID='" . $res[1]['USER_ID'] . "' AND s.STUDENT_ID=se.STUDENT_ID AND (se.DROP_CODE='4' OR (se.DROP_CODE IS NULL AND se.END_DATE<='" . date('Y-m-d') . "')) AND (se.END_DATE<='" . date('Y-m-d') . "' OR se.END_DATE IS NULL) AND se.SYEAR=(SELECT MAX(SYEAR) FROM student_enrollment WHERE STUDENT_ID=s.STUDENT_ID ) "));
+            $get_rec = DBGet(DBQuery("SELECT COUNT(1) as RECORD FROM students s,student_enrollment se WHERE s.COLLEGE_ROLL_NO='" . $res[1]['USER_ID'] . "' AND s.COLLEGE_ROLL_NO=se.COLLEGE_ROLL_NO AND (se.DROP_CODE='4' OR (se.DROP_CODE IS NULL AND se.END_DATE<='" . date('Y-m-d') . "')) AND (se.END_DATE<='" . date('Y-m-d') . "' OR se.END_DATE IS NULL) AND se.SYEAR=(SELECT MAX(SYEAR) FROM student_enrollment WHERE COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO ) "));
             if ($get_rec[1]['RECORD'] != 0) {
                 unset($error);
                 $error[] = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Your opensis account is disabled.";
@@ -560,7 +560,7 @@ if (optional_param('USERNAME', '', PARAM_RAW) && optional_param('PASSWORD', '', 
             $course_periods = DBGet(DBQuery("SELECT DISTINCT(COURSE_PERIOD_ID) FROM schedule WHERE   END_DATE<'" . date('Y-m-d') . "' AND SYEAR='" . UserSyear() . "' AND  DROPPED =  'N' "));
             foreach ($course_periods as $column => $value) {
                 $get_det = DBGet(DBQuery('SELECT TOTAL_SEATS,FILLED_SEATS FROM course_periods WHERE COURSE_PERIOD_ID=' . $value['COURSE_PERIOD_ID']));
-                $total_sch_rec = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) AS TOT_REC FROM schedule WHERE COURSE_PERIOD_ID=' . $value['COURSE_PERIOD_ID'] . ' AND (END_DATE >=  \'' . date('Y-m-d') . '\' || END_DATE =  \'0000-00-00\' || END_DATE IS NULL)'));
+                $total_sch_rec = DBGet(DBQuery('SELECT COUNT(COLLEGE_ROLL_NO) AS TOT_REC FROM schedule WHERE COURSE_PERIOD_ID=' . $value['COURSE_PERIOD_ID'] . ' AND (END_DATE >=  \'' . date('Y-m-d') . '\' || END_DATE =  \'0000-00-00\' || END_DATE IS NULL)'));
                 if ($get_det[1]['FILLED_SEATS'] != $total_sch_rec[1]['TOT_REC']) {
                     if ($get_det[1]['FILLED_SEATS'] != $total_sch_rec[1]['TOT_REC'])
                         DBQuery('UPDATE course_periods SET FILLED_SEATS=' . $total_sch_rec[1]['TOT_REC'] . ' WHERE COURSE_PERIOD_ID=' . $value['COURSE_PERIOD_ID']);
@@ -605,7 +605,7 @@ if (optional_param('modfunc', '', PARAM_ALPHA) == 'create_account') {
     }
 }
 
-if (!$_SESSION['STAFF_ID'] && !$_SESSION['STUDENT_ID'] && $_REQUEST['modfunc'] != 'create_account') {
+if (!$_SESSION['STAFF_ID'] && !$_SESSION['COLLEGE_ROLL_NO'] && $_REQUEST['modfunc'] != 'create_account') {
     //Login
     require "LoginInc.php";
 } elseif ($_REQUEST['modfunc'] != 'create_account') {
