@@ -23,7 +23,7 @@ include 'Warehouse.php';
 if ($_REQUEST['USERINFO_FIRST_NAME'] || $_REQUEST['USERINFO_LAST_NAME'] || $_REQUEST['USERINFO_EMAIL'] || $_REQUEST['USERINFO_MOBILE'] || $_REQUEST['USERINFO_SADD'] || $_REQUEST['USERINFO_CITY'] || $_REQUEST['USERINFO_STATE'] || $_REQUEST['USERINFO_ZIP']) {
                         $stf_ids = '';
                         $sql = 'SELECT distinct stf.STAFF_ID AS BUTTON , stf.STAFF_ID,CONCAT(stf.FIRST_NAME," ",stf.LAST_NAME) AS FULLNAME, CONCAT(s.FIRST_NAME," ",s.LAST_NAME) AS STUFULLNAME,stf.PROFILE,stf.EMAIL FROM people stf';
-                        $sql_where = 'WHERE stf.PROFILE_ID=4 AND s.STUDENT_ID!=' . UserStudentID() . ' ';
+                        $sql_where = 'WHERE stf.PROFILE_ID=4 AND s.COLLEGE_ROLL_NO!=' . UserStudentID() . ' ';
                         if ($_REQUEST['USERINFO_FIRST_NAME'] || $_REQUEST['USERINFO_LAST_NAME'] || $_REQUEST['USERINFO_EMAIL'] || $_REQUEST['USERINFO_MOBILE']) {
                             if ($_REQUEST['USERINFO_FIRST_NAME']!='')
                                 $sql_where.= 'AND LOWER(stf.FIRST_NAME) LIKE \'' . str_replace("'", "''", strtolower(trim($_REQUEST['USERINFO_FIRST_NAME']))) . '%\' ';
@@ -47,8 +47,8 @@ if ($_REQUEST['USERINFO_FIRST_NAME'] || $_REQUEST['USERINFO_LAST_NAME'] || $_REQ
                                 $sql_where.= ' AND ZIPCODE = \'' . str_replace("'", "''", trim($_REQUEST['USERINFO_ZIP'])) . '\' ';
                         }
 
-                        $sql.=' Left outer join students_join_people sju on stf.STAFF_ID=sju.PERSON_ID Left outer join students s on s.STUDENT_ID = sju.STUDENT_ID  ';
-                        $sql_where.= '  AND LOWER(stf.FIRST_NAME)<>\'\' AND LOWER(stf.LAST_NAME)<>\'\' AND sju.PERSON_ID NOT IN (SELECT PERSON_ID FROM students_join_people WHERE STUDENT_ID=' . UserStudentID() . ') GROUP BY sju.PERSON_ID';
+                        $sql.=' Left outer join students_join_people sju on stf.STAFF_ID=sju.PERSON_ID Left outer join students s on s.COLLEGE_ROLL_NO = sju.COLLEGE_ROLL_NO  ';
+                        $sql_where.= '  AND LOWER(stf.FIRST_NAME)<>\'\' AND LOWER(stf.LAST_NAME)<>\'\' AND sju.PERSON_ID NOT IN (SELECT PERSON_ID FROM students_join_people WHERE COLLEGE_ROLL_NO=' . UserStudentID() . ') GROUP BY sju.PERSON_ID';
 
                         $searched_staffs = DBGet(DBQuery($sql . $sql_where), array('BUTTON' => 'makeChooseCheckbox'));
                         foreach ($searched_staffs as $key => $value) {
@@ -57,7 +57,7 @@ if ($_REQUEST['USERINFO_FIRST_NAME'] || $_REQUEST['USERINFO_LAST_NAME'] || $_REQ
                         }
                     } else {
 
-                        $sql = 'SELECT stf.STAFF_ID AS BUTTON , stf.STAFF_ID,CONCAT(stf.FIRST_NAME," ",stf.LAST_NAME) AS FULLNAME, CONCAT(s.FIRST_NAME," ",s.LAST_NAME) AS STUFULLNAME,stf.PROFILE,stf.EMAIL FROM people stf left outer join students_join_people sju on stf.STAFF_ID=sju.PERSON_ID left outer join students s on s.STUDENT_ID = sju.STUDENT_ID  WHERE  s.STUDENT_ID!=' . UserStudentID() . '  AND stf.FIRST_NAME<>\'\' AND stf.LAST_NAME<>\'\' AND sju.PERSON_ID NOT IN (SELECT PERSON_ID FROM students_join_people WHERE STUDENT_ID=' . UserStudentID() . ') Group by stf.STAFF_ID';
+                        $sql = 'SELECT stf.STAFF_ID AS BUTTON , stf.STAFF_ID,CONCAT(stf.FIRST_NAME," ",stf.LAST_NAME) AS FULLNAME, CONCAT(s.FIRST_NAME," ",s.LAST_NAME) AS STUFULLNAME,stf.PROFILE,stf.EMAIL FROM people stf left outer join students_join_people sju on stf.STAFF_ID=sju.PERSON_ID left outer join students s on s.COLLEGE_ROLL_NO = sju.COLLEGE_ROLL_NO  WHERE  s.COLLEGE_ROLL_NO!=' . UserStudentID() . '  AND stf.FIRST_NAME<>\'\' AND stf.LAST_NAME<>\'\' AND sju.PERSON_ID NOT IN (SELECT PERSON_ID FROM students_join_people WHERE COLLEGE_ROLL_NO=' . UserStudentID() . ') Group by stf.STAFF_ID';
 
                         $searched_staffs = DBGet(DBQuery($sql), array('BUTTON' => 'makeChooseCheckbox'));
                         foreach ($searched_staffs as $key => $value) {

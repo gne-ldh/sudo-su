@@ -29,32 +29,32 @@
 include('../../RedirectModulesInc.php');
 include 'modules/grades/DeletePromptX.fnc.php';
 DrawBC("Gradebook > " . ProgramTitle());
-Search('student_id');
+Search('college_roll_no');
 echo '<style type="text/css">#div_margin { margin-top:-20px; _margin-top:-1px; }</style>';
 
-if (isset($_REQUEST['student_id'])) {
-    $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,COLLEGE_ID FROM students,student_enrollment WHERE students.STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND student_enrollment.STUDENT_ID = students.STUDENT_ID '));
+if (isset($_REQUEST['college_roll_no'])) {
+    $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,COLLEGE_ID FROM students,student_enrollment WHERE students.COLLEGE_ROLL_NO=\'' . $_REQUEST['college_roll_no'] . '\' AND student_enrollment.COLLEGE_ROLL_NO = students.COLLEGE_ROLL_NO '));
 
     $count_student_RET = DBGet(DBQuery('SELECT COUNT(*) AS NUM FROM students'));
     if ($count_student_RET[1]['NUM'] > 1) {
         echo '<div class="panel panel-default">';
-        DrawHeader('Selected Student: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'], ' (<A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>Deselect</font></A>) | <A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=Students/Student.php&ajax=true&bottom_back=true&return_session=true target=body>Back to Student List</A>');
+        DrawHeader('Selected Student: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'], ' (<A HREF=Side.php?college_roll_no=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>Deselect</font></A>) | <A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=Students/Student.php&ajax=true&bottom_back=true&return_session=true target=body>Back to Student List</A>');
         echo '</div>';
     } else if ($count_student_RET[1]['NUM'] == 1) {
         echo '<div class="panel panel-default">';
-        DrawHeader('Selected Student: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'], ' (<A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>Deselect</font></A>) ');
+        DrawHeader('Selected Student: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'], ' (<A HREF=Side.php?college_roll_no=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>Deselect</font></A>) ');
         echo '</div>';
     }
 }
 ####################
 if (UserStudentID()) {
-    $student_id = UserStudentID();
+    $college_roll_no = UserStudentID();
     $mp_id = $_REQUEST['mp_id'];
     $tab_id = ($_REQUEST['tab_id'] ? $_REQUEST['tab_id'] : 'grades');
 
     if ($_REQUEST['modfunc'] == 'update' && $_REQUEST['removemp'] && $mp_id && DeletePromptX('Marking Period')) {
 
-        DBQuery('UPDATE student_gpa_calculated SET  cum_unweighted_factor=NULL WHERE student_id = ' . $student_id . ' and marking_period_id = ' . $mp_id . '');
+        DBQuery('UPDATE student_gpa_calculated SET  cum_unweighted_factor=NULL WHERE college_roll_no = ' . $college_roll_no . ' and marking_period_id = ' . $mp_id . '');
         unset($mp_id);
     }
 
@@ -64,12 +64,12 @@ if (UserStudentID()) {
 
             // ------------------------ Start -------------------------- //
 
-            $res = DBGet(DBQuery('SELECT * FROM student_gpa_calculated WHERE student_id=' . $student_id . ' AND marking_period_id=' . $_REQUEST['new_sms']));
+            $res = DBGet(DBQuery('SELECT * FROM student_gpa_calculated WHERE college_roll_no=' . $college_roll_no . ' AND marking_period_id=' . $_REQUEST['new_sms']));
 //	    $rows = mysql_num_rows($res);
             $rows = count($res);
 
             if ($rows == 0) {
-                DBQuery('INSERT INTO student_gpa_calculated (student_id, marking_period_id) VALUES (' . $student_id . ', ' . $_REQUEST['new_sms'] . ')');
+                DBQuery('INSERT INTO student_gpa_calculated (college_roll_no, marking_period_id) VALUES (' . $college_roll_no . ', ' . $_REQUEST['new_sms'] . ')');
             } elseif ($rows != 0) {
                 echo "<b>This Marking Periods has been updated.</b>";
             }
@@ -82,7 +82,7 @@ if (UserStudentID()) {
 
             $updatestats = 'UPDATE student_gpa_calculated SET grade_level_short = \'' . $_REQUEST['SMS_GRADE_LEVEL'] . '\'
                             WHERE marking_period_id = ' . $mp_id . '     
-                            AND student_id = ' . $student_id;
+                            AND college_roll_no = ' . $college_roll_no;
             DBQuery($updatestats);
         }
         foreach ($_REQUEST['values'] as $id => $columns) {
@@ -119,8 +119,8 @@ if (UserStudentID()) {
             }
             else {
                 $sql = 'INSERT INTO student_report_card_grades ';
-                $fields = 'COLLEGE_ID, SYEAR, STUDENT_ID, MARKING_PERIOD_ID, ';
-                $values = UserCollege() . ", " . UserSyear() . ", $student_id, $mp_id, ";
+                $fields = 'COLLEGE_ID, SYEAR, COLLEGE_ROLL_NO, MARKING_PERIOD_ID, ';
+                $values = UserCollege() . ", " . UserSyear() . ", $college_roll_no, $mp_id, ";
 
                 $go = false;
 
@@ -144,7 +144,7 @@ if (UserStudentID()) {
                 }
                 $sql .= '(' . substr($fields, 0, -1) . ') values(' . substr($values, 0, -1) . ')';
 
-                if ($go && $mp_id && $student_id)
+                if ($go && $mp_id && $college_roll_no)
                     DBQuery($sql);
             }
         }
@@ -159,7 +159,7 @@ if (UserStudentID()) {
         }
     }
     if (!$_REQUEST['modfunc']) {
-        $stuRET = DBGet(DBQuery('SELECT LAST_NAME, FIRST_NAME, MIDDLE_NAME, NAME_SUFFIX from students where STUDENT_ID = ' . $student_id . ''));
+        $stuRET = DBGet(DBQuery('SELECT LAST_NAME, FIRST_NAME, MIDDLE_NAME, NAME_SUFFIX from students where COLLEGE_ROLL_NO = ' . $college_roll_no . ''));
         $stuRET = $stuRET[1];
         $displayname = $stuRET['LAST_NAME'] . (($stuRET['NAME_SUFFIX']) ? $stuRET['suffix'] . ' ' : '') . ', ' . $stuRET['FIRST_NAME'] . ' ' . $stuRET['MIDDLE_NAME'];
 
@@ -169,7 +169,7 @@ if (UserStudentID()) {
        sgc.weighted_gpa, sgc.unweighted_gpa
        FROM marking_periods mp, student_gpa_calculated sgc, colleges s
        WHERE sgc.marking_period_id = mp.marking_period_id and
-             s.id = mp.college_id and sgc.student_id = ' . $student_id . ' 
+             s.id = mp.college_id and sgc.college_roll_no = ' . $college_roll_no . ' 
        AND mp.college_id = \'' . UserCollege() . '\' order by mp.post_end_date';
 
         $GRET = DBGet(DBQuery($gquery));
@@ -302,7 +302,7 @@ if (UserStudentID()) {
             $sql = 'SELECT ID,COURSE_TITLE,GRADE_PERCENT,GRADE_LETTER,
                     IF(ISNULL(UNWEIGHTED_GP),  WEIGHTED_GP,UNWEIGHTED_GP ) AS GP,WEIGHTED_GP as WEIGHTED_GP,
                     GP_SCALE,CREDIT_ATTEMPTED,CREDIT_EARNED,CREDIT_CATEGORY
-                       FROM student_report_card_grades WHERE STUDENT_ID = ' . $student_id . ' AND MARKING_PERIOD_ID = ' . $mp_id . ' ORDER BY ID';
+                       FROM student_report_card_grades WHERE COLLEGE_ROLL_NO = ' . $college_roll_no . ' AND MARKING_PERIOD_ID = ' . $mp_id . ' ORDER BY ID';
 
             //build forms based on tab selected
             if ($_REQUEST['tab_id'] == 'grades' || $_REQUEST['tab_id'] == '') {

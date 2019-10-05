@@ -94,10 +94,10 @@ if ($_REQUEST['search_modfunc'] || User('PROFILE') == 'parent' || User('PROFILE'
 }
 $extra['SELECT'] = ',e.ELIGIBILITY_CODE,c.TITLE as COURSE_TITLE';
 $extra['FROM'] = ',eligibility e,courses c,course_periods cp';
-$extra['WHERE'] = ' AND e.STUDENT_ID=ssm.STUDENT_ID AND e.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cp.COURSE_ID=c.COURSE_ID AND e.COLLEGE_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\'';
+$extra['WHERE'] = ' AND e.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND e.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cp.COURSE_ID=c.COURSE_ID AND e.COLLEGE_DATE BETWEEN \'' . $start_date . '\' AND \'' . $end_date . '\'';
 
 $extra['functions'] = array('ELIGIBILITY_CODE' => '_makeLower');
-$extra['group'] = array('STUDENT_ID');
+$extra['group'] = array('COLLEGE_ROLL_NO');
 
 
 $extra['search'] .= '<div class="row">';
@@ -119,12 +119,12 @@ $extra['search'] .= '</div>'; //.row
 
 if (!$_REQUEST['search_modfunc'] && User('PROFILE') != 'parent' && User('PROFILE') != 'student') {
     $extra['new'] = true;
-    Search('student_id', $extra);
+    Search('college_roll_no', $extra);
 } else {
     $RET = GetStuList($extra);
     $columns = array('FULL_NAME' => 'Student', 'COURSE_TITLE' => 'Course', 'ELIGIBILITY_CODE' => 'Grade');
     echo '<div class="panel">';
-    ListOutput($RET, $columns, 'Student', 'Students', array(), array('STUDENT_ID' => array('FULL_NAME', 'STUDENT_ID')));
+    ListOutput($RET, $columns, 'Student', 'Students', array(), array('COLLEGE_ROLL_NO' => array('FULL_NAME', 'COLLEGE_ROLL_NO')));
     echo '</div>';
 }
 

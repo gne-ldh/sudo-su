@@ -83,7 +83,7 @@ if (!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) {
 
     $extra['new'] = true;
     $extra['pdf'] = 'true';
-    Search('student_id', $extra);
+    Search('college_roll_no', $extra);
     echo '<div id="modal_default" class="modal fade">';
     echo '<div class="modal-dialog modal-lg">';
     echo '<div class="modal-content">';
@@ -173,7 +173,7 @@ if (!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) {
                 echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetCollege(UserCollege()) . "<div style=\"font-size:12px;\">Student Letter</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                 echo '<table border=0 style=\" font-family:Arial; font-size:12px;\">';
                 echo '<tr>';
-                echo '<td>' . $student['FULL_NAME'] . ', #' . $student['STUDENT_ID'] . '</td></tr>';
+                echo '<td>' . $student['FULL_NAME'] . ', #' . $student['COLLEGE_ROLL_NO'] . '</td></tr>';
                 echo '<tr>';
                 echo '<td>' . $student['GRADE_ID'] . ' Grade</td></tr>';
                 echo '<tr>';
@@ -202,7 +202,7 @@ if (!$_REQUEST['search_modfunc'] || $_openSIS['modules_search']) {
                 echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetCollege(UserCollege()) . "<div style=\"font-size:12px;\">Student Letter</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br \>Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                 echo '<table border=0 style=\" font-family:Arial; font-size:12px;\">';
                 echo '<tr>';
-                echo '<td>' . $student['FULL_NAME'] . ', #' . $student['STUDENT_ID'] . '</td></tr>';
+                echo '<td>' . $student['FULL_NAME'] . ', #' . $student['COLLEGE_ROLL_NO'] . '</td></tr>';
                 echo '<tr>';
                 echo '<td>' . $student['GRADE_ID'] . ' Grade</td></tr>';
                 echo '<tr>';

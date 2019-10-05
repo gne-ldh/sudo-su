@@ -224,10 +224,10 @@ if (in_array($staff['PROFILE'], $parent_profs_arr)) {
     echo '<div class="row">';
     echo '<div class="col-md-12">';
     echo '<h5>Associated Students </h5>';
-    $sql = 'SELECT s.STUDENT_ID,CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME,\' \',COALESCE(s.MIDDLE_NAME,\' \')) AS FULL_NAME,gr.TITLE AS GRADE ,sc.TITLE AS COLLEGE FROM students s,student_enrollment ssm,college_gradelevels gr,colleges sc,students_join_people sjp WHERE s.STUDENT_ID=ssm.STUDENT_ID AND s.STUDENT_ID=sjp.STUDENT_ID AND sjp.PERSON_ID=' . $staff['STAFF_ID'] . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.COLLEGE_ID=' . UserCollege() . ' AND ssm.GRADE_ID=gr.ID AND ssm.COLLEGE_ID=sc.ID AND (ssm.END_DATE IS NULL OR ssm.END_DATE =  \'0000-00-00\' OR ssm.END_DATE >=  \'' . date('Y-m-d') . '\')';
+    $sql = 'SELECT s.COLLEGE_ROLL_NO,CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME,\' \',COALESCE(s.MIDDLE_NAME,\' \')) AS FULL_NAME,gr.TITLE AS GRADE ,sc.TITLE AS COLLEGE FROM students s,student_enrollment ssm,college_gradelevels gr,colleges sc,students_join_people sjp WHERE s.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND s.COLLEGE_ROLL_NO=sjp.COLLEGE_ROLL_NO AND sjp.PERSON_ID=' . $staff['STAFF_ID'] . ' AND ssm.SYEAR=' . UserSyear() . ' AND ssm.COLLEGE_ID=' . UserCollege() . ' AND ssm.GRADE_ID=gr.ID AND ssm.COLLEGE_ID=sc.ID AND (ssm.END_DATE IS NULL OR ssm.END_DATE =  \'0000-00-00\' OR ssm.END_DATE >=  \'' . date('Y-m-d') . '\')';
     $students = DBGet(DBQuery($sql));
     foreach ($students as $sti => $std) {
-        $get_relation = DBGet(DBQuery('SELECT RELATIONSHIP FROM students_join_people WHERE STUDENT_ID=' . $std['STUDENT_ID'] . ' AND PERSON_ID=' . $staff['STAFF_ID']));
+        $get_relation = DBGet(DBQuery('SELECT RELATIONSHIP FROM students_join_people WHERE COLLEGE_ROLL_NO=' . $std['COLLEGE_ROLL_NO'] . ' AND PERSON_ID=' . $staff['STAFF_ID']));
         $students[$sti]['RELATIONSHIP'] = $get_relation[1]['RELATIONSHIP'];
     }
     $columns = array('FULL_NAME' => 'Name', 'RELATIONSHIP' => 'Relationship', 'GRADE' => 'Grade Level', 'COLLEGE' => 'College Name');
@@ -235,7 +235,7 @@ if (in_array($staff['PROFILE'], $parent_profs_arr)) {
 
     if (User('PROFILE_ID') == 0 || User('PROFILE_ID') == 1) {
         $link['remove']['link'] = "Modules.php?modname=$_REQUEST[modname]&include=$_REQUEST[include]&category_id=$_REQUEST[category_id]&staff_id=$staff[STAFF_ID]&modfunc=remove_stu" . ($_REQUEST['profile'] == 'none' ? '&profile=none' : '');
-        $link['remove']['variables'] = array('id' => 'STUDENT_ID');
+        $link['remove']['variables'] = array('id' => 'COLLEGE_ROLL_NO');
     }
     ListOutput($students, $columns, 'Student', 'Students', $link, array(), array('search' => false));
     echo '</div>'; //.col-md-12

@@ -36,13 +36,13 @@ if ($_REQUEST['failed_user'] == 'Y')
 if ($_REQUEST['button'] == 'Send') {
     if (User('PROFILE') == 'teacher' && $_REQUEST['cp_id'] != '') {
         if ($_REQUEST['list_gpa_student'] == 'Y') {
-            $sch_stu = DBGet(DBQuery('SELECT DISTINCT la.USERNAME FROM login_authentication la,schedule s WHERE  s.COURSE_PERIOD_ID =' . $_REQUEST['cp_id'] . ' AND la.USER_ID=s.STUDENT_ID AND la.PROFILE_ID=3 AND la.USERNAME IS NOT NULL '));
+            $sch_stu = DBGet(DBQuery('SELECT DISTINCT la.USERNAME FROM login_authentication la,schedule s WHERE  s.COURSE_PERIOD_ID =' . $_REQUEST['cp_id'] . ' AND la.USER_ID=s.COLLEGE_ROLL_NO AND la.PROFILE_ID=3 AND la.USERNAME IS NOT NULL '));
             foreach ($sch_stu as $sch_stua)
                 $sch_stu_arr[] = $sch_stua['USERNAME'];
         }
 
         if ($_REQUEST['list_gpa_parent'] == 'Y') {
-            $sch_p = DBGet(DBQuery('SELECT DISTINCT la.USERNAME FROM login_authentication la,students_join_people sjp,schedule s WHERE sjp.STUDENT_ID=s.STUDENT_ID AND s.COURSE_PERIOD_ID =' . $_REQUEST['cp_id'] . '  AND la.USER_ID=sjp.PERSON_ID AND la.PROFILE_ID=4 AND la.USERNAME IS NOT NULL '));
+            $sch_p = DBGet(DBQuery('SELECT DISTINCT la.USERNAME FROM login_authentication la,students_join_people sjp,schedule s WHERE sjp.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND s.COURSE_PERIOD_ID =' . $_REQUEST['cp_id'] . '  AND la.USER_ID=sjp.PERSON_ID AND la.PROFILE_ID=4 AND la.USERNAME IS NOT NULL '));
             foreach ($sch_p as $sch_pa)
                 $sch_p_arr[] = $sch_pa['USERNAME'];
         }
@@ -144,7 +144,7 @@ if ($_REQUEST['button'] == 'Send') {
         $tmp_a = array();
         $tmp_arr = array();
 
-        $tmp_q = DBGet(DBQuery('SELECT DISTINCT la.USERNAME FROM login_authentication la,student_enrollment se WHERE se.STUDENT_ID=la.USER_ID AND la.PROFILE_ID=3 AND se.COLLEGE_ID IN (' . $colleges . ') AND (se.START_DATE=\'0000-00-00\' OR se.START_DATE<=\'' . date('Y-m-d') . '\') AND (se.END_DATE=\'0000-00-00\' OR se.END_DATE IS NULL OR se.END_DATE>=\'' . date('Y-m-d') . '\') AND la.USERNAME IS NOT NULL'));
+        $tmp_q = DBGet(DBQuery('SELECT DISTINCT la.USERNAME FROM login_authentication la,student_enrollment se WHERE se.COLLEGE_ROLL_NO=la.USER_ID AND la.PROFILE_ID=3 AND se.COLLEGE_ID IN (' . $colleges . ') AND (se.START_DATE=\'0000-00-00\' OR se.START_DATE<=\'' . date('Y-m-d') . '\') AND (se.END_DATE=\'0000-00-00\' OR se.END_DATE IS NULL OR se.END_DATE>=\'' . date('Y-m-d') . '\') AND la.USERNAME IS NOT NULL'));
         foreach ($tmp_q as $tmp_a)
             $tmp_arr[] = $tmp_a['USERNAME'];
 
@@ -158,11 +158,11 @@ if ($_REQUEST['button'] == 'Send') {
 
         $tmp_q = '';
         $tmp_a = array();
-        $tmp_q = DBGet(DBQuery('SELECT DISTINCT la.USERNAME  FROM login_authentication la,student_enrollment se,students_join_people sjp WHERE se.COLLEGE_ID IN (' . $colleges . ') AND (se.START_DATE=\'0000-00-00\' OR se.START_DATE<=\'' . date('Y-m-d') . '\') AND (se.END_DATE=\'0000-00-00\' OR se.END_DATE IS NULL OR se.END_DATE>=\'' . date('Y-m-d') . '\') AND se.STUDENT_ID=sjp.STUDENT_ID AND sjp.PERSON_ID=la.USER_ID AND la.USERNAME IS NOT NULL AND la.PROFILE_ID=4'));
+        $tmp_q = DBGet(DBQuery('SELECT DISTINCT la.USERNAME  FROM login_authentication la,student_enrollment se,students_join_people sjp WHERE se.COLLEGE_ID IN (' . $colleges . ') AND (se.START_DATE=\'0000-00-00\' OR se.START_DATE<=\'' . date('Y-m-d') . '\') AND (se.END_DATE=\'0000-00-00\' OR se.END_DATE IS NULL OR se.END_DATE>=\'' . date('Y-m-d') . '\') AND se.COLLEGE_ROLL_NO=sjp.COLLEGE_ROLL_NO AND sjp.PERSON_ID=la.USER_ID AND la.USERNAME IS NOT NULL AND la.PROFILE_ID=4'));
         foreach ($tmp_q as $tmp_a)
             $tmp_arr[] = $tmp_a['USERNAME'];
     } elseif (User('PROFILE') == 'parent' || User('PROFILE') == 'student') {
-        $course_periods = DBGet(DBQuery('SELECT GROUP_CONCAT(course_period_id) as COURSE_PERIOD_ID FROM schedule WHERE STUDENT_ID=' . UserStudentID()));
+        $course_periods = DBGet(DBQuery('SELECT GROUP_CONCAT(course_period_id) as COURSE_PERIOD_ID FROM schedule WHERE COLLEGE_ROLL_NO=' . UserStudentID()));
         $course_periods = $course_periods[1]['COURSE_PERIOD_ID'];
 
 
@@ -172,24 +172,24 @@ if ($_REQUEST['button'] == 'Send') {
 
 
         if (User('PROFILE') == 'parent') {
-            $tmp_q = DBGet(DBQuery('SELECT DISTINCT la.USERNAME FROM login_authentication la,student_enrollment se,students_join_people sjp WHERE (se.START_DATE=\'0000-00-00\' OR se.START_DATE<=\'' . date('Y-m-d') . '\') AND (se.END_DATE=\'0000-00-00\' OR se.END_DATE IS NULL OR se.END_DATE>=\'' . date('Y-m-d') . '\') AND se.STUDENT_ID=sjp.STUDENT_ID AND sjp.PERSON_ID=' . $user_id . ' AND sjp.STUDENT_ID=la.USER_ID AND la.USERNAME IS NOT NULL AND la.PROFILE_ID=3 '));
+            $tmp_q = DBGet(DBQuery('SELECT DISTINCT la.USERNAME FROM login_authentication la,student_enrollment se,students_join_people sjp WHERE (se.START_DATE=\'0000-00-00\' OR se.START_DATE<=\'' . date('Y-m-d') . '\') AND (se.END_DATE=\'0000-00-00\' OR se.END_DATE IS NULL OR se.END_DATE>=\'' . date('Y-m-d') . '\') AND se.COLLEGE_ROLL_NO=sjp.COLLEGE_ROLL_NO AND sjp.PERSON_ID=' . $user_id . ' AND sjp.COLLEGE_ROLL_NO=la.USER_ID AND la.USERNAME IS NOT NULL AND la.PROFILE_ID=3 '));
             foreach ($tmp_q as $tmp_a)
                 $tmp_arr[] = $tmp_a['USERNAME'];
 
-            $tmp_q1 = DBGet(DBQuery('SELECT DISTINCT se.STUDENT_ID FROM student_enrollment se,students_join_people sjp WHERE (se.START_DATE=\'0000-00-00\' OR se.START_DATE<=\'' . date('Y-m-d') . '\') AND (se.END_DATE=\'0000-00-00\' OR se.END_DATE IS NULL OR se.END_DATE>=\'' . date('Y-m-d') . '\') AND se.STUDENT_ID=sjp.STUDENT_ID AND sjp.PERSON_ID=' . $user_id));
+            $tmp_q1 = DBGet(DBQuery('SELECT DISTINCT se.COLLEGE_ROLL_NO FROM student_enrollment se,students_join_people sjp WHERE (se.START_DATE=\'0000-00-00\' OR se.START_DATE<=\'' . date('Y-m-d') . '\') AND (se.END_DATE=\'0000-00-00\' OR se.END_DATE IS NULL OR se.END_DATE>=\'' . date('Y-m-d') . '\') AND se.COLLEGE_ROLL_NO=sjp.COLLEGE_ROLL_NO AND sjp.PERSON_ID=' . $user_id));
             foreach ($tmp_q1 as $tmp_a) {
-                $stu_arr[] = $tmp_a['STUDENT_ID'];
+                $stu_arr[] = $tmp_a['COLLEGE_ROLL_NO'];
             }
-            $student_id = implode(',', $stu_arr);
+            $college_roll_no = implode(',', $stu_arr);
 
-            $asso_people = DBGet(DBQuery('select la.USERNAME from students_join_people sjp ,login_authentication la where sjp.person_id=la.user_id and la.profile_id=4 and sjp.student_id in(' . $student_id . ')'));
+            $asso_people = DBGet(DBQuery('select la.USERNAME from students_join_people sjp ,login_authentication la where sjp.person_id=la.user_id and la.profile_id=4 and sjp.college_roll_no in(' . $college_roll_no . ')'));
 
             foreach ($asso_people as $asso_v) {
                 $tmp_arr[] = $asso_v['USERNAME'];
             }
         }
         if (User('PROFILE') == 'student') {
-            $tmp_q = DBGet(DBQuery('SELECT DISTINCT la.USERNAME FROM login_authentication la,student_enrollment se,students_join_people sjp WHERE (se.START_DATE=\'0000-00-00\' OR se.START_DATE<=\'' . date('Y-m-d') . '\') AND (se.END_DATE=\'0000-00-00\' OR se.END_DATE IS NULL OR se.END_DATE>=\'' . date('Y-m-d') . '\') AND se.STUDENT_ID=sjp.STUDENT_ID AND sjp.STUDENT_ID=' . $user_id . ' AND sjp.PERSON_ID=la.USER_ID AND la.USERNAME IS NOT NULL AND la.PROFILE_ID=4 '));
+            $tmp_q = DBGet(DBQuery('SELECT DISTINCT la.USERNAME FROM login_authentication la,student_enrollment se,students_join_people sjp WHERE (se.START_DATE=\'0000-00-00\' OR se.START_DATE<=\'' . date('Y-m-d') . '\') AND (se.END_DATE=\'0000-00-00\' OR se.END_DATE IS NULL OR se.END_DATE>=\'' . date('Y-m-d') . '\') AND se.COLLEGE_ROLL_NO=sjp.COLLEGE_ROLL_NO AND sjp.COLLEGE_ROLL_NO=' . $user_id . ' AND sjp.PERSON_ID=la.USER_ID AND la.USERNAME IS NOT NULL AND la.PROFILE_ID=4 '));
             foreach ($tmp_q as $tmp_a)
                 $tmp_arr[] = $tmp_a['USERNAME'];
         }
@@ -227,10 +227,10 @@ if ($_REQUEST['button'] == 'Send') {
         $tmp_a = array();
         $tmp_arr = array();
         if ($course_periods != '') {
-            $tmp_q = DBGet(DBQuery('SELECT DISTINCT la.USERNAME,se.STUDENT_ID FROM login_authentication la,student_enrollment se,schedule s WHERE (se.START_DATE=\'0000-00-00\' OR se.START_DATE<=\'' . date('Y-m-d') . '\') AND (se.END_DATE=\'0000-00-00\' OR se.END_DATE IS NULL OR se.END_DATE>=\'' . date('Y-m-d') . '\') AND se.STUDENT_ID=s.STUDENT_ID AND s.COURSE_PERIOD_ID IN (' . $course_periods . ') AND la.USER_ID=se.STUDENT_ID AND la.PROFILE_ID=3 AND la.USERNAME IS NOT NULL '));
+            $tmp_q = DBGet(DBQuery('SELECT DISTINCT la.USERNAME,se.COLLEGE_ROLL_NO FROM login_authentication la,student_enrollment se,schedule s WHERE (se.START_DATE=\'0000-00-00\' OR se.START_DATE<=\'' . date('Y-m-d') . '\') AND (se.END_DATE=\'0000-00-00\' OR se.END_DATE IS NULL OR se.END_DATE>=\'' . date('Y-m-d') . '\') AND se.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND s.COURSE_PERIOD_ID IN (' . $course_periods . ') AND la.USER_ID=se.COLLEGE_ROLL_NO AND la.PROFILE_ID=3 AND la.USERNAME IS NOT NULL '));
             foreach ($tmp_q as $tmp_a) {
                 $tmp_arr[] = $tmp_a['USERNAME'];
-                $tmp_qa = DBGet(DBQuery('SELECT DISTINCT la.USERNAME FROM login_authentication la,students_join_people sjp WHERE sjp.STUDENT_ID=' . $tmp_a['STUDENT_ID'] . ' AND la.USER_ID=sjp.PERSON_ID AND la.PROFILE_ID=4 AND la.USERNAME IS NOT NULL '));
+                $tmp_qa = DBGet(DBQuery('SELECT DISTINCT la.USERNAME FROM login_authentication la,students_join_people sjp WHERE sjp.COLLEGE_ROLL_NO=' . $tmp_a['COLLEGE_ROLL_NO'] . ' AND la.USER_ID=sjp.PERSON_ID AND la.PROFILE_ID=4 AND la.USERNAME IS NOT NULL '));
                 foreach ($tmp_qa as $tmp_qaa) {
                     $tmp_arr[] = $tmp_qaa['USERNAME'];
                 }
@@ -374,10 +374,10 @@ else {
                 $chkStudent = $_POST['list_gpa_student'];
                 $course_period_id = $_SESSION['course_period_id'];
                 if ($chkStudent == 'Y')
-                    $stuList_forCourseArr = DBGet(DBQuery("SELECT la.username,student_id from students s ,login_authentication la where student_id in(Select distinct student_id from course_periods INNER JOIN schedule using(course_period_id) where course_periods.course_period_id=" . $course_period_id . ") AND la.USER_ID=s.STUDENT_ID AND la.PROFILE_ID=3 AND username IS NOT NULL"));
+                    $stuList_forCourseArr = DBGet(DBQuery("SELECT la.username,college_roll_no from students s ,login_authentication la where college_roll_no in(Select distinct college_roll_no from course_periods INNER JOIN schedule using(course_period_id) where course_periods.course_period_id=" . $course_period_id . ") AND la.USER_ID=s.COLLEGE_ROLL_NO AND la.PROFILE_ID=3 AND username IS NOT NULL"));
 
                 if ($chkParent == 'Y') {
-                    $parentList_forCourseArr = DBGet(DBQuery("SELECT username FROM login_authentication WHERE username IS NOT NULL AND PROFILE_ID=4 AND USER_ID IN (SELECT DISTINCT person_id FROM students_join_people WHERE student_id IN (Select student_id from students where student_id in(Select distinct student_id from course_periods INNER JOIN schedule using(course_period_id) where course_periods.course_period_id=" . $course_period_id . ")))"));
+                    $parentList_forCourseArr = DBGet(DBQuery("SELECT username FROM login_authentication WHERE username IS NOT NULL AND PROFILE_ID=4 AND USER_ID IN (SELECT DISTINCT person_id FROM students_join_people WHERE college_roll_no IN (Select college_roll_no from students where college_roll_no in(Select distinct college_roll_no from course_periods INNER JOIN schedule using(course_period_id) where course_periods.course_period_id=" . $course_period_id . ")))"));
                 }
                 $stuList_forCourse = '';
                 foreach ($stuList_forCourseArr as $stu) {

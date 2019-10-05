@@ -35,13 +35,13 @@ include('RedirectRootInc.php');
             {
                 $result=DBGet(DBQuery('SELECT STAFF_ID FROM people WHERE EMAIL=\''.$_REQUEST['email'].'\''));
                 $res_stf=DBGet(DBQuery('SELECT STAFF_ID FROM staff WHERE EMAIL=\''.$_REQUEST['email'].'\''));
-                $res_stu=DBGet(DBQuery('SELECT STUDENT_ID FROM students WHERE EMAIL=\''.$_REQUEST['email'].'\''));
+                $res_stu=DBGet(DBQuery('SELECT COLLEGE_ROLL_NO FROM students WHERE EMAIL=\''.$_REQUEST['email'].'\''));
             }
             else
             {
                 $result=DBGet(DBQuery('SELECT STAFF_ID FROM people WHERE EMAIL=\''.$_REQUEST['email'].'\' AND STAFF_ID!='.$_REQUEST['p_id']));    
                 $res_stf=DBGet(DBQuery('SELECT STAFF_ID FROM staff WHERE EMAIL=\''.$_REQUEST['email'].'\''));
-                $res_stu=DBGet(DBQuery('SELECT STUDENT_ID FROM students WHERE EMAIL=\''.$_REQUEST['email'].'\''));
+                $res_stu=DBGet(DBQuery('SELECT COLLEGE_ROLL_NO FROM students WHERE EMAIL=\''.$_REQUEST['email'].'\''));
             }
             if(count($result)>0 || count($res_stf)>0 ||  count($res_stu)>0)
             {

@@ -148,18 +148,18 @@ if ($_REQUEST['students']) {
     echo '<div class="col-md-6">';
     echo '<div class="panel panel-default">';
     if ($_REQUEST['unscheduled'] == 'true') {
-        $sql = "SELECT CONCAT(s.LAST_NAME,', ',s.FIRST_NAME) AS FULL_NAME,s.STUDENT_ID,s.BIRTHDATE,ssm.GRADE_ID
+        $sql = "SELECT CONCAT(s.LAST_NAME,', ',s.FIRST_NAME) AS FULL_NAME,s.COLLEGE_ROLL_NO,s.BIRTHDATE,ssm.GRADE_ID
 				FROM schedule_requests sr,students s,student_enrollment ssm
-				WHERE (('" . DBDate() . "' BETWEEN ssm.START_DATE AND ssm.END_DATE OR ssm.END_DATE IS NULL)) AND s.STUDENT_ID=sr.STUDENT_ID AND s.STUDENT_ID=ssm.STUDENT_ID AND ssm.SYEAR='" . UserSyear() . "' AND ssm.COLLEGE_ID='" . UserCollege() . "' ";
+				WHERE (('" . DBDate() . "' BETWEEN ssm.START_DATE AND ssm.END_DATE OR ssm.END_DATE IS NULL)) AND s.COLLEGE_ROLL_NO=sr.COLLEGE_ROLL_NO AND s.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND ssm.SYEAR='" . UserSyear() . "' AND ssm.COLLEGE_ID='" . UserCollege() . "' ";
         if ($_REQUEST['course_id'])
             $sql .= "AND sr.COURSE_ID='$_REQUEST[course_id]' ";
-        $sql .= "AND NOT EXISTS (SELECT '' FROM schedule ss WHERE ss.COURSE_ID=sr.COURSE_ID AND ss.STUDENT_ID=sr.STUDENT_ID AND ('" . DBDate() . "' BETWEEN ss.START_DATE AND ss.END_DATE OR ss.END_DATE IS NULL))";
+        $sql .= "AND NOT EXISTS (SELECT '' FROM schedule ss WHERE ss.COURSE_ID=sr.COURSE_ID AND ss.COLLEGE_ROLL_NO=sr.COLLEGE_ROLL_NO AND ('" . DBDate() . "' BETWEEN ss.START_DATE AND ss.END_DATE OR ss.END_DATE IS NULL))";
     }
     else {
 //            AND (('".DBDate()."' BETWEEN ss.START_DATE AND ss.END_DATE OR ss.END_DATE IS NULL) or (ss.END_DATE=(SELECT END_DATE from  course_periods where COURSE_PERIOD_ID='$_REQUEST[course_period_id]')))
-        $sql = "SELECT CONCAT(s.LAST_NAME,', ',s.FIRST_NAME) AS FULL_NAME,s.STUDENT_ID,s.BIRTHDATE,ssm.GRADE_ID
+        $sql = "SELECT CONCAT(s.LAST_NAME,', ',s.FIRST_NAME) AS FULL_NAME,s.COLLEGE_ROLL_NO,s.BIRTHDATE,ssm.GRADE_ID
 				FROM schedule ss,students s,student_enrollment ssm
-				WHERE (('" . DBDate() . "' BETWEEN ss.START_DATE AND ss.END_DATE OR ss.END_DATE IS NULL) or (ss.END_DATE=(SELECT END_DATE from  course_periods where COURSE_PERIOD_ID='$_REQUEST[course_period_id]'))) AND (('" . DBDate() . "' BETWEEN ssm.START_DATE AND ssm.END_DATE OR ssm.END_DATE IS NULL)) AND s.STUDENT_ID=ss.STUDENT_ID AND s.STUDENT_ID=ssm.STUDENT_ID AND ssm.SYEAR='" . UserSyear() . "' AND ssm.COLLEGE_ID='" . UserCollege() . "' ";
+				WHERE (('" . DBDate() . "' BETWEEN ss.START_DATE AND ss.END_DATE OR ss.END_DATE IS NULL) or (ss.END_DATE=(SELECT END_DATE from  course_periods where COURSE_PERIOD_ID='$_REQUEST[course_period_id]'))) AND (('" . DBDate() . "' BETWEEN ssm.START_DATE AND ssm.END_DATE OR ssm.END_DATE IS NULL)) AND s.COLLEGE_ROLL_NO=ss.COLLEGE_ROLL_NO AND s.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND ssm.SYEAR='" . UserSyear() . "' AND ssm.COLLEGE_ID='" . UserCollege() . "' ";
         if ($_REQUEST['course_period_id'])
             $sql .= "AND ss.COURSE_PERIOD_ID='$_REQUEST[course_period_id]'";
         elseif ($_REQUEST['course_id'])
@@ -170,7 +170,7 @@ if ($_REQUEST['students']) {
 
     $link = array();
     $link['FULL_NAME']['link'] = "Modules.php?modname=scheduling/Schedule.php";
-    $link['FULL_NAME']['variables'] = array('student_id' => 'STUDENT_ID');
+    $link['FULL_NAME']['variables'] = array('college_roll_no' => 'COLLEGE_ROLL_NO');
     ListOutput($RET, array('FULL_NAME' => 'Student', 'GRADE_ID' => 'Grade', 'BIRTHDATE' => 'Birthdate'), 'Student', 'Students', $link, array(), $LO_options);
     echo '</div>'; //.panel
     echo '</div>'; //.col-md-6
@@ -183,7 +183,7 @@ function _calcOpenSeats($null) {
 //    print_r($THIS_RET);
     $sql = "SELECT COUNT(*) as TOT
 				FROM schedule ss,students s,student_enrollment ssm
-				WHERE (('" . DBDate() . "' BETWEEN ss.START_DATE AND ss.END_DATE OR ss.END_DATE IS NULL) or (ss.END_DATE=(SELECT END_DATE from  course_periods where COURSE_PERIOD_ID='$THIS_RET[COURSE_PERIOD_ID]'))) AND (('" . DBDate() . "' BETWEEN ssm.START_DATE AND ssm.END_DATE OR ssm.END_DATE IS NULL)) AND s.STUDENT_ID=ss.STUDENT_ID AND s.STUDENT_ID=ssm.STUDENT_ID AND ssm.SYEAR='" . UserSyear() . "' AND ssm.COLLEGE_ID='" . UserCollege() . "' AND ss.COURSE_PERIOD_ID='$THIS_RET[COURSE_PERIOD_ID]' ";
+				WHERE (('" . DBDate() . "' BETWEEN ss.START_DATE AND ss.END_DATE OR ss.END_DATE IS NULL) or (ss.END_DATE=(SELECT END_DATE from  course_periods where COURSE_PERIOD_ID='$THIS_RET[COURSE_PERIOD_ID]'))) AND (('" . DBDate() . "' BETWEEN ssm.START_DATE AND ssm.END_DATE OR ssm.END_DATE IS NULL)) AND s.COLLEGE_ROLL_NO=ss.COLLEGE_ROLL_NO AND s.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND ssm.SYEAR='" . UserSyear() . "' AND ssm.COLLEGE_ID='" . UserCollege() . "' AND ss.COURSE_PERIOD_ID='$THIS_RET[COURSE_PERIOD_ID]' ";
 
     $res = DBGet(DBQuery($sql));
 
@@ -193,7 +193,7 @@ function _calcOpenSeatsNew($null) {
     global $THIS_RET;
     $sql = "SELECT COUNT(*) as TOT
 				FROM schedule ss,students s,student_enrollment ssm
-				WHERE (('" . DBDate() . "' BETWEEN ss.START_DATE AND ss.END_DATE OR ss.END_DATE IS NULL) or (ss.END_DATE=(SELECT MAX(END_DATE) from  course_periods where COURSE_ID='$THIS_RET[COURSE_ID]'))) AND (('" . DBDate() . "' BETWEEN ssm.START_DATE AND ssm.END_DATE OR ssm.END_DATE IS NULL)) AND s.STUDENT_ID=ss.STUDENT_ID AND s.STUDENT_ID=ssm.STUDENT_ID AND ssm.SYEAR='" . UserSyear() . "' AND ssm.COLLEGE_ID='" . UserCollege() . "' AND ss.COURSE_ID='$THIS_RET[COURSE_ID]' ";
+				WHERE (('" . DBDate() . "' BETWEEN ss.START_DATE AND ss.END_DATE OR ss.END_DATE IS NULL) or (ss.END_DATE=(SELECT MAX(END_DATE) from  course_periods where COURSE_ID='$THIS_RET[COURSE_ID]'))) AND (('" . DBDate() . "' BETWEEN ssm.START_DATE AND ssm.END_DATE OR ssm.END_DATE IS NULL)) AND s.COLLEGE_ROLL_NO=ss.COLLEGE_ROLL_NO AND s.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND ssm.SYEAR='" . UserSyear() . "' AND ssm.COLLEGE_ID='" . UserCollege() . "' AND ss.COURSE_ID='$THIS_RET[COURSE_ID]' ";
 
     $res = DBGet(DBQuery($sql));
 

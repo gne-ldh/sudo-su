@@ -31,55 +31,55 @@ function Search($type, $extra = array(), $search_from_grade = '') {
     
     global $_openSIS;
     switch ($type) {
-        case 'student_id':
+        case 'college_roll_no':
             if ($_REQUEST['bottom_back']) {
-                unset($_SESSION['student_id']);
+                unset($_SESSION['college_roll_no']);
                 //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             }
             if ($_SESSION['unset_student']) {
-                unset($_REQUEST['student_id']);
+                unset($_REQUEST['college_roll_no']);
                 unset($_SESSION['unset_student']);
             }
 
-            if ($_REQUEST['student_id']) {
-                if ($_REQUEST['student_id'] != 'new') {
-                    $_SESSION['student_id'] = $_REQUEST['student_id'];
+            if ($_REQUEST['college_roll_no']) {
+                if ($_REQUEST['college_roll_no'] != 'new') {
+                    $_SESSION['college_roll_no'] = $_REQUEST['college_roll_no'];
                     if ($_REQUEST['college_id'])
                         $_SESSION['UserCollege'] = $_REQUEST['college_id'];
                 } else
-                    unset($_SESSION['student_id']);
+                    unset($_SESSION['college_roll_no']);
 //                if (!$_REQUEST['_openSIS_PDF'])
 //                    echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             }
 
-            if (!UserStudentID() && $_REQUEST['student_id'] != 'new' || $extra['new'] == true) {
+            if (!UserStudentID() && $_REQUEST['college_roll_no'] != 'new' || $extra['new'] == true) {
                 $_REQUEST['next_modname'] = $_REQUEST['modname'];
                 include('modules/students/SearchInc.php');
             }
             break;
 
-        case 'student_id_from_student':
+        case 'college_roll_no_from_student':
             if ($_REQUEST['bottom_back']) {
-                unset($_SESSION['student_id']);
+                unset($_SESSION['college_roll_no']);
                 //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             }
             if ($_SESSION['unset_student']) {
-                unset($_REQUEST['student_id']);
+                unset($_REQUEST['college_roll_no']);
                 unset($_SESSION['unset_student']);
             }
 
-            if ($_REQUEST['student_id']) {
-                if ($_REQUEST['student_id'] != 'new') {
-                    $_SESSION['student_id'] = $_REQUEST['student_id'];
+            if ($_REQUEST['college_roll_no']) {
+                if ($_REQUEST['college_roll_no'] != 'new') {
+                    $_SESSION['college_roll_no'] = $_REQUEST['college_roll_no'];
                     if ($_REQUEST['college_id'])
                         $_SESSION['UserCollege'] = $_REQUEST['college_id'];
                 } else
-                    unset($_SESSION['student_id']);
+                    unset($_SESSION['college_roll_no']);
 //                if (!$_REQUEST['_openSIS_PDF'])
 //                    echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             }
 
-            if (!UserStudentID() && $_REQUEST['student_id'] != 'new' || $extra['new'] == true) {
+            if (!UserStudentID() && $_REQUEST['college_roll_no'] != 'new' || $extra['new'] == true) {
                 $_REQUEST['next_modname'] = $_REQUEST['modname'];
                 include('modules/students/SearchForStudentsInc.php');
             }
@@ -300,7 +300,7 @@ function Search($type, $extra = array(), $search_from_grade = '') {
                     echo "<OPTION value=\"---\">---</OPTION>";
                     $options['---'] = true;
                     // add values found in current and previous year
-                    $options_RET = DBGet(DBQuery("SELECT DISTINCT s.$column[COLUMN_NAME],upper(s.$column[COLUMN_NAME]) AS KEEY FROM students s,student_enrollment sse WHERE sse.STUDENT_ID=s.STUDENT_ID AND (sse.SYEAR='" . UserSyear() . "' OR sse.SYEAR='" . (UserSyear() - 1) . "') AND $column[COLUMN_NAME] IS NOT NULL ORDER BY KEEY"));
+                    $options_RET = DBGet(DBQuery("SELECT DISTINCT s.$column[COLUMN_NAME],upper(s.$column[COLUMN_NAME]) AS KEEY FROM students s,student_enrollment sse WHERE sse.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND (sse.SYEAR='" . UserSyear() . "' OR sse.SYEAR='" . (UserSyear() - 1) . "') AND $column[COLUMN_NAME] IS NOT NULL ORDER BY KEEY"));
                     foreach ($options_RET as $option)
                         if ($option[$column['COLUMN_NAME']] != '' && !$options[$option[$column['COLUMN_NAME']]]) {
                             echo "<OPTION value=\"" . $option[$column['COLUMN_NAME']] . "\">" . $option[$column['COLUMN_NAME']] . "</OPTION>";
@@ -440,30 +440,30 @@ function Search_Miss_Attn($type, $extra = array()) {
 
 function Search_GroupSchedule($type, $extra = array()) {
     global $_openSIS;
-    unset($_SESSION['student_id']);
+    unset($_SESSION['college_roll_no']);
     switch ($type) {
-        case 'student_id':
+        case 'college_roll_no':
             if ($_REQUEST['bottom_back']) {
-                unset($_SESSION['student_id']);
+                unset($_SESSION['college_roll_no']);
                 //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             }
             if ($_SESSION['unset_student']) {
-                unset($_REQUEST['student_id']);
+                unset($_REQUEST['college_roll_no']);
                 unset($_SESSION['unset_student']);
             }
 
-            if ($_REQUEST['student_id']) {
-                if ($_REQUEST['student_id'] != 'new') {
-                    $_SESSION['student_id'] = $_REQUEST['student_id'];
+            if ($_REQUEST['college_roll_no']) {
+                if ($_REQUEST['college_roll_no'] != 'new') {
+                    $_SESSION['college_roll_no'] = $_REQUEST['college_roll_no'];
                     if ($_REQUEST['college_id'])
                         $_SESSION['UserCollege'] = $_REQUEST['college_id'];
                 } else
-                    unset($_SESSION['student_id']);
+                    unset($_SESSION['college_roll_no']);
 //                if (!$_REQUEST['_openSIS_PDF'])
 //                    echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             }
 
-            if (!UserStudentID() && $_REQUEST['student_id'] != 'new' || $extra['new'] == true) {
+            if (!UserStudentID() && $_REQUEST['college_roll_no'] != 'new' || $extra['new'] == true) {
                 $_REQUEST['next_modname'] = $_REQUEST['modname'];
                 include('modules/scheduling/SearchInc.php');
             }
@@ -572,7 +572,7 @@ function Search_GroupSchedule($type, $extra = array()) {
                     echo "<OPTION value=\"---\">---</OPTION>";
                     $options['---'] = true;
                     // add values found in current and previous year
-                    $options_RET = DBGet(DBQuery('SELECT DISTINCT s.' . $column[COLUMN_NAME] . ',upper(s.' . $column[COLUMN_NAME] . ') AS KEEY FROM students s,student_enrollment sse WHERE sse.STUDENT_ID=s.STUDENT_ID AND (sse.SYEAR=\'' . UserSyear() . '\' OR sse.SYEAR=\'' . (UserSyear() - 1) . '\') AND ' . $column[COLUMN_NAME] . ' IS NOT NULL ORDER BY KEEY'));
+                    $options_RET = DBGet(DBQuery('SELECT DISTINCT s.' . $column[COLUMN_NAME] . ',upper(s.' . $column[COLUMN_NAME] . ') AS KEEY FROM students s,student_enrollment sse WHERE sse.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND (sse.SYEAR=\'' . UserSyear() . '\' OR sse.SYEAR=\'' . (UserSyear() - 1) . '\') AND ' . $column[COLUMN_NAME] . ' IS NOT NULL ORDER BY KEEY'));
                     foreach ($options_RET as $option)
                         if ($option[$column['COLUMN_NAME']] != '' && !$options[$option[$column['COLUMN_NAME']]]) {
                             echo "<OPTION value=\"" . $option[$column['COLUMN_NAME']] . "\">" . $option[$column['COLUMN_NAME']] . "</OPTION>";
@@ -648,28 +648,28 @@ function Search_absence_summary($type, $extra = array(), $search_from_grade = ''
     global $_openSIS;
 
     switch ($type) {
-        case 'student_id':
+        case 'college_roll_no':
             if ($_REQUEST['bottom_back']) {
-                unset($_SESSION['student_id']);
+                unset($_SESSION['college_roll_no']);
                 //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             }
             if ($_SESSION['unset_student']) {
-                unset($_REQUEST['student_id']);
+                unset($_REQUEST['college_roll_no']);
                 unset($_SESSION['unset_student']);
             }
 
-            if ($_REQUEST['student_id']) {
-                if ($_REQUEST['student_id'] != 'new') {
-                    $_SESSION['student_id'] = $_REQUEST['student_id'];
+            if ($_REQUEST['college_roll_no']) {
+                if ($_REQUEST['college_roll_no'] != 'new') {
+                    $_SESSION['college_roll_no'] = $_REQUEST['college_roll_no'];
                     if ($_REQUEST['college_id'])
                         $_SESSION['UserCollege'] = $_REQUEST['college_id'];
                 } else
-                    unset($_SESSION['student_id']);
+                    unset($_SESSION['college_roll_no']);
 //                if (!$_REQUEST['_openSIS_PDF'])
 //                    echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             }
 
-            if (!UserStudentID() && $_REQUEST['student_id'] != 'new' || $extra['new'] == true) {
+            if (!UserStudentID() && $_REQUEST['college_roll_no'] != 'new' || $extra['new'] == true) {
                 $_REQUEST['next_modname'] = $_REQUEST['modname'];
                 include('modules/attendance/SearchInc.php');
             }
@@ -786,7 +786,7 @@ function Search_absence_summary($type, $extra = array(), $search_from_grade = ''
                     echo "<OPTION value=\"---\">---</OPTION>";
                     $options['---'] = true;
                     // add values found in current and previous year
-                    $options_RET = DBGet(DBQuery('SELECT DISTINCT s.' . $column[COLUMN_NAME] . ',upper(s.' . $column[COLUMN_NAME] . ') AS KEEY FROM students s,student_enrollment sse WHERE sse.STUDENT_ID=s.STUDENT_ID AND (sse.SYEAR=\'' . UserSyear() . '\' OR sse.SYEAR=\'' . (UserSyear() - 1) . '\') AND ' . $column[COLUMN_NAME] . ' IS NOT NULL ORDER BY KEEY'));
+                    $options_RET = DBGet(DBQuery('SELECT DISTINCT s.' . $column[COLUMN_NAME] . ',upper(s.' . $column[COLUMN_NAME] . ') AS KEEY FROM students s,student_enrollment sse WHERE sse.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND (sse.SYEAR=\'' . UserSyear() . '\' OR sse.SYEAR=\'' . (UserSyear() - 1) . '\') AND ' . $column[COLUMN_NAME] . ' IS NOT NULL ORDER BY KEEY'));
                     foreach ($options_RET as $option)
                         if ($option[$column['COLUMN_NAME']] != '' && !$options[$option[$column['COLUMN_NAME']]]) {
                             echo "<OPTION value=\"" . $option[$column['COLUMN_NAME']] . "\">" . $option[$column['COLUMN_NAME']] . "</OPTION>";
@@ -865,30 +865,30 @@ function SearchStaff($type, $extra = array()) {
     global $_openSIS;
 
     switch ($type) {
-        case 'student_id':
+        case 'college_roll_no':
             if ($_REQUEST['bottom_back']) {
-                unset($_SESSION['student_id']);
+                unset($_SESSION['college_roll_no']);
                 //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             }
             if ($_SESSION['unset_student']) {
-                unset($_REQUEST['student_id']);
+                unset($_REQUEST['college_roll_no']);
                 unset($_SESSION['unset_student']);
             }
 
-            if ($_REQUEST['student_id']) {
-                if ($_REQUEST['student_id'] != 'new') {
-                    $_SESSION['student_id'] = $_REQUEST['student_id'];
+            if ($_REQUEST['college_roll_no']) {
+                if ($_REQUEST['college_roll_no'] != 'new') {
+                    $_SESSION['college_roll_no'] = $_REQUEST['college_roll_no'];
                     if ($_REQUEST['college_id'])
                         $_SESSION['UserCollege'] = $_REQUEST['college_id'];
                 }
                 else {
-                    unset($_SESSION['student_id']);
+                    unset($_SESSION['college_roll_no']);
                 }
 //                if (!$_REQUEST['_openSIS_PDF'])
 //                    echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
             }
 
-            if (!UserStudentID() && $_REQUEST['student_id'] != 'new' || $extra['new'] == true) {
+            if (!UserStudentID() && $_REQUEST['college_roll_no'] != 'new' || $extra['new'] == true) {
                 $_REQUEST['next_modname'] = $_REQUEST['modname'];
                 include('modules/students/SearchInc.php');
             }
@@ -1024,7 +1024,7 @@ function SearchStaff($type, $extra = array()) {
                     echo "<OPTION value=\"---\">---</OPTION>";
                     $options['---'] = true;
                     // add values found in current and previous year
-                    $options_RET = DBGet(DBQuery("SELECT DISTINCT s.$column[COLUMN_NAME],upper(s.$column[COLUMN_NAME]) AS KEEY FROM students s,student_enrollment sse WHERE sse.STUDENT_ID=s.STUDENT_ID AND (sse.SYEAR='" . UserSyear() . "' OR sse.SYEAR='" . (UserSyear() - 1) . "') AND $column[COLUMN_NAME] IS NOT NULL ORDER BY KEEY"));
+                    $options_RET = DBGet(DBQuery("SELECT DISTINCT s.$column[COLUMN_NAME],upper(s.$column[COLUMN_NAME]) AS KEEY FROM students s,student_enrollment sse WHERE sse.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND (sse.SYEAR='" . UserSyear() . "' OR sse.SYEAR='" . (UserSyear() - 1) . "') AND $column[COLUMN_NAME] IS NOT NULL ORDER BY KEEY"));
                     foreach ($options_RET as $option)
                         if ($option[$column['COLUMN_NAME']] != '' && !$options[$option[$column['COLUMN_NAME']]]) {
                             echo "<OPTION value=\"" . $option[$column['COLUMN_NAME']] . "\">" . $option[$column['COLUMN_NAME']] . "</OPTION>";

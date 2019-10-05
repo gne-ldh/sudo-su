@@ -364,7 +364,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                             }
                                                                             else
                                                                             {  
-                                                                                $stu_sql='SELECT COUNT(s.STUDENT_ID) AS TOTAL_REC FROM student_enrollment se,students s WHERE se.COLLEGE_ID=\''.UserCollege().'\' AND se.SYEAR=\''.UserSyear().'\' AND se.END_DATE IS NULL AND s.IS_DISABLE IS NULL';
+                                                                                $stu_sql='SELECT COUNT(s.COLLEGE_ROLL_NO) AS TOTAL_REC FROM student_enrollment se,students s WHERE se.COLLEGE_ID=\''.UserCollege().'\' AND se.SYEAR=\''.UserSyear().'\' AND se.END_DATE IS NULL AND s.IS_DISABLE IS NULL';
                                                                                 $students=  DBGet(DBQuery($stu_sql));
                                                                                 $students=$students[1]['TOTAL_REC'];
                                                                                 if($students>0 && $syear!=UserSyear())
@@ -484,7 +484,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                         }
                                                                         else
                                                                         {
-                                                                            $stu_sql='SELECT s.STUDENT_ID FROM student_enrollment se,students s WHERE se.COLLEGE_ID=\''.UserCollege().'\' AND se.SYEAR=\''.UserSyear().'\' AND se.END_DATE IS NULL AND s.IS_DISABLE IS NULL';
+                                                                            $stu_sql='SELECT s.COLLEGE_ROLL_NO FROM student_enrollment se,students s WHERE se.COLLEGE_ID=\''.UserCollege().'\' AND se.SYEAR=\''.UserSyear().'\' AND se.END_DATE IS NULL AND s.IS_DISABLE IS NULL';
                                                                             $students=  DBGet(DBQuery($stu_sql));
                                                                             $students=$students[1];
 
