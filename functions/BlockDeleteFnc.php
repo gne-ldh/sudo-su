@@ -30,7 +30,7 @@
 function BlockDelete($item) {
     switch ($item) {
         case 'college':
-            $find_student = DBGet(DBQuery('SELECT COUNT(STUDENT_ID) AS STUDENT_EXIST FROM student_enrollment WHERE COLLEGE_ID=\'' . UserCollege() . '\''));
+            $find_student = DBGet(DBQuery('SELECT COUNT(COLLEGE_ROLL_NO) AS STUDENT_EXIST FROM student_enrollment WHERE COLLEGE_ID=\'' . UserCollege() . '\''));
             $find_student = $find_student[1]['STUDENT_EXIST'];
             $find_staff = DBGet(DBQuery('SELECT COUNT(STAFF_ID) AS STAFF_EXIST FROM staff WHERE CURRENT_COLLEGE_ID=\'' . UserCollege() . '\''));
             $find_staff = $find_staff[1]['STAFF_EXIST'];
@@ -45,7 +45,7 @@ function BlockDelete($item) {
             break;
 
         case 'subject':
-            $find_student = DBGet(DBQuery('SELECT COUNT(sch.STUDENT_ID) AS STUDENT_EXIST FROM schedule sch,course_periods cp, courses c WHERE c.SUBJECT_ID=\'' . $_REQUEST['subject_id'] . '\''));
+            $find_student = DBGet(DBQuery('SELECT COUNT(sch.COLLEGE_ROLL_NO) AS STUDENT_EXIST FROM schedule sch,course_periods cp, courses c WHERE c.SUBJECT_ID=\'' . $_REQUEST['subject_id'] . '\''));
             $find_student = $find_student[1]['STUDENT_EXIST'];
             if ($find_student > 0) {
                 PopTable('header', 'Unable to Delete');
@@ -58,7 +58,7 @@ function BlockDelete($item) {
             break;
 
         case 'course':
-            $find_student = DBGet(DBQuery('SELECT COUNT(sch.STUDENT_ID) AS STUDENT_EXIST FROM schedule sch,course_periods cp, courses c WHERE sch.COURSE_ID=\'' . $_REQUEST['course_id'] . '\' AND sch.COURSE_ID=c.COURSE_ID AND c.SUBJECT_ID=\'' . $_REQUEST['subject_id'] . '\''));
+            $find_student = DBGet(DBQuery('SELECT COUNT(sch.COLLEGE_ROLL_NO) AS STUDENT_EXIST FROM schedule sch,course_periods cp, courses c WHERE sch.COURSE_ID=\'' . $_REQUEST['course_id'] . '\' AND sch.COURSE_ID=c.COURSE_ID AND c.SUBJECT_ID=\'' . $_REQUEST['subject_id'] . '\''));
             $find_student = $find_student[1]['STUDENT_EXIST'];
             if ($find_student > 0) {
                 PopTable('header', 'Unable to Delete');
@@ -71,7 +71,7 @@ function BlockDelete($item) {
             break;
 
         case 'course period':
-            $find_student = DBGet(DBQuery('SELECT COUNT(sch.STUDENT_ID) AS STUDENT_EXIST FROM schedule sch,course_periods cp, courses c WHERE sch.COURSE_ID=\'' . $_REQUEST['course_id'] . '\' AND sch.COURSE_ID=c.COURSE_ID AND sch.COURSE_PERIOD_ID=\'' . $_REQUEST['course_period_id'] . '\' AND sch.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND c.SUBJECT_ID=\'' . $_REQUEST['subject_id'] . '\' AND sch.DROPPED=\'N\''));
+            $find_student = DBGet(DBQuery('SELECT COUNT(sch.COLLEGE_ROLL_NO) AS STUDENT_EXIST FROM schedule sch,course_periods cp, courses c WHERE sch.COURSE_ID=\'' . $_REQUEST['course_id'] . '\' AND sch.COURSE_ID=c.COURSE_ID AND sch.COURSE_PERIOD_ID=\'' . $_REQUEST['course_period_id'] . '\' AND sch.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND c.SUBJECT_ID=\'' . $_REQUEST['subject_id'] . '\' AND sch.DROPPED=\'N\''));
             $find_student = $find_student[1]['STUDENT_EXIST'];
             if ($find_student > 0) {
                 PopTable('header', 'Unable to Delete');

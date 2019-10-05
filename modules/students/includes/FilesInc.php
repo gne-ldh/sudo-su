@@ -141,9 +141,9 @@ if (!$_REQUEST['modfunc']) {
 //                if ($filename == '.' || $filename == '..')
 //                    continue;
 //
-//                $student_id_up = explode('-', $filename);                
+//                $college_roll_no_up = explode('-', $filename);                
 //
-//                if ($student_id_up[0] == UserStudentID()) {
+//                if ($college_roll_no_up[0] == UserStudentID()) {
 //                    $found = true;
 //                    
 //                    $sub = substr($filename, strpos($filename, '-') + 1);
@@ -178,8 +178,8 @@ if (!$_REQUEST['modfunc']) {
                 if ($file_val['NAME'] == '.' || $file_val['NAME'] == '..')
                     continue;
 
-//            $student_id_up = explode('-',$filename);
-//            if($student_id_up[0]==UserStudentID())
+//            $college_roll_no_up = explode('-',$filename);
+//            if($college_roll_no_up[0]==UserStudentID())
 //            {
                 else {
                     $found = true;

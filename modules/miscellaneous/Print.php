@@ -41,12 +41,12 @@ if($_REQUEST['ADDRESS_ID'] || $_REQUEST['fields']['ADDRESS'] || $_REQUEST['field
 }
 if($_REQUEST['fields']['PARENTS'])
 {
-	$extra['SELECT'] .= ',ssm.STUDENT_ID AS PARENTS';
+	$extra['SELECT'] .= ',ssm.COLLEGE_ROLL_NO AS PARENTS';
 	$view_other_RET['ALL_CONTACTS'][1]['VALUE']='Y';
 	if($_REQUEST['relation']!='')
 	{
 		$_openSIS['makeParents'] = $_REQUEST['relation'];
-		$extra['students_join_address'] .= ' AND EXISTS (SELECT \'\' FROM students_join_people sjp WHERE sjp.STUDENT_ID=a.STUDENT_ID AND LOWER(sjp.REALTIONSHIP) LIKE \''.strtolower($_REQUEST['relation']).'%\') ';
+		$extra['students_join_address'] .= ' AND EXISTS (SELECT \'\' FROM students_join_people sjp WHERE sjp.COLLEGE_ROLL_NO=a.COLLEGE_ROLL_NO AND LOWER(sjp.REALTIONSHIP) LIKE \''.strtolower($_REQUEST['relation']).'%\') ';
 	}
 }
 $extra['SELECT'] .= ',ssm.NEXT_COLLEGE,ssm.CALENDAR_ID,ssm.SYEAR,s.*';
@@ -60,7 +60,7 @@ if($_REQUEST['search_modfunc']=='list')
 {
 	if(!$fields_list)
 	{
-		$fields_list = array('FULL_NAME'=>(Preferences('NAME')=='Common'?'Last, Common':'Last, First M'),'FIRST_NAME'=>'First','FIRST_INIT'=>'First Initial','LAST_NAME'=>'Last','MIDDLE_NAME'=>'Middle','NAME_SUFFIX'=>'Suffix','STUDENT_ID'=>'Student ID','GRADE_ID'=>'Grade','COLLEGE_ID'=>'College','NEXT_COLLEGE'=>'Rolling / Retention Options','CALENDAR_ID'=>'Calendar','USERNAME'=>'Username','PASSWORD'=>'Password','ADDRESS'=>'Address','CITY'=>'City','STATE'=>'State','ZIPCODE'=>'Zip Code','PHONE'=>'Home Phone','MAIL_ADDRESS'=>'Mailing Address','MAIL_CITY'=>'Mailing City','MAIL_STATE'=>'Mailing State','MAIL_ZIPCODE'=>'Mailing Zipcode','PARENTS'=>'Contacts');
+		$fields_list = array('FULL_NAME'=>(Preferences('NAME')=='Common'?'Last, Common':'Last, First M'),'FIRST_NAME'=>'First','FIRST_INIT'=>'First Initial','LAST_NAME'=>'Last','MIDDLE_NAME'=>'Middle','NAME_SUFFIX'=>'Suffix','COLLEGE_ROLL_NO'=>'College Roll No','GRADE_ID'=>'Grade','COLLEGE_ID'=>'College','NEXT_COLLEGE'=>'Rolling / Retention Options','CALENDAR_ID'=>'Calendar','USERNAME'=>'Username','PASSWORD'=>'Password','ADDRESS'=>'Address','CITY'=>'City','STATE'=>'State','ZIPCODE'=>'Zip Code','PHONE'=>'Home Phone','MAIL_ADDRESS'=>'Mailing Address','MAIL_CITY'=>'Mailing City','MAIL_STATE'=>'Mailing State','MAIL_ZIPCODE'=>'Mailing Zipcode','PARENTS'=>'Contacts');
 		if($extra['field_names'])
 			$fields_list += $extra['field_names'];
 
@@ -87,7 +87,7 @@ if($_REQUEST['search_modfunc']=='list')
 			$date = DBDate();
 
 		if($_REQUEST['fields']['PERIOD_'.$period['PERIOD_ID']]=='Y')
-			$extra['SELECT'] .= ',(SELECT CONCAT(COALESCE(st.FIRST_NAME,\' \'),\' \',COALESCE(st.LAST_NAME,\' \'),\' - \',COALESCE(cp.ROOM,\' \')) FROM staff st,schedule ss,course_periods cp WHERE ss.STUDENT_ID=ssm.STUDENT_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND cp.TEACHER_ID=st.STAFF_ID AND cp.PERIOD_ID=\''.$period['PERIOD_ID'].'\' AND (\''.$date.'\' BETWEEN ss.START_DATE AND ss.END_DATE OR \''.$date.'\'>=ss.START_DATE AND ss.END_DATE IS NULL)) AS PERIOD_'.$period['PERIOD_ID'];
+			$extra['SELECT'] .= ',(SELECT CONCAT(COALESCE(st.FIRST_NAME,\' \'),\' \',COALESCE(st.LAST_NAME,\' \'),\' - \',COALESCE(cp.ROOM,\' \')) FROM staff st,schedule ss,course_periods cp WHERE ss.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND cp.TEACHER_ID=st.STAFF_ID AND cp.PERIOD_ID=\''.$period['PERIOD_ID'].'\' AND (\''.$date.'\' BETWEEN ss.START_DATE AND ss.END_DATE OR \''.$date.'\'>=ss.START_DATE AND ss.END_DATE IS NULL)) AS PERIOD_'.$period['PERIOD_ID'];
 	}
 
 	
@@ -115,7 +115,7 @@ else
 	if(!$fields_list)
 	{
 		if(AllowUse('students/Student.php&category_id=1'))
-			$fields_list['General'] = array('FULL_NAME'=>(Preferences('NAME')=='Common'?'Last, Common':'Last, First M'),'FIRST_NAME'=>'First','FIRST_INIT'=>'First Initial','LAST_NAME'=>'Last','MIDDLE_NAME'=>'Middle','NAME_SUFFIX'=>'Suffix','STUDENT_ID'=>'Student ID','GRADE_ID'=>'Grade','COLLEGE_ID'=>'College','NEXT_COLLEGE'=>'Rolling / Retention Options','CALENDAR_ID'=>'Calendar','USERNAME'=>'Username','PASSWORD'=>'Password');
+			$fields_list['General'] = array('FULL_NAME'=>(Preferences('NAME')=='Common'?'Last, Common':'Last, First M'),'FIRST_NAME'=>'First','FIRST_INIT'=>'First Initial','LAST_NAME'=>'Last','MIDDLE_NAME'=>'Middle','NAME_SUFFIX'=>'Suffix','COLLEGE_ROLL_NO'=>'College Roll No','GRADE_ID'=>'Grade','COLLEGE_ID'=>'College','NEXT_COLLEGE'=>'Rolling / Retention Options','CALENDAR_ID'=>'Calendar','USERNAME'=>'Username','PASSWORD'=>'Password');
 		if(AllowUse('students/Student.php&category_id=3'))
 		{
 			$fields_list['Address'] = array('ADDRESS'=>'Address','CITY'=>'City','STATE'=>'State','ZIPCODE'=>'Zip Code','PHONE'=>'Home Phone','MAIL_ADDRESS'=>'Mailing Address','MAIL_CITY'=>'Mailing City','MAIL_STATE'=>'Mailing State','MAIL_ZIPCODE'=>'Mailing Zipcode','PARENTS'=>'Contacts');
@@ -170,7 +170,7 @@ else
 	if($Search && function_exists($Search))
 	    	$Search($extra);
 	else
-		Search('student_id',$extra);
+		Search('college_roll_no',$extra);
 	echo '</TD></TR></TABLE>';
 }
 ?>

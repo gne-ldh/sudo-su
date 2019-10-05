@@ -40,7 +40,7 @@ if (Prompt_Home('Confirm', 'When do you want to recalculate the daily attendance
     for ($i = $begin; $i <= $end; $i += 86400) {
         if ($current_RET[date('d-m-Y', $i)]) {
             foreach ($students_RET as $student) {
-                UpdateAttendanceDaily($student['STUDENT_ID'], date('Y-m-d', $i));
+                UpdateAttendanceDaily($student['COLLEGE_ROLL_NO'], date('Y-m-d', $i));
             }
         }
     }

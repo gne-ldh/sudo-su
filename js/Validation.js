@@ -1017,7 +1017,7 @@ function formcheck_student_student()
 
 
     }
-    frmvalidator.addValidation("assign_student_id", "num", "Student ID allows only numeric value");
+    frmvalidator.addValidation("assign_college_roll_no", "num", "College Roll No allows only numeric value");
     frmvalidator.addValidation("values[student_enrollment][new][GRADE_ID]", "req", "Please select a grade");
     frmvalidator.addValidation("students[USERNAME]", "maxlen=50", "Max length for Username is 50");
     frmvalidator.addValidation("students[PASSWORD]", "password=8", "Password should be minimum 8 characters with atleast one special character and one number");

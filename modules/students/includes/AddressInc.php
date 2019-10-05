@@ -94,7 +94,7 @@ echo '</div>
 if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQUEST['ajax'])) {
 
     if ($_REQUEST['r7'] == 'Y') {
-        $get_home_add = DBGet(DBQuery('SELECT street_address_1,street_address_2,city,state,zipcode,bus_pickup,bus_dropoff,bus_no FROM student_address WHERE STUDENT_ID=\'' . UserStudentID() . '\' AND SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID= \'' . UserCollege() . '\' AND TYPE=\'Home Address\' '));
+        $get_home_add = DBGet(DBQuery('SELECT street_address_1,street_address_2,city,state,zipcode,bus_pickup,bus_dropoff,bus_no FROM student_address WHERE COLLEGE_ROLL_NO=\'' . UserStudentID() . '\' AND SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID= \'' . UserCollege() . '\' AND TYPE=\'Home Address\' '));
         if (count($get_home_add) > 0) {
             foreach ($get_home_add[1] as $gh_i => $gh_d) {
                 if ($gh_d != '')
@@ -116,7 +116,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
     }
     if ($_REQUEST['same_addr'] == 'Y') {
 
-        $address_details = DBGEt(DBQuery('SELECT STREET_ADDRESS_1 as ADDRESS,STREET_ADDRESS_2 as STREET,CITY,STATE,ZIPCODE FROM  student_address WHERE STUDENT_ID=' . $_REQUEST['student_id'] . ' AND type=\'Home Address\' '));
+        $address_details = DBGEt(DBQuery('SELECT STREET_ADDRESS_1 as ADDRESS,STREET_ADDRESS_2 as STREET,CITY,STATE,ZIPCODE FROM  student_address WHERE COLLEGE_ROLL_NO=' . $_REQUEST['college_roll_no'] . ' AND type=\'Home Address\' '));
         if (isset($_REQUEST['values']['student_address']['HOME']['STREET_ADDRESS_1']) && !isset($_REQUEST['values']['student_address']['MAIL']['STREET_ADDRESS_1']))
             $_REQUEST['values']['student_address']['MAIL']['STREET_ADDRESS_1'] = $_REQUEST['values']['student_address']['HOME']['STREET_ADDRESS_1'];
         elseif (isset($_REQUEST['values']['student_address']['MAIL']['STREET_ADDRESS_1']) && $_REQUEST['values']['student_address']['MAIL']['STREET_ADDRESS_1']!='')
@@ -155,7 +155,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
 
     if ($_REQUEST['sec_addr'] == 'Y') {
 
-        $address_details = DBGEt(DBQuery('SELECT STREET_ADDRESS_1 as ADDRESS,STREET_ADDRESS_2 as STREET,CITY,STATE,ZIPCODE FROM  student_address WHERE STUDENT_ID=' . $_REQUEST['student_id'] . ' AND type=\'Home Address\' '));
+        $address_details = DBGEt(DBQuery('SELECT STREET_ADDRESS_1 as ADDRESS,STREET_ADDRESS_2 as STREET,CITY,STATE,ZIPCODE FROM  student_address WHERE COLLEGE_ROLL_NO=' . $_REQUEST['college_roll_no'] . ' AND type=\'Home Address\' '));
         if (isset($_REQUEST['values']['student_address']['HOME']['STREET_ADDRESS_1']) && !isset($_REQUEST['values']['student_address']['SECONDARY']['STREET_ADDRESS_1']))
             $_REQUEST['values']['student_address']['SECONDARY']['STREET_ADDRESS_1'] = $_REQUEST['values']['student_address']['HOME']['STREET_ADDRESS_1'];
         elseif (isset($_REQUEST['values']['student_address']['SECONDARY']['STREET_ADDRESS_1']) && $_REQUEST['values']['student_address']['SECONDARY']['STREET_ADDRESS_1']!='')
@@ -193,7 +193,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
     }
     if ($_REQUEST['prim_addr'] == 'Y') {
 
-        $address_details = DBGEt(DBQuery('SELECT STREET_ADDRESS_1 as ADDRESS,STREET_ADDRESS_2 as STREET,CITY,STATE,ZIPCODE FROM  student_address WHERE STUDENT_ID=' . $_REQUEST['student_id'] . ' AND type=\'Home Address\' '));
+        $address_details = DBGEt(DBQuery('SELECT STREET_ADDRESS_1 as ADDRESS,STREET_ADDRESS_2 as STREET,CITY,STATE,ZIPCODE FROM  student_address WHERE COLLEGE_ROLL_NO=' . $_REQUEST['college_roll_no'] . ' AND type=\'Home Address\' '));
         if (isset($_REQUEST['values']['student_address']['HOME']['STREET_ADDRESS_1']) && !isset($_REQUEST['values']['student_address']['PRIMARY']['STREET_ADDRESS_1']))
             $_REQUEST['values']['student_address']['PRIMARY']['STREET_ADDRESS_1'] = $_REQUEST['values']['student_address']['HOME']['STREET_ADDRESS_1'];
         elseif (isset($_REQUEST['values']['student_address']['PRIMARY']['STREET_ADDRESS_1']) && $_REQUEST['values']['student_address']['PRIMARY']['STREET_ADDRESS_1']!='')
@@ -331,13 +331,13 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                 if ($qry != '')
                     DBQuery($qry);
                 if ($ind == 'PRIMARY' && $rel_stu != '') {
-                    DBQuery('UPDATE students_join_people SET ' . $rel_stu . ' WHERE EMERGENCY_TYPE=\'Primary\' AND PERSON_ID=' . $pri_up_pl_id . ' AND STUDENT_ID=' . UserStudentID());
+                    DBQuery('UPDATE students_join_people SET ' . $rel_stu . ' WHERE EMERGENCY_TYPE=\'Primary\' AND PERSON_ID=' . $pri_up_pl_id . ' AND COLLEGE_ROLL_NO=' . UserStudentID());
                 }
                 if ($ind == 'SECONDARY' && $rel_stu != '') {
-                    DBQuery('UPDATE students_join_people SET ' . $rel_stu . ' WHERE EMERGENCY_TYPE=\'Secondary\' AND PERSON_ID=' . $sec_up_pl_id . ' AND STUDENT_ID=' . UserStudentID());
+                    DBQuery('UPDATE students_join_people SET ' . $rel_stu . ' WHERE EMERGENCY_TYPE=\'Secondary\' AND PERSON_ID=' . $sec_up_pl_id . ' AND COLLEGE_ROLL_NO=' . UserStudentID());
                 }
                 if ($ind == 'OTHER' && $rel_stu != '') {
-                    DBQuery('UPDATE students_join_people SET ' . $rel_stu . ' WHERE EMERGENCY_TYPE=\'Other\' AND PERSON_ID=' . $oth_up_pl_id . ' AND STUDENT_ID=' . UserStudentID());
+                    DBQuery('UPDATE students_join_people SET ' . $rel_stu . ' WHERE EMERGENCY_TYPE=\'Other\' AND PERSON_ID=' . $oth_up_pl_id . ' AND COLLEGE_ROLL_NO=' . UserStudentID());
                 }
                 if ($table == 'people' && $ind == 'PRIMARY') {
                     if (clean_param($_REQUEST['primary_portal'], PARAM_ALPHAMOD) == 'Y' && $password != '') {
@@ -409,10 +409,10 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                 unset($user_name_val);
                 unset($rel_stu);
 
-                $get_person_ids = DBGet(DBQuery('SELECT * FROM students_join_people WHERE STUDENT_ID=' . UserStudentID() . ''));
+                $get_person_ids = DBGet(DBQuery('SELECT * FROM students_join_people WHERE COLLEGE_ROLL_NO=' . UserStudentID() . ''));
                 foreach ($get_person_ids as $gpi => $gpd) {
                     if ($gpd['EMERGENCY_TYPE'] != 'Other')
-                        DBQuery('UPDATE student_address SET PEOPLE_ID=' . $gpd['PERSON_ID'] . ' WHERE TYPE=\'' . $gpd['EMERGENCY_TYPE'] . '\' AND STUDENT_ID=' . UserStudentID());
+                        DBQuery('UPDATE student_address SET PEOPLE_ID=' . $gpd['PERSON_ID'] . ' WHERE TYPE=\'' . $gpd['EMERGENCY_TYPE'] . '\' AND COLLEGE_ROLL_NO=' . UserStudentID());
                 }
             }
             else {
@@ -508,7 +508,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
 
                 if ($table == 'student_address') {
                     if ($ind == 'HOME' || $ind == 'MAIL')
-                        $qry = 'INSERT INTO ' . $table . ' (student_id,syear,college_id,' . $fields . ',' . $type_n . ') VALUES (' . UserStudentID() . ',' . UserSyear() . ',' . UserCollege() . ',' . $field_vals . ',' . $ind_n . ') ';
+                        $qry = 'INSERT INTO ' . $table . ' (college_roll_no,syear,college_id,' . $fields . ',' . $type_n . ') VALUES (' . UserStudentID() . ',' . UserSyear() . ',' . UserCollege() . ',' . $field_vals . ',' . $ind_n . ') ';
                     if (($ind == 'PRIMARY') || ($ind == 'SECONDARY') || ($ind == 'OTHER'))
                     {
                        if($fields!='' && substr($fields,0,1)!=',')
@@ -518,17 +518,17 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                         if($ind == 'SECONDARY' && $_REQUEST['values']['people']['SECONDARY']['FIRST_NAME']!='' && $_REQUEST['values']['people']['SECONDARY']['LAST_NAME']!='')
                         {
                              $go = 'true';
-                              $qry = 'INSERT INTO ' . $table . ' (student_id,syear,college_id' . $fields . ',' . $type_n . ') VALUES (' . UserStudentID() . ',' . UserSyear() . ',' . UserCollege()  . $field_vals . ',' . $ind_n . ') ';
+                              $qry = 'INSERT INTO ' . $table . ' (college_roll_no,syear,college_id' . $fields . ',' . $type_n . ') VALUES (' . UserStudentID() . ',' . UserSyear() . ',' . UserCollege()  . $field_vals . ',' . $ind_n . ') ';
                         }
                                 
                         if($ind != 'SECONDARY')
-                            $qry = 'INSERT INTO ' . $table . ' (student_id,syear,college_id' . $fields . ',' . $type_n . ') VALUES (' . UserStudentID() . ',' . UserSyear() . ',' . UserCollege()  . $field_vals . ',' . $ind_n . ') ';
+                            $qry = 'INSERT INTO ' . $table . ' (college_roll_no,syear,college_id' . $fields . ',' . $type_n . ') VALUES (' . UserStudentID() . ',' . UserSyear() . ',' . UserCollege()  . $field_vals . ',' . $ind_n . ') ';
                     }
                 }
                 if ($table == 'people') {
                     
                     if (($ind == 'PRIMARY' && $pri_pep_exists == 'N') || ($ind == 'SECONDARY' && $sec_pep_exists == 'N') || ($ind == 'OTHER' && $oth_pep_exists == 'N')) {
-                        $sql_sjp = 'INSERT INTO students_join_people (' . $sjp_field . 'student_id,emergency_type,person_id) VALUES (' . $sjp_value . UserStudentID() . ',' . $ind_n . ')';
+                        $sql_sjp = 'INSERT INTO students_join_people (' . $sjp_field . 'college_roll_no,emergency_type,person_id) VALUES (' . $sjp_value . UserStudentID() . ',' . $ind_n . ')';
                         $peo_fields_ar = explode(',', $peo_fields);
                         if (!in_array('PROFILE_ID', $peo_fields_ar)) {
                             $sql_peo = 'INSERT INTO people (CURRENT_COLLEGE_ID,profile,profile_id,' . $peo_fields . ') VALUES (' . UserCollege() . ',\'parent\',4,' . $peo_field_vals . ')';
@@ -638,10 +638,10 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                 unset($type_n);
                 unset($ind_n);
                 unset($go);
-                $get_person_ids = DBGet(DBQuery('SELECT * FROM students_join_people WHERE STUDENT_ID=' . UserStudentID() . ''));
+                $get_person_ids = DBGet(DBQuery('SELECT * FROM students_join_people WHERE COLLEGE_ROLL_NO=' . UserStudentID() . ''));
                 foreach ($get_person_ids as $gpi => $gpd) {
                     if ($gpd['EMERGENCY_TYPE'] != 'Other')
-                        DBQuery('UPDATE student_address SET PEOPLE_ID=' . $gpd['PERSON_ID'] . ' WHERE TYPE=\'' . $gpd['EMERGENCY_TYPE'] . '\' AND STUDENT_ID=' . UserStudentID());
+                        DBQuery('UPDATE student_address SET PEOPLE_ID=' . $gpd['PERSON_ID'] . ' WHERE TYPE=\'' . $gpd['EMERGENCY_TYPE'] . '\' AND COLLEGE_ROLL_NO=' . UserStudentID());
                 }
             }
         }
@@ -655,11 +655,11 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'delete') {
             $tot_people = DBGet(DBQuery('SELECT COUNT(*) AS TOTAL FROM students_join_people WHERE PERSON_ID=' . $_REQUEST['person_id'] . ''));
             $tot_people = $tot_people[1]['TOTAL'];
             if ($tot_people > 1) {
-                DBQuery('DELETE FROM students_join_people WHERE PERSON_ID=\'' . $_REQUEST['person_id'] . '\' AND STUDENT_ID=' . UserStudentID());
+                DBQuery('DELETE FROM students_join_people WHERE PERSON_ID=\'' . $_REQUEST['person_id'] . '\' AND COLLEGE_ROLL_NO=' . UserStudentID());
                 unset($_REQUEST['modfunc']);
             } else {
-                DBQuery('DELETE FROM student_address WHERE PEOPLE_ID=\'' . $_REQUEST['person_id'] . '\' AND STUDENT_ID=' . UserStudentID());
-                DBQuery('DELETE FROM students_join_people WHERE PERSON_ID=\'' . $_REQUEST['person_id'] . '\' AND STUDENT_ID=' . UserStudentID());
+                DBQuery('DELETE FROM student_address WHERE PEOPLE_ID=\'' . $_REQUEST['person_id'] . '\' AND COLLEGE_ROLL_NO=' . UserStudentID());
+                DBQuery('DELETE FROM students_join_people WHERE PERSON_ID=\'' . $_REQUEST['person_id'] . '\' AND COLLEGE_ROLL_NO=' . UserStudentID());
                 DBQuery('DELETE FROM people WHERE STAFF_ID=' . $_REQUEST['person_id']);
                 DBQuery('DELETE FROM login_authentication WHERE USER_ID=' . $_REQUEST['person_id'] . ' AND PROFILE_ID=4');
                 unset($_REQUEST['modfunc']);
@@ -669,7 +669,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'delete') {
 }
 
 if (!$_REQUEST['modfunc']) {
-    $addres_id = DBGet(DBQuery('SELECT ID AS ADDRESS_ID FROM student_address WHERE STUDENT_ID=\'' . UserStudentID() . '\' AND SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND TYPE=\'Home Address\' '));
+    $addres_id = DBGet(DBQuery('SELECT ID AS ADDRESS_ID FROM student_address WHERE COLLEGE_ROLL_NO=\'' . UserStudentID() . '\' AND SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\' AND TYPE=\'Home Address\' '));
     if (count($addres_id) == 1 && $addres_id[1]['ADDRESS_ID'] != '')
         $_REQUEST['address_id'] = $addres_id[1]['ADDRESS_ID'];
 
@@ -703,7 +703,7 @@ if (!$_REQUEST['modfunc']) {
 
 
 
-    $contacts_RET = DBGet(DBQuery('SELECT PERSON_ID,RELATIONSHIP AS STUDENT_RELATION FROM students_join_people WHERE STUDENT_ID=\'' . UserStudentID() . '\' AND EMERGENCY_TYPE=\'Other\' ORDER BY STUDENT_RELATION'));
+    $contacts_RET = DBGet(DBQuery('SELECT PERSON_ID,RELATIONSHIP AS STUDENT_RELATION FROM students_join_people WHERE COLLEGE_ROLL_NO=\'' . UserStudentID() . '\' AND EMERGENCY_TYPE=\'Other\' ORDER BY STUDENT_RELATION'));
     $i = 1;
     if (count($contacts_RET)) {
         foreach ($contacts_RET as $contact) {
@@ -758,7 +758,7 @@ if (!$_REQUEST['modfunc']) {
           echo '</TABLE>';
           } */
 
-        $check_address = DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM students_join_people WHERE STUDENT_ID=' . UserStudentID()));
+        $check_address = DBGet(DBQuery('SELECT COUNT(*) as REC_EX FROM students_join_people WHERE COLLEGE_ROLL_NO=' . UserStudentID()));
         if ($check_address[1]['REC_EX'] > 1) {
             if (clean_param($_REQUEST['person_id'], PARAM_ALPHAMOD) == 'new') {
                 echo '<li class="list-group-item active"><a href="javascript:void(0);" onclick="document.location.href=\'Modules.php?modname=' . $_REQUEST['modname'] . '&include=' . $_REQUEST['include'] . '&address_id=' . $_REQUEST['address_id'] . '&person_id=new&con_info=old\';">';
@@ -775,9 +775,9 @@ if (!$_REQUEST['modfunc']) {
 
     if (isset($_REQUEST['address_id']) && $_REQUEST['con_info'] != 'old') {
         $h_addr = DBGet(DBQuery(' SELECT sa.ID AS ADDRESS_ID,sa.STREET_ADDRESS_1 as ADDRESS,sa.STREET_ADDRESS_2 as STREET,sa.CITY,sa.STATE,sa.ZIPCODE,sa.BUS_PICKUP,sa.BUS_DROPOFF,sa.BUS_NO from student_address sa WHERE 
-                                   sa.TYPE=\'Home Address\' AND sa.STUDENT_ID=\'' . UserStudentID() . '\' AND sa.COLLEGE_ID=\'' . UserCollege() . '\' '));
+                                   sa.TYPE=\'Home Address\' AND sa.COLLEGE_ROLL_NO=\'' . UserStudentID() . '\' AND sa.COLLEGE_ID=\'' . UserCollege() . '\' '));
 
-        $pri_par_id = DBGet(DBQuery('SELECT * FROM students_join_people WHERE STUDENT_ID=' . UserStudentID() . ' AND EMERGENCY_TYPE=\'Primary\''));
+        $pri_par_id = DBGet(DBQuery('SELECT * FROM students_join_people WHERE COLLEGE_ROLL_NO=' . UserStudentID() . ' AND EMERGENCY_TYPE=\'Primary\''));
         if (count($pri_par_id) > 0) {
             $p_addr = DBGet(DBQuery('SELECT p.STAFF_ID as CONTACT_ID,p.FIRST_NAME,p.MIDDLE_NAME,p.LAST_NAME,p.HOME_PHONE,p.WORK_PHONE,p.CELL_PHONE,p.EMAIL,p.CUSTODY,p.PROFILE_ID,
                                   sa.ID AS ADDRESS_ID,sa.STREET_ADDRESS_1 as ADDRESS,sa.STREET_ADDRESS_2 as STREET,sa.CITY,sa.STATE,sa.ZIPCODE,sa.BUS_PICKUP,sa.BUS_DROPOFF,sa.BUS_NO from people p,student_address sa WHERE p.STAFF_ID=sa.PEOPLE_ID  AND p.STAFF_ID=\'' . $pri_par_id[1]['PERSON_ID'] . '\'  AND sa.PEOPLE_ID IS NOT NULL '));
@@ -797,8 +797,8 @@ if (!$_REQUEST['modfunc']) {
             $p_addr[1]['PASSWORD'] = $p_log_addr[1]['PASSWORD'];
         }
         $m_addr = DBGet(DBQuery(' SELECT sa.ID AS ADDRESS_ID,sa.STREET_ADDRESS_1 as ADDRESS,sa.STREET_ADDRESS_2 as STREET,sa.CITY,sa.STATE,sa.ZIPCODE,sa.BUS_PICKUP,sa.BUS_DROPOFF,sa.BUS_NO from student_address sa WHERE 
-                                   sa.TYPE=\'Mail\' AND sa.STUDENT_ID=\'' . UserStudentID() . '\'  AND sa.SYEAR=\'' . UserSyear() . '\' AND sa.COLLEGE_ID=\'' . UserCollege() . '\' '));
-        $sec_par_id = DBGet(DBQuery('SELECT * FROM students_join_people WHERE STUDENT_ID=' . UserStudentID() . ' AND EMERGENCY_TYPE=\'Secondary\''));
+                                   sa.TYPE=\'Mail\' AND sa.COLLEGE_ROLL_NO=\'' . UserStudentID() . '\'  AND sa.SYEAR=\'' . UserSyear() . '\' AND sa.COLLEGE_ID=\'' . UserCollege() . '\' '));
+        $sec_par_id = DBGet(DBQuery('SELECT * FROM students_join_people WHERE COLLEGE_ROLL_NO=' . UserStudentID() . ' AND EMERGENCY_TYPE=\'Secondary\''));
 
         if (count($sec_par_id) > 0) {
             $s_addr = DBGet(DBQuery('SELECT p.STAFF_ID as CONTACT_ID,p.FIRST_NAME,p.MIDDLE_NAME,p.LAST_NAME,p.HOME_PHONE,p.WORK_PHONE,p.CELL_PHONE,p.EMAIL,p.CUSTODY,p.PROFILE_ID,
@@ -819,7 +819,7 @@ if (!$_REQUEST['modfunc']) {
             $s_addr[1]['USER_NAME'] = $p_log_addr[1]['USER_NAME'];
             $s_addr[1]['PASSWORD'] = $p_log_addr[1]['PASSWORD'];
         } else {
-            $s_addr = DBGet(DBQuery('SELECT ID AS ADDRESS_ID from student_address WHERE STUDENT_ID=' . UserStudentID() . ' AND TYPE=\'Secondary\' '));
+            $s_addr = DBGet(DBQuery('SELECT ID AS ADDRESS_ID from student_address WHERE COLLEGE_ROLL_NO=' . UserStudentID() . ' AND TYPE=\'Secondary\' '));
         }
         echo "<INPUT type=hidden name=address_id value=$_REQUEST[address_id]>";
 
@@ -1218,7 +1218,7 @@ if (!$_REQUEST['modfunc']) {
 
             echo '<hr/>';
 
-            $s_sec_address = DBGet(DBQuery('SELECT COUNT(1) as TOTAL FROM student_address WHERE ID!=\'' . $s_addr[1]['ADDRESS_ID'] . '\' AND STREET_ADDRESS_1=\'' . singleQuoteReplace('', '', $s_addr[1]['ADDRESS']) . '\' AND STREET_ADDRESS_1=\'' . singleQuoteReplace('', '', $p_addr[1]['ADDRESS']) . '\'    ' . ($s_addr[1]['STREET'] != '' ? 'AND STREET_ADDRESS_2=\'' . singleQuoteReplace('', '', $s_addr[1]['STREET']) . '\'' : ' ') . '  AND CITY=\'' . singleQuoteReplace('', '', $s_addr[1]['CITY']) . '\' AND STATE=\'' . singleQuoteReplace('', '', $s_addr[1]['STATE']) . '\' AND ZIPCODE=\'' . $s_addr[1]['ZIPCODE'] . '\' AND TYPE=\'Home Address\' AND STUDENT_ID=' . UserStudentID()));
+            $s_sec_address = DBGet(DBQuery('SELECT COUNT(1) as TOTAL FROM student_address WHERE ID!=\'' . $s_addr[1]['ADDRESS_ID'] . '\' AND STREET_ADDRESS_1=\'' . singleQuoteReplace('', '', $s_addr[1]['ADDRESS']) . '\' AND STREET_ADDRESS_1=\'' . singleQuoteReplace('', '', $p_addr[1]['ADDRESS']) . '\'    ' . ($s_addr[1]['STREET'] != '' ? 'AND STREET_ADDRESS_2=\'' . singleQuoteReplace('', '', $s_addr[1]['STREET']) . '\'' : ' ') . '  AND CITY=\'' . singleQuoteReplace('', '', $s_addr[1]['CITY']) . '\' AND STATE=\'' . singleQuoteReplace('', '', $s_addr[1]['STATE']) . '\' AND ZIPCODE=\'' . $s_addr[1]['ZIPCODE'] . '\' AND TYPE=\'Home Address\' AND COLLEGE_ROLL_NO=' . UserStudentID()));
             if ($s_sec_address[1]['TOTAL'] != 0)
                 $s_checked = " CHECKED=CHECKED ";
             else
@@ -1277,7 +1277,7 @@ if ($_REQUEST['person_id'] && $_REQUEST['con_info'] == 'old') {
 
     if ($_REQUEST['person_id'] != 'old') {
         if ($_REQUEST['person_id'] != 'new') {
-            $other_par_id = DBGet(DBQuery('SELECT * FROM students_join_people WHERE STUDENT_ID=' . UserStudentID() . ' AND PERSON_ID=' . $_REQUEST['person_id'] . ' AND EMERGENCY_TYPE=\'Other\''));
+            $other_par_id = DBGet(DBQuery('SELECT * FROM students_join_people WHERE COLLEGE_ROLL_NO=' . UserStudentID() . ' AND PERSON_ID=' . $_REQUEST['person_id'] . ' AND EMERGENCY_TYPE=\'Other\''));
 
             $o_addr = DBGet(DBQuery('SELECT p.STAFF_ID as PERSON_ID,p.FIRST_NAME,p.MIDDLE_NAME,p.LAST_NAME,p.HOME_PHONE,p.WORK_PHONE,p.CELL_PHONE,p.EMAIL,p.CUSTODY,p.PROFILE_ID,
                                                   sa.ID AS ADDRESS_ID,sa.STREET_ADDRESS_1 as ADDRESS,sa.STREET_ADDRESS_2 as STREET,sa.CITY,sa.STATE,sa.ZIPCODE,sa.BUS_PICKUP,sa.BUS_DROPOFF,sa.BUS_NO from people p,student_address sa WHERE p.STAFF_ID=sa.PEOPLE_ID  AND p.STAFF_ID=\'' . $_REQUEST['person_id'] . '\'  AND sa.PEOPLE_ID IS NOT NULL '));
@@ -1612,7 +1612,7 @@ if ($_REQUEST['nfunc'] == 'status') {
         }
 
 
-        $check_rec = DBGet(DBQuery('SELECT COUNT(*) as REC_EX,sa.id as address_id FROM  students_join_people sp,student_address sa WHERE sp.student_id=sa.student_id and UPPER(sp.EMERGENCY_TYPE)=\'' . strtoupper($_REQUEST['type']) . '\' AND sp.STUDENT_ID=' . $_REQUEST['student_id']));
+        $check_rec = DBGet(DBQuery('SELECT COUNT(*) as REC_EX,sa.id as address_id FROM  students_join_people sp,student_address sa WHERE sp.college_roll_no=sa.college_roll_no and UPPER(sp.EMERGENCY_TYPE)=\'' . strtoupper($_REQUEST['type']) . '\' AND sp.COLLEGE_ROLL_NO=' . $_REQUEST['college_roll_no']));
         if ($check_rec[1]['REC_EX'] == 0) {
             $_REQUEST['address_id'] = 'new';
         } else

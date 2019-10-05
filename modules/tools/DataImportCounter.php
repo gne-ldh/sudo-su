@@ -78,8 +78,8 @@ if ($category == 'student') {
 //        print_r($arr_data);
 
         $id = DBGet(DBQuery("SHOW TABLE STATUS LIKE 'students'"));
-        $student_id[1]['STUDENT_ID'] = $id[1]['AUTO_INCREMENT'];
-        $student_id = $student_id[1]['STUDENT_ID'];
+        $college_roll_no[1]['COLLEGE_ROLL_NO'] = $id[1]['AUTO_INCREMENT'];
+        $college_roll_no = $college_roll_no[1]['COLLEGE_ROLL_NO'];
         $accepted = 0;
         $rejected = 0;
         $records = 0;
@@ -92,8 +92,8 @@ if ($category == 'student') {
             if ($arr_i > 0) {
 
 
-                $student_columns = array('STUDENT_ID');
-                $student_values = array($student_id);
+                $student_columns = array('COLLEGE_ROLL_NO');
+                $student_values = array($college_roll_no);
                 $check_query = array();
                 $check_query_alt_id = array();
                 $check_query_username = array();
@@ -196,8 +196,8 @@ if ($category == 'student') {
                     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     ///////////////////////////For Student Enrollment////////////////////////////////////////////////////////////
                     $enrollment_code = DBGet(DBQuery('SELECT ID FROM  student_enrollment_codes WHERE SYEAR=' . UserSyear() . '  AND TITLE=\'New\''));
-                    $enrollment_columns = array('SYEAR', 'COLLEGE_ID', 'STUDENT_ID', 'ENROLLMENT_CODE');
-                    $enrollment_values = array(UserSyear(), UserCollege(), $student_id, $enrollment_code[1]['ID']);
+                    $enrollment_columns = array('SYEAR', 'COLLEGE_ID', 'COLLEGE_ROLL_NO', 'ENROLLMENT_CODE');
+                    $enrollment_values = array(UserSyear(), UserCollege(), $college_roll_no, $enrollment_code[1]['ID']);
                     $calendar_id = DBGet(DBQuery('SELECT CALENDAR_ID FROM college_calendars  WHERE SYEAR=' . UserSyear() . ' AND COLLEGE_ID=' . UserCollege() . ' AND DEFAULT_CALENDAR=\'Y\' '));
                     if ($calendar_id[1]['CALENDAR_ID'] != '') {
                         $enrollment_columns+=array('CALENDAR_ID');
@@ -229,7 +229,7 @@ if ($category == 'student') {
                     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     ///////////////////////////For Student Login Authentication////////////////////////////////////////////////////////////
                     $la_columns = array('USER_ID', 'PROFILE_ID');
-                    $la_values = array($student_id, 3);
+                    $la_values = array($college_roll_no, 3);
                     if ($arr_v[$array_index['USERNAME']] != '') {
                         $la_columns[] = 'USERNAME';
                         $la_values[] = "'" . str_replace("'", "", $arr_v[$array_index['USERNAME']]) . "'";
@@ -252,8 +252,8 @@ if ($category == 'student') {
                     unset($la_values);
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     /////////////////////////For Student Address////////////////////////////////////////////////////////////
-                    $sa_columns = array('STUDENT_ID', 'SYEAR', 'COLLEGE_ID');
-                    $sa_values = array($student_id, UserSyear(), UserCollege());
+                    $sa_columns = array('COLLEGE_ROLL_NO', 'SYEAR', 'COLLEGE_ID');
+                    $sa_values = array($college_roll_no, UserSyear(), UserCollege());
 
                     foreach ($student_address as $student_address_v) {
 
@@ -287,8 +287,8 @@ if ($category == 'student') {
                         DBQuery('INSERT INTO people (' . implode(',', $primary_columns) . ') VALUES (' . implode(',', $primary_values) . ')');
                         $people_id = DBGet(DBQuery('SELECT MAX(STAFF_ID) as PEOPLE_ID FROM people'));
                         $people_id = $people_id[1]['PEOPLE_ID'];
-                        DBQuery('UPDATE student_address SET PEOPLE_ID=' . $people_id . ' WHERE STUDENT_ID=' . $student_id . ' AND TYPE=\'Primary\' ');
-                        DBQuery('INSERT INTO students_join_people (STUDENT_ID,PERSON_ID,EMERGENCY_TYPE,RELATIONSHIP) VALUES (' . $student_id . ',' . $people_id . ',\'Primary\',\'' . $relationship . '\')');
+                        DBQuery('UPDATE student_address SET PEOPLE_ID=' . $people_id . ' WHERE COLLEGE_ROLL_NO=' . $college_roll_no . ' AND TYPE=\'Primary\' ');
+                        DBQuery('INSERT INTO students_join_people (COLLEGE_ROLL_NO,PERSON_ID,EMERGENCY_TYPE,RELATIONSHIP) VALUES (' . $college_roll_no . ',' . $people_id . ',\'Primary\',\'' . $relationship . '\')');
                     }
                     unset($primary_columns);
                     unset($primary_values);
@@ -312,14 +312,14 @@ if ($category == 'student') {
                         DBQuery('INSERT INTO people (' . implode(',', $secondary_columns) . ') VALUES (' . implode(',', $secondary_values) . ')');
                         $people_id = DBGet(DBQuery('SELECT MAX(STAFF_ID) as PEOPLE_ID FROM people'));
                         $people_id = $people_id[1]['PEOPLE_ID'];
-                        DBQuery('UPDATE student_address SET PEOPLE_ID=' . $people_id . ' WHERE STUDENT_ID=' . $student_id . ' AND TYPE=\'Secondary\' ');
-                        DBQuery('INSERT INTO students_join_people (STUDENT_ID,PERSON_ID,EMERGENCY_TYPE,RELATIONSHIP) VALUES (' . $student_id . ',' . $people_id . ',\'Secondary\',\'' . $relationship . '\')');
+                        DBQuery('UPDATE student_address SET PEOPLE_ID=' . $people_id . ' WHERE COLLEGE_ROLL_NO=' . $college_roll_no . ' AND TYPE=\'Secondary\' ');
+                        DBQuery('INSERT INTO students_join_people (COLLEGE_ROLL_NO,PERSON_ID,EMERGENCY_TYPE,RELATIONSHIP) VALUES (' . $college_roll_no . ',' . $people_id . ',\'Secondary\',\'' . $relationship . '\')');
                     }
                     unset($secondary_columns);
                     unset($secondary_values);
 
                     //////////////////////////////////////////////////////////////////////////////////////////////
-                    $student_id++;
+                    $college_roll_no++;
                     $accepted++;
                 } else
                     $rejected++;

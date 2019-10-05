@@ -253,7 +253,7 @@ if (User('PROFILE') != 'teacher') {
     }
 
     if (User('PROFILE') == 'parent') {
-        $RET = DBGet(DBQuery("SELECT sju.STUDENT_ID, se.COLLEGE_ID FROM students s,students_join_people sju, student_enrollment se WHERE s.STUDENT_ID=sju.STUDENT_ID AND sju.PERSON_ID='" . User('STAFF_ID') . "' AND se.SYEAR=" . UserSyear() . " AND se.STUDENT_ID=sju.STUDENT_ID AND (('" . DBDate() . "' BETWEEN se.START_DATE AND se.END_DATE OR se.END_DATE IS NULL) AND '" . DBDate() . "'>=se.START_DATE)"));
+        $RET = DBGet(DBQuery("SELECT sju.COLLEGE_ROLL_NO, se.COLLEGE_ID FROM students s,students_join_people sju, student_enrollment se WHERE s.COLLEGE_ROLL_NO=sju.COLLEGE_ROLL_NO AND sju.PERSON_ID='" . User('STAFF_ID') . "' AND se.SYEAR=" . UserSyear() . " AND se.COLLEGE_ROLL_NO=sju.COLLEGE_ROLL_NO AND (('" . DBDate() . "' BETWEEN se.START_DATE AND se.END_DATE OR se.END_DATE IS NULL) AND '" . DBDate() . "'>=se.START_DATE)"));
         foreach ($RET as $student)
             $_SESSION['UserCollege'] = $student['COLLEGE_ID'];
     }
@@ -283,14 +283,14 @@ if (User('PROFILE') != 'teacher') {
 
     if ($college_years_RET1['END_DATE'] > $college_years_RET1['START_DATE']) {
         if (User('PROFILE') == 'student') {
-            $college_years_RET = DBGet(DBQuery("SELECT DISTINCT sy.START_DATE,sy.END_DATE FROM college_years sy,student_enrollment se WHERE se.SYEAR=sy.SYEAR AND se.STUDENT_ID='$_SESSION[STUDENT_ID]' AND sy.COLLEGE_ID=" . UserCollege() . " "));
+            $college_years_RET = DBGet(DBQuery("SELECT DISTINCT sy.START_DATE,sy.END_DATE FROM college_years sy,student_enrollment se WHERE se.SYEAR=sy.SYEAR AND se.COLLEGE_ROLL_NO='$_SESSION[COLLEGE_ROLL_NO]' AND sy.COLLEGE_ID=" . UserCollege() . " "));
         } elseif (User('PROFILE') == 'parent') {
             if (UserStudentID() == '') {
-                $stu_ID = DBGet(DBQuery("SELECT sju.STUDENT_ID,CONCAT(s.LAST_NAME,', ',s.FIRST_NAME) AS FULL_NAME,se.COLLEGE_ID FROM students s,students_join_people sju, student_enrollment se WHERE s.STUDENT_ID=sju.STUDENT_ID AND sju.PERSON_ID='" . User('STAFF_ID') . "' AND se.SYEAR=" . UserSyear() . " AND se.STUDENT_ID=sju.STUDENT_ID AND (('" . DBDate() . "' BETWEEN se.START_DATE AND se.END_DATE OR se.END_DATE IS NULL) AND '" . DBDate() . "'>=se.START_DATE)"));
-                $stu_ID = $stu_ID[1]['STUDENT_ID'];
+                $stu_ID = DBGet(DBQuery("SELECT sju.COLLEGE_ROLL_NO,CONCAT(s.LAST_NAME,', ',s.FIRST_NAME) AS FULL_NAME,se.COLLEGE_ID FROM students s,students_join_people sju, student_enrollment se WHERE s.COLLEGE_ROLL_NO=sju.COLLEGE_ROLL_NO AND sju.PERSON_ID='" . User('STAFF_ID') . "' AND se.SYEAR=" . UserSyear() . " AND se.COLLEGE_ROLL_NO=sju.COLLEGE_ROLL_NO AND (('" . DBDate() . "' BETWEEN se.START_DATE AND se.END_DATE OR se.END_DATE IS NULL) AND '" . DBDate() . "'>=se.START_DATE)"));
+                $stu_ID = $stu_ID[1]['COLLEGE_ROLL_NO'];
             } else
                 $stu_ID = UserStudentID();
-            $college_years_RET = DBGet(DBQuery("SELECT DISTINCT sy.START_DATE,sy.END_DATE FROM college_years sy,student_enrollment se WHERE se.SYEAR=sy.SYEAR AND se.STUDENT_ID=" . $stu_ID . " AND sy.COLLEGE_ID=" . UserCollege() . " "));
+            $college_years_RET = DBGet(DBQuery("SELECT DISTINCT sy.START_DATE,sy.END_DATE FROM college_years sy,student_enrollment se WHERE se.SYEAR=sy.SYEAR AND se.COLLEGE_ROLL_NO=" . $stu_ID . " AND sy.COLLEGE_ID=" . UserCollege() . " "));
         }
         else {
             $college_years_RET = DBGet(DBQuery("SELECT sy.START_DATE,sy.END_DATE FROM college_years sy ,staff s INNER JOIN staff_college_relationship ssr ON s.staff_id=ssr.staff_id WHERE sy.college_id=ssr.college_id AND sy.syear=ssr.syear AND sy.COLLEGE_ID=" . UserCollege() . " AND s.staff_id='$_SESSION[STAFF_ID]'"));
@@ -304,14 +304,14 @@ if (User('PROFILE') != 'teacher') {
         }
     } else if ($college_years_RET1['END_DATE'] == $college_years_RET1['START_DATE']) {
         if (User('PROFILE') == 'student')
-            $college_years_RET = DBGet(DBQuery("SELECT DISTINCT sy.START_DATE,sy.END_DATE FROM college_years sy,student_enrollment se WHERE se.SYEAR=sy.SYEAR AND se.STUDENT_ID='$_SESSION[STUDENT_ID]' AND sy.COLLEGE_ID=" . UserCollege() . " "));
+            $college_years_RET = DBGet(DBQuery("SELECT DISTINCT sy.START_DATE,sy.END_DATE FROM college_years sy,student_enrollment se WHERE se.SYEAR=sy.SYEAR AND se.COLLEGE_ROLL_NO='$_SESSION[COLLEGE_ROLL_NO]' AND sy.COLLEGE_ID=" . UserCollege() . " "));
         elseif (User('PROFILE') == 'parent') {
             if (UserStudentID() == '') {
-                $stu_ID = DBGet(DBQuery("SELECT sju.STUDENT_ID,CONCAT(s.LAST_NAME,', ',s.FIRST_NAME) AS FULL_NAME,se.COLLEGE_ID FROM students s,students_join_people sju, student_enrollment se WHERE s.STUDENT_ID=sju.STUDENT_ID AND sju.PERSON_ID='" . User('STAFF_ID') . "' AND se.SYEAR=" . UserSyear() . " AND se.STUDENT_ID=sju.STUDENT_ID AND (('" . DBDate() . "' BETWEEN se.START_DATE AND se.END_DATE OR se.END_DATE IS NULL) AND '" . DBDate() . "'>=se.START_DATE)"));
-                $stu_ID = $stu_ID[1]['STUDENT_ID'];
+                $stu_ID = DBGet(DBQuery("SELECT sju.COLLEGE_ROLL_NO,CONCAT(s.LAST_NAME,', ',s.FIRST_NAME) AS FULL_NAME,se.COLLEGE_ID FROM students s,students_join_people sju, student_enrollment se WHERE s.COLLEGE_ROLL_NO=sju.COLLEGE_ROLL_NO AND sju.PERSON_ID='" . User('STAFF_ID') . "' AND se.SYEAR=" . UserSyear() . " AND se.COLLEGE_ROLL_NO=sju.COLLEGE_ROLL_NO AND (('" . DBDate() . "' BETWEEN se.START_DATE AND se.END_DATE OR se.END_DATE IS NULL) AND '" . DBDate() . "'>=se.START_DATE)"));
+                $stu_ID = $stu_ID[1]['COLLEGE_ROLL_NO'];
             } else
                 $stu_ID = UserStudentID();
-            $college_years_RET = DBGet(DBQuery("SELECT DISTINCT sy.START_DATE,sy.END_DATE FROM college_years sy,student_enrollment se WHERE se.SYEAR=sy.SYEAR AND se.STUDENT_ID=" . $stu_ID . " AND sy.COLLEGE_ID=" . UserCollege() . " "));
+            $college_years_RET = DBGet(DBQuery("SELECT DISTINCT sy.START_DATE,sy.END_DATE FROM college_years sy,student_enrollment se WHERE se.SYEAR=sy.SYEAR AND se.COLLEGE_ROLL_NO=" . $stu_ID . " AND sy.COLLEGE_ID=" . UserCollege() . " "));
         }
         else {
             if (UserCollege())
@@ -335,14 +335,14 @@ if (User('PROFILE') != 'teacher') {
         echo "<li><FORM name=head_frm id=head_frm action=Side.php?modfunc=update&btnn=$btn&nsc=$ns method=POST>";
         echo "<INPUT type=hidden name=modcat value='' id=modcat_input>";
         echo '<div class="form-group">';
-        $RET = DBGet(DBQuery("SELECT sju.STUDENT_ID,CONCAT(s.LAST_NAME,', ',s.FIRST_NAME) AS FULL_NAME,se.COLLEGE_ID FROM students s,students_join_people sju, student_enrollment se WHERE s.STUDENT_ID=sju.STUDENT_ID AND sju.PERSON_ID='" . User('STAFF_ID') . "' AND se.SYEAR=" . UserSyear() . " AND se.STUDENT_ID=sju.STUDENT_ID AND (('" . DBDate() . "' BETWEEN se.START_DATE AND se.END_DATE OR se.END_DATE IS NULL) AND '" . DBDate() . "'>=se.START_DATE)"));
+        $RET = DBGet(DBQuery("SELECT sju.COLLEGE_ROLL_NO,CONCAT(s.LAST_NAME,', ',s.FIRST_NAME) AS FULL_NAME,se.COLLEGE_ID FROM students s,students_join_people sju, student_enrollment se WHERE s.COLLEGE_ROLL_NO=sju.COLLEGE_ROLL_NO AND sju.PERSON_ID='" . User('STAFF_ID') . "' AND se.SYEAR=" . UserSyear() . " AND se.COLLEGE_ROLL_NO=sju.COLLEGE_ROLL_NO AND (('" . DBDate() . "' BETWEEN se.START_DATE AND se.END_DATE OR se.END_DATE IS NULL) AND '" . DBDate() . "'>=se.START_DATE)"));
         if (!UserStudentID())
-            $_SESSION['student_id'] = $RET[1]['STUDENT_ID'];
-        echo "<SELECT class=\"select\" name=student_id onChange='this.form.submit();'>";
+            $_SESSION['college_roll_no'] = $RET[1]['COLLEGE_ROLL_NO'];
+        echo "<SELECT class=\"select\" name=college_roll_no onChange='this.form.submit();'>";
         if (count($RET)) {
             foreach ($RET as $student) {
-                echo "<OPTION value=$student[STUDENT_ID]" . ((UserStudentID() == $student['STUDENT_ID']) ? ' SELECTED' : '') . ">" . $student['FULL_NAME'] . "</OPTION>";
-                if (UserStudentID() == $student['STUDENT_ID'])
+                echo "<OPTION value=$student[COLLEGE_ROLL_NO]" . ((UserStudentID() == $student['COLLEGE_ROLL_NO']) ? ' SELECTED' : '') . ">" . $student['FULL_NAME'] . "</OPTION>";
+                if (UserStudentID() == $student['COLLEGE_ROLL_NO'])
                     $_SESSION['UserCollege'] = $student['COLLEGE_ID'];
             }
         }
@@ -390,7 +390,7 @@ if (User('PROFILE') != 'teacher') {
 }##################Porfile Not Teacher End##########################################
 
 if (UserStudentID() && User('PROFILE') != 'parent' && User('PROFILE') != 'student') {
-    $RET = DBGet(DBQuery("SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX FROM students WHERE STUDENT_ID='" . UserStudentID() . "'"));
+    $RET = DBGet(DBQuery("SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX FROM students WHERE COLLEGE_ROLL_NO='" . UserStudentID() . "'"));
 }
 if (UserStaffID() && User('PROFILE') == 'admin') {
     if (UserStudentID())
@@ -803,49 +803,49 @@ echo "<div id='content' name='content' class='clearfix'>";
 if (User('PROFILE') == 'admin') {
 
     $admin_COMMON_FROM = " FROM students s, student_address a,student_enrollment ssm ";
-    $admin_COMMON_WHERE = " WHERE s.STUDENT_ID=ssm.STUDENT_ID  AND a.STUDENT_ID=s.STUDENT_ID AND a.TYPE='Home Address' AND ssm.SYEAR=" . UserSyear() . " AND ssm.COLLEGE_ID=" . UserCollege() . " ";
+    $admin_COMMON_WHERE = " WHERE s.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO  AND a.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND a.TYPE='Home Address' AND ssm.SYEAR=" . UserSyear() . " AND ssm.COLLEGE_ID=" . UserCollege() . " ";
 
     if (optional_param('mp_comment', '', PARAM_NOTAGS) || $_SESSION['smc']) {
         $admin_COMMON_FROM .=" ,student_mp_comments smc";
-        $admin_COMMON_WHERE .=" AND smc.STUDENT_ID=s.STUDENT_ID ";
+        $admin_COMMON_WHERE .=" AND smc.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO ";
         $_SESSION['smc'] = '1';
     }
 
     if (optional_param('goal_description', '', PARAM_NOTAGS) || optional_param('goal_title', '', PARAM_NOTAGS) || $_SESSION['g']) {
         $admin_COMMON_FROM .=" ,student_goal g ";
-        $admin_COMMON_WHERE .=" AND g.STUDENT_ID=s.STUDENT_ID ";
+        $admin_COMMON_WHERE .=" AND g.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO ";
         $_SESSION['g'] = '1';
     }
 
     if (optional_param('progress_name', '', PARAM_NOTAGS) || optional_param('progress_description', '', PARAM_NOTAGS) || $_SESSION['p']) {
         $admin_COMMON_FROM .=" ,student_goal_progress p ";
-        $admin_COMMON_WHERE .=" AND p.STUDENT_ID=s.STUDENT_ID ";
+        $admin_COMMON_WHERE .=" AND p.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO ";
         $_SESSION['p'] = '1';
     }
 
     if (optional_param('doctors_note_comments', '', PARAM_NOTAGS) || optional_param('med_day', '', PARAM_NOTAGS) || optional_param('med_month', '', PARAM_NOTAGS) || optional_param('med_year', '', PARAM_NOTAGS) || $_SESSION['smn']) {
         $admin_COMMON_FROM .=" ,student_medical_notes smn ";
-        $admin_COMMON_WHERE .=" AND smn.STUDENT_ID=s.STUDENT_ID ";
+        $admin_COMMON_WHERE .=" AND smn.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO ";
         $_SESSION['smn'] = '1';
     }
 
     if (optional_param('type', '', PARAM_NOTAGS) || optional_param('imm_comments', '', PARAM_NOTAGS) || optional_param('imm_day', '', PARAM_NOTAGS) || optional_param('imm_month', '', PARAM_NOTAGS) || optional_param('imm_year', '', PARAM_NOTAGS) || $_SESSION['sm']) {
 
         $admin_COMMON_FROM .=" ,student_immunization sm ";
-        $admin_COMMON_WHERE .=" AND sm.STUDENT_ID=s.STUDENT_ID ";
+        $admin_COMMON_WHERE .=" AND sm.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO ";
         $_SESSION['sm'] = '1';
     }
 
 
     if (optional_param('ma_day', '', PARAM_NOTAGS) || optional_param('ma_month', '', PARAM_NOTAGS) || optional_param('ma_year', '', PARAM_NOTAGS) || optional_param('med_alrt_title', '', PARAM_NOTAGS) || $_SESSION['sma']) {
         $admin_COMMON_FROM .=" ,student_medical_alerts sma  ";
-        $admin_COMMON_WHERE .=" AND sma.STUDENT_ID=s.STUDENT_ID ";
+        $admin_COMMON_WHERE .=" AND sma.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO ";
         $_SESSION['sma'] = '1';
     }
 
     if (optional_param('nv_day', '', PARAM_NOTAGS) || optional_param('nv_month', '', PARAM_NOTAGS) || optional_param('nv_year', '', PARAM_NOTAGS) || optional_param('reason', '', PARAM_NOTAGS) || optional_param('result', '', PARAM_NOTAGS) || optional_param('med_vist_comments', '', PARAM_NOTAGS) || $_SESSION['smv']) {
         $admin_COMMON_FROM .=" ,student_medical_visits smv   ";
-        $admin_COMMON_WHERE .=" AND smv.STUDENT_ID=s.STUDENT_ID ";
+        $admin_COMMON_WHERE .=" AND smv.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO ";
         $_SESSION['smv'] = '1';
     }
     $admin_COMMON = $admin_COMMON_FROM . $admin_COMMON_WHERE;
@@ -855,50 +855,50 @@ if (User('PROFILE') == 'teacher') {
 
     $teacher_COMMON_FROM = " FROM students s, student_enrollment ssm, course_periods cp,
                                             schedule ss,student_address a ";
-    $teacher_COMMON_WHERE = " WHERE a.STUDENT_ID=s.STUDENT_ID  AND a.TYPE='Home Address' AND s.STUDENT_ID=ssm.STUDENT_ID AND ssm.STUDENT_ID=ss.STUDENT_ID AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND ss.MARKING_PERIOD_ID IN (" . GetAllMP('', $queryMP) . ")
+    $teacher_COMMON_WHERE = " WHERE a.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO  AND a.TYPE='Home Address' AND s.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND ssm.COLLEGE_ROLL_NO=ss.COLLEGE_ROLL_NO AND ssm.SYEAR=cp.SYEAR AND ssm.SYEAR=ss.SYEAR AND cp.COURSE_ID=ss.COURSE_ID AND cp.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID AND ss.MARKING_PERIOD_ID IN (" . GetAllMP('', $queryMP) . ")
                                                                                     AND (cp.TEACHER_ID='" . User('STAFF_ID') . "' OR cp.SECONDARY_TEACHER_ID='" . User('STAFF_ID') . "') AND cp.COURSE_PERIOD_ID='" . UserCoursePeriod() . "' AND (ssm.START_DATE IS NOT NULL AND ('" . DBDate() . "'<=ssm.END_DATE OR ssm.END_DATE IS NULL)) AND ssm.SYEAR=" . UserSyear() . " AND ssm.COLLEGE_ID=" . UserCollege() . " ";
 
 
     if (optional_param('mp_comment', '', PARAM_SPCL) || $_SESSION['smc']) {
         $teacher_COMMON_FROM .=" ,student_mp_comments smc";
-        $teacher_COMMON_WHERE .=" AND smc.STUDENT_ID=s.STUDENT_ID ";
+        $teacher_COMMON_WHERE .=" AND smc.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO ";
         $_SESSION['smc'] = '1';
     }
 
     if (optional_param('goal_description', '', PARAM_SPCL) || optional_param('goal_title', '', PARAM_SPCL) || $_SESSION['g']) {
         $teacher_COMMON_FROM .=" ,student_goal g ";
-        $teacher_COMMON_WHERE .=" AND g.STUDENT_ID=s.STUDENT_ID ";
+        $teacher_COMMON_WHERE .=" AND g.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO ";
         $_SESSION['g'] = '1';
     }
 
     if (optional_param('progress_name', '', PARAM_NOTAGS) || optional_param('progress_description', '', PARAM_NOTAGS) || $_SESSION['p']) {
         $teacher_COMMON_FROM .=" ,student_goal_progress p ";
-        $teacher_COMMON_WHERE .=" AND p.STUDENT_ID=s.STUDENT_ID ";
+        $teacher_COMMON_WHERE .=" AND p.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO ";
         $_SESSION['p'] = '1';
     }
 
     if (optional_param('doctors_note_comments', '', PARAM_NOTAGS) || optional_param('med_day', '', PARAM_NOTAGS) || optional_param('med_month', '', PARAM_NOTAGS) || optional_param('med_year', '', PARAM_NOTAGS) || $_SESSION['smn']) {
         $teacher_COMMON_FROM .=" ,student_medical_notes smn ";
-        $teacher_COMMON_WHERE .=" AND smn.STUDENT_ID=s.STUDENT_ID ";
+        $teacher_COMMON_WHERE .=" AND smn.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO ";
         $_SESSION['smn'] = '1';
     }
 
     if (optional_param('type', '', PARAM_NOTAGS) || optional_param('imm_comments', '', PARAM_NOTAGS) || optional_param('imm_day', '', PARAM_NOTAGS) || optional_param('imm_month', '', PARAM_NOTAGS) || optional_param('imm_year', '', PARAM_NOTAGS) || $_SESSION['sm']) {
 
         $teacher_COMMON_FROM .=" ,student_immunization sm ";
-        $teacher_COMMON_WHERE .=" AND sm.STUDENT_ID=s.STUDENT_ID ";
+        $teacher_COMMON_WHERE .=" AND sm.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO ";
         $_SESSION['sm'] = '1';
     }
 
     if (optional_param('ma_day', '', PARAM_NOTAGS) || optional_param('ma_month', '', PARAM_NOTAGS) || optional_param('ma_year', '', PARAM_NOTAGS) || optional_param('med_alrt_title', '', PARAM_NOTAGS) || $_SESSION['sma']) {
         $teacher_COMMON_FROM .=" ,student_medical_alerts sma  ";
-        $teacher_COMMON_WHERE .=" AND sma.STUDENT_ID=s.STUDENT_ID ";
+        $teacher_COMMON_WHERE .=" AND sma.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO ";
         $_SESSION['sma'] = '1';
     }
 
     if (optional_param('nv_day', '', PARAM_NOTAGS) || optional_param('nv_month', '', PARAM_NOTAGS) || optional_param('nv_year', '', PARAM_NOTAGS) || optional_param('reason', '', PARAM_NOTAGS) || optional_param('result', '', PARAM_NOTAGS) || optional_param('med_vist_comments', '', PARAM_NOTAGS) || $_SESSION['smv']) {
         $teacher_COMMON_FROM .=" ,student_medical_visits smv   ";
-        $teacher_COMMON_WHERE .=" AND smv.STUDENT_ID=s.STUDENT_ID ";
+        $teacher_COMMON_WHERE .=" AND smv.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO ";
         $_SESSION['smv'] = '1';
     }
     $teacher_COMMON = $teacher_COMMON_FROM . $teacher_COMMON_WHERE;
@@ -922,8 +922,8 @@ if ($_REQUEST['modname'] || $_GET['modname']) {
     /*     * *****************back to list*************************** */
     if ($_REQUEST['bottom_back'] && $_SESSION['staff_id'])
         unset($_SESSION['staff_id']);
-    if ($_REQUEST['bottom_back'] && $_SESSION['student_id'])
-        unset($_SESSION['student_id']);
+    if ($_REQUEST['bottom_back'] && $_SESSION['college_roll_no'])
+        unset($_SESSION['college_roll_no']);
     /*     * ********************************************* */
     if ($_REQUEST['_openSIS_PDF'] == 'true')
         ob_start();

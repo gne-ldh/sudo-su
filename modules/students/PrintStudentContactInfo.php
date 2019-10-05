@@ -31,20 +31,20 @@ if($_REQUEST['modfunc']=='save')
 	if(count($_REQUEST['st_arr']))
 	{
 	$st_list = '\''.implode('\',\'',$_REQUEST['st_arr']).'\'';
-	$extra['WHERE'] = ' AND s.STUDENT_ID IN ('.$st_list.')';
+	$extra['WHERE'] = ' AND s.COLLEGE_ROLL_NO IN ('.$st_list.')';
 
         
         
         $extra['FROM']=' ,students_join_people sjp,people p,student_address sa';
         $extra['SELECT']=' ,sjp.EMERGENCY_TYPE AS CONTACT_TYPE,sjp.RELATIONSHIP AS RELATION,CONCAT(p.Last_Name," " ,p.First_Name) AS RELATION_NAME,sa.STREET_ADDRESS_2 as STREET,sa.STREET_ADDRESS_1 as ADDRESS,sa.CITY,sa.STATE,sa.ZIPCODE AS ZIP,p.WORK_PHONE,p.HOME_PHONE,p.CELL_PHONE,p.EMAIL AS EMAIL_ID';
-        $extra['WHERE'] .=' AND sjp.student_id=ssm.student_id AND sjp.STUDENT_ID=sa.STUDENT_ID AND sjp.PERSON_ID=sa.PEOPLE_ID AND sjp.PERSON_ID=p.STAFF_ID';
+        $extra['WHERE'] .=' AND sjp.college_roll_no=ssm.college_roll_no AND sjp.COLLEGE_ROLL_NO=sa.COLLEGE_ROLL_NO AND sjp.PERSON_ID=sa.PEOPLE_ID AND sjp.PERSON_ID=p.STAFF_ID';
         $extra['ORDER'] =' ,sa.ID';
 
                 $RET = GetStuList($extra);
   
 	if(count($RET))
 	{
-                        $column_name=array('STUDENT_ID'=>'Student ID','ALT_ID'=>'Alternate ID','FULL_NAME'=>'Student','CONTACT_TYPE'=>'Type','RELATION'=>'Relation','RELATION_NAME'=>'Relation\'s Name','STREET'=>'Street','ADDRESS'=>'Address','CITY'=>'City','STATE'=>'State','ZIP'=>'Zip','WORK_PHONE'=>'Work Phone','HOME_PHONE'=>'Home Phone','CELL_PHONE'=>'Cell Phone','EMAIL_ID'=>'Email Address');
+                        $column_name=array('COLLEGE_ROLL_NO'=>'College Roll No','ALT_ID'=>'Alternate ID','FULL_NAME'=>'Student','CONTACT_TYPE'=>'Type','RELATION'=>'Relation','RELATION_NAME'=>'Relation\'s Name','STREET'=>'Street','ADDRESS'=>'Address','CITY'=>'City','STATE'=>'State','ZIP'=>'Zip','WORK_PHONE'=>'Work Phone','HOME_PHONE'=>'Home Phone','CELL_PHONE'=>'Cell Phone','EMAIL_ID'=>'Email Address');
                         $singular='Student Contact';
                         $plural='Student Contacts';
                         $options=array('search' => false);
@@ -61,7 +61,7 @@ if($_REQUEST['modfunc']=='save')
 		ShowErrPhp('You must choose at least one student.');
                                     for_error();
                         }
-	unset($_SESSION['student_id']);
+	unset($_SESSION['college_roll_no']);
 	
 	$_REQUEST['modfunc']=true;
 }
@@ -78,7 +78,7 @@ if(!$_REQUEST['modfunc'])
 	}
 
 	$extra['link'] = array('FULL_NAME'=>false);
-	$extra['SELECT'] = ',s.STUDENT_ID AS CHECKBOX';
+	$extra['SELECT'] = ',s.COLLEGE_ROLL_NO AS CHECKBOX';
 	$extra['functions'] = array('CHECKBOX'=>'_makeChooseCheckbox');
 	$extra['columns_before'] = array('CHECKBOX'=>'</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'unused\');"><A>');
 	$extra['options']['search'] = false;
@@ -86,7 +86,7 @@ if(!$_REQUEST['modfunc'])
 
 
 
-	Search('student_id',$extra);
+	Search('college_roll_no',$extra);
 	if($_REQUEST['search_modfunc']=='list')
 	{
 		echo '<div class="text-right p-r-20 p-b-20"><INPUT type=submit class="btn btn-primary" value=\'Print Contact Info for Selected Students\'></div>';
@@ -102,6 +102,6 @@ function _makeChooseCheckbox($value,$title)
 {
 //	return '<INPUT type=checkbox name=st_arr[] value='.$value.' checked>';
         global $THIS_RET;
-    return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
+    return "<input name=unused[$THIS_RET[COLLEGE_ROLL_NO]] value=" . $THIS_RET[COLLEGE_ROLL_NO] . "  type='checkbox' id=$THIS_RET[COLLEGE_ROLL_NO] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[COLLEGE_ROLL_NO]);' />";
 }
 ?>

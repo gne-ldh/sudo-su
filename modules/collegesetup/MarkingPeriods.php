@@ -54,11 +54,11 @@ switch($_REQUEST['mp_term'])
 			$title = 'New Semester';
 	break;
 
-	case 'QTR':
+/*	case 'QTR':
 		$table = 'college_quarters';
 		if($_REQUEST['marking_period_id']=='new')
                     $title = 'New Quarter';
-	break;
+		break;*/
 
 	case 'PRO':
 		$table = 'college_progress_periods';
@@ -176,11 +176,11 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                             $err_msg='Data not saved because title cannot be blank';
                                             $error=true;
                                         }
-                                        if(array_key_exists('SHORT_NAME', $columns) && trim($columns['SHORT_NAME']==''))
+                                        /*if(array_key_exists('SHORT_NAME', $columns) && trim($columns['SHORT_NAME']==''))
                                         {
                                             $err_msg='Data not saved because short name cannot be blank';
                                             $error=true;
-                                        }
+										}*/
                                          if(array_key_exists('SORT_ORDER', $columns) && trim($columns['SORT_ORDER']!='')) {
                                             if(!is_number($columns['SORT_ORDER']))
                                             {
@@ -364,7 +364,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                             }
                                                                             else
                                                                             {  
-                                                                                $stu_sql='SELECT COUNT(s.STUDENT_ID) AS TOTAL_REC FROM student_enrollment se,students s WHERE se.COLLEGE_ID=\''.UserCollege().'\' AND se.SYEAR=\''.UserSyear().'\' AND se.END_DATE IS NULL AND s.IS_DISABLE IS NULL';
+                                                                                $stu_sql='SELECT COUNT(s.COLLEGE_ROLL_NO) AS TOTAL_REC FROM student_enrollment se,students s WHERE se.COLLEGE_ID=\''.UserCollege().'\' AND se.SYEAR=\''.UserSyear().'\' AND se.END_DATE IS NULL AND s.IS_DISABLE IS NULL';
                                                                                 $students=  DBGet(DBQuery($stu_sql));
                                                                                 $students=$students[1]['TOTAL_REC'];
                                                                                 if($students>0 && $syear!=UserSyear())
@@ -484,7 +484,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                         }
                                                                         else
                                                                         {
-                                                                            $stu_sql='SELECT s.STUDENT_ID FROM student_enrollment se,students s WHERE se.COLLEGE_ID=\''.UserCollege().'\' AND se.SYEAR=\''.UserSyear().'\' AND se.END_DATE IS NULL AND s.IS_DISABLE IS NULL';
+                                                                            $stu_sql='SELECT s.COLLEGE_ROLL_NO FROM student_enrollment se,students s WHERE se.COLLEGE_ID=\''.UserCollege().'\' AND se.SYEAR=\''.UserSyear().'\' AND se.END_DATE IS NULL AND s.IS_DISABLE IS NULL';
                                                                             $students=  DBGet(DBQuery($stu_sql));
                                                                             $students=$students[1];
 
@@ -1126,11 +1126,11 @@ if(!$_REQUEST['modfunc'])
         $header .= '<div class="row">';
         $header .= '<div class="col-md-6">';
         $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">Title</label><div class="col-md-8">' . TextInput($RET['TITLE'], 'tables[' . $_REQUEST['marking_period_id'] . '][TITLE]', '', 'class=form-control') . '</div></div>';
-        $header .= '</div><div class="col-md-6">';
+        /*$header .= '</div><div class="col-md-6">';
         $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">Short Name</label><div class="col-md-8">' . TextInput($RET['SHORT_NAME'], 'tables[' . $_REQUEST['marking_period_id'] . '][SHORT_NAME]', '', 'class=form-control') . '</div></div>';
         $header .= '</div>';
         $header .= '</div>'; //.row
-        
+		 */
         $header .= '<div class="row">';
         $header .= '<div class="col-md-6">';
         $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">Comments</label><div class="col-md-8">' . CheckboxInput_comments($RET['DOES_COMMENTS'], 'tables[' . $_REQUEST['marking_period_id'] . '][DOES_COMMENTS]', '', $checked, $_REQUEST['marking_period_id'] == 'new', '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>') . '</div></div>';
@@ -1230,7 +1230,7 @@ if(!$_REQUEST['modfunc'])
     ListOutput($fy_RET, $columns, 'Year', 'Years', $link, array(), $LO_options);
     echo '</div>';
     echo '</div>';
-
+	 
     // SEMESTERS
     if (($_REQUEST['mp_term'] == 'FY' && $_REQUEST['marking_period_id'] != 'new') || $_REQUEST['mp_term'] == 'SEM' || $_REQUEST['mp_term'] == 'QTR' || $_REQUEST['mp_term'] == 'PRO') {
         $sql = 'SELECT MARKING_PERIOD_ID,TITLE FROM college_semesters WHERE COLLEGE_ID=\'' . UserCollege() . '\' AND SYEAR=\'' . UserSyear() . '\' AND YEAR_ID=\'' . $_REQUEST['year_id'] . '\' ORDER BY SORT_ORDER';
@@ -1291,7 +1291,7 @@ if(!$_REQUEST['modfunc'])
                 }
             }
 
-            echo '<div class="col-md-4">';
+         /*   echo '<div class="col-md-4">';
             echo '<div class="panel panel-white">';
             $columns = array('TITLE' => 'Quarter');
             $link = array();
@@ -1309,7 +1309,7 @@ if(!$_REQUEST['modfunc'])
             
             ListOutput($qtr_RET, $columns, 'Quarter', 'Quarters', $link, array(), $LO_options);
             echo '</div>';
-            echo '</div>';
+			echo '</div>';*/
 
             // PROGRESS PERIODS
             if (($_REQUEST['mp_term'] == 'QTR' && $_REQUEST['marking_period_id'] != 'new') || $_REQUEST['mp_term'] == 'PRO') {

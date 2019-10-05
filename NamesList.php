@@ -44,9 +44,9 @@ if (User('PROFILE_ID') == 0) {
     $tmp_stf_arr = array();
     $tmp_p_arr = array();
 
-    $tmp_q = DBGet(DBQuery('SELECT STUDENT_ID FROM students'));
+    $tmp_q = DBGet(DBQuery('SELECT COLLEGE_ROLL_NO FROM students'));
     foreach ($tmp_q as $tmp_a) {
-        $tmp_stu_arr[] = $tmp_a['STUDENT_ID'];
+        $tmp_stu_arr[] = $tmp_a['COLLEGE_ROLL_NO'];
     }
 
     $tmp_q = '';
@@ -72,9 +72,9 @@ if (User('PROFILE_ID') == 0) {
     $tmp_stf_arr = array();
     $tmp_p_arr = array();
 
-    $tmp_q = DBGet(DBQuery('SELECT DISTINCT STUDENT_ID FROM student_enrollment WHERE COLLEGE_ID IN (' . $colleges . ') AND (START_DATE=\'0000-00-00\' OR START_DATE<=\'' . date('Y-m-d') . '\') AND (END_DATE=\'0000-00-00\' OR END_DATE IS NULL OR END_DATE>=\'' . date('Y-m-d') . '\') '));
+    $tmp_q = DBGet(DBQuery('SELECT DISTINCT COLLEGE_ROLL_NO FROM student_enrollment WHERE COLLEGE_ID IN (' . $colleges . ') AND (START_DATE=\'0000-00-00\' OR START_DATE<=\'' . date('Y-m-d') . '\') AND (END_DATE=\'0000-00-00\' OR END_DATE IS NULL OR END_DATE>=\'' . date('Y-m-d') . '\') '));
     foreach ($tmp_q as $tmp_a) {
-        $tmp_stu_arr[] = $tmp_a['STUDENT_ID'];
+        $tmp_stu_arr[] = $tmp_a['COLLEGE_ROLL_NO'];
     }
 
     $tmp_q = '';
@@ -86,12 +86,12 @@ if (User('PROFILE_ID') == 0) {
 
     $tmp_q = '';
     $tmp_a = array();
-    $tmp_q = DBGet(DBQuery('SELECT DISTINCT sjp.PERSON_ID FROM student_enrollment se,students_join_people sjp WHERE se.COLLEGE_ID IN (' . $colleges . ') AND (se.START_DATE=\'0000-00-00\' OR se.START_DATE<=\'' . date('Y-m-d') . '\') AND (se.END_DATE=\'0000-00-00\' OR se.END_DATE IS NULL OR se.END_DATE>=\'' . date('Y-m-d') . '\') AND se.STUDENT_ID=sjp.STUDENT_ID '));
+    $tmp_q = DBGet(DBQuery('SELECT DISTINCT sjp.PERSON_ID FROM student_enrollment se,students_join_people sjp WHERE se.COLLEGE_ID IN (' . $colleges . ') AND (se.START_DATE=\'0000-00-00\' OR se.START_DATE<=\'' . date('Y-m-d') . '\') AND (se.END_DATE=\'0000-00-00\' OR se.END_DATE IS NULL OR se.END_DATE>=\'' . date('Y-m-d') . '\') AND se.COLLEGE_ROLL_NO=sjp.COLLEGE_ROLL_NO '));
     foreach ($tmp_q as $tmp_a) {
         $tmp_p_arr[] = $tmp_a['PERSON_ID'];
     }
 } elseif (User('PROFILE') == 'parent' || User('PROFILE') == 'student') {
-    $course_periods = DBGet(DBQuery('SELECT GROUP_CONCAT(course_period_id) as COURSE_PERIOD_ID FROM schedule WHERE STUDENT_ID=' . UserStudentID()));
+    $course_periods = DBGet(DBQuery('SELECT GROUP_CONCAT(course_period_id) as COURSE_PERIOD_ID FROM schedule WHERE COLLEGE_ROLL_NO=' . UserStudentID()));
     $course_periods = $course_periods[1]['COURSE_PERIOD_ID'];
     $tmp_q = '';
     $tmp_a = array();
@@ -100,21 +100,21 @@ if (User('PROFILE_ID') == 0) {
     $tmp_p_arr = array();
 
     if (User('PROFILE') == 'parent') {
-        $tmp_q = DBGet(DBQuery('SELECT DISTINCT se.STUDENT_ID FROM student_enrollment se,students_join_people sjp WHERE (se.START_DATE=\'0000-00-00\' OR se.START_DATE<=\'' . date('Y-m-d') . '\') AND (se.END_DATE=\'0000-00-00\' OR se.END_DATE IS NULL OR se.END_DATE>=\'' . date('Y-m-d') . '\') AND se.STUDENT_ID=sjp.STUDENT_ID AND sjp.PERSON_ID=' . $user_id));
+        $tmp_q = DBGet(DBQuery('SELECT DISTINCT se.COLLEGE_ROLL_NO FROM student_enrollment se,students_join_people sjp WHERE (se.START_DATE=\'0000-00-00\' OR se.START_DATE<=\'' . date('Y-m-d') . '\') AND (se.END_DATE=\'0000-00-00\' OR se.END_DATE IS NULL OR se.END_DATE>=\'' . date('Y-m-d') . '\') AND se.COLLEGE_ROLL_NO=sjp.COLLEGE_ROLL_NO AND sjp.PERSON_ID=' . $user_id));
         foreach ($tmp_q as $tmp_a) {
-            $stu_arr[] = $tmp_a['STUDENT_ID'];
-            $tmp_stu_arr[] = $tmp_a['STUDENT_ID'];
+            $stu_arr[] = $tmp_a['COLLEGE_ROLL_NO'];
+            $tmp_stu_arr[] = $tmp_a['COLLEGE_ROLL_NO'];
         }
-        $student_id = implode(',', $stu_arr);
+        $college_roll_no = implode(',', $stu_arr);
 
-        $asso_people = DBGet(DBQuery('select person_id from  students_join_people where student_id in(' . $student_id . ')'));
+        $asso_people = DBGet(DBQuery('select person_id from  students_join_people where college_roll_no in(' . $college_roll_no . ')'));
 
         foreach ($asso_people as $asso_v) {
             $tmp_p_arr[] = $asso_v['PERSON_ID'];
         }
     }
     if (User('PROFILE') == 'student') {
-        $tmp_q = DBGet(DBQuery('SELECT DISTINCT sjp.PERSON_ID FROM student_enrollment se,students_join_people sjp WHERE (se.START_DATE=\'0000-00-00\' OR se.START_DATE<=\'' . date('Y-m-d') . '\') AND (se.END_DATE=\'0000-00-00\' OR se.END_DATE IS NULL OR se.END_DATE>=\'' . date('Y-m-d') . '\') AND se.STUDENT_ID=sjp.STUDENT_ID AND sjp.STUDENT_ID=' . $user_id));
+        $tmp_q = DBGet(DBQuery('SELECT DISTINCT sjp.PERSON_ID FROM student_enrollment se,students_join_people sjp WHERE (se.START_DATE=\'0000-00-00\' OR se.START_DATE<=\'' . date('Y-m-d') . '\') AND (se.END_DATE=\'0000-00-00\' OR se.END_DATE IS NULL OR se.END_DATE>=\'' . date('Y-m-d') . '\') AND se.COLLEGE_ROLL_NO=sjp.COLLEGE_ROLL_NO AND sjp.COLLEGE_ROLL_NO=' . $user_id));
         foreach ($tmp_q as $tmp_a) {
             $tmp_p_arr[] = $tmp_a['PERSON_ID'];
         }
@@ -173,10 +173,10 @@ if (User('PROFILE_ID') == 0) {
     $tmp_stf_arr = array();
     $tmp_p_arr = array();
     if ($course_periods != '') {
-        $tmp_q = DBGet(DBQuery('SELECT DISTINCT se.STUDENT_ID FROM student_enrollment se,schedule s WHERE (se.START_DATE=\'0000-00-00\' OR se.START_DATE<=\'' . date('Y-m-d') . '\') AND (se.END_DATE=\'0000-00-00\' OR se.END_DATE IS NULL OR se.END_DATE>=\'' . date('Y-m-d') . '\') AND se.STUDENT_ID=s.STUDENT_ID AND s.COURSE_PERIOD_ID IN (' . $course_periods . ')'));
+        $tmp_q = DBGet(DBQuery('SELECT DISTINCT se.COLLEGE_ROLL_NO FROM student_enrollment se,schedule s WHERE (se.START_DATE=\'0000-00-00\' OR se.START_DATE<=\'' . date('Y-m-d') . '\') AND (se.END_DATE=\'0000-00-00\' OR se.END_DATE IS NULL OR se.END_DATE>=\'' . date('Y-m-d') . '\') AND se.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND s.COURSE_PERIOD_ID IN (' . $course_periods . ')'));
         foreach ($tmp_q as $tmp_a) {
-            $tmp_stu_arr[] = $tmp_a['STUDENT_ID'];
-            $tmp_qa = DBGet(DBQuery('SELECT DISTINCT PERSON_ID FROM students_join_people WHERE STUDENT_ID=' . $tmp_a['STUDENT_ID']));
+            $tmp_stu_arr[] = $tmp_a['COLLEGE_ROLL_NO'];
+            $tmp_qa = DBGet(DBQuery('SELECT DISTINCT PERSON_ID FROM students_join_people WHERE COLLEGE_ROLL_NO=' . $tmp_a['COLLEGE_ROLL_NO']));
             foreach ($tmp_qa as $tmp_aa) {
                 $tmp_p_arr[] = $tmp_aa['PERSON_ID'];
             }
@@ -207,7 +207,7 @@ if ($keyword == "")
 else {
 
     $sql_staff = "SELECT * FROM login_authentication,staff WHERE login_authentication.user_id=staff.staff_id and first_name LIKE '$keyword%' and username IS NOT NULL and login_authentication.profile_id NOT IN(3,4) AND staff.staff_id in (" . implode(',', $tmp_stf_arr) . ") ORDER BY last_name";
-    $sql_student = "SELECT * FROM login_authentication,students WHERE login_authentication.user_id=students.student_id and first_name LIKE '$keyword%' and username IS NOT NULL and login_authentication.profile_id=3 " . (count($tmp_stu_arr) > 0 ? " AND students.student_id IN (" . implode(',', $tmp_stu_arr) . ")" : "") . " ORDER BY last_name";
+    $sql_student = "SELECT * FROM login_authentication,students WHERE login_authentication.user_id=students.college_roll_no and first_name LIKE '$keyword%' and username IS NOT NULL and login_authentication.profile_id=3 " . (count($tmp_stu_arr) > 0 ? " AND students.college_roll_no IN (" . implode(',', $tmp_stu_arr) . ")" : "") . " ORDER BY last_name";
     $sql_people = "SELECT * FROM login_authentication,people WHERE login_authentication.user_id=people.staff_id and first_name LIKE '$keyword%' and username IS NOT NULL and login_authentication.profile_id=4 " . (count($tmp_p_arr) > 0 ? " AND people.staff_id IN (" . implode(',', $tmp_p_arr) . ")" : "") . " ORDER BY last_name";
 
     $result_staff = DBGet(DBQuery($sql_staff));
@@ -229,7 +229,7 @@ else {
         foreach ($result_student as $row_student) {
             $str = ucfirst(trim($row_student['LAST_NAME'])) . ', ' . ucfirst(trim($row_student['FIRST_NAME'])) . ' - ' . ucfirst(trim($row_student['USERNAME']));
             if (trim($row_student['USERNAME'] != ""))
-                echo '<li><a id="search' . $row_student['STUDENT_ID'] . '" onclick="a(\'' . $row_student['USERNAME'] . '\',\'' . $block_id . '\')">' . $str . '</a></li>';
+                echo '<li><a id="search' . $row_student['COLLEGE_ROLL_NO'] . '" onclick="a(\'' . $row_student['USERNAME'] . '\',\'' . $block_id . '\')">' . $str . '</a></li>';
         }
     } else
         echo "";
@@ -254,7 +254,7 @@ if ($str2 != "") {
     if ($pos != 0 || $lastpos != 0) {
 
         $sql_staff = "SELECT * FROM login_authentication,staff WHERE login_authentication.user_id=staff.staff_id and (first_name LIKE '$str1%' or first_name LIKE '$str2%') and username IS NOT NULL and login_authentication.profile_id NOT IN(3,4) AND staff.staff_id in (" . implode(',', $tmp_stf_arr) . ") ORDER BY last_name";
-        $sql_student = "SELECT * FROM login_authentication,students WHERE login_authentication.user_id=students.student_id and (first_name LIKE '$str1%'  or first_name LIKE '$str2%') and username IS NOT NULL and login_authentication.profile_id=3 " . (count($tmp_stu_arr) > 0 ? " AND students.student_id IN (" . implode(',', $tmp_stu_arr) . ")" : "") . " ORDER BY last_name";
+        $sql_student = "SELECT * FROM login_authentication,students WHERE login_authentication.user_id=students.college_roll_no and (first_name LIKE '$str1%'  or first_name LIKE '$str2%') and username IS NOT NULL and login_authentication.profile_id=3 " . (count($tmp_stu_arr) > 0 ? " AND students.college_roll_no IN (" . implode(',', $tmp_stu_arr) . ")" : "") . " ORDER BY last_name";
         $sql_people = "SELECT * FROM login_authentication,people WHERE login_authentication.user_id=people.staff_id and (first_name LIKE '$str1%'  or first_name LIKE '$str2%') and username IS NOT NULL and login_authentication.profile_id=4 " . (count($tmp_p_arr) > 0 ? " AND people.staff_id IN (" . implode(',', $tmp_p_arr) . ")" : "") . " ORDER BY last_name";
 
         $result_staff = DBGet(DBQuery($sql_staff));
@@ -277,7 +277,7 @@ if ($str2 != "") {
                 $str = ucfirst(trim($row_student['LAST_NAME'])) . ', ' . ucfirst(trim($row_student['FIRST_NAME'])) . ' - ' . ucfirst(trim($row_student['USERNAME']));
                 $newpos = $lastpos + 1;
                 if (trim($row_student['USERNAME'] != ""))
-                    echo '<li><a id="search' . $row_student['STUDENT_ID'] . '" onclick="b(\'' . $newpos . '\',\'' . $row_student['USERNAME'] . '\',\'' . $block_id . '\')">' . $str . '</a></li>';
+                    echo '<li><a id="search' . $row_student['COLLEGE_ROLL_NO'] . '" onclick="b(\'' . $newpos . '\',\'' . $row_student['USERNAME'] . '\',\'' . $block_id . '\')">' . $str . '</a></li>';
             }
         } else
             echo "";
@@ -287,7 +287,7 @@ if ($str2 != "") {
                 $str = ucfirst(trim($row_people['LAST_NAME'])) . ', ' . ucfirst(trim($row_people['FIRST_NAME'])) . ' - ' . ucfirst(trim($row_people['USERNAME']));
                 $newpos = $lastpos + 1;
                 if (trim($row_people['USERNAME'] != ""))
-                    echo '<li><a id="search' . $row_people['STUDENT_ID'] . '" onclick="b(\'' . $newpos . '\',\'' . $row_people['USERNAME'] . '\',\'' . $block_id . '\')">' . $str . '</a></li>';
+                    echo '<li><a id="search' . $row_people['COLLEGE_ROLL_NO'] . '" onclick="b(\'' . $newpos . '\',\'' . $row_people['USERNAME'] . '\',\'' . $block_id . '\')">' . $str . '</a></li>';
             }
         } else
             echo "";

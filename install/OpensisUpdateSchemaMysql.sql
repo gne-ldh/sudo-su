@@ -39,7 +39,7 @@ CREATE TABLE address (
     address character varying(255),
     mail_address character varying(255),
     phone character varying(30),
-    student_id numeric(10,0),
+    college_roll_no numeric(10,0),
     bus_no character varying(20),
     bus_pickup character varying(2),
     bus_dropoff character varying(2),
@@ -196,7 +196,7 @@ CREATE TABLE attendance_completed (
 
 
 CREATE TABLE attendance_day (
-    student_id numeric NOT NULL,
+    college_roll_no numeric NOT NULL,
     college_date date NOT NULL,
     minutes_present numeric,
     state_value numeric(2,1),
@@ -207,7 +207,7 @@ CREATE TABLE attendance_day (
 
 
 CREATE TABLE attendance_period (
-    student_id numeric NOT NULL,
+    college_roll_no numeric NOT NULL,
     college_date date NOT NULL,
     period_id numeric NOT NULL,
     attendance_code numeric,
@@ -319,7 +319,7 @@ ALTER TABLE custom_fields AUTO_INCREMENT=1;
 
 
 CREATE TABLE eligibility (
-    student_id numeric,
+    college_roll_no numeric,
     syear numeric(4,0),
     college_date date,
     period_id numeric,
@@ -363,7 +363,7 @@ CREATE TABLE student_enrollment (
     id INT(8) NOT NULL AUTO_INCREMENT PRIMARY KEY,
     syear numeric(4,0),
     college_id numeric,
-    student_id numeric,
+    college_roll_no numeric,
     grade_id numeric,
     start_date date,
     end_date date,
@@ -410,7 +410,7 @@ ALTER TABLE gradebook_assignments AUTO_INCREMENT=1;
 
 
 CREATE TABLE gradebook_grades (
-    student_id numeric NOT NULL,
+    college_roll_no numeric NOT NULL,
     period_id numeric,
     course_period_id numeric NOT NULL,
     assignment_id numeric NOT NULL,
@@ -447,7 +447,7 @@ PRIMARY KEY (  `id` )
 ) ENGINE = InnoDB ;
 
 CREATE TABLE lunch_period (
-    student_id numeric,
+    college_roll_no numeric,
     college_date date,
     period_id numeric,
     attendance_code numeric,
@@ -748,7 +748,7 @@ ALTER TABLE report_card_grades AUTO_INCREMENT=1;
 CREATE TABLE schedule (
     syear numeric(4,0) NOT NULL,
     college_id numeric,
-    student_id numeric NOT NULL,
+    college_roll_no numeric NOT NULL,
     start_date date NOT NULL,
     end_date date,
     modified_date date,
@@ -768,7 +768,7 @@ CREATE TABLE schedule_requests (
     syear numeric(4,0),
     college_id numeric,
     request_id INT(8) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    student_id numeric,
+    college_roll_no numeric,
     subject_id numeric,
     course_id numeric,
     course_weight character varying(10),
@@ -919,7 +919,7 @@ ALTER TABLE staff_fields AUTO_INCREMENT=1;
 
 CREATE TABLE student_eligibility_activities (
     syear numeric(4,0),
-    student_id numeric,
+    college_roll_no numeric,
     activity_id numeric
 )ENGINE=InnoDB;
 
@@ -948,7 +948,7 @@ ALTER TABLE student_field_categories AUTO_INCREMENT=1;
 
 
 CREATE TABLE student_gpa_calculated (
-    student_id numeric,
+    college_roll_no numeric,
     marking_period_id integer,
     mp character varying(4),
     gpa decimal(10,2),
@@ -960,7 +960,7 @@ CREATE TABLE student_gpa_calculated (
 
 
 CREATE TABLE student_gpa_running (
-    student_id numeric,
+    college_roll_no numeric,
     marking_period_id integer,
     gpa_points decimal(10,2),
     gpa_points_weighted decimal(10,2),
@@ -972,7 +972,7 @@ CREATE TABLE student_gpa_running (
 
 CREATE TABLE student_medical (
     id INT(8) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    student_id numeric,
+    college_roll_no numeric,
     type character varying(25),
     medical_date date,
     comments longtext
@@ -981,7 +981,7 @@ CREATE TABLE student_medical (
 
 CREATE TABLE student_medical_alerts (
     id INT(8) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    student_id numeric,
+    college_roll_no numeric,
     title text,
     alert_date date
 )ENGINE=InnoDB;
@@ -994,7 +994,7 @@ ALTER TABLE student_medical AUTO_INCREMENT=1;
 
 CREATE TABLE student_medical_visits (
     id INT(8) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    student_id numeric,
+    college_roll_no numeric,
     college_date date,
     time_in character varying(20),
     time_out character varying(20),
@@ -1007,14 +1007,14 @@ ALTER TABLE student_medical_visits AUTO_INCREMENT=1;
 
 CREATE TABLE student_medical_notes (
     id INT(8) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    student_id numeric NOT NULL,
+    college_roll_no numeric NOT NULL,
     doctors_note_date date,
     doctors_note_comments longtext
 )ENGINE=InnoDB;
 
 CREATE TABLE student_mp_comments (
     id INT(8) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    student_id numeric NOT NULL,
+    college_roll_no numeric NOT NULL,
     syear numeric(4,0) NOT NULL,
     marking_period_id integer NOT NULL,
     staff_id integer,
@@ -1024,7 +1024,7 @@ CREATE TABLE student_mp_comments (
 
 
 CREATE TABLE student_mp_stats (
-    student_id integer NOT NULL,
+    college_roll_no integer NOT NULL,
     marking_period_id integer NOT NULL,
     cum_weighted_factor decimal(10,6),
     cum_unweighted_factor decimal(10,6),
@@ -1042,7 +1042,7 @@ CREATE TABLE student_mp_stats (
 CREATE TABLE student_report_card_comments (
     syear numeric(4,0) NOT NULL,
     college_id numeric,
-    student_id numeric NOT NULL,
+    college_roll_no numeric NOT NULL,
     course_period_id numeric NOT NULL,
     report_card_comment_id numeric NOT NULL,
     comment character varying(1),
@@ -1052,7 +1052,7 @@ CREATE TABLE student_report_card_comments (
 CREATE TABLE `student_report_card_grades` (
  `syear` decimal(4,0) DEFAULT NULL,
  `college_id` decimal(10,0) DEFAULT NULL,
- `student_id` decimal(10,0) NOT NULL,
+ `college_roll_no` decimal(10,0) NOT NULL,
  `course_period_id` decimal(10,0) DEFAULT NULL,
  `report_card_grade_id` decimal(10,0) DEFAULT NULL,
  `report_card_comment_id` decimal(10,0) DEFAULT NULL,
@@ -1076,7 +1076,7 @@ CREATE TABLE `student_report_card_grades` (
 ALTER TABLE student_report_card_grades AUTO_INCREMENT=1;
 
 CREATE TABLE students (
-    student_id INT(8) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    college_roll_no INT(8) NOT NULL AUTO_INCREMENT PRIMARY KEY,
     last_name character varying(50) NOT NULL,
     first_name character varying(50) NOT NULL,
     middle_name character varying(50),
@@ -1106,7 +1106,7 @@ ALTER TABLE students AUTO_INCREMENT=1;
 
 CREATE TABLE students_join_address (
     id INT(8) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    student_id numeric NOT NULL,
+    college_roll_no numeric NOT NULL,
     address_id numeric(10,0) NOT NULL,
     contact_seq numeric(10,0),
     gets_mail character varying(1),
@@ -1127,7 +1127,7 @@ ALTER TABLE students_join_address AUTO_INCREMENT=1;
 
 CREATE TABLE students_join_people (
     id INT(8) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    student_id numeric NOT NULL,
+    college_roll_no numeric NOT NULL,
     person_id numeric(10,0) NOT NULL,
     address_id numeric,
     custody character varying(1),
@@ -1151,7 +1151,7 @@ ALTER TABLE students_join_people AUTO_INCREMENT=1;
 
 
 CREATE TABLE students_join_users (
-    student_id numeric NOT NULL,
+    college_roll_no numeric NOT NULL,
     staff_id numeric NOT NULL
 )ENGINE=InnoDB;
 
@@ -1291,11 +1291,11 @@ ALTER TABLE attendance_calendar
 
 
 ALTER TABLE attendance_day
-    ADD CONSTRAINT attendance_day_pkey PRIMARY KEY (student_id, college_date);
+    ADD CONSTRAINT attendance_day_pkey PRIMARY KEY (college_roll_no, college_date);
 
 
 --ALTER TABLE attendance_period
-    --ADD CONSTRAINT attendance_period_pkey PRIMARY KEY (student_id, college_date, course_period_id);
+    --ADD CONSTRAINT attendance_period_pkey PRIMARY KEY (college_roll_no, college_date, course_period_id);
 
 
 -- ALTER TABLE calendar_events
@@ -1334,7 +1334,7 @@ ALTER TABLE eligibility_completed
 
 
 ALTER TABLE gradebook_grades
-    ADD CONSTRAINT gradebook_grades_pkey PRIMARY KEY (student_id, assignment_id, course_period_id);
+    ADD CONSTRAINT gradebook_grades_pkey PRIMARY KEY (college_roll_no, assignment_id, course_period_id);
 
 
 ALTER TABLE grades_completed
@@ -1375,7 +1375,7 @@ ALTER TABLE history_marking_periods
 
 
 -- ALTER TABLE schedule
- --   ADD CONSTRAINT schedule_pkey PRIMARY KEY (syear, student_id, course_id, course_period_id, start_date);
+ --   ADD CONSTRAINT schedule_pkey PRIMARY KEY (syear, college_roll_no, course_id, course_period_id, start_date);
 
 
 -- ALTER TABLE schedule_requests
@@ -1447,15 +1447,15 @@ ALTER TABLE college_years
 
 
 --ALTER TABLE student_mp_comments
- --   ADD CONSTRAINT student_mp_comments_pkey PRIMARY KEY (student_id, syear, marking_period_id);
+ --   ADD CONSTRAINT student_mp_comments_pkey PRIMARY KEY (college_roll_no, syear, marking_period_id);
 
 
 ALTER TABLE student_mp_stats
-    ADD CONSTRAINT student_mp_stats_pkey PRIMARY KEY (student_id, marking_period_id);
+    ADD CONSTRAINT student_mp_stats_pkey PRIMARY KEY (college_roll_no, marking_period_id);
 
 
 ALTER TABLE student_report_card_comments
-    ADD CONSTRAINT student_report_card_comments_pkey PRIMARY KEY (syear, student_id, course_period_id, marking_period_id, report_card_comment_id);
+    ADD CONSTRAINT student_report_card_comments_pkey PRIMARY KEY (syear, college_roll_no, course_period_id, marking_period_id, report_card_comment_id);
 
 
 -- ALTER TABLE student_report_card_grades
@@ -1475,11 +1475,11 @@ ALTER TABLE student_report_card_comments
 
 
 ALTER TABLE students_join_users
-    ADD CONSTRAINT students_join_users_pkey PRIMARY KEY (student_id, staff_id);
+    ADD CONSTRAINT students_join_users_pkey PRIMARY KEY (college_roll_no, staff_id);
 
 
 -- ALTER TABLE students
- --   ADD CONSTRAINT students_pkey PRIMARY KEY (student_id);
+ --   ADD CONSTRAINT students_pkey PRIMARY KEY (college_roll_no);
 ALTER TABLE `staff_college_relationship` ADD `start_date` DATE NOT NULL ,
 ADD `end_date` DATE NOT NULL ;
 --
@@ -1513,7 +1513,7 @@ CREATE INDEX attendance_codes_ind2  USING btree ON attendance_codes(syear, colle
 CREATE INDEX attendance_codes_ind3  USING btree ON attendance_codes(short_name);
 
 
-CREATE INDEX attendance_period_ind1  USING btree ON attendance_period(student_id);
+CREATE INDEX attendance_period_ind1  USING btree ON attendance_period(college_roll_no);
 
 
 CREATE INDEX attendance_period_ind2  USING btree ON attendance_period(period_id);
@@ -1564,7 +1564,7 @@ CREATE INDEX custom_fields_ind3  USING btree ON custom_fields(category_id);
 CREATE INDEX eligibility_activities_ind1  USING btree ON eligibility_activities(college_id, syear);
 
 
-CREATE INDEX eligibility_ind1  USING btree ON eligibility(student_id, course_period_id, college_date);
+CREATE INDEX eligibility_ind1  USING btree ON eligibility(college_roll_no, course_period_id, college_date);
 
 
 CREATE INDEX gradebook_assignment_types_ind1  USING btree ON gradebook_assignments(staff_id, course_id);
@@ -1639,13 +1639,13 @@ CREATE INDEX schedule_ind1  USING btree ON schedule(course_id, course_weight);
 CREATE INDEX schedule_ind2  USING btree ON schedule(course_period_id);
 
 
-CREATE INDEX schedule_ind3  USING btree ON schedule(student_id, marking_period_id, start_date, end_date);
+CREATE INDEX schedule_ind3  USING btree ON schedule(college_roll_no, marking_period_id, start_date, end_date);
 
 
 CREATE INDEX schedule_ind4  USING btree ON schedule(syear, college_id);
 
 
-CREATE INDEX schedule_requests_ind1  USING btree ON schedule_requests(student_id, course_id, course_weight, syear, college_id);
+CREATE INDEX schedule_requests_ind1  USING btree ON schedule_requests(college_roll_no, course_id, course_weight, syear, college_id);
 
 
 CREATE INDEX schedule_requests_ind2  USING btree ON schedule_requests(syear, college_id);
@@ -1719,37 +1719,37 @@ CREATE INDEX stu_addr_meets_3  USING btree ON students_join_address(primary_resi
 CREATE INDEX stu_addr_meets_4  USING btree ON students_join_address(legal_residence);
 
 
-CREATE INDEX student_eligibility_activities_ind1  USING btree ON student_eligibility_activities(student_id);
+CREATE INDEX student_eligibility_activities_ind1  USING btree ON student_eligibility_activities(college_roll_no);
 
 
-CREATE INDEX student_enrollment_1  USING btree ON student_enrollment(student_id, enrollment_code);
+CREATE INDEX student_enrollment_1  USING btree ON student_enrollment(college_roll_no, enrollment_code);
 
 
 CREATE INDEX student_enrollment_2  USING btree ON student_enrollment(grade_id);
 
 
-CREATE INDEX student_enrollment_3  USING btree ON student_enrollment(syear, student_id, college_id, grade_id);
+CREATE INDEX student_enrollment_3  USING btree ON student_enrollment(syear, college_roll_no, college_id, grade_id);
 
 
-CREATE INDEX student_enrollment_6  USING btree ON student_enrollment(syear, student_id,start_date, end_date);
+CREATE INDEX student_enrollment_6  USING btree ON student_enrollment(syear, college_roll_no,start_date, end_date);
 
 
 CREATE INDEX student_enrollment_7  USING btree ON student_enrollment(college_id);
 
 
-CREATE INDEX student_gpa_calculated_ind1  USING btree ON student_gpa_calculated(marking_period_id, student_id);
+CREATE INDEX student_gpa_calculated_ind1  USING btree ON student_gpa_calculated(marking_period_id, college_roll_no);
 
 
-CREATE INDEX student_gpa_running_ind1  USING btree ON student_gpa_running(marking_period_id, student_id);
+CREATE INDEX student_gpa_running_ind1  USING btree ON student_gpa_running(marking_period_id, college_roll_no);
 
 
-CREATE INDEX student_medical_alerts_ind1  USING btree ON student_medical_alerts(student_id);
+CREATE INDEX student_medical_alerts_ind1  USING btree ON student_medical_alerts(college_roll_no);
 
 
-CREATE INDEX student_medical_ind1  USING btree ON student_medical(student_id);
+CREATE INDEX student_medical_ind1  USING btree ON student_medical(college_roll_no);
 
 
-CREATE INDEX student_medical_visits_ind1  USING btree ON student_medical_visits(student_id);
+CREATE INDEX student_medical_visits_ind1  USING btree ON student_medical_visits(college_roll_no);
 
 
 CREATE INDEX student_report_card_comments_ind1  USING btree ON student_report_card_comments(college_id);
@@ -1758,7 +1758,7 @@ CREATE INDEX student_report_card_comments_ind1  USING btree ON student_report_ca
 CREATE INDEX student_report_card_grades_ind1  USING btree ON student_report_card_grades(college_id);
 
 
-CREATE INDEX student_report_card_grades_ind2  USING btree ON student_report_card_grades(student_id);
+CREATE INDEX student_report_card_grades_ind2  USING btree ON student_report_card_grades(college_roll_no);
 
 
 CREATE INDEX student_report_card_grades_ind3  USING btree ON student_report_card_grades(course_period_id);
@@ -1767,20 +1767,20 @@ CREATE INDEX student_report_card_grades_ind3  USING btree ON student_report_card
 CREATE INDEX student_report_card_grades_ind4  USING btree ON student_report_card_grades(marking_period_id);
 
 
-CREATE INDEX students_join_address_ind1  USING btree ON students_join_address(student_id);
+CREATE INDEX students_join_address_ind1  USING btree ON students_join_address(college_roll_no);
 
 
-CREATE INDEX students_join_people_ind1  USING btree ON students_join_people(student_id);
+CREATE INDEX students_join_people_ind1  USING btree ON students_join_people(college_roll_no);
 
 
-CREATE INDEX sys_c007322  USING btree ON students_join_address(id, student_id, address_id);
+CREATE INDEX sys_c007322  USING btree ON students_join_address(id, college_roll_no, address_id);
 
 --
 -- TABLE STRUCTURE FOR TABLE history_college
 --
 CREATE TABLE IF NOT EXISTS `history_college` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `student_id` int(11) NOT NULL,
+  `college_roll_no` int(11) NOT NULL,
   `marking_period_id` int(11) NOT NULL,
   `college_name` varchar(100) NOT NULL,
    PRIMARY KEY (`id`),
@@ -1798,13 +1798,13 @@ CREATE VIEW course_details AS
   FROM course_periods cp, courses c WHERE (cp.course_id = c.course_id);
 
 CREATE VIEW enroll_grade AS
-  SELECT e.id, e.syear, e.college_id, e.student_id, e.start_date, e.end_date, sg.short_name, sg.title
+  SELECT e.id, e.syear, e.college_id, e.college_roll_no, e.start_date, e.end_date, sg.short_name, sg.title
   FROM student_enrollment e, college_gradelevels sg WHERE (e.grade_id = sg.id);
 
 
 CREATE VIEW transcript_grades AS
-    SELECT s.id AS college_id, IF(mp.mp_source='history',(SELECT college_name FROM history_college WHERE student_id=rcg.student_id and marking_period_id=mp.marking_period_id),s.title) AS college_name,mp_source, mp.marking_period_id AS mp_id,
- mp.title AS mp_name, mp.syear, mp.end_date AS posted, rcg.student_id,
+    SELECT s.id AS college_id, IF(mp.mp_source='history',(SELECT college_name FROM history_college WHERE college_roll_no=rcg.college_roll_no and marking_period_id=mp.marking_period_id),s.title) AS college_name,mp_source, mp.marking_period_id AS mp_id,
+ mp.title AS mp_name, mp.syear, mp.end_date AS posted, rcg.college_roll_no,
  sgc.grade_level_short AS gradelevel, rcg.grade_letter, rcg.unweighted_gp AS gp_value,
  rcg.weighted_gp AS weighting, rcg.gp_scale, rcg.credit_attempted, rcg.credit_earned,
  rcg.credit_category,rcg.course_period_id AS course_period_id, rcg.course_title AS course_name,
@@ -1815,7 +1815,7 @@ CREATE VIEW transcript_grades AS
  sgc.class_rank,mp.sort_order
     FROM student_report_card_grades rcg
     INNER JOIN marking_periods mp ON mp.marking_period_id = rcg.marking_period_id AND mp.mp_type IN ('year','semester','quarter')
-    INNER JOIN student_gpa_calculated sgc ON sgc.student_id = rcg.student_id AND sgc.marking_period_id = rcg.marking_period_id
+    INNER JOIN student_gpa_calculated sgc ON sgc.college_roll_no = rcg.college_roll_no AND sgc.marking_period_id = rcg.marking_period_id
     INNER JOIN colleges s ON s.id = mp.college_id;
 
 
@@ -1870,7 +1870,7 @@ CREATE TABLE system_preference_misc (
 CREATE TABLE goal
 (
   goal_id INT(8) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  student_id numeric NOT NULL,
+  college_roll_no numeric NOT NULL,
   goal_title character varying(100),
   start_date date,
   end_date date,
@@ -1884,7 +1884,7 @@ CREATE TABLE progress
 (
   progress_id INT(8) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   goal_id numeric NOT NULL,
-  student_id numeric NOT NULL,
+  college_roll_no numeric NOT NULL,
   start_date date,
   progress_name text NOT NULL,
   proficiency character varying(100) NOT NULL,
@@ -1947,22 +1947,22 @@ ALTER TABLE `staff` ADD `img_content` LONGBLOB NULL AFTER `img_name`;
 ALTER TABLE `students` CHANGE `language` `language_id` INT(8) NULL DEFAULT NULL;
 
 CREATE VIEW student_contacts AS
-   SELECT DISTINCT sta.student_id AS student_id,st.alt_id,CONCAT( st.first_name, ' ', st.last_name )AS student_name,'Primary' AS contact_type,
+   SELECT DISTINCT sta.college_roll_no AS college_roll_no,st.alt_id,CONCAT( st.first_name, ' ', st.last_name )AS student_name,'Primary' AS contact_type,
         prim_student_relation AS relation, 
         pri_first_name AS relation_first_name,  pri_last_name AS relation_last_name,prim_address AS address1, prim_street AS address2,city AS city,state AS state,zipcode AS zip,work_phone AS work_phone,home_phone AS home_phone,mobile_phone AS cell_phone,
         address.email AS email_id,'1' AS sort
-    FROM students_join_address sta,address,students st WHERE   address.address_id=sta.address_id AND   st.student_id=sta.student_id 
+    FROM students_join_address sta,address,students st WHERE   address.address_id=sta.address_id AND   st.college_roll_no=sta.college_roll_no 
            
 UNION
-   SELECT DISTINCT sta.student_id AS student_id,st.alt_id,CONCAT( st.first_name, ' ', st.last_name )AS student_name,'Secondary' AS contact_type,
+   SELECT DISTINCT sta.college_roll_no AS college_roll_no,st.alt_id,CONCAT( st.first_name, ' ', st.last_name )AS student_name,'Secondary' AS contact_type,
         sec_student_relation AS relation,
         sec_first_name AS relation_first_name, sec_last_name AS relation_last_name,sec_address AS address1, sec_street AS address2,city AS city,state AS state,zipcode AS zip, sec_work_phone AS work_phone,sec_home_phone AS home_phone,sec_mobile_phone AS cell_phone,
         address.email AS email_id,'2' AS sort
-    FROM students_join_address sta,address,students st WHERE   address.address_id=sta.address_id AND   st.student_id=sta.student_id 
+    FROM students_join_address sta,address,students st WHERE   address.address_id=sta.address_id AND   st.college_roll_no=sta.college_roll_no 
           
 UNION
-    SELECT DISTINCT  stp.student_id AS student_id,st.alt_id, CONCAT( st.first_name, ' ', st.last_name )AS student_name,'Other' AS contact_type,
+    SELECT DISTINCT  stp.college_roll_no AS college_roll_no,st.alt_id, CONCAT( st.first_name, ' ', st.last_name )AS student_name,'Other' AS contact_type,
         stp.student_relation AS relation,
         people.first_name AS relation_first_name,  people.last_name AS relation_last_name,stp.addn_address AS address1, stp.addn_street AS address2,addn_city AS city,addn_state AS state,addn_zipcode AS zip,addn_work_phone AS work_phone,addn_home_phone AS home_phone,addn_mobile_phone AS cell_phone,
         stp.addn_email AS email_id,'3' AS sort
-    FROM people,students_join_people stp ,students st  WHERE   people.person_id=stp.person_id  AND   st.student_id=stp.student_id;
+    FROM people,students_join_people stp ,students st  WHERE   people.person_id=stp.person_id  AND   st.college_roll_no=stp.college_roll_no;

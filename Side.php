@@ -72,7 +72,7 @@ if(isset ($_SESSION['staf_search']['sql']))
 
 if((optional_param('college','',PARAM_SPCL) && optional_param('college','',PARAM_SPCL)!=$old_college) || (optional_param('period','',PARAM_SPCL) && optional_param('period','',PARAM_SPCL)!=$old_period))
 { 
-	unset($_SESSION['student_id']);
+	unset($_SESSION['college_roll_no']);
 	$_SESSION['unset_student'] = true;
 	unset($_SESSION['staff_id']);
 
@@ -132,8 +132,8 @@ if(optional_param('modfunc','',PARAM_SPCL)=='update' && $_POST)
 		
 		elseif(optional_param('act','',PARAM_SPCL)=='syear')
 		{
-                                        unset($_SESSION['student_id']);
-                                        unset($_SESSION['_REQUEST_vars']['student_id']);
+                                        unset($_SESSION['college_roll_no']);
+                                        unset($_SESSION['_REQUEST_vars']['college_roll_no']);
                                         $_SESSION['UserSyear'] = optional_param('syear','',PARAM_SPCL);
 			unset($_SESSION['UserMP']);
 			unset($_SESSION['UserSubject']);
@@ -235,8 +235,8 @@ if(optional_param('modfunc','',PARAM_SPCL)=='update' && $_POST)
 	
                         elseif ($_POST['syear']) 
                         {
-                            unset($_SESSION['student_id']);
-                            unset($_SESSION['_REQUEST_vars']['student_id']);
+                            unset($_SESSION['college_roll_no']);
+                            unset($_SESSION['_REQUEST_vars']['college_roll_no']);
                             $_SESSION['UserSyear'] = optional_param('syear', '', PARAM_SPCL);
                             unset($_SESSION['UserMP']);
                             $RET = DBGet(DBQuery("SELECT MARKING_PERIOD_ID,TITLE FROM college_quarters WHERE COLLEGE_ID='".UserCollege()."' AND SYEAR='".UserSyear()."' ORDER BY SORT_ORDER"));
@@ -301,10 +301,10 @@ if(optional_param('modfunc','',PARAM_SPCL)=='update' && $_POST)
             }
 		
         }
-        elseif($_POST['student_id'])
+        elseif($_POST['college_roll_no'])
 	{
             unset ($_SESSION['UserMP']);
-            $_SESSION['student_id'] = optional_param('student_id', '', PARAM_ALPHANUM);
+            $_SESSION['college_roll_no'] = optional_param('college_roll_no', '', PARAM_ALPHANUM);
         }
         elseif($_POST['mp'])
         {
@@ -320,8 +320,8 @@ if(optional_param('modfunc','',PARAM_SPCL)=='update' && $_POST)
 
 
 
-if(!$_SESSION['student_id'] && User('PROFILE')=='student')
-	$_SESSION['student_id'] = $_SESSION['STUDENT_ID'];
+if(!$_SESSION['college_roll_no'] && User('PROFILE')=='student')
+	$_SESSION['college_roll_no'] = $_SESSION['COLLEGE_ROLL_NO'];
 
 if(!$_SESSION['UserCollege'])
 {
@@ -355,11 +355,11 @@ if((optional_param('college','',PARAM_SPCL) && optional_param('college','',PARAM
 }
 
 
-if(optional_param('student_id','',PARAM_ALPHANUM)=='new')
+if(optional_param('college_roll_no','',PARAM_ALPHANUM)=='new')
 {
-	unset($_SESSION['student_id']);
+	unset($_SESSION['college_roll_no']);
         unset($_SESSION['students_order']);
-	unset($_SESSION['_REQUEST_vars']['student_id']);
+	unset($_SESSION['_REQUEST_vars']['college_roll_no']);
 	unset($_SESSION['_REQUEST_vars']['search_modfunc']);
 	
 	#------------- New added ----------------------------#
@@ -442,7 +442,7 @@ if(1)
 if(User('PROFILE')!='student')
 	$sql = "SELECT DISTINCT sy.SYEAR FROM college_years sy,staff s,staff_college_relationship ssr, login_authentication la WHERE s.STAFF_ID=la.USER_ID AND s.PROFILE_ID=la.PROFILE_ID AND ssr.SYEAR=sy.SYEAR AND s.STAFF_ID=ssr.STAFF_ID AND la.USERNAME=(SELECT USERNAME FROM login_authentication WHERE USER_ID='$_SESSION[STAFF_ID]' AND PROFILE_ID='$_SESSION[PROFILE_ID]')";
 else
-	$sql = "SELECT DISTINCT sy.SYEAR FROM college_years sy,student_enrollment se WHERE se.SYEAR=sy.SYEAR AND se.STUDENT_ID='$_SESSION[STUDENT_ID]'";
+	$sql = "SELECT DISTINCT sy.SYEAR FROM college_years sy,student_enrollment se WHERE se.SYEAR=sy.SYEAR AND se.COLLEGE_ROLL_NO='$_SESSION[COLLEGE_ROLL_NO]'";
 $years_RET = DBGet(DBQuery($sql));
 }
 else
@@ -455,18 +455,18 @@ echo '</SELECT><BR>';
 
 if(User('PROFILE')=='parent')
 {
-	$RET = DBGet(DBQuery("SELECT sju.STUDENT_ID, CONCAT(s.LAST_NAME,', ',s.FIRST_NAME) AS FULL_NAME,se.COLLEGE_ID FROM students s,students_join_people sju, student_enrollment se WHERE s.STUDENT_ID=sju.STUDENT_ID AND sju.PERSON_ID='".User('STAFF_ID')."' AND se.SYEAR=".UserSyear()." AND se.STUDENT_ID=sju.STUDENT_ID AND (('".DBDate()."' BETWEEN se.START_DATE AND se.END_DATE OR se.END_DATE IS NULL) AND '".DBDate()."'>=se.START_DATE)"));
+	$RET = DBGet(DBQuery("SELECT sju.COLLEGE_ROLL_NO, CONCAT(s.LAST_NAME,', ',s.FIRST_NAME) AS FULL_NAME,se.COLLEGE_ID FROM students s,students_join_people sju, student_enrollment se WHERE s.COLLEGE_ROLL_NO=sju.COLLEGE_ROLL_NO AND sju.PERSON_ID='".User('STAFF_ID')."' AND se.SYEAR=".UserSyear()." AND se.COLLEGE_ROLL_NO=sju.COLLEGE_ROLL_NO AND (('".DBDate()."' BETWEEN se.START_DATE AND se.END_DATE OR se.END_DATE IS NULL) AND '".DBDate()."'>=se.START_DATE)"));
 
 	if(!UserStudentID())
-		$_SESSION['student_id'] = $RET[1]['STUDENT_ID'];
+		$_SESSION['college_roll_no'] = $RET[1]['COLLEGE_ROLL_NO'];
 
-	echo "<SELECT name=student_id onChange='document.forms[0].submit();'>";
+	echo "<SELECT name=college_roll_no onChange='document.forms[0].submit();'>";
 	if(count($RET))
 	{
 		foreach($RET as $student)
 		{
-			echo "<OPTION value=$student[STUDENT_ID]".((UserStudentID()==$student['STUDENT_ID'])?' SELECTED':'').">".$student['FULL_NAME']."</OPTION>";
-			if(UserStudentID()==$student['STUDENT_ID'])
+			echo "<OPTION value=$student[COLLEGE_ROLL_NO]".((UserStudentID()==$student['COLLEGE_ROLL_NO'])?' SELECTED':'').">".$student['FULL_NAME']."</OPTION>";
+			if(UserStudentID()==$student['COLLEGE_ROLL_NO'])
 				$_SESSION['UserCollege'] = $student['COLLEGE_ID'];
 		}
 	}
@@ -492,10 +492,10 @@ echo "</SELECT>";
 echo '</FORM>';
 if(UserStudentID() && User('PROFILE')!='parent' && User('PROFILE')!='student')
 {
-	$RET = DBGet(DBQuery("SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX FROM students WHERE STUDENT_ID='".UserStudentID()."'"));
+	$RET = DBGet(DBQuery("SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX FROM students WHERE COLLEGE_ROLL_NO='".UserStudentID()."'"));
 	
 	
-	echo '<TABLE border=0 cellpadding=0 cellspacing=0 width=100%><TR><TD width=19 valign=middle><A HREF=Side.php?student_id=new&modcat='.optional_param('modcat','',PARAM_SPCL).'><IMG SRC=assets/x.gif height=17 border=0></A></TD><TD ><B><A HREF=Modules.php?modname=students/Student.php&student_id='.UserStudentID().' target=body><font color=#FFFFFF size=-2>'.$RET[1]['FIRST_NAME'].'&nbsp;'.($RET[1]['MIDDLE_NAME']?$RET[1]['MIDDLE_NAME'].' ':'').$RET[1]['LAST_NAME'].'&nbsp;'.$RET[1]['NAME_SUFFIX'].'</font></A></B></TD></TR></TABLE>';
+	echo '<TABLE border=0 cellpadding=0 cellspacing=0 width=100%><TR><TD width=19 valign=middle><A HREF=Side.php?college_roll_no=new&modcat='.optional_param('modcat','',PARAM_SPCL).'><IMG SRC=assets/x.gif height=17 border=0></A></TD><TD ><B><A HREF=Modules.php?modname=students/Student.php&college_roll_no='.UserStudentID().' target=body><font color=#FFFFFF size=-2>'.$RET[1]['FIRST_NAME'].'&nbsp;'.($RET[1]['MIDDLE_NAME']?$RET[1]['MIDDLE_NAME'].' ':'').$RET[1]['LAST_NAME'].'&nbsp;'.$RET[1]['NAME_SUFFIX'].'</font></A></B></TD></TR></TABLE>';
 }
 if(UserStaffID() && User('PROFILE')=='admin')
 {

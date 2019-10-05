@@ -62,40 +62,40 @@ if ($_REQUEST['assignment_id'] && $_REQUEST['assignment_id'] != 'all') {
         unset($_REQUEST['assignment_id']);
 }
 ####################
-if (clean_param($_REQUEST['student_id'], PARAM_INT)) {
-    $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,COLLEGE_ID FROM students,student_enrollment WHERE students.STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND student_enrollment.STUDENT_ID = students.STUDENT_ID '));
+if (clean_param($_REQUEST['college_roll_no'], PARAM_INT)) {
+    $RET = DBGet(DBQuery('SELECT FIRST_NAME,LAST_NAME,MIDDLE_NAME,NAME_SUFFIX,COLLEGE_ID FROM students,student_enrollment WHERE students.COLLEGE_ROLL_NO=\'' . $_REQUEST['college_roll_no'] . '\' AND student_enrollment.COLLEGE_ROLL_NO = students.COLLEGE_ROLL_NO '));
 
     $count_student_RET = DBGet(DBQuery("SELECT COUNT(*) AS NUM FROM students"));
     if ($count_student_RET[1]['NUM'] > 1) {
         if (UserStaffId() != '' && SelfStaffProfile('PROFILE') == 'admin')
-            DrawHeaderHome('Selected Student: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . ' (<A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>Deselect</font></A>) | <A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=' . $_REQUEST['modname'] . '&ajax=true&bottom_back=true&return_session=true&staff_id=' . UserStaffId() . ($_REQUEST['period'] != '' ? '&period=' . $_REQUEST['period'] : '') . ' target=body>Back to Student List</A>');
+            DrawHeaderHome('Selected Student: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . ' (<A HREF=Side.php?college_roll_no=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>Deselect</font></A>) | <A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=' . $_REQUEST['modname'] . '&ajax=true&bottom_back=true&return_session=true&staff_id=' . UserStaffId() . ($_REQUEST['period'] != '' ? '&period=' . $_REQUEST['period'] : '') . ' target=body>Back to Student List</A>');
         else
-            DrawHeaderHome('Selected Student: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . ' (<A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>Deselect</font></A>) | <A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=' . $_REQUEST['modname'] . '&ajax=true&bottom_back=true&return_session=true target=body>Back to Student List</A>');
+            DrawHeaderHome('Selected Student: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . ' (<A HREF=Side.php?college_roll_no=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>Deselect</font></A>) | <A HREF=Modules.php?modname=' . $_REQUEST['modname'] . '&search_modfunc=list&next_modname=' . $_REQUEST['modname'] . '&ajax=true&bottom_back=true&return_session=true target=body>Back to Student List</A>');
     }else if ($count_student_RET[1]['NUM'] == 1) {
-        DrawHeaderHome('Selected Student: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . ' (<A HREF=Side.php?student_id=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>Deselect</font></A>) ');
+        DrawHeaderHome('Selected Student: ' . $RET[1]['FIRST_NAME'] . '&nbsp;' . ($RET[1]['MIDDLE_NAME'] ? $RET[1]['MIDDLE_NAME'] . ' ' : '') . $RET[1]['LAST_NAME'] . '&nbsp;' . $RET[1]['NAME_SUFFIX'] . ' (<A HREF=Side.php?college_roll_no=new&modcat=' . $_REQUEST['modcat'] . '><font color=red>Deselect</font></A>) ');
     }
 }
 ####################
-if (clean_param($_REQUEST['student_id'], PARAM_INT)) {
-    if ($_REQUEST['student_id'] != $_SESSION['student_id']) {
-        $_SESSION['student_id'] = $_REQUEST['student_id'];
+if (clean_param($_REQUEST['college_roll_no'], PARAM_INT)) {
+    if ($_REQUEST['college_roll_no'] != $_SESSION['college_roll_no']) {
+        $_SESSION['college_roll_no'] = $_REQUEST['college_roll_no'];
         //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
     }
-    $_REQUEST['stuid'] = $_REQUEST['student_id'];
+    $_REQUEST['stuid'] = $_REQUEST['college_roll_no'];
     $LO_columns = array('TYPE_TITLE' => 'Category', 'TITLE' => 'Assignment', 'POINTS' => 'Points', 'LETTER_GRADE' => 'Grade', 'COMMENT' => 'Comment');
     $item = 'Assignment';
     $items = 'Assignments';
     $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]";
     $link['TITLE']['variables'] = array('assignment_id' => 'ASSIGNMENT_ID');
-    $current_RET[$_REQUEST['student_id']] = DBGet(DBQuery('SELECT g.ASSIGNMENT_ID FROM gradebook_grades g,gradebook_assignments a WHERE a.ASSIGNMENT_ID=g.ASSIGNMENT_ID AND a.MARKING_PERIOD_ID=\'' . (GetCpDet($course_period_id, 'MARKING_PERIOD_ID') != '' ? UserMP() : GetMPId('FY')) . '\' AND g.STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND g.COURSE_PERIOD_ID=\'' . $course_period_id . '\'' . ($_REQUEST['assignment_id'] == 'all' ? '' : ' AND g.ASSIGNMENT_ID=\'' . $_REQUEST['assignment_id'] . '\'')), array(), array('ASSIGNMENT_ID'));
+    $current_RET[$_REQUEST['college_roll_no']] = DBGet(DBQuery('SELECT g.ASSIGNMENT_ID FROM gradebook_grades g,gradebook_assignments a WHERE a.ASSIGNMENT_ID=g.ASSIGNMENT_ID AND a.MARKING_PERIOD_ID=\'' . (GetCpDet($course_period_id, 'MARKING_PERIOD_ID') != '' ? UserMP() : GetMPId('FY')) . '\' AND g.COLLEGE_ROLL_NO=\'' . $_REQUEST['college_roll_no'] . '\' AND g.COURSE_PERIOD_ID=\'' . $course_period_id . '\'' . ($_REQUEST['assignment_id'] == 'all' ? '' : ' AND g.ASSIGNMENT_ID=\'' . $_REQUEST['assignment_id'] . '\'')), array(), array('ASSIGNMENT_ID'));
     if (count($assignments_RET)) {
         foreach ($assignments_RET as $id => $assignment)
             $total_points[$id] = $assignment[1]['POINTS'];
     }
     $count_assignments = count($assignments_RET);
     $extra['SELECT'] = ',ga.ASSIGNMENT_ID,gt.TITLE AS TYPE_TITLE,ga.TITLE,ga.POINTS AS TOTAL_POINTS,\'\' AS LETTER_GRADE,CASE WHEN (ga.ASSIGNED_DATE IS NULL OR CURRENT_DATE>=ga.ASSIGNED_DATE) AND (ga.DUE_DATE IS NULL OR CURRENT_DATE>=ga.DUE_DATE) THEN \'Y\' ELSE NULL END AS DUE';
-    $extra['SELECT'] .= ',(SELECT POINTS FROM gradebook_grades WHERE STUDENT_ID=s.STUDENT_ID AND ASSIGNMENT_ID=ga.ASSIGNMENT_ID AND COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID) AS POINTS';
-    $extra['SELECT'] .= ',(SELECT COMMENT FROM gradebook_grades WHERE STUDENT_ID=s.STUDENT_ID AND ASSIGNMENT_ID=ga.ASSIGNMENT_ID AND COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID) AS COMMENT';
+    $extra['SELECT'] .= ',(SELECT POINTS FROM gradebook_grades WHERE COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ASSIGNMENT_ID=ga.ASSIGNMENT_ID AND COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID) AS POINTS';
+    $extra['SELECT'] .= ',(SELECT COMMENT FROM gradebook_grades WHERE COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ASSIGNMENT_ID=ga.ASSIGNMENT_ID AND COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID) AS COMMENT';
     $extra['FROM'] = ',gradebook_assignments ga,gradebook_assignment_types gt';
     $extra['WHERE'] = 'AND (ga.due_date>=ssm.start_date OR ga.due_date IS NULL) AND ((ga.COURSE_ID=\'' . $course_id . '\' AND ga.STAFF_ID=\'' . User('STAFF_ID') . '\') OR ga.COURSE_PERIOD_ID=\'' . $course_period_id . '\') AND ga.MARKING_PERIOD_ID=\'' . (GetCpDet($course_period_id, 'MARKING_PERIOD_ID') != '' ? UserMP() : GetMPId('FY')) . '\' AND gt.ASSIGNMENT_TYPE_ID=ga.ASSIGNMENT_TYPE_ID' . ($_REQUEST['assignment_id'] == 'all' ? '' : ' AND ga.ASSIGNMENT_ID=\'' . $_REQUEST[assignment_id] . '\' ');
     $extra['ORDER_BY'] = Preferences('ASSIGNMENT_SORTING', 'Gradebook') . " DESC";
@@ -103,22 +103,22 @@ if (clean_param($_REQUEST['student_id'], PARAM_INT)) {
 } else {
     $LO_columns = array('FULL_NAME' => 'Student');
     if ($_REQUEST['assignment_id'] != 'all')
-        $LO_columns += array('STUDENT_ID' => 'Student ID');
+        $LO_columns += array('COLLEGE_ROLL_NO' => 'College Roll No');
     if ($_REQUEST['include_inactive'] == 'Y')
         $LO_columns += array('ACTIVE' => 'College Status', 'ACTIVE_SCHEDULE' => 'Course Status');
     $item = 'Student';
     $items = 'Students';
     $link['FULL_NAME']['link'] = "Modules.php?modname=$_REQUEST[modname]&include_inactive=$_REQUEST[include_inactive]&assignment_id=all" . ($_REQUEST['period'] != '' ? '&period=' . $_REQUEST['period'] : '');
-    $link['FULL_NAME']['variables'] = array('student_id' => 'STUDENT_ID');
-    if ($_SESSION['student_id']) {
-        unset($_SESSION['student_id']);
+    $link['FULL_NAME']['variables'] = array('college_roll_no' => 'COLLEGE_ROLL_NO');
+    if ($_SESSION['college_roll_no']) {
+        unset($_SESSION['college_roll_no']);
         //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
     }
     if (clean_param($_REQUEST['assignment_id'], PARAM_ALPHA) == 'all') {
 
-        $current_RET = DBGet(DBQuery('SELECT g.STUDENT_ID,g.ASSIGNMENT_ID,g.POINTS FROM gradebook_grades g,gradebook_assignments a WHERE a.ASSIGNMENT_ID=g.ASSIGNMENT_ID AND a.MARKING_PERIOD_ID=\'' . (GetCpDet($course_period_id, 'MARKING_PERIOD_ID') != '' ? UserMP() : GetMPId('FY')) . '\' AND g.COURSE_PERIOD_ID=\'' . $course_period_id . '\''), array(), array('STUDENT_ID', 'ASSIGNMENT_ID'));
+        $current_RET = DBGet(DBQuery('SELECT g.COLLEGE_ROLL_NO,g.ASSIGNMENT_ID,g.POINTS FROM gradebook_grades g,gradebook_assignments a WHERE a.ASSIGNMENT_ID=g.ASSIGNMENT_ID AND a.MARKING_PERIOD_ID=\'' . (GetCpDet($course_period_id, 'MARKING_PERIOD_ID') != '' ? UserMP() : GetMPId('FY')) . '\' AND g.COURSE_PERIOD_ID=\'' . $course_period_id . '\''), array(), array('COLLEGE_ROLL_NO', 'ASSIGNMENT_ID'));
 
-        $count_extra = array('SELECT_ONLY' => 'ssm.STUDENT_ID');
+        $count_extra = array('SELECT_ONLY' => 'ssm.COLLEGE_ROLL_NO');
         $count_students = GetStuList($count_extra);
         $count_students = count($count_students);
 
@@ -146,7 +146,7 @@ if (clean_param($_REQUEST['student_id'], PARAM_INT)) {
         $total_points[$id] = $total_points[1]['POINTS'];
 
 
-        $current_RET = DBGet(DBQuery('SELECT STUDENT_ID,POINTS,COMMENT,ASSIGNMENT_ID FROM gradebook_grades WHERE ASSIGNMENT_ID=\'' . $id . '\' AND COURSE_PERIOD_ID=\'' . $course_period_id . '\''), array(), array('STUDENT_ID', 'ASSIGNMENT_ID'));
+        $current_RET = DBGet(DBQuery('SELECT COLLEGE_ROLL_NO,POINTS,COMMENT,ASSIGNMENT_ID FROM gradebook_grades WHERE ASSIGNMENT_ID=\'' . $id . '\' AND COURSE_PERIOD_ID=\'' . $course_period_id . '\''), array(), array('COLLEGE_ROLL_NO', 'ASSIGNMENT_ID'));
     } else {
         if (count($assignments_RET)) {
              if ($programconfig[User('STAFF_ID')]['WEIGHT'] != 'Y') {
@@ -170,43 +170,43 @@ if (clean_param($_REQUEST['student_id'], PARAM_INT)) {
             // the "group by start_date" and "distinct on" are needed in case a student is enrolled more than once (re-enrolled)
             if ($programconfig[User('STAFF_ID')]['WEIGHT'] == 'Y') {
 
-                $points_RET = DBGet(DBQuery('SELECT DISTINCT s.STUDENT_ID, gt.ASSIGNMENT_TYPE_ID, 
+                $points_RET = DBGet(DBQuery('SELECT DISTINCT s.COLLEGE_ROLL_NO, gt.ASSIGNMENT_TYPE_ID, 
                                     sum(' . db_case(array('gg.POINTS', "'-1'", "'0'", 'gg.POINTS')) . ') AS PARTIAL_POINTS,
-                                        sum(' . db_case(array('gg.POINTS', '\'-1\' OR gg.POINTS IS NULL OR (ga.due_date <  (select DISTINCT ssm.start_date  from student_enrollment ssm where ssm.STUDENT_ID=s.STUDENT_ID AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.COLLEGE_ID=' . UserCollege() . ' AND (ssm.START_DATE IS NOT NULL AND (CURRENT_DATE<=ssm.END_DATE OR CURRENT_DATE>=ssm.END_DATE OR  ssm.END_DATE IS NULL)) order by ssm.start_date desc limit 1
-)  ) ', "'0'", 'ga.POINTS')) . ') AS PARTIAL_TOTAL, gt.FINAL_GRADE_PERCENT FROM students s JOIN schedule ss ON (ss.STUDENT_ID=s.STUDENT_ID AND ss.COURSE_PERIOD_ID=\'' . $course_period_id . '\') JOIN gradebook_assignments ga ON ((ga.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID OR ga.COURSE_ID=\'' . $course_id . '\' AND ga.STAFF_ID=\'' . User('STAFF_ID') . '\') AND ga.MARKING_PERIOD_ID=\'' . (GetCpDet($course_period_id, 'MARKING_PERIOD_ID') != '' ? UserMP() : GetMPId('FY')) . '\') LEFT OUTER JOIN gradebook_grades gg ON (gg.STUDENT_ID=s.STUDENT_ID AND gg.ASSIGNMENT_ID=ga.ASSIGNMENT_ID AND gg.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID)
+                                        sum(' . db_case(array('gg.POINTS', '\'-1\' OR gg.POINTS IS NULL OR (ga.due_date <  (select DISTINCT ssm.start_date  from student_enrollment ssm where ssm.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.COLLEGE_ID=' . UserCollege() . ' AND (ssm.START_DATE IS NOT NULL AND (CURRENT_DATE<=ssm.END_DATE OR CURRENT_DATE>=ssm.END_DATE OR  ssm.END_DATE IS NULL)) order by ssm.start_date desc limit 1
+)  ) ', "'0'", 'ga.POINTS')) . ') AS PARTIAL_TOTAL, gt.FINAL_GRADE_PERCENT FROM students s JOIN schedule ss ON (ss.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ss.COURSE_PERIOD_ID=\'' . $course_period_id . '\') JOIN gradebook_assignments ga ON ((ga.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID OR ga.COURSE_ID=\'' . $course_id . '\' AND ga.STAFF_ID=\'' . User('STAFF_ID') . '\') AND ga.MARKING_PERIOD_ID=\'' . (GetCpDet($course_period_id, 'MARKING_PERIOD_ID') != '' ? UserMP() : GetMPId('FY')) . '\') LEFT OUTER JOIN gradebook_grades gg ON (gg.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND gg.ASSIGNMENT_ID=ga.ASSIGNMENT_ID AND gg.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID)
                                      
-                                        ,gradebook_assignment_types gt WHERE gt.ASSIGNMENT_TYPE_ID=ga.ASSIGNMENT_TYPE_ID AND gt.COURSE_ID=\'' . $course_id . '\' AND ((ga.ASSIGNED_DATE IS NULL OR CURRENT_DATE>=ga.ASSIGNED_DATE) AND (ga.DUE_DATE IS NULL OR CURRENT_DATE>=ga.DUE_DATE) OR gg.POINTS IS NOT NULL) GROUP BY s.STUDENT_ID,ss.START_DATE,gt.ASSIGNMENT_TYPE_ID,gt.FINAL_GRADE_PERCENT'), array(), array('STUDENT_ID'));
+                                        ,gradebook_assignment_types gt WHERE gt.ASSIGNMENT_TYPE_ID=ga.ASSIGNMENT_TYPE_ID AND gt.COURSE_ID=\'' . $course_id . '\' AND ((ga.ASSIGNED_DATE IS NULL OR CURRENT_DATE>=ga.ASSIGNED_DATE) AND (ga.DUE_DATE IS NULL OR CURRENT_DATE>=ga.DUE_DATE) OR gg.POINTS IS NOT NULL) GROUP BY s.COLLEGE_ROLL_NO,ss.START_DATE,gt.ASSIGNMENT_TYPE_ID,gt.FINAL_GRADE_PERCENT'), array(), array('COLLEGE_ROLL_NO'));
             } else {
-                $points_RET = DBGet(DBQuery('SELECT DISTINCT s.STUDENT_ID,\'-1\' AS ASSIGNMENT_TYPE_ID, sum(' . db_case(array('gg.POINTS', "'-1'", "'0'", 'gg.POINTS')) . ') AS PARTIAL_POINTS,
-                                sum(' . db_case(array('gg.POINTS', '\'-1\' OR gg.POINTS IS NULL OR (ga.due_date < (select DISTINCT ssm.start_date  from student_enrollment ssm where ssm.STUDENT_ID=s.STUDENT_ID AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.COLLEGE_ID=' . UserCollege() . ' AND (ssm.START_DATE IS NOT NULL AND (CURRENT_DATE<=ssm.END_DATE OR CURRENT_DATE>=ssm.END_DATE OR  ssm.END_DATE IS NULL)) order by ssm.start_date desc limit 1) ) ', "'0'", 'ga.POINTS')) . ') AS PARTIAL_TOTAL,\'1\' AS FINAL_GRADE_PERCENT 
-                                    FROM students s JOIN schedule ss ON (ss.STUDENT_ID=s.STUDENT_ID AND ss.COURSE_PERIOD_ID=\'' . $course_period_id . '\') JOIN gradebook_assignments ga ON ((ga.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID OR ga.COURSE_ID=\'' . $course_id . '\' AND ga.STAFF_ID=\'' . User('STAFF_ID') . '\') AND ga.MARKING_PERIOD_ID=\'' . (GetCpDet($course_period_id, 'MARKING_PERIOD_ID') != '' ? UserMP() : GetMPId('FY')) . '\') LEFT OUTER JOIN gradebook_grades gg ON (gg.STUDENT_ID=s.STUDENT_ID AND gg.ASSIGNMENT_ID=ga.ASSIGNMENT_ID AND gg.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID)
-                                    WHERE ((ga.ASSIGNED_DATE IS NULL OR CURRENT_DATE>=ga.ASSIGNED_DATE) AND (ga.DUE_DATE IS NULL OR CURRENT_DATE>=ga.DUE_DATE) OR gg.POINTS IS NOT NULL) GROUP BY s.STUDENT_ID,ss.START_DATE'), array(), array('STUDENT_ID'));
+                $points_RET = DBGet(DBQuery('SELECT DISTINCT s.COLLEGE_ROLL_NO,\'-1\' AS ASSIGNMENT_TYPE_ID, sum(' . db_case(array('gg.POINTS', "'-1'", "'0'", 'gg.POINTS')) . ') AS PARTIAL_POINTS,
+                                sum(' . db_case(array('gg.POINTS', '\'-1\' OR gg.POINTS IS NULL OR (ga.due_date < (select DISTINCT ssm.start_date  from student_enrollment ssm where ssm.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ssm.SYEAR=\'' . UserSyear() . '\' AND ssm.COLLEGE_ID=' . UserCollege() . ' AND (ssm.START_DATE IS NOT NULL AND (CURRENT_DATE<=ssm.END_DATE OR CURRENT_DATE>=ssm.END_DATE OR  ssm.END_DATE IS NULL)) order by ssm.start_date desc limit 1) ) ', "'0'", 'ga.POINTS')) . ') AS PARTIAL_TOTAL,\'1\' AS FINAL_GRADE_PERCENT 
+                                    FROM students s JOIN schedule ss ON (ss.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND ss.COURSE_PERIOD_ID=\'' . $course_period_id . '\') JOIN gradebook_assignments ga ON ((ga.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID OR ga.COURSE_ID=\'' . $course_id . '\' AND ga.STAFF_ID=\'' . User('STAFF_ID') . '\') AND ga.MARKING_PERIOD_ID=\'' . (GetCpDet($course_period_id, 'MARKING_PERIOD_ID') != '' ? UserMP() : GetMPId('FY')) . '\') LEFT OUTER JOIN gradebook_grades gg ON (gg.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND gg.ASSIGNMENT_ID=ga.ASSIGNMENT_ID AND gg.COURSE_PERIOD_ID=ss.COURSE_PERIOD_ID)
+                                    WHERE ((ga.ASSIGNED_DATE IS NULL OR CURRENT_DATE>=ga.ASSIGNED_DATE) AND (ga.DUE_DATE IS NULL OR CURRENT_DATE>=ga.DUE_DATE) OR gg.POINTS IS NOT NULL) GROUP BY s.COLLEGE_ROLL_NO,ss.START_DATE'), array(), array('COLLEGE_ROLL_NO'));
             }
                         if($programconfig[User('STAFF_ID')]['WEIGHT']=='Y'){
                                 $course_periods = DBGet(DBQuery('select marking_period_id from course_periods where course_period_id='.UserCoursePeriod()));
                                 if($course_periods[1]['MARKING_PERIOD_ID']==NULL){
                                     $college_years = DBGet(DBQuery('select marking_period_id from  college_years where  syear='.UserSyear().' and college_id='.UserCollege()));
                                     $fy_mp_id = $college_years[1]['MARKING_PERIOD_ID'];
-				$sql = 'SELECT g.STUDENT_ID,a.TITLE,t.TITLE AS ASSIGN_TYP,a.ASSIGNED_DATE,a.DUE_DATE, t.ASSIGNMENT_TYPE_ID, t.FINAL_GRADE_PERCENT AS WEIGHT_GRADE  ,  t.FINAL_GRADE_PERCENT,t.FINAL_GRADE_PERCENT as ASSIGN_TYP_WG,g.POINTS,a.POINTS AS TOTAL_POINTS,g.COMMENT,g.POINTS AS LETTER_GRADE,g.POINTS AS LETTERWTD_GRADE,CASE WHEN (a.ASSIGNED_DATE IS NULL OR CURRENT_DATE>=a.ASSIGNED_DATE) AND (a.DUE_DATE IS NULL OR CURRENT_DATE>=a.DUE_DATE) THEN \'Y\' ELSE NULL END AS DUE FROM gradebook_assignment_types t,gradebook_assignments a LEFT OUTER JOIN gradebook_grades g ON (a.ASSIGNMENT_ID=g.ASSIGNMENT_ID  AND g.COURSE_PERIOD_ID=\''.UserCoursePeriod().'\') WHERE   a.ASSIGNMENT_TYPE_ID=t.ASSIGNMENT_TYPE_ID AND (a.COURSE_PERIOD_ID=\''.UserCoursePeriod().'\' OR a.COURSE_ID=\''.$course_id.'\' AND a.STAFF_ID=\''.User('STAFF_ID').'\') AND t.COURSE_ID=\''.$course_id.'\' AND (a.MARKING_PERIOD_ID=\''.UserMP().'\' OR a.MARKING_PERIOD_ID=\''.$fy_mp_id.'\')';
+				$sql = 'SELECT g.COLLEGE_ROLL_NO,a.TITLE,t.TITLE AS ASSIGN_TYP,a.ASSIGNED_DATE,a.DUE_DATE, t.ASSIGNMENT_TYPE_ID, t.FINAL_GRADE_PERCENT AS WEIGHT_GRADE  ,  t.FINAL_GRADE_PERCENT,t.FINAL_GRADE_PERCENT as ASSIGN_TYP_WG,g.POINTS,a.POINTS AS TOTAL_POINTS,g.COMMENT,g.POINTS AS LETTER_GRADE,g.POINTS AS LETTERWTD_GRADE,CASE WHEN (a.ASSIGNED_DATE IS NULL OR CURRENT_DATE>=a.ASSIGNED_DATE) AND (a.DUE_DATE IS NULL OR CURRENT_DATE>=a.DUE_DATE) THEN \'Y\' ELSE NULL END AS DUE FROM gradebook_assignment_types t,gradebook_assignments a LEFT OUTER JOIN gradebook_grades g ON (a.ASSIGNMENT_ID=g.ASSIGNMENT_ID  AND g.COURSE_PERIOD_ID=\''.UserCoursePeriod().'\') WHERE   a.ASSIGNMENT_TYPE_ID=t.ASSIGNMENT_TYPE_ID AND (a.COURSE_PERIOD_ID=\''.UserCoursePeriod().'\' OR a.COURSE_ID=\''.$course_id.'\' AND a.STAFF_ID=\''.User('STAFF_ID').'\') AND t.COURSE_ID=\''.$course_id.'\' AND (a.MARKING_PERIOD_ID=\''.UserMP().'\' OR a.MARKING_PERIOD_ID=\''.$fy_mp_id.'\')';
                             }
                             else{
-                                $sql = 'SELECT g.STUDENT_ID,a.TITLE,t.TITLE AS ASSIGN_TYP,a.ASSIGNED_DATE,a.DUE_DATE,  t.ASSIGNMENT_TYPE_ID,   t.FINAL_GRADE_PERCENT AS WEIGHT_GRADE  , t.FINAL_GRADE_PERCENT,t.FINAL_GRADE_PERCENT as ASSIGN_TYP_WG,g.POINTS,a.POINTS AS TOTAL_POINTS,g.COMMENT,g.POINTS AS LETTER_GRADE,g.POINTS AS LETTERWTD_GRADE,CASE WHEN (a.ASSIGNED_DATE IS NULL OR CURRENT_DATE>=a.ASSIGNED_DATE) AND (a.DUE_DATE IS NULL OR CURRENT_DATE>=a.DUE_DATE) THEN \'Y\' ELSE NULL END AS DUE FROM gradebook_assignment_types t,gradebook_assignments a LEFT OUTER JOIN gradebook_grades g ON (a.ASSIGNMENT_ID=g.ASSIGNMENT_ID  AND g.COURSE_PERIOD_ID=\''.UserCoursePeriod().'\') WHERE   a.ASSIGNMENT_TYPE_ID=t.ASSIGNMENT_TYPE_ID AND (a.COURSE_PERIOD_ID=\''.UserCoursePeriod().'\' OR a.COURSE_ID=\''.$course_id.'\' AND a.STAFF_ID=\''.User('STAFF_ID').'\') AND t.COURSE_ID=\''.$course_id.'\' AND a.MARKING_PERIOD_ID=\''.UserMP().'\'';
+                                $sql = 'SELECT g.COLLEGE_ROLL_NO,a.TITLE,t.TITLE AS ASSIGN_TYP,a.ASSIGNED_DATE,a.DUE_DATE,  t.ASSIGNMENT_TYPE_ID,   t.FINAL_GRADE_PERCENT AS WEIGHT_GRADE  , t.FINAL_GRADE_PERCENT,t.FINAL_GRADE_PERCENT as ASSIGN_TYP_WG,g.POINTS,a.POINTS AS TOTAL_POINTS,g.COMMENT,g.POINTS AS LETTER_GRADE,g.POINTS AS LETTERWTD_GRADE,CASE WHEN (a.ASSIGNED_DATE IS NULL OR CURRENT_DATE>=a.ASSIGNED_DATE) AND (a.DUE_DATE IS NULL OR CURRENT_DATE>=a.DUE_DATE) THEN \'Y\' ELSE NULL END AS DUE FROM gradebook_assignment_types t,gradebook_assignments a LEFT OUTER JOIN gradebook_grades g ON (a.ASSIGNMENT_ID=g.ASSIGNMENT_ID  AND g.COURSE_PERIOD_ID=\''.UserCoursePeriod().'\') WHERE   a.ASSIGNMENT_TYPE_ID=t.ASSIGNMENT_TYPE_ID AND (a.COURSE_PERIOD_ID=\''.UserCoursePeriod().'\' OR a.COURSE_ID=\''.$course_id.'\' AND a.STAFF_ID=\''.User('STAFF_ID').'\') AND t.COURSE_ID=\''.$course_id.'\' AND a.MARKING_PERIOD_ID=\''.UserMP().'\'';
                             }
                         }else{
                             $course_periods = DBGet(DBQuery('select marking_period_id from course_periods where course_period_id='.UserCoursePeriod()));
                                 if($course_periods[1]['MARKING_PERIOD_ID']==NULL){
                                     $college_years = DBGet(DBQuery('select marking_period_id from  college_years where  syear='.UserSyear().' and college_id='.UserCollege()));
                                     $fy_mp_id = $college_years[1]['MARKING_PERIOD_ID'];
-				$sql = 'SELECT g.STUDENT_ID,a.TITLE,t.TITLE AS ASSIGN_TYP,a.ASSIGNED_DATE,a.DUE_DATE,\'-1\' AS ASSIGNMENT_TYPE_ID,\'1\' AS FINAL_GRADE_PERCENT,\'N/A\' as WEIGHT_GRADE,\'N/A\' as ASSIGN_TYP_WG,g.POINTS,a.POINTS AS TOTAL_POINTS,g.COMMENT,g.POINTS AS LETTER_GRADE,g.POINTS AS LETTERWTD_GRADE,CASE WHEN (a.ASSIGNED_DATE IS NULL OR CURRENT_DATE>=a.ASSIGNED_DATE) AND (a.DUE_DATE IS NULL OR CURRENT_DATE>=a.DUE_DATE) THEN \'Y\' ELSE NULL END AS DUE FROM gradebook_assignment_types t,gradebook_assignments a LEFT OUTER JOIN gradebook_grades g ON (a.ASSIGNMENT_ID=g.ASSIGNMENT_ID  AND g.COURSE_PERIOD_ID=\''.UserCoursePeriod().'\') WHERE  a.ASSIGNMENT_TYPE_ID=t.ASSIGNMENT_TYPE_ID AND (a.COURSE_PERIOD_ID=\''.UserCoursePeriod().'\' OR a.COURSE_ID=\''.$course_id.'\' AND a.STAFF_ID=\''.User('STAFF_ID').'\')  AND t.COURSE_ID=\''.$course_id.'\' AND (a.MARKING_PERIOD_ID=\''.UserMP().'\' OR a.MARKING_PERIOD_ID=\''.$fy_mp_id.'\')';
+				$sql = 'SELECT g.COLLEGE_ROLL_NO,a.TITLE,t.TITLE AS ASSIGN_TYP,a.ASSIGNED_DATE,a.DUE_DATE,\'-1\' AS ASSIGNMENT_TYPE_ID,\'1\' AS FINAL_GRADE_PERCENT,\'N/A\' as WEIGHT_GRADE,\'N/A\' as ASSIGN_TYP_WG,g.POINTS,a.POINTS AS TOTAL_POINTS,g.COMMENT,g.POINTS AS LETTER_GRADE,g.POINTS AS LETTERWTD_GRADE,CASE WHEN (a.ASSIGNED_DATE IS NULL OR CURRENT_DATE>=a.ASSIGNED_DATE) AND (a.DUE_DATE IS NULL OR CURRENT_DATE>=a.DUE_DATE) THEN \'Y\' ELSE NULL END AS DUE FROM gradebook_assignment_types t,gradebook_assignments a LEFT OUTER JOIN gradebook_grades g ON (a.ASSIGNMENT_ID=g.ASSIGNMENT_ID  AND g.COURSE_PERIOD_ID=\''.UserCoursePeriod().'\') WHERE  a.ASSIGNMENT_TYPE_ID=t.ASSIGNMENT_TYPE_ID AND (a.COURSE_PERIOD_ID=\''.UserCoursePeriod().'\' OR a.COURSE_ID=\''.$course_id.'\' AND a.STAFF_ID=\''.User('STAFF_ID').'\')  AND t.COURSE_ID=\''.$course_id.'\' AND (a.MARKING_PERIOD_ID=\''.UserMP().'\' OR a.MARKING_PERIOD_ID=\''.$fy_mp_id.'\')';
                             }
                             else{
-                                $sql = 'SELECT g.STUDENT_ID,a.TITLE,t.TITLE AS ASSIGN_TYP,a.ASSIGNED_DATE,a.DUE_DATE,\'-1\' AS ASSIGNMENT_TYPE_ID,\'1\' AS FINAL_GRADE_PERCENT,\'N/A\' as WEIGHT_GRADE,\'N/A\' as ASSIGN_TYP_WG,g.POINTS,a.POINTS AS TOTAL_POINTS,g.COMMENT,g.POINTS AS LETTER_GRADE,g.POINTS AS LETTERWTD_GRADE,CASE WHEN (a.ASSIGNED_DATE IS NULL OR CURRENT_DATE>=a.ASSIGNED_DATE) AND (a.DUE_DATE IS NULL OR CURRENT_DATE>=a.DUE_DATE) THEN \'Y\' ELSE NULL END AS DUE FROM gradebook_assignment_types t,gradebook_assignments a LEFT OUTER JOIN gradebook_grades g ON (a.ASSIGNMENT_ID=g.ASSIGNMENT_ID  AND g.COURSE_PERIOD_ID=\''.UserCoursePeriod().'\') WHERE  a.ASSIGNMENT_TYPE_ID=t.ASSIGNMENT_TYPE_ID AND (a.COURSE_PERIOD_ID=\''.UserCoursePeriod().'\' OR a.COURSE_ID=\''.$course_id.'\' AND a.STAFF_ID=\''.User('STAFF_ID').'\')  AND t.COURSE_ID=\''.$course_id.'\' AND a.MARKING_PERIOD_ID=\''.UserMP().'\'';
+                                $sql = 'SELECT g.COLLEGE_ROLL_NO,a.TITLE,t.TITLE AS ASSIGN_TYP,a.ASSIGNED_DATE,a.DUE_DATE,\'-1\' AS ASSIGNMENT_TYPE_ID,\'1\' AS FINAL_GRADE_PERCENT,\'N/A\' as WEIGHT_GRADE,\'N/A\' as ASSIGN_TYP_WG,g.POINTS,a.POINTS AS TOTAL_POINTS,g.COMMENT,g.POINTS AS LETTER_GRADE,g.POINTS AS LETTERWTD_GRADE,CASE WHEN (a.ASSIGNED_DATE IS NULL OR CURRENT_DATE>=a.ASSIGNED_DATE) AND (a.DUE_DATE IS NULL OR CURRENT_DATE>=a.DUE_DATE) THEN \'Y\' ELSE NULL END AS DUE FROM gradebook_assignment_types t,gradebook_assignments a LEFT OUTER JOIN gradebook_grades g ON (a.ASSIGNMENT_ID=g.ASSIGNMENT_ID  AND g.COURSE_PERIOD_ID=\''.UserCoursePeriod().'\') WHERE  a.ASSIGNMENT_TYPE_ID=t.ASSIGNMENT_TYPE_ID AND (a.COURSE_PERIOD_ID=\''.UserCoursePeriod().'\' OR a.COURSE_ID=\''.$course_id.'\' AND a.STAFF_ID=\''.User('STAFF_ID').'\')  AND t.COURSE_ID=\''.$course_id.'\' AND a.MARKING_PERIOD_ID=\''.UserMP().'\'';
                             }
 				
                         }
                         $sql .= ' AND (a.POINTS!=\'0\' OR g.POINTS IS NOT NULL AND g.POINTS!=\'-1\')';
                         $sql .=' ORDER BY a.ASSIGNMENT_ID';
-                        $current_RET = DBGet(DBQuery($sql),array( 'ASSIGN_TYP_WG' => '_makeAssnWG',  'LETTER_GRADE' => '_makeExtra', ),array('STUDENT_ID'));
+                        $current_RET = DBGet(DBQuery($sql),array( 'ASSIGN_TYP_WG' => '_makeAssnWG',  'LETTER_GRADE' => '_makeExtra', ),array('COLLEGE_ROLL_NO'));
 //                        print_r($current_RET);
             foreach ($assignments_RET as $id => $assignment)
                 $total_points[$id] = $assignment[1]['POINTS'];
@@ -214,7 +214,7 @@ if (clean_param($_REQUEST['student_id'], PARAM_INT)) {
     }
 }
 if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQUEST['ajax']) && $_SESSION['assignment_id'] == clean_param($_REQUEST['assignment_id'], PARAM_INT)) {
-    foreach ($_REQUEST['values'] as $student_id => $assignments) {
+    foreach ($_REQUEST['values'] as $college_roll_no => $assignments) {
         foreach ($assignments as $assignment_id => $columns) {
             if ($columns['POINTS']) {
                 if ($columns['POINTS'] == '*')
@@ -232,7 +232,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                 }
             }
             $sql = '';
-            if ($current_RET[$student_id][$assignment_id]) {
+            if ($current_RET[$college_roll_no][$assignment_id]) {
                 $sql = "UPDATE gradebook_grades SET ";
                 foreach ($columns as $column => $value) {
                     if ($column == 'COMMENT')
@@ -247,55 +247,55 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                     $sql .= $column . "='" . $value . " ',";
                 }
 
-                $sql = substr($sql, 0, -1) . " WHERE STUDENT_ID='$student_id' AND ASSIGNMENT_ID='$assignment_id' AND COURSE_PERIOD_ID='$course_period_id'";
+                $sql = substr($sql, 0, -1) . " WHERE COLLEGE_ROLL_NO='$college_roll_no' AND ASSIGNMENT_ID='$assignment_id' AND COURSE_PERIOD_ID='$course_period_id'";
             } elseif ($columns['POINTS'] != '' || $columns['COMMENT']) {
                 $columns['COMMENT'] = singleQuoteReplace("", "", $columns['COMMENT']);
-                $sql = 'INSERT INTO gradebook_grades (STUDENT_ID,PERIOD_ID,COURSE_PERIOD_ID,ASSIGNMENT_ID,POINTS,COMMENT) values(\'' . clean_param($student_id, PARAM_INT) . '\',\'' . clean_param(UserPeriod(), PARAM_INT) . '\',\'' . clean_param($course_period_id, PARAM_INT) . '\',\'' . clean_param($assignment_id, PARAM_INT) . '\',\'' . $columns['POINTS'] . '\',\'' . clean_param($columns['COMMENT'], PARAM_NOTAGS) . '\')';
+                $sql = 'INSERT INTO gradebook_grades (COLLEGE_ROLL_NO,PERIOD_ID,COURSE_PERIOD_ID,ASSIGNMENT_ID,POINTS,COMMENT) values(\'' . clean_param($college_roll_no, PARAM_INT) . '\',\'' . clean_param(UserPeriod(), PARAM_INT) . '\',\'' . clean_param($course_period_id, PARAM_INT) . '\',\'' . clean_param($assignment_id, PARAM_INT) . '\',\'' . $columns['POINTS'] . '\',\'' . clean_param($columns['COMMENT'], PARAM_NOTAGS) . '\')';
             }
             if ($sql) {
                 DBQuery($sql);
                 
                 if(isset($columns['POINTS']) && $columns['POINTS']=='')
-                DBQuery("UPDATE gradebook_grades SET points=null WHERE STUDENT_ID='$student_id' AND ASSIGNMENT_ID='$assignment_id' AND COURSE_PERIOD_ID='$course_period_id'");
+                DBQuery("UPDATE gradebook_grades SET points=null WHERE COLLEGE_ROLL_NO='$college_roll_no' AND ASSIGNMENT_ID='$assignment_id' AND COURSE_PERIOD_ID='$course_period_id'");
 
                 DBQuery('UPDATE gradebook_assignments SET UNGRADED=2 WHERE ASSIGNMENT_ID IN (SELECT ASSIGNMENT_ID FROM gradebook_grades WHERE POINTS IS NULL OR POINTS=\'\') OR ASSIGNMENT_ID NOT IN (SELECT ASSIGNMENT_ID FROM gradebook_grades WHERE POINTS IS NOT NULL OR POINTS!=\'\')');
             }
         }
     }
-    if ($_REQUEST['student_id'])
-        $current_RET[$_REQUEST['student_id']] = DBGet(DBQuery('SELECT g.ASSIGNMENT_ID FROM gradebook_grades g,gradebook_assignments a WHERE a.ASSIGNMENT_ID=g.ASSIGNMENT_ID AND a.MARKING_PERIOD_ID=\'' . (GetCpDet($course_period_id, 'MARKING_PERIOD_ID') != '' ? UserMP() : GetMPId('FY')) . '\' AND g.STUDENT_ID=\'' . $_REQUEST[student_id] . '\' AND g.COURSE_PERIOD_ID=\'' . $course_period_id . '\'' . ($_REQUEST['assignment_id'] == 'all' ? '' : ' AND g.ASSIGNMENT_ID=\'' . $_REQUEST[assignment_id] . '\'')), array(), array('ASSIGNMENT_ID'));
+    if ($_REQUEST['college_roll_no'])
+        $current_RET[$_REQUEST['college_roll_no']] = DBGet(DBQuery('SELECT g.ASSIGNMENT_ID FROM gradebook_grades g,gradebook_assignments a WHERE a.ASSIGNMENT_ID=g.ASSIGNMENT_ID AND a.MARKING_PERIOD_ID=\'' . (GetCpDet($course_period_id, 'MARKING_PERIOD_ID') != '' ? UserMP() : GetMPId('FY')) . '\' AND g.COLLEGE_ROLL_NO=\'' . $_REQUEST[college_roll_no] . '\' AND g.COURSE_PERIOD_ID=\'' . $course_period_id . '\'' . ($_REQUEST['assignment_id'] == 'all' ? '' : ' AND g.ASSIGNMENT_ID=\'' . $_REQUEST[assignment_id] . '\'')), array(), array('ASSIGNMENT_ID'));
     elseif ($_REQUEST['assignment_id'] == 'all')
-        $current_RET = DBGet(DBQuery('SELECT g.STUDENT_ID,g.ASSIGNMENT_ID,g.POINTS FROM gradebook_grades g,gradebook_assignments a WHERE a.ASSIGNMENT_ID=g.ASSIGNMENT_ID AND a.MARKING_PERIOD_ID=\'' . (GetCpDet($course_period_id, 'MARKING_PERIOD_ID') != '' ? UserMP() : GetMPId('FY')) . '\' AND g.COURSE_PERIOD_ID=\'' . $course_period_id . '\''), array(), array('STUDENT_ID', 'ASSIGNMENT_ID'));
+        $current_RET = DBGet(DBQuery('SELECT g.COLLEGE_ROLL_NO,g.ASSIGNMENT_ID,g.POINTS FROM gradebook_grades g,gradebook_assignments a WHERE a.ASSIGNMENT_ID=g.ASSIGNMENT_ID AND a.MARKING_PERIOD_ID=\'' . (GetCpDet($course_period_id, 'MARKING_PERIOD_ID') != '' ? UserMP() : GetMPId('FY')) . '\' AND g.COURSE_PERIOD_ID=\'' . $course_period_id . '\''), array(), array('COLLEGE_ROLL_NO', 'ASSIGNMENT_ID'));
     else
-        $current_RET = DBGet(DBQuery('SELECT STUDENT_ID,POINTS,COMMENT,ASSIGNMENT_ID FROM gradebook_grades WHERE ASSIGNMENT_ID=\'' . $_REQUEST[assignment_id] . '\' AND COURSE_PERIOD_ID=\'' . $course_period_id . '\''), array(), array('STUDENT_ID', 'ASSIGNMENT_ID'));
+        $current_RET = DBGet(DBQuery('SELECT COLLEGE_ROLL_NO,POINTS,COMMENT,ASSIGNMENT_ID FROM gradebook_grades WHERE ASSIGNMENT_ID=\'' . $_REQUEST[assignment_id] . '\' AND COURSE_PERIOD_ID=\'' . $course_period_id . '\''), array(), array('COLLEGE_ROLL_NO', 'ASSIGNMENT_ID'));
 
     unset($_REQUEST['values']);
     unset($_SESSION['_REQUEST_vars']['values']);
 }
 $_SESSION['assignment_id'] = $_REQUEST['assignment_id'];
-$extra['GROUP'] = 's.STUDENT_ID';
+$extra['GROUP'] = 's.COLLEGE_ROLL_NO';
 $stu_RET = GetStuList($extra);
-$assignment_select = '<SELECT name=assignment_id class="form-control" onchange="document.location.href=\'Modules.php?modname=' . $_REQUEST['modname'] . '&include_inactive=' . $_REQUEST['include_inactive'] . '&cpv_id=' . CpvId() . '&assignment_id=\'+this.options[selectedIndex].value"><OPTION value="">Totals</OPTION><OPTION value="all"' . (($_REQUEST['assignment_id'] == 'all' && !$_REQUEST['student_id']) ? ' SELECTED' : '') . '>All</OPTION>';
-if ($_REQUEST['student_id'])
+$assignment_select = '<SELECT name=assignment_id class="form-control" onchange="document.location.href=\'Modules.php?modname=' . $_REQUEST['modname'] . '&include_inactive=' . $_REQUEST['include_inactive'] . '&cpv_id=' . CpvId() . '&assignment_id=\'+this.options[selectedIndex].value"><OPTION value="">Totals</OPTION><OPTION value="all"' . (($_REQUEST['assignment_id'] == 'all' && !$_REQUEST['college_roll_no']) ? ' SELECTED' : '') . '>All</OPTION>';
+if ($_REQUEST['college_roll_no'])
     $assignment_select .= '<OPTION value=' . $_REQUEST['assignment_id'] . ' SELECTED>' . $stu_RET[1]['FULL_NAME'] . '</OPTION>';
 foreach ($assignments_RET as $id => $assignment)
-    $assignment_select .= '<OPTION value=' . $id . (($_REQUEST['assignment_id'] == $id && !$_REQUEST['student_id']) ? ' SELECTED' : '') . '>' . $assignment[1]['TYPE_TITLE'] . ' - ' . $assignment[1]['TITLE'] . '</OPTION>';
+    $assignment_select .= '<OPTION value=' . $id . (($_REQUEST['assignment_id'] == $id && !$_REQUEST['college_roll_no']) ? ' SELECTED' : '') . '>' . $assignment[1]['TYPE_TITLE'] . ' - ' . $assignment[1]['TITLE'] . '</OPTION>';
 $assignment_select .= '</SELECT>';
 
-echo "<FORM action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&student_id=" . strip_tags(trim($_REQUEST[student_id])) . "&cpv_id=" . CpvId() . " method=POST>";
+echo "<FORM action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&college_roll_no=" . strip_tags(trim($_REQUEST[college_roll_no])) . "&cpv_id=" . CpvId() . " method=POST>";
 $tmp_REQUEST = $_REQUEST;
 unset($tmp_REQUEST['include_inactive']);
 
-if (count($stu_RET) == 0 && !$_REQUEST['student_id'])
+if (count($stu_RET) == 0 && !$_REQUEST['college_roll_no'])
     echo '<div class="form-group"><div class="form-inline">' . $assignment_select . ' &nbsp; <label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '><span></span>Include Inactive Students</label></div></div>';
 else {
-    if (!$_REQUEST['student_id']) {
+    if (!$_REQUEST['college_roll_no']) {
         echo '<div class="form-group"><div class="form-inline">' . $assignment_select . ' &nbsp; &nbsp; <label class="checkbox checkbox-inline checkbox-switch switch-success switch-xs"><INPUT type=checkbox name=include_inactive value=Y' . ($_REQUEST['include_inactive'] == 'Y' ? " CHECKED onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=\";'" : " onclick='document.location.href=\"" . PreparePHP_SELF($tmp_REQUEST) . "&include_inactive=Y\";'") . '><span></span>Include Inactive Students</label> &nbsp; ' . ($_REQUEST['assignment_id'] ? SubmitButton('Save', '', 'class="btn btn-primary"') : '') . '</div></div>';
     } else {
         echo '<div class="form-group"><div class="form-inline">' . $assignment_select . ' &nbsp; ' . ($_REQUEST['assignment_id'] ? SubmitButton('Save', '', 'class="btn btn-primary"') : '') . '</div></div>';
     }
 }
-if (!$_REQUEST['student_id'] && $_REQUEST['assignment_id'] == 'all')
+if (!$_REQUEST['college_roll_no'] && $_REQUEST['assignment_id'] == 'all')
     $options = array('yscroll' => true);
 
 echo '<hr class="no-margin-bottom"/>';
@@ -354,10 +354,10 @@ function _makeExtraAssnCols($assignment_id, $column) {
         case 'POINTS':
             $tabindex++;
 
-            if ($assignment_id == '' && !$_REQUEST['student_id']) {
-                if (count($points_RET[$THIS_RET['STUDENT_ID']])) {
+            if ($assignment_id == '' && !$_REQUEST['college_roll_no']) {
+                if (count($points_RET[$THIS_RET['COLLEGE_ROLL_NO']])) {
                     $total = $total_points = 0;
-                    foreach ($points_RET[$THIS_RET['STUDENT_ID']] as $partial_points)
+                    foreach ($points_RET[$THIS_RET['COLLEGE_ROLL_NO']] as $partial_points)
                         if ($partial_points['PARTIAL_TOTAL'] != 0) {
                             $total += $partial_points['PARTIAL_POINTS'];
                             $total_points += $partial_points['PARTIAL_TOTAL'];
@@ -368,25 +368,25 @@ function _makeExtraAssnCols($assignment_id, $column) {
                 return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR><TD>' . $total . '</TD><TD>&nbsp;/&nbsp;</TD><TD>' . $total_points . '</TD></TR></TABLE>';
             }
             else {
-                if ($current_RET[$THIS_RET['STUDENT_ID']][$assignment_id][1]['POINTS'] == '-1')
+                if ($current_RET[$THIS_RET['COLLEGE_ROLL_NO']][$assignment_id][1]['POINTS'] == '-1')
                     $points = '*';
-                elseif (strpos($current_RET[$THIS_RET['STUDENT_ID']][$assignment_id][1]['POINTS'], '.'))
-                    $points = rtrim(rtrim($current_RET[$THIS_RET['STUDENT_ID']][$assignment_id][1]['POINTS'], '0'), '.');
+                elseif (strpos($current_RET[$THIS_RET['COLLEGE_ROLL_NO']][$assignment_id][1]['POINTS'], '.'))
+                    $points = rtrim(rtrim($current_RET[$THIS_RET['COLLEGE_ROLL_NO']][$assignment_id][1]['POINTS'], '0'), '.');
                 else
-                    $points = $current_RET[$THIS_RET['STUDENT_ID']][$assignment_id][1]['POINTS'];
+                    $points = $current_RET[$THIS_RET['COLLEGE_ROLL_NO']][$assignment_id][1]['POINTS'];
 
-                return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR><TD>' . TextInput($points, 'values[' . $THIS_RET['STUDENT_ID'] . '][' . $assignment_id . '][POINTS]', '', ' size=2 maxlength=7 tabindex=' . $tabindex) . '</TD><TD>&nbsp;/&nbsp;</TD><TD>' . $total_points[$assignment_id] . '</TD></TR></TABLE>';
+                return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR><TD>' . TextInput($points, 'values[' . $THIS_RET['COLLEGE_ROLL_NO'] . '][' . $assignment_id . '][POINTS]', '', ' size=2 maxlength=7 tabindex=' . $tabindex) . '</TD><TD>&nbsp;/&nbsp;</TD><TD>' . $total_points[$assignment_id] . '</TD></TR></TABLE>';
             }
             break;
         case 'LETTER_GRADE':
-            if ($assignment_id == '' && !$_REQUEST['student_id']) {
-                if (count($points_RET[$THIS_RET['STUDENT_ID']])) {
+            if ($assignment_id == '' && !$_REQUEST['college_roll_no']) {
+                if (count($points_RET[$THIS_RET['COLLEGE_ROLL_NO']])) {
 
 
 
 
                     $total = $total_percent = 0;
-                    foreach ($points_RET[$THIS_RET['STUDENT_ID']] as $partial_points)
+                    foreach ($points_RET[$THIS_RET['COLLEGE_ROLL_NO']] as $partial_points)
                         if ($partial_points['PARTIAL_TOTAL'] != 0) {
                             $total += $partial_points['PARTIAL_POINTS'];
                             $total_percent += $partial_points['PARTIAL_TOTAL'];
@@ -397,13 +397,13 @@ function _makeExtraAssnCols($assignment_id, $column) {
                     $total = 0;
 
                 $ppercent = _makeLetterGrade($total, "", User('STAFF_ID'), "%");
-                if ($points_RET[$THIS_RET['STUDENT_ID']][1]['PARTIAL_POINTS'] != '')
+                if ($points_RET[$THIS_RET['COLLEGE_ROLL_NO']][1]['PARTIAL_POINTS'] != '')
                     return ($total > $max_allowed ? '<FONT color=red>' : '') . $ppercent . ($total > $max_allowed ? '</FONT>' : '') . '% &nbsp;<B>' . _makeLetterGrade($total, "", User('STAFF_ID')) . '</B>';
                 else
                     return 'Not Graded';
             }
             else {
-                $points = $current_RET[$THIS_RET['STUDENT_ID']][$assignment_id][1]['POINTS'];
+                $points = $current_RET[$THIS_RET['COLLEGE_ROLL_NO']][$assignment_id][1]['POINTS'];
                 if ($_SESSION['ROUNDING'] == 'UP')
                     $points_m = ceil($points);
                 elseif ($_SESSION['ROUNDING'] == 'DOWN')
@@ -440,7 +440,7 @@ function _makeExtraAssnCols($assignment_id, $column) {
             }
             break;
         case 'COMMENT':
-            return TextInput($current_RET[$THIS_RET['STUDENT_ID']][$assignment_id][1]['COMMENT'], 'values[' . $THIS_RET['STUDENT_ID'] . '][' . $assignment_id . '][COMMENT]', '', '  size=11 maxlength=100 tabindex=' . (500 + $tabindex));
+            return TextInput($current_RET[$THIS_RET['COLLEGE_ROLL_NO']][$assignment_id][1]['COMMENT'], 'values[' . $THIS_RET['COLLEGE_ROLL_NO'] . '][' . $assignment_id . '][COMMENT]', '', '  size=11 maxlength=100 tabindex=' . (500 + $tabindex));
             break;
     }
 }
@@ -455,7 +455,7 @@ function _makeExtraStuCols($value, $column) {
                 $value = '*';
             elseif (strpos($value, '.'))
                 $value = rtrim(rtrim($value, '0'), '.');
-            return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR><TD>' . TextInput($value, 'values[' . $THIS_RET['STUDENT_ID'] . '][' . $THIS_RET['ASSIGNMENT_ID'] . '][POINTS]', '', ' size=2 maxlength=7 tabindex=' . $tabindex) . '</TD><TD>&nbsp;/&nbsp;</TD><TD>' . $THIS_RET['TOTAL_POINTS'] . '</TD></TR></TABLE>';
+            return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR><TD>' . TextInput($value, 'values[' . $THIS_RET['COLLEGE_ROLL_NO'] . '][' . $THIS_RET['ASSIGNMENT_ID'] . '][POINTS]', '', ' size=2 maxlength=7 tabindex=' . $tabindex) . '</TD><TD>&nbsp;/&nbsp;</TD><TD>' . $THIS_RET['TOTAL_POINTS'] . '</TD></TR></TABLE>';
             break;
         case 'LETTER_GRADE':
 
@@ -473,13 +473,13 @@ function _makeExtraStuCols($value, $column) {
             break;
         case 'COMMENT':
             $tabindex += $count_assignments;
-            return TextInput($value, 'values[' . $THIS_RET['STUDENT_ID'] . '][' . $THIS_RET['ASSIGNMENT_ID'] . '][COMMENT]', '', ' size=11 maxlength=100 tabindex=' . $tabindex);
+            return TextInput($value, 'values[' . $THIS_RET['COLLEGE_ROLL_NO'] . '][' . $THIS_RET['ASSIGNMENT_ID'] . '][COMMENT]', '', ' size=11 maxlength=100 tabindex=' . $tabindex);
             break;
     }
 }
 
 function _makeExtraCols($assignment_id, $column) {
-    global $THIS_RET, $total_points, $current_RET, $old_student_id, $student_count, $tabindex, $count_students, $max_allowed;
+    global $THIS_RET, $total_points, $current_RET, $old_college_roll_no, $student_count, $tabindex, $count_students, $max_allowed;
 
     $rounding = DBGet(DBQuery('SELECT VALUE FROM program_user_config WHERE USER_ID=\'' . User('STAFF_ID') . '\' AND TITLE=\'ROUNDING\' AND PROGRAM=\'Gradebook\' '));
 
@@ -490,18 +490,18 @@ function _makeExtraCols($assignment_id, $column) {
     else
         $days_left = floor((strtotime($THIS_RET['DUE_' . $assignment_id], 0) - strtotime($THIS_RET['START_DATE'], 0)) / 86400);
     if ($days_left >= 1) {
-        if ($THIS_RET['STUDENT_ID'] != $old_student_id) {
+        if ($THIS_RET['COLLEGE_ROLL_NO'] != $old_college_roll_no) {
             $student_count++;
             $tabindex = $student_count;
-            $old_student_id = $THIS_RET['STUDENT_ID'];
+            $old_college_roll_no = $THIS_RET['COLLEGE_ROLL_NO'];
         } else
             $tabindex += $count_students;
-        if ($current_RET[$THIS_RET['STUDENT_ID']][$assignment_id][1]['POINTS'] == '-1')
+        if ($current_RET[$THIS_RET['COLLEGE_ROLL_NO']][$assignment_id][1]['POINTS'] == '-1')
             $points = '*';
-        elseif (strpos($current_RET[$THIS_RET['STUDENT_ID']][$assignment_id][1]['POINTS'], '.'))
-            $points = rtrim(rtrim($current_RET[$THIS_RET['STUDENT_ID']][$assignment_id][1]['POINTS'], '0'), '.');
+        elseif (strpos($current_RET[$THIS_RET['COLLEGE_ROLL_NO']][$assignment_id][1]['POINTS'], '.'))
+            $points = rtrim(rtrim($current_RET[$THIS_RET['COLLEGE_ROLL_NO']][$assignment_id][1]['POINTS'], '0'), '.');
         else
-            $points = $current_RET[$THIS_RET['STUDENT_ID']][$assignment_id][1]['POINTS'];
+            $points = $current_RET[$THIS_RET['COLLEGE_ROLL_NO']][$assignment_id][1]['POINTS'];
 
         if ($_SESSION['ROUNDING'] == 'UP')
             $points_m = ceil($points);
@@ -527,17 +527,17 @@ function _makeExtraCols($assignment_id, $column) {
                         $points_r = round($points_r, 0);
                     } else
                         $points_r = round($points_r, 2);
-//                    return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR align=center><TD>' . TextInput($points, 'values[' . $THIS_RET['STUDENT_ID'] . '][' . $assignment_id . '][POINTS]', '', ' size=2 maxlength=7 tabindex=' . $tabindex) . '<HR>' . $total_points[$assignment_id] . '</TD><TD>&nbsp;' . ($THIS_RET['D' . $assignment_id] || $points != '' ? ($points > $total_points[$assignment_id] * $max_allowed ? '<FONT color=red>' : '') : '<FONT color=gray>') . ($points_r) . '%' . ($THIS_RET['D' . $assignment_id] || $points != '' ? ($points > $total_points[$assignment_id] * $max_allowed ? '</FONT>' : '') : '') . '<BR>&nbsp;<B>' . _makeLetterGrade(($points_m / $tot_point)) . '</B>' . ($THIS_RET['D' . $assignment_id] || $points != '' ? '' : '</FONT>') . '</TD></TR></TABLE>';
-                    return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR align=center><TD>' . TextInput($points, 'values[' . $THIS_RET['STUDENT_ID'] . '][' . $assignment_id . '][POINTS]', '', ' size=2 maxlength=7 tabindex=' . $tabindex) . $total_points[$assignment_id] . '</TD><TD>&nbsp;' . ($THIS_RET['D' . $assignment_id] || $points != '' ? ($points > $total_points[$assignment_id] * $max_allowed ? '<FONT color=red>' : '') : '<FONT color=gray>') . ($points_r) . '%' . ($THIS_RET['D' . $assignment_id] || $points != '' ? ($points > $total_points[$assignment_id] * $max_allowed ? '</FONT>' : '') : '') . '<BR>&nbsp;<B>' . _makeLetterGrade(($points_m / $tot_point)) . '</B>' . ($THIS_RET['D' . $assignment_id] || $points != '' ? '' : '</FONT>') . '</TD></TR></TABLE>';
+//                    return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR align=center><TD>' . TextInput($points, 'values[' . $THIS_RET['COLLEGE_ROLL_NO'] . '][' . $assignment_id . '][POINTS]', '', ' size=2 maxlength=7 tabindex=' . $tabindex) . '<HR>' . $total_points[$assignment_id] . '</TD><TD>&nbsp;' . ($THIS_RET['D' . $assignment_id] || $points != '' ? ($points > $total_points[$assignment_id] * $max_allowed ? '<FONT color=red>' : '') : '<FONT color=gray>') . ($points_r) . '%' . ($THIS_RET['D' . $assignment_id] || $points != '' ? ($points > $total_points[$assignment_id] * $max_allowed ? '</FONT>' : '') : '') . '<BR>&nbsp;<B>' . _makeLetterGrade(($points_m / $tot_point)) . '</B>' . ($THIS_RET['D' . $assignment_id] || $points != '' ? '' : '</FONT>') . '</TD></TR></TABLE>';
+                    return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR align=center><TD>' . TextInput($points, 'values[' . $THIS_RET['COLLEGE_ROLL_NO'] . '][' . $assignment_id . '][POINTS]', '', ' size=2 maxlength=7 tabindex=' . $tabindex) . $total_points[$assignment_id] . '</TD><TD>&nbsp;' . ($THIS_RET['D' . $assignment_id] || $points != '' ? ($points > $total_points[$assignment_id] * $max_allowed ? '<FONT color=red>' : '') : '<FONT color=gray>') . ($points_r) . '%' . ($THIS_RET['D' . $assignment_id] || $points != '' ? ($points > $total_points[$assignment_id] * $max_allowed ? '</FONT>' : '') : '') . '<BR>&nbsp;<B>' . _makeLetterGrade(($points_m / $tot_point)) . '</B>' . ($THIS_RET['D' . $assignment_id] || $points != '' ? '' : '</FONT>') . '</TD></TR></TABLE>';
                 } else
-//                    return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR align=center><TD>' . TextInput($points, 'values[' . $THIS_RET['STUDENT_ID'] . '][' . $assignment_id . '][POINTS]', '', ' size=2 maxlength=7 tabindex=' . $tabindex) . '<HR>' . $total_points[$assignment_id] . '</TD><TD>&nbsp;' . ($THIS_RET['D' . $assignment_id] || $points != '' ? ($points > $total_points[$assignment_id] * $max_allowed ? '<FONT color=red>' : '') : '<FONT color=gray>') . '&nbsp;&nbsp;Not Graded</TD></TR></TABLE>';
-                    return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR align=center><TD>' . TextInput($points, 'values[' . $THIS_RET['STUDENT_ID'] . '][' . $assignment_id . '][POINTS]', '', ' size=2 maxlength=7 tabindex=' . $tabindex) . $total_points[$assignment_id] . '</TD><TD>&nbsp;' . ($THIS_RET['D' . $assignment_id] || $points != '' ? ($points > $total_points[$assignment_id] * $max_allowed ? '<FONT color=red>' : '') : '<FONT color=gray>') . '&nbsp;&nbsp;Not Graded</TD></TR></TABLE>';
+//                    return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR align=center><TD>' . TextInput($points, 'values[' . $THIS_RET['COLLEGE_ROLL_NO'] . '][' . $assignment_id . '][POINTS]', '', ' size=2 maxlength=7 tabindex=' . $tabindex) . '<HR>' . $total_points[$assignment_id] . '</TD><TD>&nbsp;' . ($THIS_RET['D' . $assignment_id] || $points != '' ? ($points > $total_points[$assignment_id] * $max_allowed ? '<FONT color=red>' : '') : '<FONT color=gray>') . '&nbsp;&nbsp;Not Graded</TD></TR></TABLE>';
+                    return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR align=center><TD>' . TextInput($points, 'values[' . $THIS_RET['COLLEGE_ROLL_NO'] . '][' . $assignment_id . '][POINTS]', '', ' size=2 maxlength=7 tabindex=' . $tabindex) . $total_points[$assignment_id] . '</TD><TD>&nbsp;' . ($THIS_RET['D' . $assignment_id] || $points != '' ? ($points > $total_points[$assignment_id] * $max_allowed ? '<FONT color=red>' : '') : '<FONT color=gray>') . '&nbsp;&nbsp;Not Graded</TD></TR></TABLE>';
             } else
-//                return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR align=center><TD>' . TextInput($points, 'values[' . $THIS_RET['STUDENT_ID'] . '][' . $assignment_id . '][POINTS]', '', ' size=2 maxlength=7 tabindex=' . $tabindex) . '<HR>' . $total_points[$assignment_id] . '</TD><TD>&nbsp;N/A<BR>&nbsp;N/A</TD></TR></TABLE>';
-                 return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR align=center><TD>' . TextInput($points, 'values[' . $THIS_RET['STUDENT_ID'] . '][' . $assignment_id . '][POINTS]', '', ' size=2 maxlength=7 tabindex=' . $tabindex) . $total_points[$assignment_id] . '</TD><TD>&nbsp;N/A<BR>&nbsp;N/A</TD></TR></TABLE>';
+//                return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR align=center><TD>' . TextInput($points, 'values[' . $THIS_RET['COLLEGE_ROLL_NO'] . '][' . $assignment_id . '][POINTS]', '', ' size=2 maxlength=7 tabindex=' . $tabindex) . '<HR>' . $total_points[$assignment_id] . '</TD><TD>&nbsp;N/A<BR>&nbsp;N/A</TD></TR></TABLE>';
+                 return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR align=center><TD>' . TextInput($points, 'values[' . $THIS_RET['COLLEGE_ROLL_NO'] . '][' . $assignment_id . '][POINTS]', '', ' size=2 maxlength=7 tabindex=' . $tabindex) . $total_points[$assignment_id] . '</TD><TD>&nbsp;N/A<BR>&nbsp;N/A</TD></TR></TABLE>';
         } else
-//            return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR align=center><TD>' . TextInput($points, 'values[' . $THIS_RET['STUDENT_ID'] . '][' . $assignment_id . '][POINTS]', '', ' size=2 maxlength=7 tabindex=' . $tabindex) . '<HR>' . $total_points[$assignment_id] . '</TD><TD>&nbsp;E/C</TD></TR></TABLE>';
-            return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR align=center><TD>' . TextInput($points, 'values[' . $THIS_RET['STUDENT_ID'] . '][' . $assignment_id . '][POINTS]', '', ' size=2 maxlength=7 tabindex=' . $tabindex) .  $total_points[$assignment_id] . '</TD><TD>&nbsp;E/C</TD></TR></TABLE>';
+//            return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR align=center><TD>' . TextInput($points, 'values[' . $THIS_RET['COLLEGE_ROLL_NO'] . '][' . $assignment_id . '][POINTS]', '', ' size=2 maxlength=7 tabindex=' . $tabindex) . '<HR>' . $total_points[$assignment_id] . '</TD><TD>&nbsp;E/C</TD></TR></TABLE>';
+            return '<TABLE border=0 cellspacing=0 cellpadding=0 class=LO_field><TR align=center><TD>' . TextInput($points, 'values[' . $THIS_RET['COLLEGE_ROLL_NO'] . '][' . $assignment_id . '][POINTS]', '', ' size=2 maxlength=7 tabindex=' . $tabindex) .  $total_points[$assignment_id] . '</TD><TD>&nbsp;E/C</TD></TR></TABLE>';
     }
     return 'N/A';
 }
@@ -546,10 +546,10 @@ function _makeWtg($assignment_id,$column)
 {	
         global $THIS_RET,$total_points,$current_RET,$points_RET,$tabindex,$max_allowed; 
        
-        if(clean_param($_REQUEST['assignment_id'],PARAM_INT)=='' && substr($_REQUEST['assignment_id'],0,1)!='t' && !$_REQUEST['student_id'])
+        if(clean_param($_REQUEST['assignment_id'],PARAM_INT)=='' && substr($_REQUEST['assignment_id'],0,1)!='t' && !$_REQUEST['college_roll_no'])
 			{
 
-				if(count($current_RET[$THIS_RET['STUDENT_ID']]))
+				if(count($current_RET[$THIS_RET['COLLEGE_ROLL_NO']]))
 				{
                                             $total = $total_percent = 0;
                                             $assign_typ_wg=array();
@@ -557,11 +557,11 @@ function _makeWtg($assignment_id,$column)
                                             $tot_weighted_percent=array();
                                             $assignment_type_count=array();
                                            
-                                            foreach($current_RET[$THIS_RET['STUDENT_ID']] as $partial_points)
+                                            foreach($current_RET[$THIS_RET['COLLEGE_ROLL_NO']] as $partial_points)
                                             {
                                                 
                                                
-                                               $THIS_RET['STUDENT_ID']['flag']=0;
+                                               $THIS_RET['COLLEGE_ROLL_NO']['flag']=0;
                                                     if( $partial_points['LETTERWTD_GRADE']!=-1.00 && $partial_points['LETTERWTD_GRADE']!='')
                                                     {
                                                         $wper = explode('%', $partial_points['LETTER_GRADE']);
@@ -580,7 +580,7 @@ function _makeWtg($assignment_id,$column)
 //                                                            $total += (($partial_points['PARTIAL_POINTS']/$partial_points['PARTIAL_TOTAL']))*$partial_points['FINAL_GRADE_PERCENT'];
                                                             //$total_percent += $partial_points['PARTIAL_TOTAL'];
                                                       
-                                                      $THIS_RET['STUDENT_ID']['flag']=1;
+                                                      $THIS_RET['COLLEGE_ROLL_NO']['flag']=1;
                                                     }
                                             }
                                                     
@@ -611,27 +611,27 @@ function _makeWtg($assignment_id,$column)
 				else
 					$total = 0;
                                 $tot_weight_grade = ($tot_weight_grade / $total_weightage) * 100;
-                               // return (($current_RET[$THIS_RET['STUDENT_ID']][1]['LETTERWTD_GRADE']!=-1.00 && $current_RET[$THIS_RET['STUDENT_ID']][1]['LETTERWTD_GRADE']!='' && $current_RET[$THIS_RET['STUDENT_ID']][1]['ASSIGN_TYP_WG']!='N/A') ?_makeLetterGrade($tot_weight_grade,"",User('STAFF_ID'),'%').'% <B>'._makeLetterGrade($tot_weight_grade,"",User('STAFF_ID'),'').'</B>':'N/A');
-                               return (($THIS_RET['STUDENT_ID']['flag']==1) ?_makeLetterGrade($tot_weight_grade,"",User('STAFF_ID'),'%').'% <B>'._makeLetterGrade($tot_weight_grade,"",User('STAFF_ID'),'').'</B>':'N/A');
+                               // return (($current_RET[$THIS_RET['COLLEGE_ROLL_NO']][1]['LETTERWTD_GRADE']!=-1.00 && $current_RET[$THIS_RET['COLLEGE_ROLL_NO']][1]['LETTERWTD_GRADE']!='' && $current_RET[$THIS_RET['COLLEGE_ROLL_NO']][1]['ASSIGN_TYP_WG']!='N/A') ?_makeLetterGrade($tot_weight_grade,"",User('STAFF_ID'),'%').'% <B>'._makeLetterGrade($tot_weight_grade,"",User('STAFF_ID'),'').'</B>':'N/A');
+                               return (($THIS_RET['COLLEGE_ROLL_NO']['flag']==1) ?_makeLetterGrade($tot_weight_grade,"",User('STAFF_ID'),'%').'% <B>'._makeLetterGrade($tot_weight_grade,"",User('STAFF_ID'),'').'</B>':'N/A');
 //                                $ppercent= _makeLetterGrade($total,"",User('STAFF_ID'),"%");
-//                                if($points_RET[$THIS_RET['STUDENT_ID']][1]['PARTIAL_POINTS']!='')
+//                                if($points_RET[$THIS_RET['COLLEGE_ROLL_NO']][1]['PARTIAL_POINTS']!='')
 //                                    return ($total>$max_allowed?'<FONT color=red>':'').$ppercent.($total>$max_allowed?'</FONT>':'').'% &nbsp;<B>'._makeLetterGrade($total,"",User('STAFF_ID')).'</B>';
 //                                else
 //					return 'Not Graded';
 			}
-			else if(clean_param($_REQUEST['assignment_id'],PARAM_INT)!='' && substr($_REQUEST['assignment_id'],0,1)!='t' && !$_REQUEST['student_id'])
+			else if(clean_param($_REQUEST['assignment_id'],PARAM_INT)!='' && substr($_REQUEST['assignment_id'],0,1)!='t' && !$_REQUEST['college_roll_no'])
 			{
-				$points = $points_RET[$THIS_RET['STUDENT_ID']][1]['POINTS'];                                
+				$points = $points_RET[$THIS_RET['COLLEGE_ROLL_NO']][1]['POINTS'];                                
 					if($points!='-1')
                                         {
                                             if($points!='')
                                             {
-                                                foreach($points_RET[$THIS_RET['STUDENT_ID']] as $partial_points)
+                                                foreach($points_RET[$THIS_RET['COLLEGE_ROLL_NO']] as $partial_points)
                                                     if($partial_points['TOTAL_POINTS']!=0 && $partial_points['POINTS']!=-1.00 && $partial_points['POINTS']!='')
                                                     {
                                                         $pnt=(($partial_points['POINTS']/$partial_points['TOTAL_POINTS'])*100)*$partial_points['FINAL_GRADE_PERCENT'];
                                                         $pnt=$pnt/100;
-                                                        return (($points_RET[$THIS_RET['STUDENT_ID']][1]['LETTERWTD_GRADE']!=-1.00 && $points_RET[$THIS_RET['STUDENT_ID']][1]['LETTERWTD_GRADE']!='' && $points_RET[$THIS_RET['STUDENT_ID']][1]['ASSIGN_TYP_WG']!='N/A') ?_makeLetterGrade($pnt,"",User('STAFF_ID'),'%').'% <B>'._makeLetterGrade($pnt,"",User('STAFF_ID'),'').'</B>':'N/A');
+                                                        return (($points_RET[$THIS_RET['COLLEGE_ROLL_NO']][1]['LETTERWTD_GRADE']!=-1.00 && $points_RET[$THIS_RET['COLLEGE_ROLL_NO']][1]['LETTERWTD_GRADE']!='' && $points_RET[$THIS_RET['COLLEGE_ROLL_NO']][1]['ASSIGN_TYP_WG']!='N/A') ?_makeLetterGrade($pnt,"",User('STAFF_ID'),'%').'% <B>'._makeLetterGrade($pnt,"",User('STAFF_ID'),'').'</B>':'N/A');
 //                                                
                                                     }
                                                     else

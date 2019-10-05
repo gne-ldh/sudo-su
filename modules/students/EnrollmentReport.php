@@ -41,17 +41,17 @@ if($_REQUEST['modfunc']=='save')
 	if(count($_REQUEST['st_arr']))
 	{	
 	$st_list = '\''.implode('\',\'',$_REQUEST['st_arr']).'\'';
-        $RET=DBGet(DBQuery('SELECT CONCAT(s.LAST_NAME,\''.', ' .'\',coalesce(s.COMMON_NAME,s.FIRST_NAME)) AS FULL_NAME,s.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.STUDENT_ID,s.PHONE,ssm.COLLEGE_ID,s.ALT_ID,ssm.COLLEGE_ID AS LIST_COLLEGE_ID,ssm.GRADE_ID,ssm.START_DATE,ssm.END_DATE,
+        $RET=DBGet(DBQuery('SELECT CONCAT(s.LAST_NAME,\''.', ' .'\',coalesce(s.COMMON_NAME,s.FIRST_NAME)) AS FULL_NAME,s.LAST_NAME,s.FIRST_NAME,s.MIDDLE_NAME,s.COLLEGE_ROLL_NO,s.PHONE,ssm.COLLEGE_ID,s.ALT_ID,ssm.COLLEGE_ID AS LIST_COLLEGE_ID,ssm.GRADE_ID,ssm.START_DATE,ssm.END_DATE,
                 (SELECT sec.title FROM  student_enrollment_codes sec where ssm.enrollment_code=sec.id)AS ENROLLMENT_CODE,
                 (SELECT sec.title FROM  student_enrollment_codes sec where ssm.drop_code=sec.id) AS DROP_CODE,ssm.COLLEGE_ID 
                 FROM  students s , student_enrollment ssm
-                WHERE ssm.STUDENT_ID=s.STUDENT_ID AND s.STUDENT_ID IN ('.$st_list.')  
-                ORDER BY FULL_NAME ASC,START_DATE DESC'),array('START_DATE'=>'ProperDate','END_DATE'=>'ProperDate','COLLEGE_ID'=>'GetCollege','GRADE_ID'=>'GetGrade'),array('STUDENT_ID'));
+                WHERE ssm.COLLEGE_ROLL_NO=s.COLLEGE_ROLL_NO AND s.COLLEGE_ROLL_NO IN ('.$st_list.')  
+                ORDER BY FULL_NAME ASC,START_DATE DESC'),array('START_DATE'=>'ProperDate','END_DATE'=>'ProperDate','COLLEGE_ID'=>'GetCollege','GRADE_ID'=>'GetGrade'),array('COLLEGE_ROLL_NO'));
         if(count($RET))
 	{
             $columns = array('START_DATE'=>'Start Date','ENROLLMENT_CODE'=>'Enrollment Code','END_DATE'=>'Drop Date','DROP_CODE'=>'Drop Code','COLLEGE_ID'=>'College Name');
 		$handle = PDFStart();
-		foreach($RET as $student_id=>$value)
+		foreach($RET as $college_roll_no=>$value)
 		{
 			echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
 			echo "<tr><td width=105>".DrawLogo()."</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">". GetCollege(UserCollege()).' ('.$cur_session.')'."<div style=\"font-size:12px;\">Student Enrollment Report</div></td><td align=right style=\"padding-top:20px\">". ProperDate(DBDate()) ."<br \>Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
@@ -73,12 +73,12 @@ if($_REQUEST['modfunc']=='save')
 				echo '<table border=0>';
 				echo '<tr><td>Student Name :</td>';
 				echo '<td>'.$enrollment['FULL_NAME'].'</td></tr>';
-				echo '<tr><td>Student ID :</td>';
-				echo '<td>'.$student_id.'</td></tr>';
+				echo '<tr><td>College Roll No :</td>';
+				echo '<td>'.$college_roll_no.'</td></tr>';
                                 echo '<tr><td>Alternate ID :</td>';
 				echo '<td>'.$enrollment['ALT_ID'].'</td></tr>';
 				echo '<tr><td>Student Grade :</td>';
-                                $grade=DBGet(DBQuery('SELECT GRADE_ID FROM student_enrollment WHERE SYEAR='.UserSyear().' AND COLLEGE_ID='.UserCollege().' AND STUDENT_ID='.$student_id.' AND (END_DATE>=\''.date('Y-m-d').'\' OR END_DATE IS NULL OR END_DATE=\'0000-00-00\')  '),array('GRADE_ID'=>'GetGrade'));
+                                $grade=DBGet(DBQuery('SELECT GRADE_ID FROM student_enrollment WHERE SYEAR='.UserSyear().' AND COLLEGE_ID='.UserCollege().' AND COLLEGE_ROLL_NO='.$college_roll_no.' AND (END_DATE>=\''.date('Y-m-d').'\' OR END_DATE IS NULL OR END_DATE=\'0000-00-00\')  '),array('GRADE_ID'=>'GetGrade'));
 				echo '<td>'.$grade[1]['GRADE_ID'].'</td></tr>';
 				echo '</table>';
                             
@@ -104,7 +104,7 @@ if(!$_REQUEST['modfunc'])
 	}
 
 	$extra['link'] = array('FULL_NAME'=>false);
-	$extra['SELECT'] = ",s.STUDENT_ID AS CHECKBOX";
+	$extra['SELECT'] = ",s.COLLEGE_ROLL_NO AS CHECKBOX";
 	$extra['functions'] = array('CHECKBOX'=>'_makeChooseCheckbox');
 	// $extra['columns_before'] = array('CHECKBOX'=>'</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'unused\');"><A>');
 	$extra['columns_before'] = array('CHECKBOX'=>'</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'st_arr\');"><A>');
@@ -112,7 +112,7 @@ if(!$_REQUEST['modfunc'])
 	$extra['new'] = true;
 	
 
-	Search('student_id',$extra,'true');
+	Search('college_roll_no',$extra,'true');
 	if($_REQUEST['search_modfunc']=='list')
 	{
 		if($_SESSION['count_stu']!=0)
@@ -125,11 +125,11 @@ function _makeChooseCheckbox($value,$title)
 {
 //	return '<INPUT type=checkbox name=st_arr[] value='.$value.' checked>';
     //     global $THIS_RET;
-    // return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
+    // return "<input name=unused[$THIS_RET[COLLEGE_ROLL_NO]] value=" . $THIS_RET[COLLEGE_ROLL_NO] . "  type='checkbox' id=$THIS_RET[COLLEGE_ROLL_NO] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[COLLEGE_ROLL_NO]);' />";
 	global $THIS_RET;
 	//	return '<INPUT type=checkbox name=st_arr[] value='.$value.' checked>';
 			
-			return "<input  class=fd name=unused_var[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . " type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[$THIS_RET[STUDENT_ID]]\",this,$THIS_RET[STUDENT_ID]);' />";
+			return "<input  class=fd name=unused_var[$THIS_RET[COLLEGE_ROLL_NO]] value=" . $THIS_RET[COLLEGE_ROLL_NO] . " type='checkbox' id=$THIS_RET[COLLEGE_ROLL_NO] onClick='setHiddenCheckboxStudents(\"st_arr[$THIS_RET[COLLEGE_ROLL_NO]]\",this,$THIS_RET[COLLEGE_ROLL_NO]);' />";
 		
 }
 

@@ -61,9 +61,9 @@
 						$student_bmonth = '12';
    $student_birthday =trim($student_byear).'-'.  trim($student_bmonth).'-'.  trim($student_bday);
 if(trim($student_mname)=='')
-$chechk_stu = 'SELECT s.student_id AS ID FROM students s,student_enrollment se WHERE s.student_id=se.student_id AND lcase(s.last_name)="'.strtolower($student_lname).'" AND lcase(s.first_name)="'.strtolower($student_fname).'" AND (lcase(s.middle_name)="" OR lcase(s.middle_name) IS NULL ) AND s.birthdate="'.$student_birthday.'"  AND se.syear="'.$_SESSION['UserSyear'].'" AND se.college_id="'.$_SESSION['UserCollege'].'" ';
+$chechk_stu = 'SELECT s.college_roll_no AS ID FROM students s,student_enrollment se WHERE s.college_roll_no=se.college_roll_no AND lcase(s.last_name)="'.strtolower($student_lname).'" AND lcase(s.first_name)="'.strtolower($student_fname).'" AND (lcase(s.middle_name)="" OR lcase(s.middle_name) IS NULL ) AND s.birthdate="'.$student_birthday.'"  AND se.syear="'.$_SESSION['UserSyear'].'" AND se.college_id="'.$_SESSION['UserCollege'].'" ';
 else   
-$chechk_stu = 'SELECT s.student_id AS ID FROM students s,student_enrollment se WHERE s.student_id=se.student_id AND lcase(s.last_name)="'.strtolower($student_lname).'" AND lcase(s.first_name)="'.strtolower($student_fname).'" AND lcase(s.middle_name)="'.strtolower($student_mname).'" AND s.birthdate="'.$student_birthday.'"  AND se.syear="'.$_SESSION['UserSyear'].'" AND se.college_id="'.$_SESSION['UserCollege'].'"  ';
+$chechk_stu = 'SELECT s.college_roll_no AS ID FROM students s,student_enrollment se WHERE s.college_roll_no=se.college_roll_no AND lcase(s.last_name)="'.strtolower($student_lname).'" AND lcase(s.first_name)="'.strtolower($student_fname).'" AND lcase(s.middle_name)="'.strtolower($student_mname).'" AND s.birthdate="'.$student_birthday.'"  AND se.syear="'.$_SESSION['UserSyear'].'" AND se.college_id="'.$_SESSION['UserCollege'].'"  ';
 $chechk_stu_result = DBGet(DBQuery($chechk_stu));
 $prev_student = count($chechk_stu_result);
   echo $prev_student;  

@@ -1921,7 +1921,7 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
             $checked = 'CHECKED';
             $new = true;
         }
-
+	     
         echo '<div class="panel panel-default">';
         if (isset($_SESSION['block_schedule_err']) && $_SESSION['block_schedule_err'] != '') {
             if ($_SESSION['block_schedule_err'] != 1)

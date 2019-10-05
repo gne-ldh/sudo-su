@@ -220,7 +220,7 @@ function DuplicateStudent($title, $action = 'delete') {
     if (!$_REQUEST['delete_ok'] && !$_REQUEST['delete_cancel']) {
         echo '<BR>';
         PopTable('header', 'Confirm ' . (strpos($action, ' ') === false ? ucwords($action) : $action));
-        echo "<CENTER><h4>Duplicate student found. There is already a student with the same information. Do you want to proceed?</h4><br><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST><INPUT type=submit class=\"btn btn-danger\" value=OK>&nbsp;<INPUT type=button class=\"btn btn-primary\" name=delete_cancel value=Cancel onclick='load_link(\"Modules.php?modname=$_REQUEST[modname]&stu_id=$_REQUEST[student_id]&include_a=$_REQUEST[include]\");'></FORM></CENTER>";
+        echo "<CENTER><h4>Duplicate student found. There is already a student with the same information. Do you want to proceed?</h4><br><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST><INPUT type=submit class=\"btn btn-danger\" value=OK>&nbsp;<INPUT type=button class=\"btn btn-primary\" name=delete_cancel value=Cancel onclick='load_link(\"Modules.php?modname=$_REQUEST[modname]&stu_id=$_REQUEST[college_roll_no]&include_a=$_REQUEST[include]\");'></FORM></CENTER>";
         PopTable('footer');
         return false;
     } else
@@ -238,7 +238,7 @@ function DuplicateFile($title, $target_path) {
     if (!$_REQUEST['delete_ok'] && !$_REQUEST['delete_cancel']) {
         echo '<BR>';
         PopTable('header', 'Confirm ' . (strpos($action, ' ') === false ? ucwords($action) : $action));
-        echo "<CENTER><h4>Duplicate file found. There is already a file with the same name. Do you want to proceed?</h4><br><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST><INPUT type=button class=\"btn btn-danger\" value=OK onclick='load_link(\"Modules.php?modname=students/Student.php&include=FilesInc&category_id=7&stu_id=$_REQUEST[student_id]\");'>&nbsp;<INPUT type=button class=\"btn btn-primary\" name=delete_cancel value=Cancel onclick='load_link(\"Modules.php?modname=students/Student.php&include=FilesInc&category_id=7&delete_msg=yes&target_path=$target_path&stu_id=$_REQUEST[student_id]\");'></FORM></CENTER>";
+        echo "<CENTER><h4>Duplicate file found. There is already a file with the same name. Do you want to proceed?</h4><br><FORM action=$PHP_tmp_SELF&delete_ok=1 METHOD=POST><INPUT type=button class=\"btn btn-danger\" value=OK onclick='load_link(\"Modules.php?modname=students/Student.php&include=FilesInc&category_id=7&stu_id=$_REQUEST[college_roll_no]\");'>&nbsp;<INPUT type=button class=\"btn btn-primary\" name=delete_cancel value=Cancel onclick='load_link(\"Modules.php?modname=students/Student.php&include=FilesInc&category_id=7&delete_msg=yes&target_path=$target_path&stu_id=$_REQUEST[college_roll_no]\");'></FORM></CENTER>";
         PopTable('footer');
         return false;
     } else

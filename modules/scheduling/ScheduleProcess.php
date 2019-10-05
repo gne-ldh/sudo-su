@@ -30,7 +30,7 @@ include('../../Warehouse.php');
 DBQuery("CREATE TABLE IF NOT EXISTS temp_schedule AS SELECT * FROM schedule WHERE 0");
 $course_period_id=$_REQUEST['cp_id'];
 $insert=$_REQUEST['insert'];
-$student_start_date=DBGet(DBQuery('SELECT START_DATE FROM student_enrollment WHERE student_id='.UserStudentID().' AND COLLEGE_ID='.  UserCollege().' AND SYEAR='.UserSyear()));
+$student_start_date=DBGet(DBQuery('SELECT START_DATE FROM student_enrollment WHERE college_roll_no='.UserStudentID().' AND COLLEGE_ID='.  UserCollege().' AND SYEAR='.UserSyear()));
 $student_start_date=$student_start_date[1]['START_DATE'];
 $get_cp_date=DBGet(DBQuery('SELECT BEGIN_DATE FROM course_periods WHERE course_period_id='.$course_period_id));
 if(strtotime($date)<strtotime($get_cp_date[1]['BEGIN_DATE']))
@@ -44,7 +44,7 @@ if($insert=='true')
     if($varified===true)
     {
         $course[MP]=($course[MARKING_PERIOD_ID]!=''?$course[MP]:'FY');
-        $qr=DBGet(DBQuery('SELECT END_DATE FROM student_enrollment WHERE STUDENT_ID ='.UserStudentID().' AND COLLEGE_ID='.UserCollege().' AND SYEAR='.  UserSyear().''));;
+        $qr=DBGet(DBQuery('SELECT END_DATE FROM student_enrollment WHERE COLLEGE_ROLL_NO ='.UserStudentID().' AND COLLEGE_ID='.UserCollege().' AND SYEAR='.  UserSyear().''));;
        if($qr[1]['END_DATE']=='')
        {
         if($course[MARKING_PERIOD_ID]!='')
@@ -76,7 +76,7 @@ if($insert=='true')
  else
      $mark_end_date=date('d-M-Y',strtotime($mark_end_qry[1]['END_DATE' ]));
        }
-        DBQuery("INSERT INTO temp_schedule(SYEAR,COLLEGE_ID,STUDENT_ID,START_DATE,END_DATE,MODIFIED_BY,COURSE_ID,COURSE_PERIOD_ID,MP,MARKING_PERIOD_ID) values('".UserSyear()."','".UserCollege()."','".UserStudentID()."','".$date."','".$mark_end_date."','".User('STAFF_ID')."','$course[COURSE_ID]','".$course_period_id."','$course[MP]','$course[MARKING_PERIOD_ID]')");
+        DBQuery("INSERT INTO temp_schedule(SYEAR,COLLEGE_ID,COLLEGE_ROLL_NO,START_DATE,END_DATE,MODIFIED_BY,COURSE_ID,COURSE_PERIOD_ID,MP,MARKING_PERIOD_ID) values('".UserSyear()."','".UserCollege()."','".UserStudentID()."','".$date."','".$mark_end_date."','".User('STAFF_ID')."','$course[COURSE_ID]','".$course_period_id."','$course[MP]','$course[MARKING_PERIOD_ID]')");
       $html=$course_period_id."||".$course['CP_TITLE'].'||resp';
        // $html = 'resp';
         $html .= '<label class="checkbox-inline checkbox-switch switch-success switch-xs" id="selected_course_tr_'.$course["COURSE_PERIOD_ID"].'"><INPUT type="checkbox" id="selected_course_'.$course["COURSE_PERIOD_ID"].'" name="selected_course_periods[]" checked="checked" value="'.$course["COURSE_PERIOD_ID"].'"><span></span>'.$course["CP_TITLE"].'</label>';
