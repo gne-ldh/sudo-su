@@ -32,6 +32,10 @@ So since OpenSIS and FormTools are two seperate applications, to use them togeth
 1. After completing the installation of OpenSIS, find the link to install and later use Formtools in Students->Admission where you will find the link with the name "Create Admission Form".
 1. Follow the installation steps. Give the global read permission to upload and cache folders (if they show 'Fail' in fist step) using `chmod -R 777`.
 1. When you are asked for database name and database username, fill the same values as used when installing OpenSIS. The database name may be `opensis` since its default. Also leave the database prefix as default, i.e `ft_`. We are trying to keep all data in the same databse here and to stick to the defaults.
- 
- 
-For Proper Documentation go to the wiki page of this repository [sudo-su_wiki_page](https://github.com/gne-ldh/sudo-su/wiki)
+
+# Deployment
+
+This application can be used in two ways:
+
+1. Progressive Web App: You can deploy it on your server and then use it as a webapp in any web browser.
+1. Sandstrom: This application can also be packaged for and deployed on the Sandstrom app.
