@@ -26,7 +26,7 @@
 #
 #***************************************************************************************
 session_start();
-	if(!$_SESSION['STAFF_ID'] && !$_SESSION['STUDENT_ID'] && strpos($_SERVER['PHP_SELF'],'index.php')===false)
+	if(!$_SESSION['STAFF_ID'] && !$_SESSION['COLLEGE_ROLL_NO'] && strpos($_SERVER['PHP_SELF'],'index.php')===false)
 	{
 		header('Location: ../../../index.php');
 		exit;

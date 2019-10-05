@@ -60,7 +60,7 @@ function GetUserColleges($staff_id,$str=false)
       }
       else if (User('PROFILE_ID')==4 || User('PROFILE')=='parent')
       {
-          $colleges=DBGet(DBQuery('SELECT COLLEGE_ID FROM student_enrollment WHERE STUDENT_ID='.UserStudentID().' AND SYEAR='.UserSyear().' ORDER BY ID DESC LIMIT 0,1'));
+          $colleges=DBGet(DBQuery('SELECT COLLEGE_ID FROM student_enrollment WHERE COLLEGE_ROLL_NO='.UserStudentID().' AND SYEAR='.UserSyear().' ORDER BY ID DESC LIMIT 0,1'));
           return $colleges[1]['COLLEGE_ID'];
       }
 }

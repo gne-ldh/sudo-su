@@ -34,7 +34,7 @@ $sql = 'SELECT
                                 UNIX_TIMESTAMP(s.START_DATE) AS START_EPOCH,UNIX_TIMESTAMP(s.END_DATE) AS END_EPOCH,sp.PERIOD_ID,
                                 cpv.PERIOD_ID,s.MARKING_PERIOD_ID as COURSE_MARKING_PERIOD_ID,cp.MARKING_PERIOD_ID as mpa_id,cp.MP,sp.SORT_ORDER,
                                 c.TITLE,cp.COURSE_PERIOD_ID AS PERIOD_PULLDOWN,
-                                s.STUDENT_ID,r.TITLE AS ROOM,(SELECT GROUP_CONCAT(cpv.DAYS) FROM course_period_var cpv WHERE cpv.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID) as DAYS,SCHEDULER_LOCK,CONCAT(st.LAST_NAME, \'' . ' ' . '\' ,st.FIRST_NAME) AS MODIFIED_NAME
+                                s.COLLEGE_ROLL_NO,r.TITLE AS ROOM,(SELECT GROUP_CONCAT(cpv.DAYS) FROM course_period_var cpv WHERE cpv.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID) as DAYS,SCHEDULER_LOCK,CONCAT(st.LAST_NAME, \'' . ' ' . '\' ,st.FIRST_NAME) AS MODIFIED_NAME
                                 FROM courses c,course_periods cp,course_period_var cpv,rooms r,college_periods sp,schedule s
                                 LEFT JOIN staff st ON s.MODIFIED_BY = st.STAFF_ID
                                 WHERE
@@ -62,7 +62,7 @@ $sql = 'SELECT
 function _makeAction($value) {
     global $THIS_RET;
     $i = UserStudentId();
-    $rem = "<center><a href=Modules.php?modname=scheduling/Schedule.php&student_id=$i&del=true&c_id=$value&cp_id=$THIS_RET[COURSE_PERIOD_ID]&schedule_id=$THIS_RET[SCHEDULE_ID] class=\"btn btn-danger btn-xs btn-icon\"><i class=\"fa fa-times\"></i></a></center>";
+    $rem = "<center><a href=Modules.php?modname=scheduling/Schedule.php&college_roll_no=$i&del=true&c_id=$value&cp_id=$THIS_RET[COURSE_PERIOD_ID]&schedule_id=$THIS_RET[SCHEDULE_ID] class=\"btn btn-danger btn-xs btn-icon\"><i class=\"fa fa-times\"></i></a></center>";
     return $rem;
 }
 
@@ -166,8 +166,8 @@ function _makeMPSelect_red($mp_id, $name = '') {
 
         foreach ($_openSIS['_makeMPSelect'][$mp_id] as $value) {
 
-            $student_id = UserStudentID();
-            $qr = DBGet(DBQuery('select end_date from student_enrollment where student_id=' . $student_id . ' order by id desc limit 0,1'));
+            $college_roll_no = UserStudentID();
+            $qr = DBGet(DBQuery('select end_date from student_enrollment where college_roll_no=' . $college_roll_no . ' order by id desc limit 0,1'));
 
             $stu_end_date = $qr[1]['END_DATE'];
             $qr1 = DBGet(DBQuery('select end_date from course_periods where COURSE_PERIOD_ID=' . $THIS_RET['COURSE_PERIOD_ID'] . ''));
@@ -189,8 +189,8 @@ function _makeMPSelect_red($mp_id, $name = '') {
 
         return SelectInput($THIS_RET['MARKING_PERIOD_ID'], "schedule[$THIS_RET[COURSE_PERIOD_ID]][$THIS_RET[START_DATE]][MARKING_PERIOD_ID]", '', $mps, false);
     } else {
-        $student_id = UserStudentID();
-        $qr = DBGet(DBQuery('select end_date from student_enrollment where student_id=' . $student_id . ' order by id desc limit 0,1'));
+        $college_roll_no = UserStudentID();
+        $qr = DBGet(DBQuery('select end_date from student_enrollment where college_roll_no=' . $college_roll_no . ' order by id desc limit 0,1'));
 
         $stu_end_date = $qr[1]['END_DATE'];
         $qr1 = DBGet(DBQuery('select end_date from course_periods where COURSE_PERIOD_ID=' . $THIS_RET['COURSE_PERIOD_ID'] . ''));
@@ -326,7 +326,7 @@ function VerifySchedule(&$schedule) {
                                     $conflicts[$i] = $conflicts[$j] = true;
                                     break;
                                 }
-    $student_id = UserStudentID();
+    $college_roll_no = UserStudentID();
 
 
     foreach ($conflicts as $i => $true)

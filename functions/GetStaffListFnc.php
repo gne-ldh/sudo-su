@@ -37,12 +37,12 @@ function GetStaffList(& $extra)
                         FROM
                         people s '.$extra['FROM'].',login_authentication la,students st,student_enrollment ssm
                         WHERE
-                        st.STUDENT_ID=ssm.STUDENT_ID AND ssm.SYEAR='.UserSyear().'  AND s.PROFILE IS NOT NULL AND s.PROFILE_ID in (SELECT ID FROM user_profiles WHERE PROFILE=\'parent\') AND s.STAFF_ID=la.USER_ID AND la.PROFILE_ID in (SELECT ID FROM user_profiles WHERE PROFILE=\'parent\')';
+                        st.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND ssm.SYEAR='.UserSyear().'  AND s.PROFILE IS NOT NULL AND s.PROFILE_ID in (SELECT ID FROM user_profiles WHERE PROFILE=\'parent\') AND s.STAFF_ID=la.USER_ID AND la.PROFILE_ID in (SELECT ID FROM user_profiles WHERE PROFILE=\'parent\')';
 		if($_REQUEST['_search_all_colleges']!='Y')
-			$sql .= ' AND ssm.COLLEGE_ID='.UserCollege().' AND s.STAFF_ID IN (SELECT PERSON_ID FROM students_join_people sjp WHERE ssm.STUDENT_ID = sjp.STUDENT_ID
+			$sql .= ' AND ssm.COLLEGE_ID='.UserCollege().' AND s.STAFF_ID IN (SELECT PERSON_ID FROM students_join_people sjp WHERE ssm.COLLEGE_ROLL_NO = sjp.COLLEGE_ROLL_NO
 AND ssm.COLLEGE_ID='.UserCollege().' AND ssm.SYEAR='.UserSyear().' AND (ssm.end_date is NULL or ssm.end_date>="'.DBDate().'")) ';
                    else
-                       $sql .= ' AND ssm.COLLEGE_ID IN('.  GetUserColleges(UserID(),true).')  AND s.STAFF_ID IN (SELECT PERSON_ID FROM students_join_people sjp WHERE ssm.STUDENT_ID = sjp.STUDENT_ID
+                       $sql .= ' AND ssm.COLLEGE_ID IN('.  GetUserColleges(UserID(),true).')  AND s.STAFF_ID IN (SELECT PERSON_ID FROM students_join_people sjp WHERE ssm.COLLEGE_ROLL_NO = sjp.COLLEGE_ROLL_NO
 AND ssm.COLLEGE_ID IN ('.  GetUserColleges(UserID(),true).') AND ssm.SYEAR='.UserSyear().' AND (ssm.end_date is NULL or ssm.end_date>="'.DBDate().'"))';
 		if($_REQUEST['_dis_user']!='Y')
 			$sql .= ' AND (s.IS_DISABLE<>\'Y\' OR  s.IS_DISABLE IS NULL)';
@@ -246,10 +246,10 @@ function GetStaffListNoAccess()
 	{
 		case 'admin':
                 $sql='SELECT DISTINCT CONCAT(s.LAST_NAME, \' \' ,s.FIRST_NAME) AS FULL_NAME,CONCAT(UPPER(MID(s.PROFILE,1,1)),MID(s.PROFILE,2,LENGTH(s.PROFILE)-1)) AS PROFILE,s.PROFILE_ID,s.IS_DISABLE,
-                      s.STAFF_ID FROM people s ,students st,student_enrollment ssm WHERE st.STUDENT_ID=ssm.STUDENT_ID AND
+                      s.STAFF_ID FROM people s ,students st,student_enrollment ssm WHERE st.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND
                       ssm.SYEAR='.UserSyear().' AND s.PROFILE IS NOT NULL AND s.PROFILE_ID=4
                       AND '.($_REQUEST['_search_all_colleges']=='Y'?'ssm.COLLEGE_ID IN (SELECT COLLEGE_ID FROM college_years WHERE SYEAR='.UserSyear().')':'ssm.COLLEGE_ID='.UserCollege()).' 
-                      AND s.STAFF_ID IN (SELECT PERSON_ID FROM students_join_people sjp WHERE ssm.STUDENT_ID = sjp.STUDENT_ID AND ssm.COLLEGE_ID='.($_REQUEST['_search_all_colleges']=='Y'?'ssm.COLLEGE_ID IN (SELECT COLLEGE_ID FROM college_years WHERE SYEAR='.UserSyear().')':'ssm.COLLEGE_ID='.UserCollege()).' 
+                      AND s.STAFF_ID IN (SELECT PERSON_ID FROM students_join_people sjp WHERE ssm.COLLEGE_ROLL_NO = sjp.COLLEGE_ROLL_NO AND ssm.COLLEGE_ID='.($_REQUEST['_search_all_colleges']=='Y'?'ssm.COLLEGE_ID IN (SELECT COLLEGE_ID FROM college_years WHERE SYEAR='.UserSyear().')':'ssm.COLLEGE_ID='.UserCollege()).' 
                       AND ssm.SYEAR='.UserSyear().') AND s.IS_DISABLE IS NULL AND s.PROFILE=\'parent\' AND s.PROFILE_ID=4';
 		if($_REQUEST['last'])
 			$sql .= ' AND UPPER(s.LAST_NAME) LIKE \''.singleQuoteReplace("'","\'",strtoupper($_REQUEST['last'])).'%\' ';

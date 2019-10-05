@@ -35,7 +35,7 @@
 	$un = substr($flag, 0, -4);
 	if($usr == 'stid')
 	{
-		$result = DBGet(DBQuery("select s.student_id from students s, student_enrollment se where s.student_id = se.student_id and se.syear = $v_year"));
+		$result = DBGet(DBQuery("select s.college_roll_no from students s, student_enrollment se where s.college_roll_no = se.college_roll_no and se.syear = $v_year"));
 		
 		$xyz = 0;
 		foreach ($result as $row)  

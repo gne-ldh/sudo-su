@@ -26,7 +26,7 @@
 #
 #***************************************************************************************
 session_start();
-unset($_SESSION['student_id']);
+unset($_SESSION['college_roll_no']);
 unset($_SESSION['students_order']);
 unset($_SESSION['_REQUEST_vars']);
 unset($_SESSION['_REQUEST_vars']);

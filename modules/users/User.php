@@ -91,7 +91,7 @@ if (User('PROFILE') != 'admin' && User('PROFILE') != 'teacher' && $_REQUEST['sta
 if ($_REQUEST['modfunc'] == 'remove_stu') {
     $delete = DeletePromptMod('student', "include=GeneralInfoInc&category_id=1&staff_id=$_REQUEST[staff_id]" . ($_REQUEST['profile'] == 'none' ? '&profile=none' : ''));
     if ($delete == 1) {
-        DBQuery('DELETE FROM students_join_people WHERE STUDENT_ID=' . $_REQUEST['id'] . ' AND PERSON_ID=' . $_REQUEST['staff_id']);
+        DBQuery('DELETE FROM students_join_people WHERE COLLEGE_ROLL_NO=' . $_REQUEST['id'] . ' AND PERSON_ID=' . $_REQUEST['staff_id']);
         echo "<script>window.location.href='Modules.php?modname=$_REQUEST[modname]&staff_id=$_REQUEST[staff_id]'</script>";
     }
 } else {

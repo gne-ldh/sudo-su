@@ -29,19 +29,19 @@
 include('../../RedirectModulesInc.php');
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'save') {
     if ($_SESSION['MassRequests.php']) {
-        $current_RET = DBGet(DBQuery("SELECT STUDENT_ID FROM schedule_requests WHERE COURSE_ID='" . clean_param($_SESSION['MassRequests.php']['course_id'], PARAM_INT) . "' AND SYEAR='" . UserSyear() . "'"), array(), array('STUDENT_ID'));
+        $current_RET = DBGet(DBQuery("SELECT COLLEGE_ROLL_NO FROM schedule_requests WHERE COURSE_ID='" . clean_param($_SESSION['MassRequests.php']['course_id'], PARAM_INT) . "' AND SYEAR='" . UserSyear() . "'"), array(), array('COLLEGE_ROLL_NO'));
         $mp_id = DBGet(DBQuery("SELECT MARKING_PERIOD_ID FROM college_years WHERE SYEAR='" . UserSyear() . "' AND COLLEGE_ID='" . UserCollege() . "'"));
         $mp_id = $mp_id[1]['MARKING_PERIOD_ID'];
 
         # ------------------  Without Period Selection Request Entry Start  ------------------------------------ #
-        foreach ($_REQUEST['student'] as $student_id => $yes) {
+        foreach ($_REQUEST['student'] as $college_roll_no => $yes) {
 
-            $check_dup = DBGet(DBQuery("SELECT COUNT(STUDENT_ID) AS DUPLICATE FROM schedule_requests WHERE COURSE_ID='" . clean_param($_SESSION['MassRequests.php']['course_id'], PARAM_INT) . "' AND SYEAR='" . UserSyear() . "' AND STUDENT_ID='" . clean_param($student_id, PARAM_INT) . "' AND WITH_TEACHER_ID='" . clean_param($_REQUEST['with_teacher_id'], PARAM_INT) . "' AND WITH_PERIOD_ID='" . clean_param($_REQUEST['with_period_id'], PARAM_INT) . "'"));
+            $check_dup = DBGet(DBQuery("SELECT COUNT(COLLEGE_ROLL_NO) AS DUPLICATE FROM schedule_requests WHERE COURSE_ID='" . clean_param($_SESSION['MassRequests.php']['course_id'], PARAM_INT) . "' AND SYEAR='" . UserSyear() . "' AND COLLEGE_ROLL_NO='" . clean_param($college_roll_no, PARAM_INT) . "' AND WITH_TEACHER_ID='" . clean_param($_REQUEST['with_teacher_id'], PARAM_INT) . "' AND WITH_PERIOD_ID='" . clean_param($_REQUEST['with_period_id'], PARAM_INT) . "'"));
             $check_dup = $check_dup[1]['DUPLICATE'];
             if ($check_dup < 1) {
-                if ($current_RET[$student_id] != $student_id) {
-                    $sql = "INSERT INTO schedule_requests (SYEAR,COLLEGE_ID,STUDENT_ID,SUBJECT_ID,COURSE_ID,MARKING_PERIOD_ID,WITH_TEACHER_ID,NOT_TEACHER_ID,WITH_PERIOD_ID,NOT_PERIOD_ID)
-									values('" . UserSyear() . "','" . UserCollege() . "','" . $student_id . "','" . $_SESSION['MassRequests.php']['subject_id'] . "','" . $_SESSION['MassRequests.php']['course_id'] . "','" . UserMP() . "','" . $_REQUEST['with_teacher_id'] . "','" . $_REQUEST['without_teacher_id'] . "','" . $_REQUEST['with_period_id'] . "','" . $_REQUEST['without_period_id'] . "')";
+                if ($current_RET[$college_roll_no] != $college_roll_no) {
+                    $sql = "INSERT INTO schedule_requests (SYEAR,COLLEGE_ID,COLLEGE_ROLL_NO,SUBJECT_ID,COURSE_ID,MARKING_PERIOD_ID,WITH_TEACHER_ID,NOT_TEACHER_ID,WITH_PERIOD_ID,NOT_PERIOD_ID)
+									values('" . UserSyear() . "','" . UserCollege() . "','" . $college_roll_no . "','" . $_SESSION['MassRequests.php']['subject_id'] . "','" . $_SESSION['MassRequests.php']['course_id'] . "','" . UserMP() . "','" . $_REQUEST['with_teacher_id'] . "','" . $_REQUEST['without_teacher_id'] . "','" . $_REQUEST['with_period_id'] . "','" . $_REQUEST['without_period_id'] . "')";
                     DBQuery($sql);
                 }
             } else {
@@ -142,7 +142,7 @@ if (!$_REQUEST['modfunc']) {
     $extra['search'] .= '</div>'; //.col-lg-6
     $extra['search'] .= '</div>'; //.row
 
-    Search('student_id', $extra);
+    Search('college_roll_no', $extra);
 }
 
 if ($_REQUEST['modfunc'] != 'choose_course') {
@@ -210,9 +210,9 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAEXT) == 'choose_course') {
 function _makeChooseCheckbox($value, $title) {
     global $THIS_RET;
 
-//    return "<INPUT type=checkbox name=student[" . $THIS_RET['STUDENT_ID'] . "] value=Y>";
-    return "<INPUT type=checkbox name=unused[" . $THIS_RET['STUDENT_ID'] . "] value=Y id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"student[$THIS_RET[STUDENT_ID]]\",this,$THIS_RET[STUDENT_ID]);'>";
-//    return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
+//    return "<INPUT type=checkbox name=student[" . $THIS_RET['COLLEGE_ROLL_NO'] . "] value=Y>";
+    return "<INPUT type=checkbox name=unused[" . $THIS_RET['COLLEGE_ROLL_NO'] . "] value=Y id=$THIS_RET[COLLEGE_ROLL_NO] onClick='setHiddenCheckboxStudents(\"student[$THIS_RET[COLLEGE_ROLL_NO]]\",this,$THIS_RET[COLLEGE_ROLL_NO]);'>";
+//    return "<input name=unused[$THIS_RET[COLLEGE_ROLL_NO]] value=" . $THIS_RET[COLLEGE_ROLL_NO] . "  type='checkbox' id=$THIS_RET[COLLEGE_ROLL_NO] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[COLLEGE_ROLL_NO]);' />";
 }
 
 echo '<div id="modal_default_request" class="modal fade">';

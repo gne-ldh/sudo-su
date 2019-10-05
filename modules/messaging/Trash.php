@@ -189,7 +189,7 @@ if (!isset($_REQUEST['modfunc'])) {
             $nameQuery = 'SELECT CONCAT(FIRST_NAME,\' \', LAST_NAME) NAME FROM staff WHERE PROFILE_ID=' . $fromProfileId . ' AND STAFF_ID=' . $fromUserId;
         }
         if ($fromProfileId == 3) {
-            $nameQuery = 'SELECT CONCAT(FIRST_NAME,\' \', LAST_NAME) NAME FROM students WHERE STUDENT_ID=' . $fromUserId;
+            $nameQuery = 'SELECT CONCAT(FIRST_NAME,\' \', LAST_NAME) NAME FROM students WHERE COLLEGE_ROLL_NO=' . $fromUserId;
         }
         if ($fromProfileId == 4) {
             $nameQuery = 'SELECT CONCAT(FIRST_NAME,\' \', LAST_NAME) NAME FROM people WHERE PROFILE_ID=' . $fromProfileId . ' and staff_id=' . $fromUserId;
@@ -235,7 +235,7 @@ if (!isset($_REQUEST['modfunc'])) {
             $nameQuery = 'SELECT CONCAT(FIRST_NAME,\' \', LAST_NAME) NAME FROM staff WHERE PROFILE_ID=\'' . $fromProfileId . '\' AND STAFF_ID=\'' . $fromProfile[1]['USER_ID'] . '\'  ';
         }
         if ($fromProfileId == 3) {
-            $nameQuery = 'SELECT CONCAT(FIRST_NAME,\' \', LAST_NAME) NAME FROM students WHERE STUDENT_ID=\'' . $fromProfile[1]['USER_ID'] . '\'  ';
+            $nameQuery = 'SELECT CONCAT(FIRST_NAME,\' \', LAST_NAME) NAME FROM students WHERE COLLEGE_ROLL_NO=\'' . $fromProfile[1]['USER_ID'] . '\'  ';
         }
         if ($fromProfileId == 4) {
             $nameQuery = 'SELECT CONCAT(FIRST_NAME,\' \', LAST_NAME) NAME FROM people WHERE PROFILE_ID=\'' . $fromProfileId . '\' AND STAFF_ID=\'' . $fromProfile[1]['USER_ID'] . '\'  ';

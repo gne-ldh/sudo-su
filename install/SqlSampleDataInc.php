@@ -344,7 +344,7 @@ INSERT INTO `attendance_completed` (`staff_id`, `college_date`, `period_id`, `co
 --
 -- Dumping data for table `attendance_day`
 --
-INSERT INTO `attendance_day` (`student_id`, `college_date`, `minutes_present`, `state_value`, `syear`, `marking_period_id`, `comment`, `last_updated`, `updated_by`) VALUES
+INSERT INTO `attendance_day` (`college_roll_no`, `college_date`, `minutes_present`, `state_value`, `syear`, `marking_period_id`, `comment`, `last_updated`, `updated_by`) VALUES
 ('1', '2019-08-05', '100', '1.0', '2019', 14, NULL, '2019-08-05 05:44:35', NULL),
 ('1', '2019-08-06', '250', '1.0', '2019', 14, NULL, '2019-08-20 04:03:33', NULL),
 ('1', '2019-08-07', '250', '1.0', '2019', 14, NULL, '2019-08-20 04:03:48', NULL),
@@ -482,7 +482,7 @@ INSERT INTO `attendance_day` (`student_id`, `college_date`, `minutes_present`, `
 -- Dumping data for table `attendance_period`
 --
 
-INSERT INTO `attendance_period` (`student_id`, `college_date`, `period_id`, `attendance_code`, `attendance_teacher_code`, `attendance_reason`, `admin`, `course_period_id`, `marking_period_id`, `comment`, `last_updated`, `updated_by`) VALUES
+INSERT INTO `attendance_period` (`college_roll_no`, `college_date`, `period_id`, `attendance_code`, `attendance_teacher_code`, `attendance_reason`, `admin`, `course_period_id`, `marking_period_id`, `comment`, `last_updated`, `updated_by`) VALUES
 ('1', '2019-08-05', '2', '1', '1', NULL, NULL, '2', 14, NULL, '2019-08-05 05:44:35', NULL),
 ('1', '2019-08-05', '6', '1', '1', NULL, NULL, '3', 14, NULL, '2019-08-05 05:52:24', NULL),
 ('1', '2019-08-06', '2', '1', '1', NULL, NULL, '2', 14, NULL, '2019-08-20 04:03:33', NULL),
@@ -1102,7 +1102,7 @@ INSERT INTO `course_subjects` (`syear`, `college_id`, `subject_id`, `title`, `sh
 -- Dumping data for table `custom_fields`
 --
 
-INSERT INTO `eligibility` (`student_id`, `syear`, `college_date`, `period_id`, `eligibility_code`, `course_period_id`, `last_updated`, `updated_by`) VALUES
+INSERT INTO `eligibility` (`college_roll_no`, `syear`, `college_date`, `period_id`, `eligibility_code`, `course_period_id`, `last_updated`, `updated_by`) VALUES
 (1, 2017, '2018-01-23', 3, 'PASSING', 4, '2018-01-23 13:38:44', NULL),
 (2, 2017, '2018-01-23', 3, 'PASSING', 4, '2018-01-23 13:38:44', NULL),
 (3, 2017, '2018-01-23', 3, 'PASSING', 4, '2018-01-23 13:38:44', NULL),
@@ -1178,7 +1178,7 @@ INSERT INTO `gradebook_assignment_types` (`assignment_type_id`, `staff_id`, `cou
 -- Dumping data for table `gradebook_grades`
 --
 
-INSERT INTO `gradebook_grades` (`student_id`, `period_id`, `course_period_id`, `assignment_id`, `points`, `comment`, `last_updated`, `updated_by`) VALUES
+INSERT INTO `gradebook_grades` (`college_roll_no`, `period_id`, `course_period_id`, `assignment_id`, `points`, `comment`, `last_updated`, `updated_by`) VALUES
 (1, 6, 2, 1, 45.00, NULL, '2018-01-23 12:27:57', NULL),
 (1, 6, 2, 2, 89.00, NULL, '2018-01-23 12:27:57', NULL),
 (1, 6, 2, 3, 95.00, NULL, '2018-01-23 12:27:57', NULL),
@@ -1554,7 +1554,7 @@ INSERT INTO `marking_period_id_generator` (`id`) VALUES
 -- Dumping data for table `medical_info`
 --
 
-INSERT INTO `medical_info` (`id`, `student_id`, `syear`, `college_id`, `physician`, `physician_phone`, `preferred_hospital`, `last_updated`, `updated_by`) VALUES
+INSERT INTO `medical_info` (`id`, `college_roll_no`, `syear`, `college_id`, `physician`, `physician_phone`, `preferred_hospital`, `last_updated`, `updated_by`) VALUES
 (1, 1, 2017, 1, 'Dr. Morgan', '444-656-8945', 'General', '2018-01-22 04:46:26', NULL),
 (2, 2, 2017, 1, NULL, NULL, NULL, '2018-01-22 05:11:58', NULL),
 (3, 3, 2017, 1, NULL, NULL, NULL, '2018-01-22 05:15:27', NULL),
@@ -1728,7 +1728,7 @@ INSERT INTO `profile_exceptions` (`profile_id`, `modname`, `can_use`, `can_edit`
 ('5', 'collegesetup/PrintAllCourses.php', 'Y', NULL, '2015-07-28 15:26:33', NULL),
 ('5', 'collegesetup/TeacherReassignment.php', 'Y', NULL, '2015-07-28 15:26:33', NULL),
 ('5', 'students/Student.php', 'Y', 'Y', '2015-07-28 15:26:33', NULL),
-('5', 'students/Student.php&include=GeneralInfoInc&student_id=new', 'Y', 'Y', '2015-07-28 15:26:33', NULL),
+('5', 'students/Student.php&include=GeneralInfoInc&college_roll_no=new', 'Y', 'Y', '2015-07-28 15:26:33', NULL),
 ('5', 'students/AssignOtherInfo.php', 'Y', 'Y', '2015-07-28 15:26:33', NULL),
 ('5', 'students/AddUsers.php', 'Y', 'Y', '2015-07-28 15:26:33', NULL),
 ('5', 'students/AdvancedReport.php', 'Y', 'Y', '2015-07-28 15:26:33', NULL),
@@ -1847,7 +1847,7 @@ INSERT INTO `profile_exceptions` (`profile_id`, `modname`, `can_use`, `can_edit`
 ('1', 'collegesetup/UploadLogo.php', 'Y', 'Y', '2015-07-28 15:26:33', NULL),
 ('1', 'collegesetup/TeacherReassignment.php', 'Y', 'Y', '2015-07-28 15:26:33', NULL),
 ('1', 'students/Student.php', 'Y', 'Y', '2015-07-28 15:26:33', NULL),
-('1', 'students/Student.php&include=GeneralInfoInc&student_id=new', 'Y', 'Y', '2015-07-28 15:26:33', NULL),
+('1', 'students/Student.php&include=GeneralInfoInc&college_roll_no=new', 'Y', 'Y', '2015-07-28 15:26:33', NULL),
 ('1', 'students/AssignOtherInfo.php', 'Y', 'Y', '2015-07-28 15:26:33', NULL),
 ('1', 'students/AddUsers.php', 'Y', 'Y', '2015-07-28 15:26:33', NULL),
 ('1', 'students/AdvancedReport.php', 'Y', 'Y', '2015-07-28 15:26:33', NULL),
@@ -2007,7 +2007,7 @@ INSERT INTO `profile_exceptions` (`profile_id`, `modname`, `can_use`, `can_edit`
 ('0', 'collegesetup/UploadLogo.php', 'Y', 'Y', '2015-07-28 15:26:33', NULL),
 ('0', 'collegesetup/TeacherReassignment.php', 'Y', 'Y', '2015-07-28 15:26:33', NULL),
 ('0', 'students/Student.php', 'Y', 'Y', '2015-07-28 15:26:33', NULL),
-('0', 'students/Student.php&include=GeneralInfoInc&student_id=new', 'Y', 'Y', '2015-07-28 15:26:33', NULL),
+('0', 'students/Student.php&include=GeneralInfoInc&college_roll_no=new', 'Y', 'Y', '2015-07-28 15:26:33', NULL),
 ('0', 'students/AssignOtherInfo.php', 'Y', 'Y', '2015-07-28 15:26:33', NULL),
 ('0', 'students/AddUsers.php', 'Y', 'Y', '2015-07-28 15:26:33', NULL),
 ('0', 'students/AdvancedReport.php', 'Y', 'Y', '2015-07-28 15:26:33', NULL),
@@ -2301,7 +2301,7 @@ INSERT INTO `rooms` (`room_id`, `college_id`, `title`, `capacity`, `description`
 -- Dumping data for table `schedule`
 --
 
-INSERT INTO `schedule`  (`syear`, `college_id`, `student_id`, `start_date`, `end_date`, `modified_date`, `modified_by`, `course_id`, `course_weight`, `course_period_id`, `mp`, `marking_period_id`, `scheduler_lock`, `dropped`, `id`, `last_updated`, `updated_by`) VALUES
+INSERT INTO `schedule`  (`syear`, `college_id`, `college_roll_no`, `start_date`, `end_date`, `modified_date`, `modified_by`, `course_id`, `course_weight`, `course_period_id`, `mp`, `marking_period_id`, `scheduler_lock`, `dropped`, `id`, `last_updated`, `updated_by`) VALUES
 ('2019', '1', '2', '2019-08-05', '2020-05-29', '2019-08-05', '1', '3', NULL, '9', 'FY', 1, NULL, 'N', 1, '2019-08-05 05:13:00', NULL),
 ('2019', '1', '3', '2019-08-05', '2020-05-29', '2019-08-05', '1', '3', NULL, '9', 'FY', 1, NULL, 'N', 2, '2019-08-05 05:13:00', NULL),
 ('2019', '1', '4', '2019-08-05', '2020-05-29', '2019-08-05', '1', '3', NULL, '9', 'FY', 1, NULL, 'N', 3, '2019-08-05 05:13:00', NULL),
@@ -2536,7 +2536,7 @@ INSERT INTO `staff_college_relationship`(`staff_id`, `college_id`, `syear`, `las
 -- Dumping data for table `students`
 --
 
-INSERT INTO `students` (`student_id`, `last_name`, `first_name`, `middle_name`, `name_suffix`, `gender`, `ethnicity`, `common_name`, `social_security`, `birthdate`, `language_id`, `estimated_grad_date`, `alt_id`, `email`, `phone`, `is_disable`, `last_updated`, `updated_by`) VALUES
+INSERT INTO `students` (`college_roll_no`, `last_name`, `first_name`, `middle_name`, `name_suffix`, `gender`, `ethnicity`, `common_name`, `social_security`, `birthdate`, `language_id`, `estimated_grad_date`, `alt_id`, `email`, `phone`, `is_disable`, `last_updated`, `updated_by`) VALUES
 (1, 'Smith', 'Steve', NULL, NULL, 'Male', 'White, Non-Hispanic', 'Steve', NULL, '2013-02-07', 1, '2023-05-26', '108583954', NULL, '404-903-5443', NULL, '2019-08-04 22:37:17', NULL),
 (2, 'Anderson', 'Daniel', NULL, NULL, 'Male', NULL, NULL, NULL, '2003-09-02', 1, '2023-05-29', '466639635', NULL, '706-853-9164', NULL, '2019-08-05 00:02:40', NULL),
 (3, 'Aponte', 'Justin', NULL, NULL, 'Male', NULL, NULL, NULL, '2002-03-12', 1, '2022-05-29', '332284656', NULL, '404-758-2922', NULL, '2019-08-05 00:02:41', NULL),
@@ -2553,7 +2553,7 @@ INSERT INTO `students` (`student_id`, `last_name`, `first_name`, `middle_name`, 
 -- Dumping data for table `students_join_people`
 --
 
-INSERT INTO `students_join_people` (`id`, `student_id`, `person_id`, `is_emergency`, `emergency_type`, `relationship`, `last_updated`, `updated_by`) VALUES
+INSERT INTO `students_join_people` (`id`, `college_roll_no`, `person_id`, `is_emergency`, `emergency_type`, `relationship`, `last_updated`, `updated_by`) VALUES
 (1, '1', '1', NULL, 'Primary', 'Father', '2019-08-04 22:40:24', NULL),
 (2, '1', '2', NULL, 'Secondary', 'Mother', '2019-08-04 22:40:25', NULL);
 
@@ -2564,7 +2564,7 @@ INSERT INTO `students_join_people` (`id`, `student_id`, `person_id`, `is_emergen
 --
 
 
-INSERT INTO `student_address` (`id`, `student_id`, `syear`, `college_id`, `street_address_1`, `street_address_2`, `city`, `state`, `zipcode`, `bus_pickup`, `bus_dropoff`, `bus_no`, `type`, `people_id`, `last_updated`, `updated_by`) VALUES
+INSERT INTO `student_address` (`id`, `college_roll_no`, `syear`, `college_id`, `street_address_1`, `street_address_2`, `city`, `state`, `zipcode`, `bus_pickup`, `bus_dropoff`, `bus_no`, `type`, `people_id`, `last_updated`, `updated_by`) VALUES
 (1, 1, 2019, 1, '3560 Lawrenceville Hwy', NULL, 'Lawrenceville', 'GA', '30044', 'Y', 'Y', '12', 'Home Address', NULL, '2019-08-04 22:40:24', NULL),
 (2, 1, 2019, 1, '3560 Lawrenceville Hwy', NULL, 'Lawrenceville', 'GA', '30044', NULL, NULL, NULL, 'Mail', NULL, '2019-08-04 22:40:24', NULL),
 (3, 1, 2019, 1, '3560 Lawrenceville Hwy', NULL, 'Lawrenceville', 'GA', '30044', NULL, NULL, NULL, 'Secondary', 2, '2019-08-04 22:40:24', NULL),
@@ -2616,7 +2616,7 @@ INSERT INTO `student_address` (`id`, `student_id`, `syear`, `college_id`, `stree
 -- Dumping data for table `student_eligibility_activities`
 --
 
-INSERT INTO `student_eligibility_activities` (`syear`, `student_id`, `activity_id`, `last_updated`, `updated_by`) VALUES
+INSERT INTO `student_eligibility_activities` (`syear`, `college_roll_no`, `activity_id`, `last_updated`, `updated_by`) VALUES
 (2017, 1, 1, '2018-01-23 13:05:43', NULL),
 (2017, 4, 1, '2018-01-23 13:05:51', NULL),
 (2017, 4, 2, '2018-01-23 13:05:54', NULL);
@@ -2624,7 +2624,7 @@ INSERT INTO `student_eligibility_activities` (`syear`, `student_id`, `activity_i
 -- Dumping data for table `student_enrollment`
 --
 
-INSERT INTO `student_enrollment`  (`id`, `syear`, `college_id`, `student_id`, `grade_id`, `section_id`, `start_date`, `end_date`, `enrollment_code`, `drop_code`, `next_college`, `calendar_id`, `last_college`, `last_updated`, `updated_by`) VALUES
+INSERT INTO `student_enrollment`  (`id`, `syear`, `college_id`, `college_roll_no`, `grade_id`, `section_id`, `start_date`, `end_date`, `enrollment_code`, `drop_code`, `next_college`, `calendar_id`, `last_college`, `last_updated`, `updated_by`) VALUES
 (1, '2019', '1', '1', '1', '2', '2019-08-05', NULL, '3', NULL, '1', '1', NULL, '2019-08-04 22:37:17', NULL),
 (2, '2019', '1', '2', '1', '1', '2019-08-05', NULL, '3', NULL, '1', '1', NULL, '2019-08-05 00:02:40', NULL),
 (3, '2019', '1', '3', '2', '3', '2019-08-05', NULL, '2', NULL, '1', '1', NULL, '2019-08-05 00:02:41', NULL),
@@ -2671,7 +2671,7 @@ INSERT INTO `student_field_categories` (`id`, `title`, `sort_order`, `include`, 
 -- Dumping data for table `student_goal`
 --
 
-INSERT INTO `student_goal` (`goal_id`, `student_id`, `goal_title`, `start_date`, `end_date`, `goal_description`, `college_id`, `syear`, `last_updated`, `updated_by`) VALUES
+INSERT INTO `student_goal` (`goal_id`, `college_roll_no`, `goal_title`, `start_date`, `end_date`, `goal_description`, `college_id`, `syear`, `last_updated`, `updated_by`) VALUES
 (1, 4, 'Chemistry', '2018-01-10', '2018-01-22', 'Inorganic Chemistry', 1, 2017, '2018-01-23 13:22:27', NULL),
 (2, 6, 'Spanish', '2018-01-16', '2018-01-19', 'Spanish Reading Skill', 1, 2017, '2018-01-23 13:30:37', NULL),
 (3, 6, 'Chemistry In', '2018-01-22', '2018-02-06', 'Try to remember Atomic Chart properly..', 1, 2017, '2018-01-23 13:38:34', NULL);
@@ -2680,7 +2680,7 @@ INSERT INTO `student_goal` (`goal_id`, `student_id`, `goal_title`, `start_date`,
 -- Dumping data for table `student_goal_progress`
 --
 
-INSERT INTO `student_goal_progress` (`progress_id`, `goal_id`, `student_id`, `start_date`, `progress_name`, `proficiency`, `progress_description`, `course_period_id`, `last_updated`, `updated_by`) VALUES
+INSERT INTO `student_goal_progress` (`progress_id`, `goal_id`, `college_roll_no`, `start_date`, `progress_name`, `proficiency`, `progress_description`, `course_period_id`, `last_updated`, `updated_by`) VALUES
 (1, 1, 4, '2018-01-22', 'Inorganic Extra Class', '61-70%', 'You need to improve more. But you are improving. Keep trying. All the best !!!', 6, '2018-01-23 13:23:31', NULL),
 (2, 2, 6, '2018-01-18', 'Span Reading improvement', '71-80%', 'Well done you are doing good.. Keep Practicing.', 4, '2018-01-23 13:31:26', NULL),
 (3, 2, 6, '2018-01-22', 'Span I Reading improvement', '81-90%', 'Keep watching Spanish educational movies & also keep reading news papers for more efficiency. Todo lo Mejor !!!', 4, '2018-01-23 13:36:16', NULL);
@@ -2690,7 +2690,7 @@ INSERT INTO `student_goal_progress` (`progress_id`, `goal_id`, `student_id`, `st
 -- Dumping data for table `student_gpa_calculated`
 --
 
-INSERT INTO `student_gpa_calculated` (`student_id`, `marking_period_id`, `mp`, `gpa`, `weighted_gpa`, `unweighted_gpa`, `class_rank`, `grade_level_short`, `cgpa`, `cum_unweighted_factor`, `last_updated`, `updated_by`) VALUES
+INSERT INTO `student_gpa_calculated` (`college_roll_no`, `marking_period_id`, `mp`, `gpa`, `weighted_gpa`, `unweighted_gpa`, `class_rank`, `grade_level_short`, `cgpa`, `cum_unweighted_factor`, `last_updated`, `updated_by`) VALUES
 (1, 17, NULL, 3.00, NULL, 3.00, 1, NULL, NULL, 0.500000, '2018-01-23 12:43:52', NULL),
 (2, 17, NULL, 2.18, NULL, 2.18, 1, NULL, NULL, 0.333333, '2018-01-23 12:43:52', NULL),
 (9, 17, NULL, 1.09, NULL, 1.09, 2, NULL, NULL, 0.166667, '2018-01-23 12:43:52', NULL),
@@ -2747,14 +2747,14 @@ INSERT INTO `student_gpa_calculated` (`student_id`, `marking_period_id`, `mp`, `
 -- Dumping data for table `student_immunization`
 --
 
-INSERT INTO `student_immunization` (`id`, `student_id`, `type`, `medical_date`, `comments`, `last_updated`, `updated_by`) VALUES
+INSERT INTO `student_immunization` (`id`, `college_roll_no`, `type`, `medical_date`, `comments`, `last_updated`, `updated_by`) VALUES
 (1, '1', 'Immunization', '2019-07-09', 'Flu vaccine', '2019-08-04 22:42:09', NULL);
 
 --
 -- Dumping data for table `student_medical_alerts`
 --
 
-INSERT INTO `student_medical_alerts` (`id`, `student_id`, `title`, `alert_date`, `last_updated`, `updated_by`) VALUES
+INSERT INTO `student_medical_alerts` (`id`, `college_roll_no`, `title`, `alert_date`, `last_updated`, `updated_by`) VALUES
 (1, '1', 'MSG Allergy', '2019-07-09', '2019-08-04 22:42:09', NULL);
 
 
@@ -2762,21 +2762,21 @@ INSERT INTO `student_medical_alerts` (`id`, `student_id`, `title`, `alert_date`,
 -- Dumping data for table `student_medical_notes`
 --
 
-INSERT INTO `student_medical_notes` (`id`, `student_id`, `doctors_note_date`, `doctors_note_comments`, `last_updated`, `updated_by`) VALUES
+INSERT INTO `student_medical_notes` (`id`, `college_roll_no`, `doctors_note_date`, `doctors_note_comments`, `last_updated`, `updated_by`) VALUES
 (1, '1', '2019-07-09', 'MSG Alleregy', '2019-08-04 22:42:08', NULL);
 
 --
 -- Dumping data for table `student_medical_visits`
 --
 
-INSERT INTO `student_medical_visits` (`id`, `student_id`, `college_date`, `time_in`, `time_out`, `reason`, `result`, `comments`, `last_updated`, `updated_by`) VALUES
+INSERT INTO `student_medical_visits` (`id`, `college_roll_no`, `college_date`, `time_in`, `time_out`, `reason`, `result`, `comments`, `last_updated`, `updated_by`) VALUES
 (1, 4, '2018-01-02', '1:00', '1:15', 'General Check up', 'Normal', 'Take all medicines properly', '2018-01-23 13:21:29', NULL);
 
 --
 -- Dumping data for table `student_mp_comments`
 --
 
-INSERT INTO `student_mp_comments` (`id`, `student_id`, `syear`, `marking_period_id`, `staff_id`, `comment`, `comment_date`, `last_updated`, `updated_by`) VALUES
+INSERT INTO `student_mp_comments` (`id`, `college_roll_no`, `syear`, `marking_period_id`, `staff_id`, `comment`, `comment_date`, `last_updated`, `updated_by`) VALUES
 (1, 4, 2017, 17, 1, 'Colin gets distracted and disturbs the class when he is sitting next to his best friends. Isolate him to a corner in the classroom so that he can focus on his work. ', '2017-11-14', '2018-01-23 11:17:23', NULL),
 (2, 1, 2017, 17, 1, 'Need to improve skills.', '2018-01-10', '2018-01-23 11:22:46', NULL),
 (3, 6, 2017, 17, 3, 'Good you are improving.', '2018-01-23', '2018-01-23 13:33:21', NULL),
@@ -2785,7 +2785,7 @@ INSERT INTO `student_mp_comments` (`id`, `student_id`, `syear`, `marking_period_
 -- Dumping data for table `student_report_card_grades`
 --
 
-INSERT INTO `student_report_card_grades` (`syear`, `college_id`, `student_id`, `course_period_id`, `report_card_grade_id`, `report_card_comment_id`, `comment`, `grade_percent`, `marking_period_id`, `grade_letter`, `weighted_gp`, `unweighted_gp`, `gp_scale`, `gpa_cal`, `credit_attempted`, `credit_earned`, `credit_category`, `course_code`, `course_title`, `id`, `last_updated`, `updated_by`) VALUES
+INSERT INTO `student_report_card_grades` (`syear`, `college_id`, `college_roll_no`, `course_period_id`, `report_card_grade_id`, `report_card_comment_id`, `comment`, `grade_percent`, `marking_period_id`, `grade_letter`, `weighted_gp`, `unweighted_gp`, `gp_scale`, `gpa_cal`, `credit_attempted`, `credit_earned`, `credit_category`, `course_code`, `course_title`, `id`, `last_updated`, `updated_by`) VALUES
 (2017, 1, 1, 4, 1, NULL, ' ', 91.82, '17', 'A', NULL, 3.000, 4.000, NULL, 4.000, 4.000, NULL, NULL, 'Spanish', 1, '2018-01-23 12:43:52', NULL),
 (2017, 1, 2, 4, 2, NULL, ' ', 83.64, '17', 'B', NULL, 2.000, 4.000, NULL, 4.000, 4.000, NULL, NULL, 'Spanish', 2, '2018-01-23 12:43:52', NULL),
 (2017, 1, 9, 4, 3, NULL, ' ', 70.91, '17', 'C', NULL, 1.000, 4.000, NULL, 4.000, 4.000, NULL, NULL, 'Spanish', 3, '2018-01-23 12:43:52', NULL),

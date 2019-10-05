@@ -60,15 +60,15 @@ if ($function('Confirm Scheduler Run', 'Are you sure you want to run the schedul
     $fy_id = DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM college_years WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
     $fy_id = $fy_id[1]['MARKING_PERIOD_ID'];
 
-    $sql = 'SELECT r.REQUEST_ID,r.STUDENT_ID,s.GENDER as GENDER,r.SUBJECT_ID,r.COURSE_ID,MARKING_PERIOD_ID,WITH_TEACHER_ID,NOT_TEACHER_ID,WITH_PERIOD_ID,NOT_PERIOD_ID,(SELECT COUNT(*) FROM course_periods cp2 WHERE cp2.COURSE_ID=r.COURSE_ID) AS SECTIONS
+    $sql = 'SELECT r.REQUEST_ID,r.COLLEGE_ROLL_NO,s.GENDER as GENDER,r.SUBJECT_ID,r.COURSE_ID,MARKING_PERIOD_ID,WITH_TEACHER_ID,NOT_TEACHER_ID,WITH_PERIOD_ID,NOT_PERIOD_ID,(SELECT COUNT(*) FROM course_periods cp2 WHERE cp2.COURSE_ID=r.COURSE_ID) AS SECTIONS
 	FROM schedule_requests r,students s,student_enrollment ssm
-	WHERE s.STUDENT_ID=ssm.STUDENT_ID AND ssm.SYEAR=r.SYEAR
+	WHERE s.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND ssm.SYEAR=r.SYEAR
 	AND (\'' . DBDate() . '\' BETWEEN ssm.START_DATE AND ssm.END_DATE OR ssm.END_DATE IS NULL)
-	AND s.STUDENT_ID=r.STUDENT_ID AND r.SYEAR=\'' . UserSyear() . '\' AND r.COLLEGE_ID=\'' . UserCollege() . '\' ORDER BY SECTIONS';
+	AND s.COLLEGE_ROLL_NO=r.COLLEGE_ROLL_NO AND r.SYEAR=\'' . UserSyear() . '\' AND r.COLLEGE_ID=\'' . UserCollege() . '\' ORDER BY SECTIONS';
 
     $requests_RET = DBGet(DBQuery($sql), array(), array('REQUEST_ID'));
     if ($_REQUEST['delete_mode'] == 'Y') {
-        $not_delete = DBGet(DBQuery('SELECT DISTINCT SC.ID AS NOT_DEL FROM schedule SC,attendance_period AP WHERE (SC.STUDENT_ID=AP.STUDENT_ID AND SC.COURSE_PERIOD_ID=AP.COURSE_PERIOD_ID AND SC.COLLEGE_ID=\'' . UserCollege() . '\' AND SC.SYEAR=\'' . UserSyear() . '\') UNION SELECT DISTINCT SC.ID AS NOT_DEL FROM schedule SC,gradebook_grades SRCG WHERE (SC.STUDENT_ID=SRCG.STUDENT_ID AND SC.COURSE_PERIOD_ID=SRCG.COURSE_PERIOD_ID AND SC.COLLEGE_ID=\'' . UserCollege() . '\' AND SC.SYEAR=\'' . UserSyear() . '\')'));
+        $not_delete = DBGet(DBQuery('SELECT DISTINCT SC.ID AS NOT_DEL FROM schedule SC,attendance_period AP WHERE (SC.COLLEGE_ROLL_NO=AP.COLLEGE_ROLL_NO AND SC.COURSE_PERIOD_ID=AP.COURSE_PERIOD_ID AND SC.COLLEGE_ID=\'' . UserCollege() . '\' AND SC.SYEAR=\'' . UserSyear() . '\') UNION SELECT DISTINCT SC.ID AS NOT_DEL FROM schedule SC,gradebook_grades SRCG WHERE (SC.COLLEGE_ROLL_NO=SRCG.COLLEGE_ROLL_NO AND SC.COURSE_PERIOD_ID=SRCG.COURSE_PERIOD_ID AND SC.COLLEGE_ID=\'' . UserCollege() . '\' AND SC.SYEAR=\'' . UserSyear() . '\')'));
         $notin = '';
         foreach ($not_delete as $value) {
             $notin.=$value['NOT_DEL'] . ",";
@@ -146,11 +146,11 @@ if ($function('Confirm Scheduler Run', 'Are you sure you want to run the schedul
 
             foreach ($cps_main as $cpi => $cpd) {
 
-                $same_cp = DBGet(DBQuery('SELECT COUNT(1) as REC_EX FROM schedule WHERE STUDENT_ID=' . $rd[1]['STUDENT_ID'] . ' AND (END_DATE>=\'' . $s_date . '\'  OR END_DATE IS NULL OR END_DATE=\'0000-00-00\') AND COURSE_PERIOD_ID=' . $cpd['COURSE_PERIOD_ID']));
+                $same_cp = DBGet(DBQuery('SELECT COUNT(1) as REC_EX FROM schedule WHERE COLLEGE_ROLL_NO=' . $rd[1]['COLLEGE_ROLL_NO'] . ' AND (END_DATE>=\'' . $s_date . '\'  OR END_DATE IS NULL OR END_DATE=\'0000-00-00\') AND COURSE_PERIOD_ID=' . $cpd['COURSE_PERIOD_ID']));
 
                 if ($same_cp[1]['REC_EX'] == 0) {
                     $flag = 0;
-                    $student_cp_ids = DBGet(DBQuery('SELECT DISTINCT COURSE_PERIOD_ID FROM schedule WHERE STUDENT_ID=' . $rd[1]['STUDENT_ID'] . ' AND (END_DATE>=\'' . $s_date . '\'  OR END_DATE IS NULL OR END_DATE=\'0000-00-00\') '));
+                    $student_cp_ids = DBGet(DBQuery('SELECT DISTINCT COURSE_PERIOD_ID FROM schedule WHERE COLLEGE_ROLL_NO=' . $rd[1]['COLLEGE_ROLL_NO'] . ' AND (END_DATE>=\'' . $s_date . '\'  OR END_DATE IS NULL OR END_DATE=\'0000-00-00\') '));
                     foreach ($student_cp_ids as $sd) {
                         $get_det = DBGet(DBQuery('SELECT * FROM course_period_var WHERE COURSE_PERIOD_ID=' . $sd['COURSE_PERIOD_ID']));
                         foreach ($get_det as $gi => $gd) {
@@ -170,13 +170,13 @@ if ($function('Confirm Scheduler Run', 'Are you sure you want to run the schedul
                         }
                     }
                     if ($flag == 0 && $seats_availabe[$cpd['COURSE_PERIOD_ID']] > 0) {
-                        $schedule[$rd[1]['STUDENT_ID'] . '-' . $cpd['COURSE_PERIOD_ID']]['COURSE_PERIOD_ID'] = $cpd['COURSE_PERIOD_ID'];
-                        $schedule[$rd[1]['STUDENT_ID'] . '-' . $cpd['COURSE_PERIOD_ID']]['COURSE_ID'] = $cpd['COURSE_ID'];
-                        $schedule[$rd[1]['STUDENT_ID'] . '-' . $cpd['COURSE_PERIOD_ID']]['MP'] = $cpd['MP'];
-                        $schedule[$rd[1]['STUDENT_ID'] . '-' . $cpd['COURSE_PERIOD_ID']]['MARKING_PERIOD_ID'] = $cpd['MARKING_PERIOD_ID'];
-                        $schedule[$rd[1]['STUDENT_ID'] . '-' . $cpd['COURSE_PERIOD_ID']]['CALENDAR_ID'] = $cpd['CALENDAR_ID'];
-                        $schedule[$rd[1]['STUDENT_ID'] . '-' . $cpd['COURSE_PERIOD_ID']]['TEACHER_ID'] = $cpd['TEACHER_ID'];
-                        $schedule[$rd[1]['STUDENT_ID'] . '-' . $cpd['COURSE_PERIOD_ID']]['REQUEST_ID'] = $rd[1]['REQUEST_ID'];
+                        $schedule[$rd[1]['COLLEGE_ROLL_NO'] . '-' . $cpd['COURSE_PERIOD_ID']]['COURSE_PERIOD_ID'] = $cpd['COURSE_PERIOD_ID'];
+                        $schedule[$rd[1]['COLLEGE_ROLL_NO'] . '-' . $cpd['COURSE_PERIOD_ID']]['COURSE_ID'] = $cpd['COURSE_ID'];
+                        $schedule[$rd[1]['COLLEGE_ROLL_NO'] . '-' . $cpd['COURSE_PERIOD_ID']]['MP'] = $cpd['MP'];
+                        $schedule[$rd[1]['COLLEGE_ROLL_NO'] . '-' . $cpd['COURSE_PERIOD_ID']]['MARKING_PERIOD_ID'] = $cpd['MARKING_PERIOD_ID'];
+                        $schedule[$rd[1]['COLLEGE_ROLL_NO'] . '-' . $cpd['COURSE_PERIOD_ID']]['CALENDAR_ID'] = $cpd['CALENDAR_ID'];
+                        $schedule[$rd[1]['COLLEGE_ROLL_NO'] . '-' . $cpd['COURSE_PERIOD_ID']]['TEACHER_ID'] = $cpd['TEACHER_ID'];
+                        $schedule[$rd[1]['COLLEGE_ROLL_NO'] . '-' . $cpd['COURSE_PERIOD_ID']]['REQUEST_ID'] = $rd[1]['REQUEST_ID'];
                         $seats_availabe[$cpd['COURSE_PERIOD_ID']] = $cpd['TOTAL_SEATS'] - ($cpd['FILLED_SEATS'] + 1);
                         break 1;
                     }
@@ -189,7 +189,7 @@ if ($function('Confirm Scheduler Run', 'Are you sure you want to run the schedul
             $stu_id = $stu_cp_arr[0];
             $cp_end_dt = DBGet(DBQuery('SELECT end_date FROM  course_periods WHERE COURSE_PERIOD_ID=' . $cp_id['COURSE_PERIOD_ID']));
 
-            DBQuery('INSERT INTO schedule (SYEAR,COLLEGE_ID,STUDENT_ID,START_DATE,END_DATE,MODIFIED_BY,COURSE_ID,COURSE_PERIOD_ID,MP,MARKING_PERIOD_ID,DROPPED) VALUES (' . UserSyear() . ',' . UserCollege() . ',' . $stu_id . ',\'' . $s_date . '\',\'' . $cp_end_dt[1]['END_DATE'] . '\',' . UserID() . ',\'' . $cp_id['COURSE_ID'] . '\',\'' . $cp_id['COURSE_PERIOD_ID'] . '\',\'' . ($cp_id['MARKING_PERIOD_ID'] != '' ? $cp_id['MP'] : 'FY') . '\',\'' . ($cp_id['MARKING_PERIOD_ID'] != '' ? $cp_id['MARKING_PERIOD_ID'] : GetMPId('FY')) . '\',\'N\')');
+            DBQuery('INSERT INTO schedule (SYEAR,COLLEGE_ID,COLLEGE_ROLL_NO,START_DATE,END_DATE,MODIFIED_BY,COURSE_ID,COURSE_PERIOD_ID,MP,MARKING_PERIOD_ID,DROPPED) VALUES (' . UserSyear() . ',' . UserCollege() . ',' . $stu_id . ',\'' . $s_date . '\',\'' . $cp_end_dt[1]['END_DATE'] . '\',' . UserID() . ',\'' . $cp_id['COURSE_ID'] . '\',\'' . $cp_id['COURSE_PERIOD_ID'] . '\',\'' . ($cp_id['MARKING_PERIOD_ID'] != '' ? $cp_id['MP'] : 'FY') . '\',\'' . ($cp_id['MARKING_PERIOD_ID'] != '' ? $cp_id['MARKING_PERIOD_ID'] : GetMPId('FY')) . '\',\'N\')');
             DBQuery('DELETE FROM schedule_requests WHERE REQUEST_ID=' . $cp_id['REQUEST_ID']);
             if (strtotime($s_date) <= strtotime(date('Y-m-d'))) {
                 $check_d_att = DBGet(DBQuery('SELECT * FROM course_period_var WHERE COURSE_PERIOD_ID=' . $cp_id['COURSE_PERIOD_ID'] . ' AND DOES_ATTENDANCE=\'Y\''));
@@ -273,9 +273,9 @@ function _scheduleRequest($request, $not_parent_id = false) {
                 if ($slice['PARENT_ID'] == $slice['COURSE_PERIOD_ID'] && (($request['WITH_TEACHER_ID'] != '' && $slice['TEACHER_ID'] != $request['WITH_TEACHER_ID']) || ($request['WITH_PERIOD_ID'] && $slice['PERIOD_ID'] != $request['WITH_PERIOD_ID']) || ($request['NOT_TEACHER_ID'] && $slice['TEACHER_ID'] == $request['NOT_TEACHER_ID']) || ($request['NOT_PERIOD_ID'] && $slice['PERIOD_ID'] == $request['NOT_PERIOD_ID']))) {
                     continue 2;
                 }
-                if (count($schedule[$request['STUDENT_ID']][$slice['PERIOD_ID']])) {
+                if (count($schedule[$request['COLLEGE_ROLL_NO']][$slice['PERIOD_ID']])) {
                     // SHOULD LOOK FOR COMPATIBLE CP's IF NOT THE COMPLETE WEEK/YEAR
-                    foreach ($schedule[$request['STUDENT_ID']][$slice['PERIOD_ID']] as $existing_slice) {
+                    foreach ($schedule[$request['COLLEGE_ROLL_NO']][$slice['PERIOD_ID']] as $existing_slice) {
                         if ($existing_slice['PARENT_ID'] != $not_parent_id && _isConflict($existing_slice, $slice)) {
                             continue 3;
                         }
@@ -291,10 +291,10 @@ function _scheduleRequest($request, $not_parent_id = false) {
         // IF THIS COURSE IS BEING SCHEDULED A SECOND TIME, DELETE THE ORIGINAL ONE
         if ($not_parent_id) {
             foreach ($cp_parent_RET[$not_parent_id] as $key => $slice) {
-                foreach ($schedule[$request['STUDENT_ID']][$slice['PERIOD_ID']] as $key2 => $item) {
+                foreach ($schedule[$request['COLLEGE_ROLL_NO']][$slice['PERIOD_ID']] as $key2 => $item) {
                     if ($item['COURSE_PERIOD_ID'] == $slice['COURSE_PERIOD_ID']) {
-                        $filled[$schedule[$request['STUDENT_ID']][$slice['PERIOD_ID']][$key2]['REQUEST_ID']] = false;
-                        unset($schedule[$request['STUDENT_ID']][$slice['PERIOD_ID']][$key2]);
+                        $filled[$schedule[$request['COLLEGE_ROLL_NO']][$slice['PERIOD_ID']][$key2]['REQUEST_ID']] = false;
+                        unset($schedule[$request['COLLEGE_ROLL_NO']][$slice['PERIOD_ID']][$key2]);
                         $cp_parent_RET[$not_parent_id][$key]['AVAILABLE_SEATS']++;
                     }
                 }
@@ -325,8 +325,8 @@ function _moveRequest($request, $not_request = false, $not_parent_id = false) {
                 // PARENT VIOLATES TEACHER / PERIOD REQUESTS
                 if ($slice['PARENT_ID'] == $slice['COURSE_PERIOD_ID'] && (($request['WITH_TEACHER_ID'] != '' && $slice['TEACHER_ID'] != $request['WITH_TEACHER_ID']) || ($request['WITH_PERIOD_ID'] && $slice['PERIOD_ID'] != $request['WITH_PERIOD_ID']) || ($request['NOT_TEACHER_ID'] && $slice['TEACHER_ID'] == $request['NOT_TEACHER_ID']) || ($request['NOT_PERIOD_ID'] && $slice['PERIOD_ID'] == $request['NOT_PERIOD_ID'])))
                     continue 2;
-                if (count($schedule[$request['STUDENT_ID']][$slice['PERIOD_ID']])) {
-                    foreach ($schedule[$request['STUDENT_ID']][$slice['PERIOD_ID']] as $existing_slice) {
+                if (count($schedule[$request['COLLEGE_ROLL_NO']][$slice['PERIOD_ID']])) {
+                    foreach ($schedule[$request['COLLEGE_ROLL_NO']][$slice['PERIOD_ID']] as $existing_slice) {
                         if (in_array($existing_slice['REQUEST_ID'], $not_request))
                             continue 3;
                         if (true) {
@@ -367,7 +367,7 @@ function _scheduleBest($request, $possible) {
         }
     }
     foreach ($cp_parent_RET[$best['COURSE_PERIOD_ID']] as $key => $slice) {
-        $schedule[$request['STUDENT_ID']][$slice['PERIOD_ID']][] = $slice + array('REQUEST_ID' => $request['REQUEST_ID']);
+        $schedule[$request['COLLEGE_ROLL_NO']][$slice['PERIOD_ID']][] = $slice + array('REQUEST_ID' => $request['REQUEST_ID']);
         $cp_parent_RET[$best['COURSE_PERIOD_ID']][$key]['AVAILABLE_SEATS']--;
     }
 }
