@@ -194,11 +194,15 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
 //            $extra_footer .= '</div>';
 //
 //            PopTable('footer', $extra['footer'] . $extra_footer);
-//	    echo '<input type="button" value="Create Admission Form" onclick="location.href=\'https://google.com\'" />';
-	    echo '<a href="http://localhost/sudo-su/formtools/index.php" target="_blank">Create Admission Form</a>';
-	    echo '<br><form action="create_classes.php">
-	        <input type="submit" value="Create Classes"></input></form>';
-    	    echo '</FORM>';
+            echo '<a href="http://localhost/sudo-su/formtools/index.php" target="_blank">Create Admission Form</a>';
+	    echo '<script>
+		    function createClasses(){
+		    xmlhttp = new XMLHttpRequest();
+		    xmlhttp.open("POST","modules/students/create_classes.php",true);
+		    xmlhttp.send();
+		}
+		</script>';
+	    echo '<br><input type="button" onClick="createClasses();" value="Create Classes"></input>';
             // set focus to last name text box
 	    echo '<script type="text/javascript">
 		    function redirect_to_formtools(){
