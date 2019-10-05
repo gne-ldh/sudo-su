@@ -639,7 +639,7 @@ ALTER TABLE people_fields AUTO_INCREMENT=1;
 
 
 
-CREATE TABLE portal_notes (
+CREATE TABLE notice_board (
     id int(8) not null auto_increment primary key,
     college_id numeric,
     syear numeric(4,0),
@@ -654,7 +654,7 @@ CREATE TABLE portal_notes (
  `updated_by` varchar(255) DEFAULT NULL
 )ENGINE=InnoDB;
 
-ALTER TABLE portal_notes AUTO_INCREMENT=1;
+ALTER TABLE notice_board AUTO_INCREMENT=1;
 
 
 CREATE TABLE profile_exceptions (
