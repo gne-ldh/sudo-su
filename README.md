@@ -2,6 +2,7 @@
 
 * Orignal repository link "https://github.com/OS4ED/openSIS-Responsive-Design"
 * For liscence refer ./docs/Liscence.txt
+* Sandstrom package https://github.com/SurajDadral/sudo-su/releases
 
 This is a Student Information System developed as part of the [GNDEC Hackathon 19](https://docs.google.com/document/d/e/2PACX-1vQEq-pOaY6tpcgOrz-_Okw_L8bIZoDvq8Fr1WW6xD6ExY_aUJm9INa-If0mb2sM8ql7YbLsmGSK6IyU/pub).
 The project is extended from the [OpenSIS project](https://github.com/OS4ED/openSIS-Responsive-Design). We are grateful to the developers of OpenSIS for developing the project and making its source code available to public so that learners like us can work on it.
