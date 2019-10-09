@@ -39,4 +39,7 @@ So since OpenSIS and FormTools are two seperate applications, to use them togeth
 This application can be used in two ways:
 
 1. Progressive Web App: You can deploy it on your server and then use it as a webapp in any web browser.
-1. Sandstrom: This application can also be packaged for and deployed on the Sandstrom app.
+1. Sandstrom: This application can also be packaged for and deployed on the Sandstrom app
+
+**NOTE**
+For more details refer the wiki page of this repository [WikiPage](https://github.com/gne-ldh/sudo-su/wiki)
