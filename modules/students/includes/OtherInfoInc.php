@@ -31,7 +31,7 @@ include_once('modules/students/includes/FunctionsInc.php');
 $fields_RET = DBGet(DBQuery('SELECT ID,TITLE,TYPE,SELECT_OPTIONS,DEFAULT_SELECTION,REQUIRED,HIDE FROM custom_fields WHERE SYSTEM_FIELD = \'N\' AND CATEGORY_ID=\'' . $_REQUEST[category_id] . '\' ORDER BY SORT_ORDER,TITLE'));
 
 if (UserStudentID()) {
-    $custom_RET = DBGet(DBQuery('SELECT * FROM students WHERE STUDENT_ID=\'' . UserStudentID() . '\''));
+    $custom_RET = DBGet(DBQuery('SELECT * FROM students WHERE COLLEGE_ROLL_NO=\'' . UserStudentID() . '\''));
     $value = $custom_RET[1];
 }
 $num_field_gen = true;

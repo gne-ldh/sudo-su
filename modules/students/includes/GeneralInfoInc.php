@@ -52,7 +52,7 @@ echo '<h5 class="text-primary">Demographic Information</h5>';
 
 //echo '<div class="">';
 //echo '<label class="co-md-3">Name <span class="text-danger">*</span>:</label>';
-if ($_REQUEST['student_id'] == 'new') {
+if ($_REQUEST['college_roll_no'] == 'new') {
     unset($_SESSION['students_order']);
     echo '<div class="well m-b-20 clearfix"><h6 class="m-t-0 text-success">Student Name</h6><div class="row"><div class="col-lg-6"><div class="form-group">' . TextInput($student['FIRST_NAME'], 'students[FIRST_NAME]', 'First Name *', 'size=12 class=form-control maxlength=50') . '</div></div><div class="col-lg-6"><div class="form-group">' . TextInput($student['MIDDLE_NAME'], 'students[MIDDLE_NAME]', 'Middle Name', 'class=form-control maxlength=50') . '</div></div></div><div class="row"><div class="col-lg-6"><div class="form-group m-b-0">' . TextInput($student['LAST_NAME'], 'students[LAST_NAME]', 'Last Name *', 'size=12 class=form-control maxlength=50') . '</div></div><div class="col-lg-6"><div class="form-group m-b-0">' . SelectInput($student['NAME_SUFFIX'], 'students[NAME_SUFFIX]', 'Suffix', array('Jr.' => 'Jr.', 'Sr.' => 'Sr.', 'II' => 'II', 'III' => 'III', 'IV' => 'IV', 'V' => 'V'), '', '') . '</div></div></div></div>';
 } else
@@ -87,7 +87,7 @@ echo '</div>'; //.row
 
 echo '<div class="row">';
 echo '<div class="col-lg-6">';
-if ($_REQUEST['student_id'] == 'new')
+if ($_REQUEST['college_roll_no'] == 'new')
     $id_sent = 0;
 else
     $id_sent = UserStudentID();
@@ -100,7 +100,7 @@ echo '</div>'; //.row
 $fields_RET = DBGet(DBQuery('SELECT ID,TITLE,TYPE,SELECT_OPTIONS,DEFAULT_SELECTION,REQUIRED,HIDE,SORT_ORDER FROM custom_fields WHERE SYSTEM_FIELD=\'N\' AND CATEGORY_ID=\'' . $_REQUEST[category_id] . '\' ORDER BY SORT_ORDER,TITLE'));
 
 if (UserStudentID()) {
-    $custom_RET = DBGet(DBQuery('SELECT * FROM students WHERE STUDENT_ID=\'' . UserStudentID() . '\''));
+    $custom_RET = DBGet(DBQuery('SELECT * FROM students WHERE COLLEGE_ROLL_NO=\'' . UserStudentID() . '\''));
     $value = $custom_RET[1];
 }
 
@@ -245,12 +245,12 @@ echo '<h5 class="pt-20 text-primary">College Information</h5>';
 echo '<div class="row">';
 echo '<div class="col-md-6">';
 echo '<div class="form-group">';
-if ($_REQUEST['student_id'] == 'new') {
-    echo NoInput('Will automatically be assigned', 'Student ID');
+if ($_REQUEST['college_roll_no'] == 'new') {
+    echo NoInput('Will automatically be assigned', 'College Roll No');
 
     echo '<span id="ajax_output_stid"></span>';
 } else
-    echo NoInput(UserStudentID(), 'Student ID');
+    echo NoInput(UserStudentID(), 'College Roll No');
 echo '</div></div><div class="col-md-6"><div class="form-group">';
 echo TextInput($student['ALT_ID'], 'students[ALT_ID]', 'Alternate ID', 'size=10 maxlength=45');
 echo '</div></div>'; //.col-md-6
@@ -258,7 +258,7 @@ echo '</div>'; //.row
 
 
 
-if ($_REQUEST['student_id'] != 'new' && $student['COLLEGE_ID'])
+if ($_REQUEST['college_roll_no'] != 'new' && $student['COLLEGE_ID'])
     $college_id = $student['COLLEGE_ID'];
 else
     $college_id = UserCollege();
@@ -270,28 +270,28 @@ if (count($grades_RET)) {
     foreach ($grades_RET as $value)
         $options[$value['ID']] = $value['TITLE'];
 }
-if ($_REQUEST['student_id'] != 'new' && $student['COLLEGE_ID'] != UserCollege()) {
+if ($_REQUEST['college_roll_no'] != 'new' && $student['COLLEGE_ID'] != UserCollege()) {
     $allow_edit = $_openSIS['allow_edit'];
     $AllowEdit = $_openSIS['AllowEdit'][$_REQUEST['modname']];
     $_openSIS['AllowEdit'][$_REQUEST['modname']] = $_openSIS['allow_edit'] = false;
 }
 
-if ($_REQUEST['student_id'] == 'new')
-    $student_id = 'new';
+if ($_REQUEST['college_roll_no'] == 'new')
+    $college_roll_no = 'new';
 else
-    $student_id = UserStudentID();
+    $college_roll_no = UserStudentID();
 
-if ($student_id == 'new' && !VerifyDate($_REQUEST['day_values']['student_enrollment']['new']['START_DATE'] . '-' . $_REQUEST['month_values']['student_enrollment']['new']['START_DATE'] . '-' . $_REQUEST['year_values']['student_enrollment']['new']['START_DATE']))
+if ($college_roll_no == 'new' && !VerifyDate($_REQUEST['day_values']['student_enrollment']['new']['START_DATE'] . '-' . $_REQUEST['month_values']['student_enrollment']['new']['START_DATE'] . '-' . $_REQUEST['year_values']['student_enrollment']['new']['START_DATE']))
     unset($student['GRADE_ID']);
 
 echo '<div class="row">';
 echo '<div class="col-md-6">';
 echo '<div class="form-group"><label class="control-label col-lg-4 text-right">Grade<span class="text-danger">*</span></label><div class="col-lg-8">';
-echo SelectInput($student['GRADE_ID'], 'values[student_enrollment][' . $student_id . '][GRADE_ID]', '', $options, '', '') . '</div></div>';
+echo SelectInput($student['GRADE_ID'], 'values[student_enrollment][' . $college_roll_no . '][GRADE_ID]', '', $options, '', '') . '</div></div>';
 echo '</div>'; //.col-md-6
 
 
-if ($_REQUEST['student_id'] != 'new' && $student['COLLEGE_ID'])
+if ($_REQUEST['college_roll_no'] != 'new' && $student['COLLEGE_ID'])
     $college_id = $student['COLLEGE_ID'];
 else
     $college_id = UserCollege();
@@ -303,18 +303,18 @@ if (count($sec_RET)) {
     foreach ($sec_RET as $value)
         $options[$value['ID']] = $value['NAME'];
 }
-if ($_REQUEST['student_id'] != 'new' && $student['COLLEGE_ID'] != UserCollege()) {
+if ($_REQUEST['college_roll_no'] != 'new' && $student['COLLEGE_ID'] != UserCollege()) {
     $allow_edit = $_openSIS['allow_edit'];
     $AllowEdit = $_openSIS['AllowEdit'][$_REQUEST['modname']];
     $_openSIS['AllowEdit'][$_REQUEST['modname']] = $_openSIS['allow_edit'] = false;
 }
 
-if ($_REQUEST['student_id'] == 'new')
+if ($_REQUEST['college_roll_no'] == 'new')
     $enrollment_id = 'new';
 else
     $enrollment_id = $student['ENROLLMENT_ID'];
 
-if ($student_id == 'new' && !VerifyDate($_REQUEST['day_values']['student_enrollment']['new']['START_DATE'] . '-' . $_REQUEST['month_values']['student_enrollment']['new']['START_DATE'] . '-' . $_REQUEST['year_values']['student_enrollment']['new']['START_DATE']))
+if ($college_roll_no == 'new' && !VerifyDate($_REQUEST['day_values']['student_enrollment']['new']['START_DATE'] . '-' . $_REQUEST['month_values']['student_enrollment']['new']['START_DATE'] . '-' . $_REQUEST['year_values']['student_enrollment']['new']['START_DATE']))
     unset($student['SECTION_ID']);
 
 echo '<div class="col-md-6">';
@@ -351,7 +351,7 @@ echo '</div>'; //.row
 
 
 echo '<div class="row">';
-if ($_REQUEST['student_id'] != 'new') {
+if ($_REQUEST['college_roll_no'] != 'new') {
     echo '<div class="col-lg-6">';
     echo '<div class="form-group">' . NoInput(ProperDate(substr($student['LAST_LOGIN'], 0, 10)) . substr($student['LAST_LOGIN'], 10), 'Last Login');
     echo '</div></div>'; //.col-lg-6
@@ -374,7 +374,7 @@ echo '<div class="col-md-2">';
 if (UserStudentID()) {
     $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . UserStudentID() . ' AND PROFILE_ID=3 AND COLLEGE_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
 }
-if ($_REQUEST['student_id'] != 'new' && count($stu_img_info) > 0) {
+if ($_REQUEST['college_roll_no'] != 'new' && count($stu_img_info) > 0) {
 
     echo '<div width=150 align="center"><IMG src="data:image/jpeg;base64,' . base64_encode($stu_img_info[1]['CONTENT']) . '" width=150 class=pic>';
     if (User('PROFILE') == 'admin' && User('PROFILE') != 'student' && User('PROFILE') != 'parent')
@@ -383,7 +383,7 @@ if ($_REQUEST['student_id'] != 'new' && count($stu_img_info) > 0) {
         echo '';
 }
 else {
-    if ($_REQUEST['student_id'] != 'new') {
+    if ($_REQUEST['college_roll_no'] != 'new') {
 
         echo '<div align="center">Upload Student\'s Photo:<br/><IMG SRC="assets/noimage.jpg?id=' . rand(6, 100000) . '" width=144 class=pic>';
         if (User('PROFILE') == 'admin' && User('PROFILE') != 'student' && User('PROFILE') != 'parent') {

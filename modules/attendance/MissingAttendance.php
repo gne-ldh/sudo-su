@@ -48,8 +48,8 @@ foreach ($stu_missing_atten as $k => $f) {
     $sch_date = $f['COLLEGE_DATE'];
     $staff_id = $f['TEACHER_ID'];
     $c_id = $f['COURSE_PERIOD_ID'];
-    $sch_qr = DBGet(DBQuery('SELECT distinct(student_id) FROM schedule  WHERE  (END_DATE IS NULL OR END_DATE>=\'' . $sch_date . '\') AND START_DATE<=\'' . $sch_date . '\' AND course_period_id=' . $c_id));
-    $att_qr = DBGet(DBQuery('SELECT distinct(student_id) FROM attendance_period  where COLLEGE_DATE=\'' . $sch_date . '\' AND PERIOD_ID=' . $pr_id . ' AND course_period_id=' . $c_id));
+    $sch_qr = DBGet(DBQuery('SELECT distinct(college_roll_no) FROM schedule  WHERE  (END_DATE IS NULL OR END_DATE>=\'' . $sch_date . '\') AND START_DATE<=\'' . $sch_date . '\' AND course_period_id=' . $c_id));
+    $att_qr = DBGet(DBQuery('SELECT distinct(college_roll_no) FROM attendance_period  where COLLEGE_DATE=\'' . $sch_date . '\' AND PERIOD_ID=' . $pr_id . ' AND course_period_id=' . $c_id));
 
     if (count($sch_qr) == count($att_qr)) {
 

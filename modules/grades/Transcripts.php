@@ -43,7 +43,7 @@ s.first_name
 , a.zipcode
 , sg.title as grade_title
 , sg.short_name as grade_short
-, (select start_date from student_enrollment where student_id = s.student_id order by syear, start_date limit 1) as init_enroll
+, (select start_date from student_enrollment where college_roll_no = s.college_roll_no order by syear, start_date limit 1) as init_enroll
 , CASE 
 WHEN sg.short_name = \'12\' THEN e.syear + 1
 WHEN sg.short_name = \'11\' THEN e.syear + 2
@@ -51,23 +51,23 @@ WHEN sg.short_name = \'10\' THEN e.syear + 3
 WHEN sg.short_name = \'09\' THEN e.syear + 4
   END AS gradyear
 from students s
-inner join student_enrollment e on e.student_id=s.student_id and (e.start_date <= e.end_date or e.end_date is null) and e.syear = ' . $tsyear . '
+inner join student_enrollment e on e.college_roll_no=s.college_roll_no and (e.start_date <= e.end_date or e.end_date is null) and e.syear = ' . $tsyear . '
 inner join college_gradelevels sg on sg.id=e.grade_id
 inner join colleges sch on sch.id=e.college_id
-left join student_address a on (a.student_id=s.student_id and a.type=\'Home Address\')
-where  s.student_id = ';
+left join student_address a on (a.college_roll_no=s.college_roll_no and a.type=\'Home Address\')
+where  s.college_roll_no = ';
 $creditquery = 'SELECT divisor AS credit_attempted,credit_earned AS credit_earned
 FROM student_gpa_running sgr
-WHERE  sgr.student_id = ';
+WHERE  sgr.college_roll_no = ';
 
 $cgpaquery = 'select *
 from student_gpa_running sgr
-where sgr.student_id= ';
+where sgr.college_roll_no= ';
 if ($_REQUEST['modfunc'] == 'save') {
     $handle = PDFStart();
     //loop through each student
     $_REQUEST['st_arr'] = array_unique($_REQUEST['st_arr']);
-    foreach ($_REQUEST['st_arr'] as $arrkey => $student_id) {
+    foreach ($_REQUEST['st_arr'] as $arrkey => $college_roll_no) {
         $total_QP_transcript = 0;
         $total_QP_transcript_fy = 0;
         $total_QP_transcript_qr = 0;
@@ -78,12 +78,12 @@ if ($_REQUEST['modfunc'] == 'save') {
         $total_CGPA_earned_qr = 0;
         $total_CGPA_attemted = 0;
         $tot_qp = 0;
-        if (User('PROFILE') == 'admin' || UserStudentID() == $student_id) {
+        if (User('PROFILE') == 'admin' || UserStudentID() == $college_roll_no) {
 
-            $stu_ret = DBGet(DBQuery($studataquery . $student_id), array('BIRTHDATE' => 'ProperDate'));
+            $stu_ret = DBGet(DBQuery($studataquery . $college_roll_no), array('BIRTHDATE' => 'ProperDate'));
             $sinfo = $stu_ret[1];
 
-            $tquery = "select * from transcript_grades where student_id = $student_id  order by mp_id  ";
+            $tquery = "select * from transcript_grades where college_roll_no = $college_roll_no  order by mp_id  ";
 
             $TRET = DBGet(DBQuery($tquery));
             $course_html = array(0 => '', 1 => '', 2 => '');
@@ -141,7 +141,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
 
                     if ($firstrec['COLLEGE_ID'] != '' && $firstrec['SYEAR'] != '') {
-                        $gradelevel = DBGet(DBQuery('SELECT sg.TITLE FROM college_gradelevels sg,student_enrollment se WHERE se.STUDENT_ID=' . $firstrec['STUDENT_ID'] . ' AND se.COLLEGE_ID=' . $firstrec['COLLEGE_ID'] . ' AND se.SYEAR=' . $firstrec['SYEAR'] . ' AND se.GRADE_ID=sg.ID ORDER BY se.ID DESC LIMIT 0,1'));
+                        $gradelevel = DBGet(DBQuery('SELECT sg.TITLE FROM college_gradelevels sg,student_enrollment se WHERE se.COLLEGE_ROLL_NO=' . $firstrec['COLLEGE_ROLL_NO'] . ' AND se.COLLEGE_ID=' . $firstrec['COLLEGE_ID'] . ' AND se.SYEAR=' . $firstrec['SYEAR'] . ' AND se.GRADE_ID=sg.ID ORDER BY se.ID DESC LIMIT 0,1'));
                         $gradelevel = $gradelevel[1]['TITLE'];
                     }
                     if ($gradelevel == '' && $firstrec['MP_SOURCE'] == 'History')
@@ -293,7 +293,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                         <h2 class="m-0"><?php echo $sinfo['LAST_NAME'] . ', ' . $sinfo['FIRST_NAME'] . ' ' . $sinfo['MIDDLE_NAME']; ?></h2>
                         <p class="m-t-5 m-b-0"><?php echo (($sinfo['ADDRESS'] != '') ? $sinfo['ADDRESS'] : '') . (($sinfo['CITY'] != '') ? ', ' . $sinfo['CITY'] : '') . (($sinfo['STATE'] != '') ? ', ' . $sinfo['STATE'] : '') . (($sinfo['ZIPCODE'] != '') ? ', ' . $sinfo['ZIPCODE'] : ''); ?></p>
                         <p class="m-t-5 m-b-0"><b>Date of Birth :</b> <?php echo str_replace('-', '/', $sinfo['BIRTHDATE']); ?></p>
-                        <p class="m-t-5 m-b-0"><b>Student ID :</b><?php echo $student_id ?></p>
+                        <p class="m-t-5 m-b-0"><b>College Roll No :</b><?php echo $college_roll_no ?></p>
                         <p class="m-t-5 m-b-0"><b>Grade Level :</b> <?php echo $sinfo['GRADE_SHORT']; ?></p>
                     </div>
                     <div class="transcript-student-overview">
@@ -396,7 +396,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                 <?php
                 $picturehtml = '';
                 if ($_REQUEST['show_photo']) {
-                    $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . $student_id . ' AND PROFILE_ID=3 AND COLLEGE_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
+                    $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . $college_roll_no . ' AND PROFILE_ID=3 AND COLLEGE_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
                     if (count($stu_img_info) > 0) {
                         $picturehtml = '<td valign="top" align="left" width=30%><img style="padding:4px; width:144px; border:1px solid #333333; background-color:#fff;" src="data:image/jpeg;base64,' . base64_encode($stu_img_info[1]['CONTENT']) . '"></td>';
                     } else {
@@ -458,7 +458,7 @@ if (!$_REQUEST['modfunc']) {
         $extra['extra_header_left'] .= '</div>';
     }
     $extra['link'] = array('FULL_NAME' => false);
-    $extra['SELECT'] = ",s.STUDENT_ID AS CHECKBOX";
+    $extra['SELECT'] = ",s.COLLEGE_ROLL_NO AS CHECKBOX";
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
 //    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller checked onclick="checkAll(this.form,this.form.controller.checked,\'st_arr\');"><A>');
 //    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'unused\');"><A>');
@@ -490,7 +490,7 @@ if (!$_REQUEST['modfunc']) {
 
 
 
-    Search('student_id', $extra, 'true');
+    Search('college_roll_no', $extra, 'true');
     if ($_REQUEST['search_modfunc'] == 'list') {
         if ($_SESSION['count_stu'] != 0)
             echo '<div class="text-right p-b-20 p-r-20"><INPUT type=submit class="btn btn-primary" value=\'Create Transcripts for Selected Students\'></div>';
@@ -534,9 +534,9 @@ if (!$_REQUEST['modfunc']) {
 function _makeChooseCheckbox($value, $title) {
     global $THIS_RET;
 //    return '<INPUT type=checkbox name=st_arr[] value=' . $value . ' checked>';
-//    return "<input name=unused[$THIS_RET[STUDENT_ID]]  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckbox(\"values[STUDENTS][$THIS_RET[STUDENT_ID]]\",this,$THIS_RET[STUDENT_ID]);' />";
+//    return "<input name=unused[$THIS_RET[COLLEGE_ROLL_NO]]  type='checkbox' id=$THIS_RET[COLLEGE_ROLL_NO] onClick='setHiddenCheckbox(\"values[STUDENTS][$THIS_RET[COLLEGE_ROLL_NO]]\",this,$THIS_RET[COLLEGE_ROLL_NO]);' />";
 
-    return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
+    return "<input name=unused[$THIS_RET[COLLEGE_ROLL_NO]] value=" . $THIS_RET[COLLEGE_ROLL_NO] . "  type='checkbox' id=$THIS_RET[COLLEGE_ROLL_NO] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[COLLEGE_ROLL_NO]);' />";
 }
 
 function _convertlinefeed($string) {

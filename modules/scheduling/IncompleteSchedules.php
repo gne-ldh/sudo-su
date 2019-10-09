@@ -47,10 +47,10 @@ if ($_REQUEST['search_modfunc'] == 'list') {
     Widgets('request');
     $extra['SELECT'] .= ',sp.PERIOD_ID';
     $extra['FROM'] .= ',college_periods sp,schedule ss,course_periods cp,course_period_var cpv';
-    $extra['WHERE'] .= ' AND (\'' . DBDate() . '\' BETWEEN ss.START_DATE AND ss.END_DATE OR ss.END_DATE IS NULL) AND ss.COLLEGE_ID=ssm.COLLEGE_ID AND ss.MARKING_PERIOD_ID IN (' . $mp . ') AND ss.STUDENT_ID=ssm.STUDENT_ID AND ss.SYEAR=ssm.SYEAR AND ss.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.PERIOD_ID=sp.PERIOD_ID ';
+    $extra['WHERE'] .= ' AND (\'' . DBDate() . '\' BETWEEN ss.START_DATE AND ss.END_DATE OR ss.END_DATE IS NULL) AND ss.COLLEGE_ID=ssm.COLLEGE_ID AND ss.MARKING_PERIOD_ID IN (' . $mp . ') AND ss.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND ss.SYEAR=ssm.SYEAR AND ss.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.PERIOD_ID=sp.PERIOD_ID ';
     if (UserStudentID())
-        $extra['WHERE'] .= ' AND s.STUDENT_ID=\'' . UserStudentID() . '\' ';
-    $extra['group'] = array('STUDENT_ID', 'PERIOD_ID');
+        $extra['WHERE'] .= ' AND s.COLLEGE_ROLL_NO=\'' . UserStudentID() . '\' ';
+    $extra['group'] = array('COLLEGE_ROLL_NO', 'PERIOD_ID');
 
     $schedule_RET = GetStuList($extra);
 }
@@ -65,7 +65,7 @@ foreach ($periods_RET as $period) {
     $extra['functions']['PERIOD_' . $period['PERIOD_ID']] = '_preparePeriods';
 }
 if (!$_REQUEST['search_modfunc'])
-    Search('student_id', $extra);
+    Search('college_roll_no', $extra);
 else {
     $singular = 'Student with an incomplete schedule';
     $plural = 'students with incomplete schedules';
@@ -73,7 +73,7 @@ else {
     $students_RET = GetStuList($extra);
     $bad_students[0] = array();
     foreach ($students_RET as $student) {
-        if (count($schedule_RET[$student['STUDENT_ID']]) != count($periods_RET))
+        if (count($schedule_RET[$student['COLLEGE_ROLL_NO']]) != count($periods_RET))
             $bad_students[] = $student;
     }
     if (!is_array($extra['columns_after'])) {
@@ -82,10 +82,10 @@ else {
     unset($bad_students[0]);
 
     $link['FULL_NAME']['link'] = "Modules.php?modname=scheduling/Schedule.php";
-    $link['FULL_NAME']['variables'] = array('student_id' => 'STUDENT_ID');
+    $link['FULL_NAME']['variables'] = array('college_roll_no' => 'COLLEGE_ROLL_NO');
     echo '<div class="panel panel-default">';
     echo '<div class="table-responsive">';
-    ListOutput($bad_students, array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'Student ID', 'GRADE_ID' => 'Grade') + $extra['columns_after'], $singular, $plural, $link);
+    ListOutput($bad_students, array('FULL_NAME' => 'Student', 'COLLEGE_ROLL_NO' => 'College Roll No', 'GRADE_ID' => 'Grade') + $extra['columns_after'], $singular, $plural, $link);
     echo "</div>"; //.table-responsive
     echo "</div>"; //.panel.panel-default
 }
@@ -94,7 +94,7 @@ function _preparePeriods($value, $name) {
     global $THIS_RET, $schedule_RET;
 
     $period_id = substr($name, 7);
-    if (!$schedule_RET[$THIS_RET['STUDENT_ID']][$period_id])
+    if (!$schedule_RET[$THIS_RET['COLLEGE_ROLL_NO']][$period_id])
         return '<IMG SRC=assets/x.gif>';
     else
         return '';

@@ -105,7 +105,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
     if (count($_REQUEST['st_arr'])) {
         $st_list = '\'' . implode('\',\'', $_REQUEST['st_arr']) . '\'';
-        $extra['WHERE'] = ' AND s.STUDENT_ID IN (' . $st_list . ')';
+        $extra['WHERE'] = ' AND s.COLLEGE_ROLL_NO IN (' . $st_list . ')';
 
 
 
@@ -127,13 +127,13 @@ if ($_REQUEST['modfunc'] == 'save') {
             $handle = PDFStart();
 
             foreach ($RET as $student) {
-                $_SESSION['student_id'] = $student['STUDENT_ID'];
+                $_SESSION['college_roll_no'] = $student['COLLEGE_ROLL_NO'];
                 echo "<table width=100% style=\" font-family:Arial; font-size:12px;\" >";
                 echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetCollege(UserCollege()) . "<div style=\"font-size:12px;\">Student Information Report</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
 
                 echo "<table cellspacing=0  border=\"0\" style=\"border-collapse:collapse\">";
                 echo "<tr><td colspan=3 style=\"height:18px\"></td></tr>";
-                $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . $student['STUDENT_ID'] . ' AND PROFILE_ID=3 AND COLLEGE_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
+                $stu_img_info = DBGet(DBQuery('SELECT * FROM user_file_upload WHERE USER_ID=' . $student['COLLEGE_ROLL_NO'] . ' AND PROFILE_ID=3 AND COLLEGE_ID=' . UserCollege() . ' AND SYEAR=' . UserSyear() . ' AND FILE_INFO=\'stuimg\''));
                 // if ($StudentPicturesPath && (($file = @fopen($picture_path = $StudentPicturesPath . '/' . UserStudentID() . '.JPG', 'r')) || ($file = @fopen($picture_path = $StudentPicturesPath . '/' . UserStudentID() . '.JPG', 'r')))) {
                 // echo '<tr><td width=300><IMG SRC="' . $picture_path . '?id=' . rand(6, 100000) . '" width=150  style="padding:4px; background-color:#fff; border:1px solid #333" ></td><td width=12px></td>';
                 if (count($stu_img_info) > 0) {
@@ -148,17 +148,17 @@ if ($_REQUEST['modfunc'] == 'save') {
 
                 # ---------------- Sql Including Comment ------------------------------- #
 
-                $sql = DBGet(DBQuery('SELECT s.gender AS GENDER, s.ethnicity AS ETHNICITY, s.common_name AS COMMON_NAME,  s.social_security AS SOCIAL_SEC_NO, s.birthdate AS BIRTHDAY, s.email AS EMAIL, s.phone AS PHONE, s.language AS LANGUAGE, se.START_DATE AS START_DATE,sec.TITLE AS STATUS, se.NEXT_COLLEGE AS ROLLING  FROM students s, student_enrollment se,student_enrollment_codes sec WHERE s.STUDENT_ID=\'' . $_SESSION['student_id'] . '\'  AND se.COLLEGE_ID=\'' . UserCollege() . '\' AND se.SYEAR=sec.SYEAR AND s.STUDENT_ID=se.STUDENT_ID'), array('BIRTHDAY' => 'ProperDate'));
+                $sql = DBGet(DBQuery('SELECT s.gender AS GENDER, s.ethnicity AS ETHNICITY, s.common_name AS COMMON_NAME,  s.social_security AS SOCIAL_SEC_NO, s.birthdate AS BIRTHDAY, s.email AS EMAIL, s.phone AS PHONE, s.language AS LANGUAGE, se.START_DATE AS START_DATE,sec.TITLE AS STATUS, se.NEXT_COLLEGE AS ROLLING  FROM students s, student_enrollment se,student_enrollment_codes sec WHERE s.COLLEGE_ROLL_NO=\'' . $_SESSION['college_roll_no'] . '\'  AND se.COLLEGE_ID=\'' . UserCollege() . '\' AND se.SYEAR=sec.SYEAR AND s.COLLEGE_ROLL_NO=se.COLLEGE_ROLL_NO'), array('BIRTHDAY' => 'ProperDate'));
 
 
                 $sql = $sql[1];
 
-                $medical_info = DBGet((DBQuery('SELECT  mi.physician AS PHYSICIAN_NAME, mi.physician_phone AS PHYSICIAN_PHONO,mi.preferred_hospital AS HOSPITAL FROM medical_info mi WHERE mi.STUDENT_ID=\'' . $_SESSION['student_id'] . '\'  AND mi.COLLEGE_ID=\'' . UserCollege() . '\'')));
+                $medical_info = DBGet((DBQuery('SELECT  mi.physician AS PHYSICIAN_NAME, mi.physician_phone AS PHYSICIAN_PHONO,mi.preferred_hospital AS HOSPITAL FROM medical_info mi WHERE mi.COLLEGE_ROLL_NO=\'' . $_SESSION['college_roll_no'] . '\'  AND mi.COLLEGE_ID=\'' . UserCollege() . '\'')));
                 $sql['PHYSICIAN_NAME'] = $medical_info[1]['PHYSICIAN_NAME'];
                 $sql['PHYSICIAN_PHONO'] = $medical_info[1]['PHYSICIAN_PHONO'];
                 $sql['HOSPITAL'] = $medical_info[1]['HOSPITAL'];
 
-                $medical_note = DBGet(DBQuery('SELECT doctors_note_date AS MCOMNT,doctors_note_comments AS DNOTE FROM student_medical_notes WHERE  STUDENT_ID=\'' . $_SESSION['student_id'] . '\''), array('MCOMNT' => 'ProperDate'));
+                $medical_note = DBGet(DBQuery('SELECT doctors_note_date AS MCOMNT,doctors_note_comments AS DNOTE FROM student_medical_notes WHERE  COLLEGE_ROLL_NO=\'' . $_SESSION['college_roll_no'] . '\''), array('MCOMNT' => 'ProperDate'));
                 unset($_openSIS['DrawHeader']);
 
                 echo "<td valign=top width=300>";
@@ -173,7 +173,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                     echo "<tr><td width=45% style='font-weight:bold'>Student Name:</td>";
                     echo "<td width=55%>" . $student['FULL_NAME'] . "</td></tr>";
                     echo "<tr><td style='font-weight:bold'>ID:</td>";
-                    echo "<td>" . $student['STUDENT_ID'] . " </td></tr>";
+                    echo "<td>" . $student['COLLEGE_ROLL_NO'] . " </td></tr>";
                     if ($student['ALT_ID'] != '') {
                         echo "<tr><td style='font-weight:bold'>Alt ID:</td>";
                         echo "<td>" . $student['ALT_ID'] . " </td></tr>";
@@ -231,7 +231,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
                 ######################## PRINT MEDICAL CUSTOM FIELDS ################################################
                 $fields_RET = DBGet(DBQuery('SELECT ID,TITLE,TYPE,SELECT_OPTIONS,DEFAULT_SELECTION,REQUIRED FROM custom_fields WHERE CATEGORY_ID=1 ORDER BY SORT_ORDER,TITLE'));
-                $custom_RET = DBGet(DBQuery('SELECT * FROM students WHERE STUDENT_ID=\'' . UserStudentID() . '\''));
+                $custom_RET = DBGet(DBQuery('SELECT * FROM students WHERE COLLEGE_ROLL_NO=\'' . UserStudentID() . '\''));
                 $value = $custom_RET[1];
                 if (count($fields_RET)) {
 
@@ -241,7 +241,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                             echo '<TR>';
                             echo '<td style="font-weight:bold">' . $field['TITLE'] . ':</td><td>';
                             if ($field['TYPE'] == 'date') {
-                                $cust_date = DBGet(DBQuery('SELECT CUSTOM_\'' . $field[ID] . '\' AS C_DATE FROM students WHERE STUDENT_ID=\'' . UserStudentID() . '\''), array('C_DATE' => 'ProperDate'));
+                                $cust_date = DBGet(DBQuery('SELECT CUSTOM_\'' . $field[ID] . '\' AS C_DATE FROM students WHERE COLLEGE_ROLL_NO=\'' . UserStudentID() . '\''), array('C_DATE' => 'ProperDate'));
                                 echo $cust_date[1]['C_DATE'];
                             } else {
                                 echo $value['CUSTOM_' . $field['ID']];
@@ -258,23 +258,23 @@ if ($_REQUEST['modfunc'] == 'save') {
                 echo "<tr><td valign=top width=300>";
                 if ($_REQUEST['category']['3']) {
                     $addr_sql = 'SELECT sa.ID AS ADDRESS_ID, sjp.RELATIONSHIP AS STUDENT_RELATION, sa.STREET_ADDRESS_1 as ADDRESS,sa.STREET_ADDRESS_2 as STREET,sa.CITY,sa.STATE,sa.ZIPCODE,p.HOME_PHONE AS PHONE,
-               (select STREET_ADDRESS_1 FROM student_address WHERE student_id=' . UserStudentID() . ' AND TYPE=\'Mail\') as MAIL_ADDRESS,
-               (select STREET_ADDRESS_2 FROM student_address WHERE student_id=' . UserStudentID() . ' AND TYPE=\'Mail\') as MAIL_STREET,
-               (select CITY FROM student_address WHERE student_id=' . UserStudentID() . ' AND TYPE=\'Mail\') as MAIL_CITY,
-               (select STATE FROM student_address WHERE student_id=' . UserStudentID() . ' AND TYPE=\'Mail\') as MAIL_STATE,
-               (select ZIPCODE FROM student_address WHERE student_id=' . UserStudentID() . ' AND TYPE=\'Mail\') as MAIL_ZIPCODE,
+               (select STREET_ADDRESS_1 FROM student_address WHERE college_roll_no=' . UserStudentID() . ' AND TYPE=\'Mail\') as MAIL_ADDRESS,
+               (select STREET_ADDRESS_2 FROM student_address WHERE college_roll_no=' . UserStudentID() . ' AND TYPE=\'Mail\') as MAIL_STREET,
+               (select CITY FROM student_address WHERE college_roll_no=' . UserStudentID() . ' AND TYPE=\'Mail\') as MAIL_CITY,
+               (select STATE FROM student_address WHERE college_roll_no=' . UserStudentID() . ' AND TYPE=\'Mail\') as MAIL_STATE,
+               (select ZIPCODE FROM student_address WHERE college_roll_no=' . UserStudentID() . ' AND TYPE=\'Mail\') as MAIL_ZIPCODE,
                p.CUSTODY
                FROM student_address sa,students_join_people sjp,people p 
-               WHERE sa.STUDENT_ID=sjp.STUDENT_ID AND sa.STUDENT_ID=' . UserStudentID() . '  AND p.STAFF_ID=sjp.PERSON_ID AND p.STAFF_ID=sa.PEOPLE_ID AND sjp.EMERGENCY_TYPE=\'Primary\'
+               WHERE sa.COLLEGE_ROLL_NO=sjp.COLLEGE_ROLL_NO AND sa.COLLEGE_ROLL_NO=' . UserStudentID() . '  AND p.STAFF_ID=sjp.PERSON_ID AND p.STAFF_ID=sa.PEOPLE_ID AND sjp.EMERGENCY_TYPE=\'Primary\'
                UNION 
                SELECT sa.ID AS ADDRESS_ID,\'No Contacts\' AS STUDENT_RELATION,sa.STREET_ADDRESS_1 as ADDRESS,sa.STREET_ADDRESS_2 as STREET,sa.CITY,sa.STATE,sa.ZIPCODE,s.PHONE,
-               (select STREET_ADDRESS_1 FROM student_address WHERE student_id=' . UserStudentID() . ' AND TYPE=\'Mail\') as MAIL_ADDRESS,
-               (select STREET_ADDRESS_2 FROM student_address WHERE student_id=' . UserStudentID() . ' AND TYPE=\'Mail\') as MAIL_STREET,
-               (select CITY FROM student_address WHERE student_id=' . UserStudentID() . ' AND TYPE=\'Mail\') as MAIL_CITY,
-               (select STATE FROM student_address WHERE student_id=' . UserStudentID() . ' AND TYPE=\'Mail\') as MAIL_STATE,
-               (select ZIPCODE FROM student_address WHERE student_id=' . UserStudentID() . ' AND TYPE=\'Mail\') as MAIL_ZIPCODE,
+               (select STREET_ADDRESS_1 FROM student_address WHERE college_roll_no=' . UserStudentID() . ' AND TYPE=\'Mail\') as MAIL_ADDRESS,
+               (select STREET_ADDRESS_2 FROM student_address WHERE college_roll_no=' . UserStudentID() . ' AND TYPE=\'Mail\') as MAIL_STREET,
+               (select CITY FROM student_address WHERE college_roll_no=' . UserStudentID() . ' AND TYPE=\'Mail\') as MAIL_CITY,
+               (select STATE FROM student_address WHERE college_roll_no=' . UserStudentID() . ' AND TYPE=\'Mail\') as MAIL_STATE,
+               (select ZIPCODE FROM student_address WHERE college_roll_no=' . UserStudentID() . ' AND TYPE=\'Mail\') as MAIL_ZIPCODE,
                NULL AS CUSTODY
-               FROM students s,student_address sa WHERE sa.STUDENT_ID=' . UserStudentID() . ' AND s.STUDENT_ID=sa.STUDENT_ID AND sa.TYPE=\'Home Address\'
+               FROM students s,student_address sa WHERE sa.COLLEGE_ROLL_NO=' . UserStudentID() . ' AND s.COLLEGE_ROLL_NO=sa.COLLEGE_ROLL_NO AND sa.TYPE=\'Home Address\'
                ORDER BY ADDRESS ASC,CUSTODY ASC,STUDENT_RELATION';
                     $addresses_RET = DBGet(DBQuery($addr_sql));
                     $address_previous = "x";
@@ -321,12 +321,12 @@ if ($_REQUEST['modfunc'] == 'save') {
                             }
 
                             echo "<table width=100% border=0><tr><td colspan=2 style=\"border-bottom:1px solid #333;  font-size:14px;  font-weight:bold;\">Primary Emergency Contact</td></tr>";
-                            $pri_par_id = DBGet(DBQuery('SELECT * FROM students_join_people WHERE STUDENT_ID=' . UserStudentID() . ' AND EMERGENCY_TYPE=\'Primary\''));
-                            $sec_par_id = DBGet(DBQuery('SELECT * FROM students_join_people WHERE STUDENT_ID=' . UserStudentID() . ' AND EMERGENCY_TYPE=\'Secondary\''));
+                            $pri_par_id = DBGet(DBQuery('SELECT * FROM students_join_people WHERE COLLEGE_ROLL_NO=' . UserStudentID() . ' AND EMERGENCY_TYPE=\'Primary\''));
+                            $sec_par_id = DBGet(DBQuery('SELECT * FROM students_join_people WHERE COLLEGE_ROLL_NO=' . UserStudentID() . ' AND EMERGENCY_TYPE=\'Secondary\''));
 
                             $Stu_prim_address = DBGet(DBQuery('SELECT p.FIRST_NAME as PRI_FIRST_NAME,p.LAST_NAME as PRI_LAST_NAME,sa.STREET_ADDRESS_1 as PRIM_ADDRESS,sa.STREET_ADDRESS_2 as PRIM_STREET,sa.CITY as PRIM_CITY,sa.STATE as PRIM_STATE,sa.ZIPCODE as PRIM_ZIPCODE,sjp.RELATIONSHIP as PRIM_STUDENT_RELATION,p.home_phone as PRIM_HOME_PHONE,p.work_phone as PRIM_WORK_PHONE,p.cell_phone as PRIM_CELL_PHONE FROM  student_address sa,people p,students_join_people sjp WHERE  sa.PEOPLE_ID=p.STAFF_ID  AND p.STAFF_ID=\'' . $pri_par_id[1]['PERSON_ID'] . '\' AND sjp.PERSON_ID=p.STAFF_ID LIMIT 1'));
                             $Stu_sec_address = DBGet(DBQuery('SELECT p.FIRST_NAME as SEC_FIRST_NAME,p.LAST_NAME as SEC_LAST_NAME,sa.STREET_ADDRESS_1 as SEC_ADDRESS,sa.STREET_ADDRESS_2 as SEC_STREET,sa.type as SA_TYPE,sa.CITY as SEC_CITY,sa.STATE as SEC_STATE,sa.ZIPCODE as SEC_ZIPCODE,sjp.RELATIONSHIP as SEC_STUDENT_RELATION,sjp.EMERGENCY_TYPE,p.home_phone as SEC_HOME_PHONE,p.work_phone as SEC_WORK_PHONE,p.cell_phone as SEC_CELL_PHONE  FROM student_address sa,people p,students_join_people sjp WHERE p.STAFF_ID=\'' . $sec_par_id[1]['PERSON_ID'] . '\' AND sa.PEOPLE_ID=p.STAFF_ID AND sa.TYPE=\'Secondary\' AND sjp.PERSON_ID=p.STAFF_ID LIMIT 1'));
-                            $st_ja_pe = DBGet(DBQuery('select * from students_join_people where  STUDENT_ID=\'' . UserStudentID() . '\' and EMERGENCY_TYPE=\'Secondary\''));
+                            $st_ja_pe = DBGet(DBQuery('select * from students_join_people where  COLLEGE_ROLL_NO=\'' . UserStudentID() . '\' and EMERGENCY_TYPE=\'Secondary\''));
                             $contacts_RET[1] = $Stu_prim_address[1];
                             foreach ($Stu_sec_address[1] as $ind => $col)
                                 $contacts_RET[1][$ind] = $col;
@@ -442,7 +442,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                                 echo "</td></tr>";
 
                                 echo "<tr><td valign=top>";
-                                $info_RET = DBGet(DBQuery("SELECT p.FIRST_NAME,p.MIDDLE_NAME,p.LAST_NAME,sjp.RELATIONSHIP AS STUDENT_RELATION,p.HOME_PHONE AS ADDN_HOME_PHONE,p.WORK_PHONE AS ADDN_WORK_PHONE,p.EMAIL AS ADDN_EMAIL,sa.STREET_ADDRESS_1 AS ADDN_ADDRESS,sa.STREET_ADDRESS_2 AS ADDN_STREET,sa.CITY AS ADDN_CITY,sa.STATE AS ADDN_STATE,sa.ZIPCODE AS ADDN_ZIPCODE FROM people p,students_join_people sjp,student_address sa WHERE p.STAFF_ID=sjp.PERSON_ID AND sa.STUDENT_ID=sjp.STUDENT_ID AND sjp.PERSON_ID=sa.PEOPLE_ID AND sjp.STUDENT_ID='" . UserStudentID() . "' AND sjp.emergency_type='Other'"));
+                                $info_RET = DBGet(DBQuery("SELECT p.FIRST_NAME,p.MIDDLE_NAME,p.LAST_NAME,sjp.RELATIONSHIP AS STUDENT_RELATION,p.HOME_PHONE AS ADDN_HOME_PHONE,p.WORK_PHONE AS ADDN_WORK_PHONE,p.EMAIL AS ADDN_EMAIL,sa.STREET_ADDRESS_1 AS ADDN_ADDRESS,sa.STREET_ADDRESS_2 AS ADDN_STREET,sa.CITY AS ADDN_CITY,sa.STATE AS ADDN_STATE,sa.ZIPCODE AS ADDN_ZIPCODE FROM people p,students_join_people sjp,student_address sa WHERE p.STAFF_ID=sjp.PERSON_ID AND sa.COLLEGE_ROLL_NO=sjp.COLLEGE_ROLL_NO AND sjp.PERSON_ID=sa.PEOPLE_ID AND sjp.COLLEGE_ROLL_NO='" . UserStudentID() . "' AND sjp.emergency_type='Other'"));
 
                                 if ($info_RET[1]['STUDENT_RELATION'] != '') {
                                     echo '<table width=100%>';
@@ -506,7 +506,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                     }
 
 
-                    $contacts_RET2 = DBGet(DBQuery('SELECT p.STAFF_ID as PERSON_ID,p.FIRST_NAME,p.MIDDLE_NAME,p.LAST_NAME,p.CUSTODY,sjp.EMERGENCY_TYPE AS EMERGENCY,sjp.RELATIONSHIP AS STUDENT_RELATION FROM people p,students_join_people sjp WHERE p.STAFF_ID=sjp.PERSON_ID AND sjp.STUDENT_ID=' . UserStudentID()));
+                    $contacts_RET2 = DBGet(DBQuery('SELECT p.STAFF_ID as PERSON_ID,p.FIRST_NAME,p.MIDDLE_NAME,p.LAST_NAME,p.CUSTODY,sjp.EMERGENCY_TYPE AS EMERGENCY,sjp.RELATIONSHIP AS STUDENT_RELATION FROM people p,students_join_people sjp WHERE p.STAFF_ID=sjp.PERSON_ID AND sjp.COLLEGE_ROLL_NO=' . UserStudentID()));
                     foreach ($contacts_RET2 as $contact) {
                         echo '<B>' . $contact['FIRST_NAME'] . ' ' . ($contact['MIDDLE_NAME'] ? $contact['MIDDLE_NAME'] . ' ' : '') . $contact['LAST_NAME'] . ($contact['STUDENT_RELATION'] ? ': ' . $contact['STUDENT_RELATION'] : '') . ' &nbsp;</B>';
 
@@ -555,7 +555,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
                     ########################################################################
                     $fields_RET = DBGet(DBQuery("SELECT ID,TITLE,TYPE,SELECT_OPTIONS,DEFAULT_SELECTION,REQUIRED FROM custom_fields WHERE CATEGORY_ID='2' ORDER BY SORT_ORDER,TITLE"));
-                    $custom_RET = DBGet(DBQuery("SELECT * FROM students WHERE STUDENT_ID='" . UserStudentID() . "'"));
+                    $custom_RET = DBGet(DBQuery("SELECT * FROM students WHERE COLLEGE_ROLL_NO='" . UserStudentID() . "'"));
                     $value = $custom_RET[1];
                     if (count($fields_RET)) {
                         echo '<TABLE cellpadding=5>';
@@ -571,7 +571,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                         }
                         ######################## PRINT MEDICAL CUSTOM FIELDS ################################################
                         $fields_RET = DBGet(DBQuery("SELECT ID,TITLE,TYPE,SELECT_OPTIONS,DEFAULT_SELECTION,REQUIRED FROM custom_fields WHERE CATEGORY_ID='2' ORDER BY SORT_ORDER,TITLE"));
-                        $custom_RET = DBGet(DBQuery("SELECT * FROM students WHERE STUDENT_ID='" . UserStudentID() . "'"));
+                        $custom_RET = DBGet(DBQuery("SELECT * FROM students WHERE COLLEGE_ROLL_NO='" . UserStudentID() . "'"));
                         $value = $custom_RET[1];
                         if (count($fields_RET)) {
 
@@ -598,7 +598,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
                 # ---------------------------------- Immunization/Physical Record ---------------- #
 
-                $res_immunization = DBGet(DBQuery("SELECT TYPE,MEDICAL_DATE,COMMENTS FROM student_immunization WHERE student_id='" . $_SESSION['student_id'] . "'"), array('MEDICAL_DATE' => 'ProperDate'));
+                $res_immunization = DBGet(DBQuery("SELECT TYPE,MEDICAL_DATE,COMMENTS FROM student_immunization WHERE college_roll_no='" . $_SESSION['college_roll_no'] . "'"), array('MEDICAL_DATE' => 'ProperDate'));
                 if ($_REQUEST['category']['2'] && count($res_immunization) >= 1) {
                     //------------------------------------------------------------------------------
 
@@ -637,7 +637,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
 # ---------------------------------- Medical Alert ---------------- #
 
-                $res_alert = DBGet(DBQuery("SELECT TITLE,ALERT_DATE FROM student_medical_alerts WHERE student_id='" . $_SESSION['student_id'] . "'"), array('ALERT_DATE' => 'ProperDate'));
+                $res_alert = DBGet(DBQuery("SELECT TITLE,ALERT_DATE FROM student_medical_alerts WHERE college_roll_no='" . $_SESSION['college_roll_no'] . "'"), array('ALERT_DATE' => 'ProperDate'));
                 if ($_REQUEST['category']['2'] && count($res_alert) >= 1) {
                     //------------------------------------------------------------------------------
 
@@ -666,7 +666,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
 # ---------------------------------- Nurse Visit Record ---------------- #
 
-                $res_visit = DBGet(DBQuery("SELECT COLLEGE_DATE,TIME_IN,TIME_OUT,REASON,RESULT,COMMENTS FROM student_medical_visits WHERE student_id='" . $_SESSION['student_id'] . "'"), array('COLLEGE_DATE' => 'ProperDate'));
+                $res_visit = DBGet(DBQuery("SELECT COLLEGE_DATE,TIME_IN,TIME_OUT,REASON,RESULT,COMMENTS FROM student_medical_visits WHERE college_roll_no='" . $_SESSION['college_roll_no'] . "'"), array('COLLEGE_DATE' => 'ProperDate'));
 
                 if ($_REQUEST['category']['2'] && count($res_visit) >= 1) {
                     //------------------------------------------------------------------------------
@@ -712,7 +712,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                 echo "<tr><td valign=top colspan=3>";
 
 
-                $res_comment = DBGet(DBQuery("SELECT ID,COMMENT_DATE,COMMENT,CONCAT(s.FIRST_NAME,' ',s.LAST_NAME)AS USER_NAME FROM student_mp_comments,staff s WHERE STUDENT_ID='" . $_SESSION['student_id'] . "'  AND s.STAFF_ID=student_mp_comments.STAFF_ID"), array('COMMENT_DATE' => 'ProperDate'));
+                $res_comment = DBGet(DBQuery("SELECT ID,COMMENT_DATE,COMMENT,CONCAT(s.FIRST_NAME,' ',s.LAST_NAME)AS USER_NAME FROM student_mp_comments,staff s WHERE COLLEGE_ROLL_NO='" . $_SESSION['college_roll_no'] . "'  AND s.STAFF_ID=student_mp_comments.STAFF_ID"), array('COMMENT_DATE' => 'ProperDate'));
 
                 foreach ($res_comment as $row_comment) {
                     if ($_REQUEST['category']['4'] && $row_comment['COMMENT'] != '') {
@@ -739,7 +739,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
                 echo "</td></tr>";
                 if ($_REQUEST['category']['5']) {
-                    $res_goal = DBGet(DBQuery("SELECT goal_id AS GOAL,GOAL_TITLE,START_DATE,END_DATE,GOAL_DESCRIPTION FROM student_goal WHERE student_id='" . $_SESSION['student_id'] . "'"), array('START_DATE' => 'ProperDate', 'END_DATE' => 'ProperDate'));
+                    $res_goal = DBGet(DBQuery("SELECT goal_id AS GOAL,GOAL_TITLE,START_DATE,END_DATE,GOAL_DESCRIPTION FROM student_goal WHERE college_roll_no='" . $_SESSION['college_roll_no'] . "'"), array('START_DATE' => 'ProperDate', 'END_DATE' => 'ProperDate'));
                     if ($res_goal) {
                         echo "<tr><td colspan=2 style=\"border-bottom:1px solid #333;  font-size:14px;  font-weight:bold;\">Goals</td></tr>";
                         echo '<table><tr><td>Title</td><td>Start date</td><td>End date</td><td>Description</td></tr>';
@@ -753,7 +753,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
 
                 if ($_REQUEST['category']['6']) {
-                    $stu_enr = DBGet(DBQuery('SELECT se.*,s.TITLE AS COLLEGE,sg.TITLE AS GRADE FROM student_enrollment se,colleges s,college_gradelevels sg WHERE se.STUDENT_ID=' . $_SESSION['student_id'] . ' AND se.COLLEGE_ID=s.ID AND se.GRADE_ID=sg.ID'), array('START_DATE' => 'ProperDate', 'END_DATE' => 'ProperDate'));
+                    $stu_enr = DBGet(DBQuery('SELECT se.*,s.TITLE AS COLLEGE,sg.TITLE AS GRADE FROM student_enrollment se,colleges s,college_gradelevels sg WHERE se.COLLEGE_ROLL_NO=' . $_SESSION['college_roll_no'] . ' AND se.COLLEGE_ID=s.ID AND se.GRADE_ID=sg.ID'), array('START_DATE' => 'ProperDate', 'END_DATE' => 'ProperDate'));
                     $stu_enr_col = array('COLLEGE' => 'College', 'GRADE' => 'Grade Level', 'START_DATE' => 'Start Date', 'ENROLLMENT_CODE' => 'Enrollment Code', 'END_DATE' => 'End Date', 'DROP_CODE' => 'Drop Code');
 
                     foreach ($stu_enr as $si => $sd) {
@@ -796,7 +796,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                     $b = $cus['ID'];
                     if ($_REQUEST['category'][$b]) {
 
-                        $custom_RET = DBGet(DBQuery("SELECT * FROM students WHERE STUDENT_ID='" . UserStudentID() . "'"));
+                        $custom_RET = DBGet(DBQuery("SELECT * FROM students WHERE COLLEGE_ROLL_NO='" . UserStudentID() . "'"));
 
                         $value = $custom_RET[1];
                         echo "<table width=100% >";
@@ -822,7 +822,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
                                     foreach ($date as $da) {
                                         if ($da['TYPE'] == 'date') {
-                                            $sql = DBGet(DBQuery("SELECT CUSTOM_" . $da['ID'] . " as DATE FROM students WHERE STUDENT_ID='" . UserStudentID() . "'"), array('DATE' => 'ProperDate'));
+                                            $sql = DBGet(DBQuery("SELECT CUSTOM_" . $da['ID'] . " as DATE FROM students WHERE COLLEGE_ROLL_NO='" . UserStudentID() . "'"), array('DATE' => 'ProperDate'));
                                             foreach ($sql as $sq) {
                                                 echo '<TR>';
                                                 echo '<td width=125px style="font-weight:bold">' . $field['TITLE'] . ':</td>';
@@ -879,7 +879,7 @@ if ($_REQUEST['modfunc'] == 'save') {
             BackPrompt('No Students were found.');
     } else
         BackPrompt('You must choose at least one student.');
-    unset($_SESSION['student_id']);
+    unset($_SESSION['college_roll_no']);
 
     $_REQUEST['modfunc'] = true;
 }
@@ -914,7 +914,7 @@ if (!$_REQUEST['modfunc']) {
     }
 
     $extra['link'] = array('FULL_NAME' => false);
-    $extra['SELECT'] = ",s.STUDENT_ID AS CHECKBOX";
+    $extra['SELECT'] = ",s.COLLEGE_ROLL_NO AS CHECKBOX";
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
     $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'unused\');"><A>');
     $extra['options']['search'] = false;
@@ -956,7 +956,7 @@ if (!$_REQUEST['modfunc']) {
     $extra['search'] .= '</div>';
     $extra['search'] .= '</div>';
 
-    Search('student_id', $extra);
+    Search('college_roll_no', $extra);
     if ($_REQUEST['search_modfunc'] == 'list') {
         echo '<div class="text-right p-b-20 p-r-20"><INPUT type=submit class="btn btn-primary" value=\'Print Info for Selected Students\'></div>';
         echo "</FORM>";
@@ -973,7 +973,7 @@ function _grade_id($value) {
 function _makeChooseCheckbox($value, $title) {
 //    return '<INPUT type=checkbox name=st_arr[] value=' . $value . ' checked>';
     global $THIS_RET;
-    return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
+    return "<input name=unused[$THIS_RET[COLLEGE_ROLL_NO]] value=" . $THIS_RET[COLLEGE_ROLL_NO] . "  type='checkbox' id=$THIS_RET[COLLEGE_ROLL_NO] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[COLLEGE_ROLL_NO]);' />";
 }
 
 function explodeCustom(&$categories_RET, &$custom, $prefix) {

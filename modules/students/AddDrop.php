@@ -53,9 +53,9 @@ echo '<div class="panel-body"><div class="form-inline"><div class="row"><div cla
 echo '</div>';
 echo '</FORM>';
 
-$enrollment_RET = DBGet(DBQuery('SELECT se.START_DATE,se.END_DATE,se.START_DATE AS DATE,se.COLLEGE_ID,se.STUDENT_ID,CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME) AS FULL_NAME,(SELECT TITLE FROM student_enrollment_codes seci WHERE se.enrollment_code=seci.id AND se.START_DATE>=\''.$start_date.'\') AS ENROLLMENT_CODE,(SELECT TITLE FROM student_enrollment_codes seci WHERE se.drop_code=seci.id) AS DROP_CODE FROM student_enrollment se, students s WHERE s.STUDENT_ID=se.STUDENT_ID AND ((se.START_DATE>=\''.$start_date.'\' AND se.END_DATE<=\''.$end_date.'\') OR (se.START_DATE BETWEEN \''.$start_date.'\' AND \''.$end_date.'\') OR (se.END_DATE BETWEEN \''.$start_date.'\' AND \''.$end_date.'\'))
+$enrollment_RET = DBGet(DBQuery('SELECT se.START_DATE,se.END_DATE,se.START_DATE AS DATE,se.COLLEGE_ID,se.COLLEGE_ROLL_NO,CONCAT(s.LAST_NAME,\', \',s.FIRST_NAME) AS FULL_NAME,(SELECT TITLE FROM student_enrollment_codes seci WHERE se.enrollment_code=seci.id AND se.START_DATE>=\''.$start_date.'\') AS ENROLLMENT_CODE,(SELECT TITLE FROM student_enrollment_codes seci WHERE se.drop_code=seci.id) AS DROP_CODE FROM student_enrollment se, students s WHERE s.COLLEGE_ROLL_NO=se.COLLEGE_ROLL_NO AND ((se.START_DATE>=\''.$start_date.'\' AND se.END_DATE<=\''.$end_date.'\') OR (se.START_DATE BETWEEN \''.$start_date.'\' AND \''.$end_date.'\') OR (se.END_DATE BETWEEN \''.$start_date.'\' AND \''.$end_date.'\'))
 								ORDER BY DATE DESC'),array('START_DATE'=>'ProperDate','END_DATE'=>'ProperDate','COLLEGE_ID'=>'GetCollege'));
-$columns = array('FULL_NAME'=>'Student','STUDENT_ID'=>'Student ID','COLLEGE_ID'=>'College','START_DATE'=>'Enrolled','ENROLLMENT_CODE'=>'Enrollment Code','END_DATE'=>'Dropped','DROP_CODE'=>'Drop Code');
+$columns = array('FULL_NAME'=>'Student','COLLEGE_ROLL_NO'=>'College Roll No','COLLEGE_ID'=>'College','START_DATE'=>'Enrolled','ENROLLMENT_CODE'=>'Enrollment Code','END_DATE'=>'Dropped','DROP_CODE'=>'Drop Code');
 
 echo '<div class="panel panel-default">';
 ListOutput($enrollment_RET,$columns,'Enrollment Record','Enrollment Records');

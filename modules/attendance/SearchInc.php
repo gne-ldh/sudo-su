@@ -37,8 +37,8 @@ if ($_REQUEST['search_modfunc'] == 'search_fnc' || !$_REQUEST['search_modfunc'])
     unset($_SESSION['new_sql']);
     unset($_SESSION['newsql']);
     unset($_SESSION['newsql1']);
-    if ($_SESSION['student_id'] && User('PROFILE') == 'admin' && $_REQUEST['student_id'] == 'new') {
-        unset($_SESSION['student_id']);
+    if ($_SESSION['college_roll_no'] && User('PROFILE') == 'admin' && $_REQUEST['college_roll_no'] == 'new') {
+        unset($_SESSION['college_roll_no']);
         //echo '<script language=JavaScript>parent.side.location="' . $_SESSION['Side_PHP_SELF'] . '?modcat="+parent.side.document.forms[0].modcat.value;</script>';
     }
     switch (User('PROFILE')) {
@@ -220,7 +220,7 @@ else {
     if ($_REQUEST['address_group']) {
         $extra['SELECT'] .= ',sam.ID AS ADDRESS_ID';
         if (!($_REQUEST['expanded_view'] == 'true' || $_REQUEST['addr'] || $extra['addr']))
-            $extra['FROM'] = ' LEFT OUTER JOIN student_address sam ON (sam.STUDENT_ID=ssm.STUDENT_ID AND sam.TYPE=\'Home Address\')' . $extra['FROM'];
+            $extra['FROM'] = ' LEFT OUTER JOIN student_address sam ON (sam.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND sam.TYPE=\'Home Address\')' . $extra['FROM'];
         $extra['group'] = array('ADDRESS_ID');
     }
     $students_RET = GetStuList_Absence_Summary($extra);
@@ -239,9 +239,9 @@ else {
         else
             $students_RET = $extra['array_function']($students_RET);
 
-    $LO_columns = array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'Student ID', 'ALT_ID' => 'Alternate ID', 'GRADE_ID' => 'Grade', 'PHONE' => 'Phone');
+    $LO_columns = array('FULL_NAME' => 'Student', 'COLLEGE_ROLL_NO' => 'College Roll No', 'ALT_ID' => 'Alternate ID', 'GRADE_ID' => 'Grade', 'PHONE' => 'Phone');
     $name_link['FULL_NAME']['link'] = "Modules.php?modname=$_REQUEST[next_modname]";
-    $name_link['FULL_NAME']['variables'] = array('student_id' => 'STUDENT_ID');
+    $name_link['FULL_NAME']['variables'] = array('college_roll_no' => 'COLLEGE_ROLL_NO');
     if ($_REQUEST['_search_all_colleges'])
         $name_link['FULL_NAME']['variables'] += array('college_id' => 'COLLEGE_ID');
 
@@ -295,8 +295,8 @@ else {
             foreach ($link['FULL_NAME']['variables'] as $var => $val)
                 $_REQUEST[$var] = $students_RET['1'][$val];
         }
-        if (!is_array($students_RET[1]['STUDENT_ID'])) {
-            $_SESSION['student_id'] = $students_RET[1]['STUDENT_ID'];
+        if (!is_array($students_RET[1]['COLLEGE_ROLL_NO'])) {
+            $_SESSION['college_roll_no'] = $students_RET[1]['COLLEGE_ROLL_NO'];
             if (User('PROFILE') == 'admin')
                 $_SESSION['UserCollege'] = $students_RET[1]['LIST_COLLEGE_ID'];
             if (User('PROFILE') == 'teacher')

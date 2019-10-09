@@ -30,8 +30,8 @@ include('../../RedirectModulesInc.php');
 require_once('modules/grades/DeletePromptX.fnc.php');
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'delete') {
     if (($dp = DeletePromptX('final grade'))) {
-        DBQuery('DELETE FROM student_report_card_grades WHERE SYEAR=\'' . UserSyear() . '\' AND STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND COURSE_PERIOD_ID=\'' . $_REQUEST['course_period_id'] . '\' AND MARKING_PERIOD_ID=\'' . $_REQUEST['marking_period_id'] . '\'');
-        DBQuery('DELETE FROM student_report_card_comments WHERE SYEAR=\'' . UserSyear() . '\' AND STUDENT_ID=\'' . $_REQUEST['student_id'] . '\' AND COURSE_PERIOD_ID=\'' . $_REQUEST['course_period_id'] . '\' AND MARKING_PERIOD_ID=\'' . $_REQUEST['marking_period_id'] . '\'');
+        DBQuery('DELETE FROM student_report_card_grades WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ROLL_NO=\'' . $_REQUEST['college_roll_no'] . '\' AND COURSE_PERIOD_ID=\'' . $_REQUEST['course_period_id'] . '\' AND MARKING_PERIOD_ID=\'' . $_REQUEST['marking_period_id'] . '\'');
+        DBQuery('DELETE FROM student_report_card_comments WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ROLL_NO=\'' . $_REQUEST['college_roll_no'] . '\' AND COURSE_PERIOD_ID=\'' . $_REQUEST['course_period_id'] . '\' AND MARKING_PERIOD_ID=\'' . $_REQUEST['marking_period_id'] . '\'');
         $_REQUEST['modfunc'] = 'save';
     } elseif ($dp === false)
         $_REQUEST['modfunc'] = 'save';
@@ -41,21 +41,21 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
         $mp_list = '\'' . implode('\',\'', $_REQUEST['mp_arr']) . '\'';
         $last_mp = end($_REQUEST['mp_arr']);
         $st_list = '\'' . implode('\',\'', $_REQUEST['st_arr']) . '\'';
-        $extra['WHERE'] = ' AND s.STUDENT_ID IN (' . $st_list . ')';
+        $extra['WHERE'] = ' AND s.COLLEGE_ROLL_NO IN (' . $st_list . ')';
 
-        $extra['SELECT'] .= ',rpg.TITLE as GRADE_TITLE,sg1.GRADE_PERCENT,sg1.COMMENT as COMMENT_TITLE,sg1.STUDENT_ID,sg1.COURSE_PERIOD_ID,sg1.MARKING_PERIOD_ID,c.TITLE as COURSE_TITLE,rc_cp.TITLE AS TEACHER,rc_cp.TEACHER_ID,sp.SORT_ORDER';
+        $extra['SELECT'] .= ',rpg.TITLE as GRADE_TITLE,sg1.GRADE_PERCENT,sg1.COMMENT as COMMENT_TITLE,sg1.COLLEGE_ROLL_NO,sg1.COURSE_PERIOD_ID,sg1.MARKING_PERIOD_ID,c.TITLE as COURSE_TITLE,rc_cp.TITLE AS TEACHER,rc_cp.TEACHER_ID,sp.SORT_ORDER';
         if ($_REQUEST['elements']['period_absences'] == 'Y')
             $extra['SELECT'] .= ',cpv.DOES_ATTENDANCE,
                                     (SELECT count(*) FROM attendance_period ap,attendance_codes ac
-                                    WHERE ac.ID=ap.ATTENDANCE_CODE AND ac.STATE_CODE=\'A\' AND ap.COURSE_PERIOD_ID=sg1.COURSE_PERIOD_ID AND ap.STUDENT_ID=ssm.STUDENT_ID) AS YTD_ABSENCES,
+                                    WHERE ac.ID=ap.ATTENDANCE_CODE AND ac.STATE_CODE=\'A\' AND ap.COURSE_PERIOD_ID=sg1.COURSE_PERIOD_ID AND ap.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO) AS YTD_ABSENCES,
                                     (SELECT count(*) FROM attendance_period ap,attendance_codes ac
-                                    WHERE ac.ID=ap.ATTENDANCE_CODE AND ac.STATE_CODE=\'A\' AND ap.COURSE_PERIOD_ID=sg1.COURSE_PERIOD_ID AND sg1.MARKING_PERIOD_ID=ap.MARKING_PERIOD_ID AND ap.STUDENT_ID=ssm.STUDENT_ID) AS MP_ABSENCES';
+                                    WHERE ac.ID=ap.ATTENDANCE_CODE AND ac.STATE_CODE=\'A\' AND ap.COURSE_PERIOD_ID=sg1.COURSE_PERIOD_ID AND sg1.MARKING_PERIOD_ID=ap.MARKING_PERIOD_ID AND ap.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO) AS MP_ABSENCES';
         if ($_REQUEST['elements']['comments'] == 'Y')
             $extra['SELECT'] .= ',sg1.MARKING_PERIOD_ID AS COMMENTS_RET';
         $extra['FROM'] .= ',student_report_card_grades sg1 LEFT OUTER JOIN report_card_grades rpg ON (rpg.ID=sg1.REPORT_CARD_GRADE_ID),
                                     course_periods rc_cp,course_period_var cpv,courses c,college_periods sp';
         $extra['WHERE'] .= ' AND sg1.MARKING_PERIOD_ID IN (' . $mp_list . ')
-                             AND rc_cp.COURSE_PERIOD_ID=sg1.COURSE_PERIOD_ID AND cpv.COURSE_PERIOD_ID=rc_cp.COURSE_PERIOD_ID AND c.COURSE_ID = rc_cp.COURSE_ID AND sg1.STUDENT_ID=ssm.STUDENT_ID AND sp.PERIOD_ID=cpv.PERIOD_ID';
+                             AND rc_cp.COURSE_PERIOD_ID=sg1.COURSE_PERIOD_ID AND cpv.COURSE_PERIOD_ID=rc_cp.COURSE_PERIOD_ID AND c.COURSE_ID = rc_cp.COURSE_ID AND sg1.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND sp.PERIOD_ID=cpv.PERIOD_ID';
         if(User('PROFILE')=='teacher')
         {
             $extra['WHERE'] .= ' AND (rc_cp.TEACHER_ID='.User('STAFF_ID').' OR rc_cp.SECONDARY_TEACHER_ID='.User('STAFF_ID').')';
@@ -64,7 +64,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
         $extra['functions']['TEACHER'] = '_makeTeacher';
         if ($_REQUEST['elements']['comments'] == 'Y')
             $extra['functions']['COMMENTS_RET'] = '_makeComments';
-        $extra['group'] = array('STUDENT_ID');
+        $extra['group'] = array('COLLEGE_ROLL_NO');
         $extra['group'][] = 'COURSE_PERIOD_ID';
         $extra['group'][] = 'MARKING_PERIOD_ID';
 
@@ -77,11 +77,11 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
         if ($_REQUEST['elements']['mp_tardies'] == 'Y' || $_REQUEST['elements']['ytd_tardies'] == 'Y') {
             // GET THE ATTENDANCE
             unset($extra);
-            $extra['WHERE'] = ' AND s.STUDENT_ID IN (' . $st_list . ')';
-            $extra['SELECT_ONLY'] .= 'ap.COLLEGE_DATE,ap.COURSE_PERIOD_ID,ac.ID AS ATTENDANCE_CODE,ap.MARKING_PERIOD_ID,ssm.STUDENT_ID';
+            $extra['WHERE'] = ' AND s.COLLEGE_ROLL_NO IN (' . $st_list . ')';
+            $extra['SELECT_ONLY'] .= 'ap.COLLEGE_DATE,ap.COURSE_PERIOD_ID,ac.ID AS ATTENDANCE_CODE,ap.MARKING_PERIOD_ID,ssm.COLLEGE_ROLL_NO';
             $extra['FROM'] .= ',attendance_codes ac,attendance_period ap';
-            $extra['WHERE'] .= ' AND ac.ID=ap.ATTENDANCE_CODE AND (ac.DEFAULT_CODE!=\'Y\' OR ac.DEFAULT_CODE IS NULL) AND ac.SYEAR=ssm.SYEAR AND ap.STUDENT_ID=ssm.STUDENT_ID';
-            $extra['group'][] = 'STUDENT_ID';
+            $extra['WHERE'] .= ' AND ac.ID=ap.ATTENDANCE_CODE AND (ac.DEFAULT_CODE!=\'Y\' OR ac.DEFAULT_CODE IS NULL) AND ac.SYEAR=ssm.SYEAR AND ap.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO';
+            $extra['group'][] = 'COLLEGE_ROLL_NO';
             $extra['group'][] = 'ATTENDANCE_CODE';
             $extra['group'][] = 'MARKING_PERIOD_ID';
 
@@ -116,11 +116,11 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
         if ($_REQUEST['elements']['mp_absences'] == 'Y' || $_REQUEST['elements']['ytd_absences'] == 'Y') {
             // GET THE DAILY ATTENDANCE
             unset($extra);
-            $extra['WHERE'] = ' AND s.STUDENT_ID IN (' . $st_list . ')';
-            $extra['SELECT_ONLY'] .= 'ad.COLLEGE_DATE,ad.MARKING_PERIOD_ID,ad.STATE_VALUE,ssm.STUDENT_ID';
+            $extra['WHERE'] = ' AND s.COLLEGE_ROLL_NO IN (' . $st_list . ')';
+            $extra['SELECT_ONLY'] .= 'ad.COLLEGE_DATE,ad.MARKING_PERIOD_ID,ad.STATE_VALUE,ssm.COLLEGE_ROLL_NO';
             $extra['FROM'] .= ',attendance_day ad';
-            $extra['WHERE'] .= ' AND ad.STUDENT_ID=ssm.STUDENT_ID AND ad.SYEAR=ssm.SYEAR AND (ad.STATE_VALUE=\'0.0\' OR ad.STATE_VALUE=\'.5\') AND ad.COLLEGE_DATE<=\'' . GetMP($last_mp, 'END_DATE') . '\'';
-            $extra['group'][] = 'STUDENT_ID';
+            $extra['WHERE'] .= ' AND ad.COLLEGE_ROLL_NO=ssm.COLLEGE_ROLL_NO AND ad.SYEAR=ssm.SYEAR AND (ad.STATE_VALUE=\'0.0\' OR ad.STATE_VALUE=\'.5\') AND ad.COLLEGE_DATE<=\'' . GetMP($last_mp, 'END_DATE') . '\'';
+            $extra['group'][] = 'COLLEGE_ROLL_NO';
             $extra['group'][] = 'MARKING_PERIOD_ID';
 
             $extra['search'] .= '<div class="row">';
@@ -167,7 +167,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
             if ($_REQUEST['elements']['comments'] == 'Y')
                 $columns['COMMENT'] = 'Comment';
             $i = 0;
-            foreach ($RET as $student_id => $course_periods) {
+            foreach ($RET as $college_roll_no => $course_periods) {
                 $course_period_id = key($course_periods);
                 $grades_RET[$i + 1]['FULL_NAME'] = '<div style="white-space: nowrap;">'.$course_periods[$course_period_id][key($course_periods[$course_period_id])][1]['FULL_NAME'].'</div>';
 
@@ -175,7 +175,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
                 foreach ($course_periods as $course_period_id => $mps) {
 
                     $i++;
-                    $grades_RET[$i]['STUDENT_ID'] = $student_id;
+                    $grades_RET[$i]['COLLEGE_ROLL_NO'] = $college_roll_no;
                     $grades_RET[$i]['COURSE_PERIOD_ID'] = $course_period_id;
                     $grades_RET[$i]['MARKING_PERIOD_ID'] = key($mps);
 
@@ -223,7 +223,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
                 unset($tmp_REQUEST['modfunc']);
                 $link['remove']['link'] = PreparePHP_SELF($tmp_REQUEST) . "&modfunc=delete";
 
-                $link['remove']['variables'] = array('student_id' => 'STUDENT_ID', 'course_period_id' => 'COURSE_PERIOD_ID', 'marking_period_id' => 'MARKING_PERIOD_ID');
+                $link['remove']['variables'] = array('college_roll_no' => 'COLLEGE_ROLL_NO', 'course_period_id' => 'COURSE_PERIOD_ID', 'marking_period_id' => 'MARKING_PERIOD_ID');
             }
             echo '<div class="panel panel-default">';
             ListOutputGrade($grades_RET, $columns, 'Course', 'Courses', $link);
@@ -364,7 +364,7 @@ if (!$_REQUEST['modfunc']) {
     }
 
     $extra['link'] = array('FULL_NAME' => false);
-    $extra['SELECT'] = ",s.STUDENT_ID AS CHECKBOX";
+    $extra['SELECT'] = ",s.COLLEGE_ROLL_NO AS CHECKBOX";
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
      $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'st_arr\');"><A>');
    // $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'unused\');"><A>');
@@ -403,7 +403,7 @@ if (!$_REQUEST['modfunc']) {
             $extra['footer'] = '<div class="panel-footer text-right p-r-20">' . SubmitButtonModal('Create Grade Lists for Selected Students', '', 'class="btn btn-primary"') . '</div>';
         //}
     }
-    Search('student_id', $extra, 'true');
+    Search('college_roll_no', $extra, 'true');
 
     if ($_REQUEST['search_modfunc'] == 'list') {
         
@@ -418,13 +418,13 @@ if (!$_REQUEST['modfunc']) {
 //    global $THIS_RET;
 ////    return '<INPUT type=checkbox name=st_arr[] value=' . $value . ' checked>';
 //    
-//    return "<input name=unused[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[STUDENT_ID]);' />";
+//    return "<input name=unused[$THIS_RET[COLLEGE_ROLL_NO]] value=" . $THIS_RET[COLLEGE_ROLL_NO] . "  type='checkbox' id=$THIS_RET[COLLEGE_ROLL_NO] onClick='setHiddenCheckboxStudents(\"st_arr[]\",this,$THIS_RET[COLLEGE_ROLL_NO]);' />";
 //}
 
 function _makeChooseCheckbox($value, $title) {
     global $THIS_RET;
     return '<INPUT type=checkbox name=st_arr[] value=' . $value . '>';
-   // return "<input name=unused_var[$THIS_RET[STUDENT_ID]] value=" . $THIS_RET[STUDENT_ID] . "  type='checkbox' id=$THIS_RET[STUDENT_ID] onClick='setHiddenCheckboxStudents(\"st_arr[$THIS_RET[STUDENT_ID]]\",this,$THIS_RET[STUDENT_ID]);' />";
+   // return "<input name=unused_var[$THIS_RET[COLLEGE_ROLL_NO]] value=" . $THIS_RET[COLLEGE_ROLL_NO] . "  type='checkbox' id=$THIS_RET[COLLEGE_ROLL_NO] onClick='setHiddenCheckboxStudents(\"st_arr[$THIS_RET[COLLEGE_ROLL_NO]]\",this,$THIS_RET[COLLEGE_ROLL_NO]);' />";
 }
 function _makeTeacher($teacher, $column) {
     return substr($teacher, strrpos(str_replace(' - ', ' ^ ', $teacher), '^') + 2);
@@ -433,7 +433,7 @@ function _makeTeacher($teacher, $column) {
 function _makeComments($value, $column) {
     global $THIS_RET;
 
-    return DBGet(DBQuery('SELECT COURSE_PERIOD_ID,REPORT_CARD_COMMENT_ID,COMMENT,(SELECT SORT_ORDER FROM report_card_comments WHERE REPORT_CARD_COMMENT_ID=ID) AS SORT_ORDER FROM student_report_card_comments WHERE STUDENT_ID=\'' . $THIS_RET['STUDENT_ID'] . '\' AND COURSE_PERIOD_ID=\'' . $THIS_RET['COURSE_PERIOD_ID'] . '\' AND MARKING_PERIOD_ID=\'' . $value . '\' ORDER BY SORT_ORDER'));
+    return DBGet(DBQuery('SELECT COURSE_PERIOD_ID,REPORT_CARD_COMMENT_ID,COMMENT,(SELECT SORT_ORDER FROM report_card_comments WHERE REPORT_CARD_COMMENT_ID=ID) AS SORT_ORDER FROM student_report_card_comments WHERE COLLEGE_ROLL_NO=\'' . $THIS_RET['COLLEGE_ROLL_NO'] . '\' AND COURSE_PERIOD_ID=\'' . $THIS_RET['COURSE_PERIOD_ID'] . '\' AND MARKING_PERIOD_ID=\'' . $value . '\' ORDER BY SORT_ORDER'));
 }
 
 ?>

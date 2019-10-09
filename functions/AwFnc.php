@@ -213,8 +213,8 @@ function listuser($sql, $filename){
 }
 
 function listStudents($sql, $filename){
-	$columns=array('Student', 'Grade', 'Student ID', 'College');
-	echo "<div style='position: relative; width: 788px; height: 300px; z-index: 1; border: 1px solid #ADBCC9' id='divStudents'>".listuser_grid("obj", $columns, getUserData($sql), $filename, "student_id")."</div>";
+	$columns=array('Student', 'Grade', 'College Roll No', 'College');
+	echo "<div style='position: relative; width: 788px; height: 300px; z-index: 1; border: 1px solid #ADBCC9' id='divStudents'>".listuser_grid("obj", $columns, getUserData($sql), $filename, "college_roll_no")."</div>";
 }
 
 ?>

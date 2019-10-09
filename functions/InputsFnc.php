@@ -1040,8 +1040,8 @@ function DateInputAY_red($value, $name, $counter = 1, $cp_id) {
         }
 
         if ($value != '') {
-            $student_id = UserStudentID();
-            $qr = DBGet(DBQuery('select end_date from student_enrollment where student_id=' . $student_id . ' order by id desc limit 0,1'));
+            $college_roll_no = UserStudentID();
+            $qr = DBGet(DBQuery('select end_date from student_enrollment where college_roll_no=' . $college_roll_no . ' order by id desc limit 0,1'));
 
             $stu_end_date = $qr[1]['END_DATE'];
             $qr1 = DBGet(DBQuery('select end_date from course_periods where COURSE_PERIOD_ID=' . $cp_id . ''));

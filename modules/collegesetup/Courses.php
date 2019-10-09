@@ -1884,7 +1884,7 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
             $sql = "SELECT TITLE
 						FROM courses
 						WHERE COURSE_ID='$_REQUEST[course_id]'";
-            /*$QI = DBQuery($sql);
+            $QI = DBQuery($sql);
             $RET = DBGet($QI);
             $RET = $RET[1];
             $title = $RET['TITLE'] . ' - New Course Period';
@@ -1921,7 +1921,7 @@ if (!$_REQUEST['modfunc'] && !$_REQUEST['course_modfunc'] && !$_REQUEST['action'
             $checked = 'CHECKED';
             $new = true;
         }
-	     */
+	     
         echo '<div class="panel panel-default">';
         if (isset($_SESSION['block_schedule_err']) && $_SESSION['block_schedule_err'] != '') {
             if ($_SESSION['block_schedule_err'] != 1)

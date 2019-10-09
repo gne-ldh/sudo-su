@@ -208,12 +208,12 @@ UNION
   FROM course_periods cp, courses c WHERE (cp.course_id = c.course_id);\n
 
 CREATE VIEW enroll_grade AS
-  SELECT e.id, e.syear, e.college_id, e.student_id, e.start_date, e.end_date, sg.short_name, sg.title
+  SELECT e.id, e.syear, e.college_id, e.college_roll_no, e.start_date, e.end_date, sg.short_name, sg.title
   FROM student_enrollment e, college_gradelevels sg WHERE (e.grade_id = sg.id);\n
 
 CREATE VIEW transcript_grades AS
-    SELECT s.id AS college_id, IF(mp.mp_source='history',(SELECT college_name FROM history_college WHERE student_id=rcg.student_id and marking_period_id=mp.marking_period_id),s.title) AS college_name,mp_source, mp.marking_period_id AS mp_id,
- mp.title AS mp_name, mp.syear, mp.end_date AS posted, rcg.student_id,
+    SELECT s.id AS college_id, IF(mp.mp_source='history',(SELECT college_name FROM history_college WHERE college_roll_no=rcg.college_roll_no and marking_period_id=mp.marking_period_id),s.title) AS college_name,mp_source, mp.marking_period_id AS mp_id,
+ mp.title AS mp_name, mp.syear, mp.end_date AS posted, rcg.college_roll_no,
  sgc.grade_level_short AS gradelevel, rcg.grade_letter, rcg.unweighted_gp AS gp_value,
  rcg.weighted_gp AS weighting, rcg.gp_scale, rcg.credit_attempted, rcg.credit_earned,
  rcg.credit_category,rcg.course_period_id AS course_period_id, rcg.course_title AS course_name,
@@ -224,7 +224,7 @@ CREATE VIEW transcript_grades AS
  sgc.class_rank,mp.sort_order
     FROM student_report_card_grades rcg
     INNER JOIN marking_periods mp ON mp.marking_period_id = rcg.marking_period_id AND mp.mp_type IN ('year','semester','quarter')
-    INNER JOIN student_gpa_calculated sgc ON sgc.student_id = rcg.student_id AND sgc.marking_period_id = rcg.marking_period_id
+    INNER JOIN student_gpa_calculated sgc ON sgc.college_roll_no = rcg.college_roll_no AND sgc.marking_period_id = rcg.marking_period_id
     INNER JOIN colleges s ON s.id = mp.college_id;\n
             ";
     $content.="DELIMITER $$
@@ -239,7 +239,7 @@ INSERT INTO missing_attendance(COLLEGE_ID,SYEAR,COLLEGE_DATE,COURSE_PERIOD_ID,PE
         cp.SECONDARY_TEACHER_ID FROM attendance_calendar acc INNER JOIN course_periods cp ON cp.CALENDAR_ID=acc.CALENDAR_ID INNER JOIN course_period_var cpv ON cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID 
         AND (cpv.COURSE_PERIOD_DATE IS NULL AND position(substring('UMTWHFS' FROM DAYOFWEEK(acc.COLLEGE_DATE) FOR 1) IN cpv.DAYS)>0 OR cpv.COURSE_PERIOD_DATE IS NOT NULL AND cpv.COURSE_PERIOD_DATE=acc.COLLEGE_DATE) 
         INNER JOIN colleges s ON s.ID=acc.COLLEGE_ID LEFT JOIN teacher_reassignment tra ON (cp.course_period_id=tra.course_period_id) INNER JOIN schedule sch ON sch.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID 
-        AND sch.student_id IN(SELECT student_id FROM student_enrollment se WHERE sch.college_id=se.college_id AND sch.syear=se.syear AND start_date<=acc.college_date AND (end_date IS NULL OR end_date>=acc.college_date))
+        AND sch.college_roll_no IN(SELECT college_roll_no FROM student_enrollment se WHERE sch.college_id=se.college_id AND sch.syear=se.syear AND start_date<=acc.college_date AND (end_date IS NULL OR end_date>=acc.college_date))
         AND (cp.MARKING_PERIOD_ID IS NOT NULL AND cp.MARKING_PERIOD_ID IN (SELECT MARKING_PERIOD_ID FROM college_years WHERE COLLEGE_ID=acc.COLLEGE_ID AND acc.COLLEGE_DATE BETWEEN START_DATE AND END_DATE UNION SELECT MARKING_PERIOD_ID FROM college_semesters WHERE COLLEGE_ID=acc.COLLEGE_ID AND acc.COLLEGE_DATE BETWEEN START_DATE AND END_DATE UNION SELECT MARKING_PERIOD_ID FROM college_quarters WHERE COLLEGE_ID=acc.COLLEGE_ID AND acc.COLLEGE_DATE BETWEEN START_DATE AND END_DATE) OR (cp.MARKING_PERIOD_ID IS NULL AND acc.college_date BETWEEN cp.begin_date AND cp.end_date))
         AND sch.START_DATE<=acc.COLLEGE_DATE AND (sch.END_DATE IS NULL OR sch.END_DATE>=acc.COLLEGE_DATE ) AND cpv.DOES_ATTENDANCE='Y' AND acc.COLLEGE_DATE<CURDATE() AND cp.course_period_id=cp_id 
         AND NOT EXISTS (SELECT '' FROM  attendance_completed ac WHERE ac.COLLEGE_DATE=acc.COLLEGE_DATE AND ac.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND ac.PERIOD_ID=cpv.PERIOD_ID 
@@ -282,14 +282,14 @@ BEGIN
 DECLARE req_mp INT DEFAULT 0;
 DECLARE done INT DEFAULT 0;
 DECLARE gp_points DECIMAL(10,2);
-DECLARE student_id INT;
+DECLARE college_roll_no INT;
 DECLARE gp_points_weighted DECIMAL(10,2);
 DECLARE divisor DECIMAL(10,2);
 DECLARE credit_earned DECIMAL(10,2);
 DECLARE cgpa DECIMAL(10,2);
 
 DECLARE cur1 CURSOR FOR
-   SELECT srcg.student_id,
+   SELECT srcg.college_roll_no,
                   IF(ISNULL(sum(srcg.unweighted_gp)),  (SUM(srcg.weighted_gp*srcg.credit_earned)),
                       IF(ISNULL(sum(srcg.weighted_gp)), SUM(srcg.unweighted_gp*srcg.credit_earned),
                          ( SUM(srcg.unweighted_gp*srcg.credit_attempted)+ SUM(srcg.weighted_gp*srcg.credit_earned))
@@ -308,12 +308,12 @@ DECLARE cur1 CURSOR FOR
             INNER JOIN colleges sc ON sc.id=srcg.college_id
             WHERE srcg.marking_period_id= mp.marking_period_id AND srcg.gp_scale<>0 AND srcg.marking_period_id NOT LIKE 'E%'
             AND mp.marking_period_id IN (SELECT marking_period_id  FROM marking_periods WHERE mp_type=req_mp )
-            GROUP BY srcg.student_id;
+            GROUP BY srcg.college_roll_no;
  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
 
 
   CREATE TEMPORARY TABLE tmp(
-    student_id int,
+    college_roll_no int,
     sum_weighted_factors decimal(10,6),
     count_weighted_factors int,
     sum_unweighted_factors decimal(10,6),
@@ -321,10 +321,10 @@ DECLARE cur1 CURSOR FOR
     grade_level_short varchar(10)
   );
 
-  INSERT INTO tmp(student_id,sum_weighted_factors,count_weighted_factors,
+  INSERT INTO tmp(college_roll_no,sum_weighted_factors,count_weighted_factors,
     sum_unweighted_factors, count_unweighted_factors,grade_level_short)
   SELECT
-    srcg.student_id,
+    srcg.college_roll_no,
     SUM(srcg.weighted_gp/s.reporting_gp_scale) AS sum_weighted_factors,
     COUNT(*) AS count_weighted_factors,
     SUM(srcg.unweighted_gp/srcg.gp_scale) AS sum_unweighted_factors,
@@ -332,28 +332,28 @@ DECLARE cur1 CURSOR FOR
     eg.short_name
   FROM student_report_card_grades srcg
   INNER JOIN colleges s ON s.id=srcg.college_id
-  LEFT JOIN enroll_grade eg on eg.student_id=srcg.student_id AND eg.syear=srcg.syear AND eg.college_id=srcg.college_id
+  LEFT JOIN enroll_grade eg on eg.college_roll_no=srcg.college_roll_no AND eg.syear=srcg.syear AND eg.college_id=srcg.college_id
   WHERE srcg.marking_period_id=mp_id AND srcg.gp_scale<>0 AND srcg.marking_period_id NOT LIKE 'E%'
-  GROUP BY srcg.student_id,eg.short_name;
+  GROUP BY srcg.college_roll_no,eg.short_name;
 
-  INSERT INTO student_gpa_calculated (student_id,marking_period_id)
+  INSERT INTO student_gpa_calculated (college_roll_no,marking_period_id)
   SELECT
-      t.student_id,
+      t.college_roll_no,
       mp_id
     FROM tmp t
-    LEFT JOIN student_gpa_calculated sms ON sms.student_id=t.student_id AND sms.marking_period_id=mp_id
-    WHERE sms.student_id IS NULL;
+    LEFT JOIN student_gpa_calculated sms ON sms.college_roll_no=t.college_roll_no AND sms.marking_period_id=mp_id
+    WHERE sms.college_roll_no IS NULL;
 
   UPDATE student_gpa_calculated g
     INNER JOIN (
-	SELECT s.student_id,
+	SELECT s.college_roll_no,
 		SUM(s.weighted_gp/sc.reporting_gp_scale)/COUNT(*) AS cum_weighted_factor,
 		SUM(s.unweighted_gp/s.gp_scale)/COUNT(*) AS cum_unweighted_factor
 	FROM student_report_card_grades s
 	INNER JOIN colleges sc ON sc.id=s.college_id
 	LEFT JOIN course_periods p ON p.course_period_id=s.course_period_id
 	WHERE p.marking_period_id IS NULL OR p.marking_period_id=s.marking_period_id
-	GROUP BY student_id) gg ON gg.student_id=g.student_id
+	GROUP BY college_roll_no) gg ON gg.college_roll_no=g.college_roll_no
     SET g.cum_unweighted_factor=gg.cum_unweighted_factor;
 
 
@@ -363,14 +363,14 @@ DECLARE cur1 CURSOR FOR
     IF @mp_type = 'quarter'  THEN
            set req_mp = 'quarter';
     ELSEIF @mp_type = 'semester'  THEN
-        IF EXISTS(SELECT student_id FROM student_report_card_grades srcg WHERE srcg.marking_period_id IN (SELECT marking_period_id  FROM marking_periods WHERE mp_type=@mp_type)) THEN
+        IF EXISTS(SELECT college_roll_no FROM student_report_card_grades srcg WHERE srcg.marking_period_id IN (SELECT marking_period_id  FROM marking_periods WHERE mp_type=@mp_type)) THEN
            set req_mp  = 'semester';
        ELSE
            set req_mp  = 'quarter';
         END IF;
    ELSEIF @mp_type = 'year'  THEN
-           IF EXISTS(SELECT student_id FROM student_report_card_grades srcg WHERE srcg.MARKING_PERIOD_ID IN (SELECT marking_period_id  FROM marking_periods WHERE mp_type='semester')
-                     UNION  SELECT student_id FROM student_report_card_grades srcg WHERE srcg.MARKING_PERIOD_ID IN (SELECT marking_period_id  FROM history_marking_periods WHERE mp_type='semester')
+           IF EXISTS(SELECT college_roll_no FROM student_report_card_grades srcg WHERE srcg.MARKING_PERIOD_ID IN (SELECT marking_period_id  FROM marking_periods WHERE mp_type='semester')
+                     UNION  SELECT college_roll_no FROM student_report_card_grades srcg WHERE srcg.MARKING_PERIOD_ID IN (SELECT marking_period_id  FROM history_marking_periods WHERE mp_type='semester')
                      ) THEN
                  set req_mp  = 'semester';
          
@@ -382,17 +382,17 @@ DECLARE cur1 CURSOR FOR
 
 
 open cur1;
-fetch cur1 into student_id, gp_points,gp_points_weighted,divisor,credit_earned,cgpa;
+fetch cur1 into college_roll_no, gp_points,gp_points_weighted,divisor,credit_earned,cgpa;
 
 while not done DO
-    IF EXISTS(SELECT student_id FROM student_gpa_calculated WHERE  student_gpa_calculated.student_id=student_id) THEN
+    IF EXISTS(SELECT college_roll_no FROM student_gpa_calculated WHERE  student_gpa_calculated.college_roll_no=college_roll_no) THEN
     UPDATE student_gpa_calculated gc
-               SET gc.cgpa=cgpa where gc.student_id=student_id and gc.marking_period_id=mp_id;
+               SET gc.cgpa=cgpa where gc.college_roll_no=college_roll_no and gc.marking_period_id=mp_id;
     ELSE
-        INSERT INTO student_gpa_running(student_id,marking_period_id,mp,cgpa)
-          VALUES(student_id,mp_id,mp_id,cgpa);
+        INSERT INTO student_gpa_running(college_roll_no,marking_period_id,mp,cgpa)
+          VALUES(college_roll_no,mp_id,mp_id,cgpa);
     END IF;
-fetch cur1 into student_id, gp_points,gp_points_weighted,divisor,credit_earned,cgpa;
+fetch cur1 into college_roll_no, gp_points,gp_points_weighted,divisor,credit_earned,cgpa;
 END WHILE;
 CLOSE cur1;
 
@@ -417,10 +417,10 @@ BEGIN
                         )
       ),
     
-    SUM(srcg.weighted_gp*srcg.credit_earned)/(select sum(sg.credit_attempted) from student_report_card_grades sg where sg.marking_period_id=mp_id AND sg.student_id=s_id
-                                                  AND sg.weighted_gp  IS NOT NULL  AND sg.unweighted_gp IS NULL AND sg.course_period_id IS NOT NULL GROUP BY sg.student_id, sg.marking_period_id) ,
-    SUM(srcg.unweighted_gp*srcg.credit_earned)/ (select sum(sg.credit_attempted) from student_report_card_grades sg where sg.marking_period_id=mp_id AND sg.student_id=s_id
-                                                     AND sg.unweighted_gp  IS NOT NULL  AND sg.weighted_gp IS NULL AND sg.course_period_id IS NOT NULL GROUP BY sg.student_id, sg.marking_period_id) ,
+    SUM(srcg.weighted_gp*srcg.credit_earned)/(select sum(sg.credit_attempted) from student_report_card_grades sg where sg.marking_period_id=mp_id AND sg.college_roll_no=s_id
+                                                  AND sg.weighted_gp  IS NOT NULL  AND sg.unweighted_gp IS NULL AND sg.course_period_id IS NOT NULL GROUP BY sg.college_roll_no, sg.marking_period_id) ,
+    SUM(srcg.unweighted_gp*srcg.credit_earned)/ (select sum(sg.credit_attempted) from student_report_card_grades sg where sg.marking_period_id=mp_id AND sg.college_roll_no=s_id
+                                                     AND sg.unweighted_gp  IS NOT NULL  AND sg.weighted_gp IS NULL AND sg.course_period_id IS NOT NULL GROUP BY sg.college_roll_no, sg.marking_period_id) ,
     eg.short_name
   INTO
     @sum_weighted_factors,
@@ -435,38 +435,38 @@ BEGIN
   INNER JOIN colleges s ON s.id=srcg.college_id
 INNER JOIN course_periods cp ON cp.course_period_id=srcg.course_period_id
 INNER JOIN report_card_grade_scales rcgs ON rcgs.id=cp.grade_scale_id
-  LEFT JOIN enroll_grade eg on eg.student_id=srcg.student_id AND eg.syear=srcg.syear AND eg.college_id=srcg.college_id
-  WHERE srcg.marking_period_id=mp_id AND srcg.student_id=s_id AND srcg.gp_scale<>0 AND srcg.course_period_id IS NOT NULL AND (rcgs.gpa_cal='Y' OR cp.grade_scale_id IS NULL) AND srcg.marking_period_id NOT LIKE 'E%'
+  LEFT JOIN enroll_grade eg on eg.college_roll_no=srcg.college_roll_no AND eg.syear=srcg.syear AND eg.college_id=srcg.college_id
+  WHERE srcg.marking_period_id=mp_id AND srcg.college_roll_no=s_id AND srcg.gp_scale<>0 AND srcg.course_period_id IS NOT NULL AND (rcgs.gpa_cal='Y' OR cp.grade_scale_id IS NULL) AND srcg.marking_period_id NOT LIKE 'E%'
   AND (eg.START_DATE IS NULL OR eg.START_DATE='0000-00-00'  OR eg.START_DATE<=CURDATE()) AND (eg.END_DATE IS NULL OR eg.END_DATE='0000-00-00'  OR eg.END_DATE>=CURDATE())  
-  GROUP BY srcg.student_id,eg.short_name;
+  GROUP BY srcg.college_roll_no,eg.short_name;
   
-IF NOT EXISTS(SELECT NULL FROM student_gpa_calculated WHERE marking_period_id=mp_id AND student_id=s_id) THEN
-    INSERT INTO student_gpa_calculated (student_id,marking_period_id)
+IF NOT EXISTS(SELECT NULL FROM student_gpa_calculated WHERE marking_period_id=mp_id AND college_roll_no=s_id) THEN
+    INSERT INTO student_gpa_calculated (college_roll_no,marking_period_id)
       VALUES(s_id,mp_id);
   END IF;
 
   UPDATE student_gpa_calculated g
     INNER JOIN (
-	SELECT s.student_id,
+	SELECT s.college_roll_no,
 		SUM(s.unweighted_gp/s.gp_scale)/COUNT(*) AS cum_unweighted_factor
 	FROM student_report_card_grades s
 	INNER JOIN colleges sc ON sc.id=s.college_id
 	LEFT JOIN course_periods p ON p.course_period_id=s.course_period_id
 	WHERE s.course_period_id IS NOT NULL AND p.marking_period_id IS NULL OR p.marking_period_id=s.marking_period_id
-	GROUP BY student_id) gg ON gg.student_id=g.student_id
+	GROUP BY college_roll_no) gg ON gg.college_roll_no=g.college_roll_no
     SET g.cum_unweighted_factor=gg.cum_unweighted_factor
-    WHERE g.student_id=s_id;
+    WHERE g.college_roll_no=s_id;
 
-IF EXISTS(SELECT student_id FROM student_gpa_calculated WHERE marking_period_id=mp_id AND student_id=s_id) THEN
+IF EXISTS(SELECT college_roll_no FROM student_gpa_calculated WHERE marking_period_id=mp_id AND college_roll_no=s_id) THEN
     UPDATE student_gpa_calculated
     SET
       gpa            = @gpa,
       weighted_gpa   =@weighted_gpa,
       unweighted_gpa =@unweighted_gpa
 
-    WHERE marking_period_id=mp_id AND student_id=s_id;
+    WHERE marking_period_id=mp_id AND college_roll_no=s_id;
   ELSE
-        INSERT INTO student_gpa_calculated(student_id,marking_period_id,mp,gpa,weighted_gpa,unweighted_gpa,grade_level_short)
+        INSERT INTO student_gpa_calculated(college_roll_no,marking_period_id,mp,gpa,weighted_gpa,unweighted_gpa,grade_level_short)
             VALUES(s_id,mp_id,mp_id,@gpa,@weighted_gpa,@unweighted_gpa,@grade_level_short  );
                    
 
@@ -517,20 +517,20 @@ BEGIN
 
 DECLARE done INT DEFAULT 0;
 DECLARE marking_period_id INT;
-DECLARE student_id INT;
+DECLARE college_roll_no INT;
 DECLARE rank NUMERIC;
 
 declare cur1 cursor for
 select
   mp.marking_period_id,
-  sgc.student_id,
+  sgc.college_roll_no,
  (select count(*)+1 
    from student_gpa_calculated sgc3
    where sgc3.gpa > sgc.gpa
      and sgc3.marking_period_id = mp.marking_period_id 
-     and sgc3.student_id in (select distinct sgc2.student_id 
+     and sgc3.college_roll_no in (select distinct sgc2.college_roll_no 
                                                 from student_gpa_calculated sgc2, student_enrollment se2
-                                                where sgc2.student_id = se2.student_id 
+                                                where sgc2.college_roll_no = se2.college_roll_no 
                                                 and sgc2.marking_period_id = mp.marking_period_id 
                                                 and se2.grade_id = se.grade_id
                                                 and se2.syear = se.syear
@@ -538,7 +538,7 @@ select
                                 )
   ) as rank
   from student_enrollment se, student_gpa_calculated sgc, marking_periods mp
-  where se.student_id = sgc.student_id
+  where se.college_roll_no = sgc.college_roll_no
     and sgc.marking_period_id = mp.marking_period_id
     and mp.marking_period_id = mp_id
     and se.syear = mp.syear
@@ -547,15 +547,15 @@ select
 DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
 
 open cur1;
-fetch cur1 into marking_period_id,student_id,rank;
+fetch cur1 into marking_period_id,college_roll_no,rank;
 
 while not done DO
 	update student_gpa_calculated sgc
 	  set
 	    class_rank = rank
 	where sgc.marking_period_id = marking_period_id
-	  and sgc.student_id = student_id;
-	fetch cur1 into marking_period_id,student_id,rank;
+	  and sgc.college_roll_no = college_roll_no;
+	fetch cur1 into marking_period_id,college_roll_no,rank;
 END WHILE;
 CLOSE cur1;
 
@@ -566,7 +566,7 @@ CREATE FUNCTION `STUDENT_DISABLE`(
 stu_id int
 ) RETURNS int(1)
 BEGIN
-UPDATE students set is_disable ='Y' where (select end_date from student_enrollment where  student_id=stu_id ORDER BY id DESC LIMIT 1) IS NOT NULL AND (select end_date from student_enrollment where  student_id=stu_id ORDER BY id DESC LIMIT 1)< CURDATE() AND  student_id=stu_id;
+UPDATE students set is_disable ='Y' where (select end_date from student_enrollment where  college_roll_no=stu_id ORDER BY id DESC LIMIT 1) IS NOT NULL AND (select end_date from student_enrollment where  college_roll_no=stu_id ORDER BY id DESC LIMIT 1)< CURDATE() AND  college_roll_no=stu_id;
 RETURN 1;
 END$$
 
@@ -588,10 +588,10 @@ BEGIN
                         )
       ),
     
-    SUM(srcg.weighted_gp*srcg.credit_earned)/(select sum(sg.credit_attempted) from student_report_card_grades sg where sg.marking_period_id=mp_id AND sg.student_id=s_id
-                                                  AND sg.weighted_gp  IS NOT NULL  AND sg.unweighted_gp IS NULL GROUP BY sg.student_id, sg.marking_period_id) ,
-    SUM(srcg.unweighted_gp*srcg.credit_earned)/ (select sum(sg.credit_attempted) from student_report_card_grades sg where sg.marking_period_id=mp_id AND sg.student_id=s_id
-                                                     AND sg.unweighted_gp  IS NOT NULL  AND sg.weighted_gp IS NULL GROUP BY sg.student_id, sg.marking_period_id) ,
+    SUM(srcg.weighted_gp*srcg.credit_earned)/(select sum(sg.credit_attempted) from student_report_card_grades sg where sg.marking_period_id=mp_id AND sg.college_roll_no=s_id
+                                                  AND sg.weighted_gp  IS NOT NULL  AND sg.unweighted_gp IS NULL GROUP BY sg.college_roll_no, sg.marking_period_id) ,
+    SUM(srcg.unweighted_gp*srcg.credit_earned)/ (select sum(sg.credit_attempted) from student_report_card_grades sg where sg.marking_period_id=mp_id AND sg.college_roll_no=s_id
+                                                     AND sg.unweighted_gp  IS NOT NULL  AND sg.weighted_gp IS NULL GROUP BY sg.college_roll_no, sg.marking_period_id) ,
     eg.short_name
   INTO
     @sum_weighted_factors,
@@ -604,38 +604,38 @@ BEGIN
     @grade_level_short
   FROM student_report_card_grades srcg
   INNER JOIN colleges s ON s.id=srcg.college_id
-  LEFT JOIN enroll_grade eg on eg.student_id=srcg.student_id AND eg.syear=srcg.syear AND eg.college_id=srcg.college_id
-  WHERE srcg.marking_period_id=mp_id AND srcg.student_id=s_id AND srcg.gp_scale<>0 AND srcg.college_id=sch_id AND srcg.syear=sy AND srcg.marking_period_id NOT LIKE 'E%'
+  LEFT JOIN enroll_grade eg on eg.college_roll_no=srcg.college_roll_no AND eg.syear=srcg.syear AND eg.college_id=srcg.college_id
+  WHERE srcg.marking_period_id=mp_id AND srcg.college_roll_no=s_id AND srcg.gp_scale<>0 AND srcg.college_id=sch_id AND srcg.syear=sy AND srcg.marking_period_id NOT LIKE 'E%'
 AND (eg.START_DATE IS NULL OR eg.START_DATE='0000-00-00'  OR eg.START_DATE<=CURDATE()) AND (eg.END_DATE IS NULL OR eg.END_DATE='0000-00-00'  OR eg.END_DATE>=CURDATE())
-  GROUP BY srcg.student_id,eg.short_name;
+  GROUP BY srcg.college_roll_no,eg.short_name;
   
-IF NOT EXISTS(SELECT NULL FROM student_gpa_calculated WHERE marking_period_id=mp_id AND student_id=s_id) THEN
-    INSERT INTO student_mp_stats(student_id,marking_period_id)
+IF NOT EXISTS(SELECT NULL FROM student_gpa_calculated WHERE marking_period_id=mp_id AND college_roll_no=s_id) THEN
+    INSERT INTO student_mp_stats(college_roll_no,marking_period_id)
       VALUES(s_id,mp_id);
   END IF;
 
   UPDATE student_gpa_calculated g
     INNER JOIN (
-	SELECT s.student_id,
+	SELECT s.college_roll_no,
 		SUM(s.unweighted_gp/s.gp_scale)/COUNT(*) AS cum_unweighted_factor
 	FROM student_report_card_grades s
 	INNER JOIN colleges sc ON sc.id=s.college_id
 	LEFT JOIN course_periods p ON p.course_period_id=s.course_period_id
 	WHERE p.marking_period_id IS NULL OR p.marking_period_id=s.marking_period_id
-	GROUP BY student_id) gg ON gg.student_id=g.student_id
+	GROUP BY college_roll_no) gg ON gg.college_roll_no=g.college_roll_no
     SET g.cum_unweighted_factor=gg.cum_unweighted_factor
-    WHERE g.student_id=s_id;
+    WHERE g.college_roll_no=s_id;
 
-IF EXISTS(SELECT student_id FROM student_gpa_calculated WHERE marking_period_id=mp_id AND student_id=s_id) THEN
+IF EXISTS(SELECT college_roll_no FROM student_gpa_calculated WHERE marking_period_id=mp_id AND college_roll_no=s_id) THEN
     UPDATE student_gpa_calculated
     SET
       gpa            = @gpa,
       weighted_gpa   =@weighted_gpa,
       unweighted_gpa =@unweighted_gpa
 
-    WHERE marking_period_id=mp_id AND student_id=s_id;
+    WHERE marking_period_id=mp_id AND college_roll_no=s_id;
   ELSE
-        INSERT INTO student_gpa_calculated(student_id,marking_period_id,mp,gpa,weighted_gpa,unweighted_gpa,grade_level_short)
+        INSERT INTO student_gpa_calculated(college_roll_no,marking_period_id,mp,gpa,weighted_gpa,unweighted_gpa,grade_level_short)
             VALUES(s_id,mp_id,mp_id,@gpa,@weighted_gpa,@unweighted_gpa,@grade_level_short  );
                    
 
@@ -654,7 +654,7 @@ DELIMITER $$
 CREATE TRIGGER `td_student_report_card_grades`
     AFTER DELETE ON student_report_card_grades
     FOR EACH ROW
-	SELECT CALC_GPA_MP(OLD.student_id, OLD.marking_period_id) INTO @return$$
+	SELECT CALC_GPA_MP(OLD.college_roll_no, OLD.marking_period_id) INTO @return$$
 DELIMITER ;
 
 DROP TRIGGER IF EXISTS `ti_student_report_card_grades`;
@@ -662,7 +662,7 @@ DELIMITER $$
 CREATE TRIGGER `ti_student_report_card_grades`
     AFTER INSERT ON student_report_card_grades
     FOR EACH ROW
-	SELECT CALC_GPA_MP(NEW.student_id, NEW.marking_period_id) INTO @return$$
+	SELECT CALC_GPA_MP(NEW.college_roll_no, NEW.marking_period_id) INTO @return$$
 DELIMITER ;
 
 DROP TRIGGER IF EXISTS `tu_student_report_card_grades`;
@@ -670,7 +670,7 @@ DELIMITER $$
 CREATE TRIGGER `tu_student_report_card_grades`
     AFTER UPDATE ON student_report_card_grades
     FOR EACH ROW
-	SELECT CALC_GPA_MP(NEW.student_id, NEW.marking_period_id) INTO @return$$
+	SELECT CALC_GPA_MP(NEW.college_roll_no, NEW.marking_period_id) INTO @return$$
 DELIMITER ;
 
 

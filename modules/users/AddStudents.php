@@ -28,12 +28,12 @@
 include('../../RedirectModulesInc.php');
 if(clean_param($_REQUEST['modfunc'],PARAM_ALPHAMOD)=='save' && AllowEdit())
 {
-	$current_RET = DBGet(DBQuery('SELECT STUDENT_ID FROM students_join_users WHERE STAFF_ID=\''.UserStaffID().'\''),array(),array('STUDENT_ID'));
-	foreach($_REQUEST['student'] as $student_id=>$yes)
+	$current_RET = DBGet(DBQuery('SELECT COLLEGE_ROLL_NO FROM students_join_users WHERE STAFF_ID=\''.UserStaffID().'\''),array(),array('COLLEGE_ROLL_NO'));
+	foreach($_REQUEST['student'] as $college_roll_no=>$yes)
 	{
-		if(!$current_RET[$student_id]&& UserStaffID()!='')
+		if(!$current_RET[$college_roll_no]&& UserStaffID()!='')
 		{
-			$sql = 'INSERT INTO students_join_users (STUDENT_ID,STAFF_ID) values(\''.$student_id.'\',\''.UserStaffID().'\')';
+			$sql = 'INSERT INTO students_join_users (COLLEGE_ROLL_NO,STAFF_ID) values(\''.$college_roll_no.'\',\''.UserStaffID().'\')';
 			DBQuery($sql);
 		}
 	}
@@ -65,7 +65,7 @@ if(clean_param($_REQUEST['modfunc'],PARAM_ALPHAMOD)=='delete' && AllowEdit())
 {
 	if(DeletePromptCommon('student from that user','remove access to'))
 	{
-		DBQuery('DELETE FROM students_join_users WHERE STUDENT_ID=\''.$_REQUEST[student_id].'\' AND STAFF_ID=\''.UserStaffID().'\'');
+		DBQuery('DELETE FROM students_join_users WHERE COLLEGE_ROLL_NO=\''.$_REQUEST[college_roll_no].'\' AND STAFF_ID=\''.UserStaffID().'\'');
 		unset($_REQUEST['modfunc']);
 	}
 }
@@ -101,8 +101,8 @@ if($_REQUEST['modfunc']!='delete')
 	{
 		echo '<CENTER><TABLE width="" align="center"><TR><TD valign=top>';
 		DrawHeader('<div class="big_font">Associated students with '.$RET[1]['FIRST_NAME'].'&nbsp;'.$RET[1]['LAST_NAME'].'</div>',$extra['header_right']);
-		$current_RET = DBGet(DBQuery('SELECT u.STUDENT_ID,CONCAT(s.LAST_NAME,\' \',s.FIRST_NAME) AS FULL_NAME FROM students_join_users u,students s WHERE s.STUDENT_ID=u.STUDENT_ID AND u.STAFF_ID=\''.UserStaffID().'\''));
-		$link['remove'] = array('link'=>"Modules.php?modname=$_REQUEST[modname]&modfunc=delete",'variables'=>array('student_id'=>'STUDENT_ID'));
+		$current_RET = DBGet(DBQuery('SELECT u.COLLEGE_ROLL_NO,CONCAT(s.LAST_NAME,\' \',s.FIRST_NAME) AS FULL_NAME FROM students_join_users u,students s WHERE s.COLLEGE_ROLL_NO=u.COLLEGE_ROLL_NO AND u.STAFF_ID=\''.UserStaffID().'\''));
+		$link['remove'] = array('link'=>"Modules.php?modname=$_REQUEST[modname]&modfunc=delete",'variables'=>array('college_roll_no'=>'COLLEGE_ROLL_NO'));
 			
 		ListOutput($current_RET,array('FULL_NAME'=>'Students'),'','',$link,array(),array('search'=>false));
 		echo '</TD></TR></TABLE><div class="clear"></div><div style="width:830px;">';
@@ -118,7 +118,7 @@ if($_REQUEST['modfunc']!='delete')
 		$extra['options']['search'] = false;
 	
 		if(AllowEdit())
-			Search('student_id',$extra);
+			Search('college_roll_no',$extra);
 		
 		echo '</div></CENTER>';
 		
@@ -130,7 +130,7 @@ if($_REQUEST['modfunc']!='delete')
 function _makeChooseCheckbox($value,$title)
 {	global $THIS_RET;
 
-	return "<INPUT type=checkbox name=student[".$THIS_RET['STUDENT_ID']."] value=Y>";
+	return "<INPUT type=checkbox name=student[".$THIS_RET['COLLEGE_ROLL_NO']."] value=Y>";
 }
 
 ?>

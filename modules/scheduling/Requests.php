@@ -34,7 +34,7 @@ Widgets('request');
 $extra['search'] .= '</div>'; //.col-lg-6
 $extra['search'] .= '</div>'; //.row
 
-Search('student_id', $extra);
+Search('college_roll_no', $extra);
 echo '<div class="panel panel-default">';
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'remove') {
     if (DeletePromptModRequest('request')) {
@@ -48,7 +48,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'update') {
     $flg = 0;
     foreach ($_REQUEST['values'] as $request_id => $columns) {
 
-        $chk_sql = DBGet(DBQuery('SELECT * FROM schedule_requests  WHERE STUDENT_ID=\'' . UserStudentID() . '\' AND REQUEST_ID=\'' . $request_id . '\''));
+        $chk_sql = DBGet(DBQuery('SELECT * FROM schedule_requests  WHERE COLLEGE_ROLL_NO=\'' . UserStudentID() . '\' AND REQUEST_ID=\'' . $request_id . '\''));
 
         $sql = 'UPDATE schedule_requests SET ';
 
@@ -84,7 +84,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'update') {
                 
             }
         }
-        $sql = substr($sql, 0, -1) . ' WHERE STUDENT_ID=\'' . UserStudentID() . '\' AND REQUEST_ID=\'' . $request_id . '\'';
+        $sql = substr($sql, 0, -1) . ' WHERE COLLEGE_ROLL_NO=\'' . UserStudentID() . '\' AND REQUEST_ID=\'' . $request_id . '\'';
 
         if ($flg == 0)
             DBQuery($sql);
@@ -119,13 +119,13 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'add') {
             $subject_id = $_REQUEST['subject_id'];
             $mp_id = DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM college_years WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
             $mp_id = UserMP();
-            $same_course_check = DBGet(DBQuery('SELECT COURSE_ID FROM schedule_requests WHERE STUDENT_ID=\'' . UserStudentID() . '\' AND SYEAR=\'' . UserSyear() . '\''));
+            $same_course_check = DBGet(DBQuery('SELECT COURSE_ID FROM schedule_requests WHERE COLLEGE_ROLL_NO=\'' . UserStudentID() . '\' AND SYEAR=\'' . UserSyear() . '\''));
             foreach ($same_course_check as $key => $same_course) {
                 if ($same_course['COURSE_ID'] == $course_id)
                     $flag = false;
             }
             if ($flag)
-                DBQuery('INSERT INTO schedule_requests (SYEAR,COLLEGE_ID,STUDENT_ID,SUBJECT_ID,COURSE_ID,MARKING_PERIOD_ID) values(\'' . UserSyear() . '\',\'' . UserCollege() . '\',\'' . UserStudentID() . '\',\'' . $subject_id . '\',\'' . $course_id . '\',\'' . $mp_id . '\')');
+                DBQuery('INSERT INTO schedule_requests (SYEAR,COLLEGE_ID,COLLEGE_ROLL_NO,SUBJECT_ID,COURSE_ID,MARKING_PERIOD_ID) values(\'' . UserSyear() . '\',\'' . UserCollege() . '\',\'' . UserStudentID() . '\',\'' . $subject_id . '\',\'' . $course_id . '\',\'' . $mp_id . '\')');
             else
                 echo "<div class=\"alert bg-danger alert-styled-left\">" . "You have already requested for this course" . "</div>";
             unset($_REQUEST['modfunc']);
@@ -149,7 +149,7 @@ if (!$_REQUEST['modfunc'] && UserStudentID()) {
     }
 
     $functions = array('COURSE' => '_makeCourse', 'WITH_TEACHER_ID' => '_makeTeacher', 'WITH_PERIOD_ID' => '_makePeriod');
-    $requests_RET = DBGet(DBQuery('SELECT r.REQUEST_ID,c.TITLE as COURSE,r.COURSE_ID,r.COURSE_WEIGHT,r.MARKING_PERIOD_ID,r.WITH_TEACHER_ID,r.NOT_TEACHER_ID,r.WITH_PERIOD_ID,r.NOT_PERIOD_ID FROM schedule_requests r,courses c WHERE r.COURSE_ID=c.COURSE_ID AND r.SYEAR=\'' . UserSyear() . '\' AND r.STUDENT_ID=\'' . UserStudentID() . '\''), $functions);
+    $requests_RET = DBGet(DBQuery('SELECT r.REQUEST_ID,c.TITLE as COURSE,r.COURSE_ID,r.COURSE_WEIGHT,r.MARKING_PERIOD_ID,r.WITH_TEACHER_ID,r.NOT_TEACHER_ID,r.WITH_PERIOD_ID,r.NOT_PERIOD_ID FROM schedule_requests r,courses c WHERE r.COURSE_ID=c.COURSE_ID AND r.SYEAR=\'' . UserSyear() . '\' AND r.COLLEGE_ROLL_NO=\'' . UserStudentID() . '\''), $functions);
     $columns = array('COURSE' => 'Course', 'WITH_TEACHER_ID' => 'Teacher', 'WITH_PERIOD_ID' => 'Period');
 
     $subjects_RET = DBGet(DBQuery('SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SYEAR=\'' . UserSyear() . '\' AND COLLEGE_ID=\'' . UserCollege() . '\''));
